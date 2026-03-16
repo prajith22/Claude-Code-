@@ -1,9 +1,8 @@
-"""Kalshi public API client with market filtering."""
+"""Kalshi API client using the structured Series > Event > Market hierarchy."""
 
 from __future__ import annotations
 
 import logging
-import re
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -17,154 +16,235 @@ logger = logging.getLogger(__name__)
 KALSHI_API_BASE = "https://api.elections.kalshi.com/trade-api/v2"
 CACHE_TTL = 3600  # 1 hour
 
-# Keywords for hard-filter exclusions (case-insensitive)
-_POLITICAL_KW = [
-    "election", "president", "congress", "senate", "house of representatives",
-    "democrat", "republican", "gop", "legislation", "bill pass", "impeach",
-    "executive order", "governor", "mayor", "supreme court", "scotus",
-    "trump", "biden", "desantis", "haley", "nominee", "veto", "filibuster",
-    "electoral", "ballot", "vote", "partisan", "caucus", "primary",
-]
-_GEOPOLITICAL_KW = [
-    "war", "invasion", "ceasefire", "treaty", "nato", "sanctions",
-    "military strike", "nuclear", "missile", "annexation",
-]
-_CRYPTO_KW = [
-    "bitcoin", "btc", "ethereum", "eth", "crypto", "token price",
-    "stock price", "s&p 500 close", "nasdaq close", "share price",
-    "asset price", "gold price", "oil price", "commodity price",
-]
-_CORPORATE_KW = [
-    "will .* announce", "will .* launch", "will .* acquire",
-    "will .* merge", "ipo", "ceo resign", "layoff",
-]
-_CULTURAL_KW = [
-    "oscar", "grammy", "emmy", "super bowl winner", "nfl", "nba",
-    "celebrity", "movie gross", "box office", "album", "tiktok",
-    "twitter", "influencer",
-]
+# Kalshi category names that map to our categories
+CATEGORY_MAP = {
+    "Climate and Weather": Category.WEATHER,
+    "Climate & Weather": Category.WEATHER,
+    "Weather": Category.WEATHER,
+    "Economics": Category.ECONOMIC,
+    "Economy": Category.ECONOMIC,
+}
 
-# Keywords for INCLUDED categories
-_WEATHER_KW = [
-    "temperature", "high temp", "low temp", "degrees", "precipitation",
-    "rain", "snow", "snowfall", "inches of snow", "weather", "heat",
-    "cold", "frost", "hurricane", "tornado", "wind speed", "°f", "°c",
-]
-_ECONOMIC_KW = [
-    "fed funds", "federal reserve", "interest rate", "rate decision",
-    "rate cut", "rate hike", "cpi", "inflation", "consumer price",
-    "unemployment", "jobs report", "nonfarm payroll", "non-farm payroll",
-    "jobless claims", "gdp", "fomc", "pce", "core pce",
-]
+# Categories we explicitly exclude
+EXCLUDED_CATEGORIES = {
+    "Politics", "US Politics", "Elections", "World Politics",
+    "Crypto", "Cryptocurrency", "Financial Markets",
+    "Entertainment", "Culture", "Sports",
+    "Companies", "Corporate", "Tech",
+    "Geopolitics", "World Events",
+}
+
+# Map excluded categories to filter reasons
+EXCLUDE_REASON_MAP = {
+    "Politics": FilterReason.POLITICAL,
+    "US Politics": FilterReason.POLITICAL,
+    "Elections": FilterReason.POLITICAL,
+    "World Politics": FilterReason.POLITICAL,
+    "Crypto": FilterReason.CRYPTO,
+    "Cryptocurrency": FilterReason.CRYPTO,
+    "Financial Markets": FilterReason.CRYPTO,
+    "Entertainment": FilterReason.CULTURAL,
+    "Culture": FilterReason.CULTURAL,
+    "Sports": FilterReason.CULTURAL,
+    "Companies": FilterReason.CORPORATE,
+    "Corporate": FilterReason.CORPORATE,
+    "Tech": FilterReason.CORPORATE,
+    "Geopolitics": FilterReason.GEOPOLITICAL,
+    "World Events": FilterReason.GEOPOLITICAL,
+}
 
 
-def _matches(text: str, keywords: list[str]) -> bool:
-    text_lower = text.lower()
-    for kw in keywords:
-        if ".*" in kw:
-            if re.search(kw, text_lower):
-                return True
-        elif kw in text_lower:
-            return True
-    return False
+async def _fetch_json(client: httpx.AsyncClient, path: str, params: dict = None) -> Optional[dict]:
+    """Fetch JSON from Kalshi API with error handling."""
+    try:
+        resp = await client.get(f"{KALSHI_API_BASE}{path}", params=params or {})
+        resp.raise_for_status()
+        return resp.json()
+    except httpx.HTTPError as e:
+        logger.error("Kalshi API error on %s: %s", path, e)
+        return None
 
 
-def classify_market(title: str) -> tuple[Optional[Category], Optional[FilterReason]]:
-    """Return (Category, None) if market should be included, or (None, FilterReason) if excluded."""
-    # Check exclusions first
-    if _matches(title, _POLITICAL_KW):
-        return None, FilterReason.POLITICAL
-    if _matches(title, _GEOPOLITICAL_KW):
-        return None, FilterReason.GEOPOLITICAL
-    if _matches(title, _CRYPTO_KW):
-        return None, FilterReason.CRYPTO
-    if _matches(title, _CORPORATE_KW):
-        return None, FilterReason.CORPORATE
-    if _matches(title, _CULTURAL_KW):
-        return None, FilterReason.CULTURAL
-
-    # Check inclusions
-    if _matches(title, _WEATHER_KW):
-        return Category.WEATHER, None
-    if _matches(title, _ECONOMIC_KW):
-        return Category.ECONOMIC, None
-
-    return None, FilterReason.UNSUPPORTED
+async def fetch_series(client: httpx.AsyncClient) -> list[dict]:
+    """Fetch all series from Kalshi."""
+    data = await _fetch_json(client, "/series")
+    if not data:
+        return []
+    return data.get("series", [])
 
 
-async def fetch_kalshi_markets(cache: Cache) -> tuple[list[KalshiMarket], list[FilteredMarket]]:
-    """Fetch open markets from Kalshi, classify and filter them."""
-    cached = cache.get("kalshi_markets")
-    cached_filtered = cache.get("kalshi_filtered")
-    if cached is not None and cached_filtered is not None:
-        logger.info("Using cached Kalshi market data (%d markets)", len(cached))
-        return cached, cached_filtered
+async def fetch_events_for_series(
+    client: httpx.AsyncClient, series_ticker: str
+) -> list[dict]:
+    """Fetch open events for a given series."""
+    data = await _fetch_json(client, "/events", {
+        "series_ticker": series_ticker,
+        "status": "open",
+        "with_nested_markets": "true",
+        "limit": 100,
+    })
+    if not data:
+        return []
+    return data.get("events", [])
+
+
+async def fetch_markets_for_series(
+    client: httpx.AsyncClient, series_ticker: str
+) -> list[dict]:
+    """Fetch open markets for a given series."""
+    all_markets = []
+    cursor = None
+
+    for _ in range(10):  # page limit
+        params = {
+            "series_ticker": series_ticker,
+            "status": "open",
+            "limit": 200,
+        }
+        if cursor:
+            params["cursor"] = cursor
+
+        data = await _fetch_json(client, "/markets", params)
+        if not data:
+            break
+
+        markets = data.get("markets", [])
+        if not markets:
+            break
+
+        all_markets.extend(markets)
+        cursor = data.get("cursor")
+        if not cursor:
+            break
+
+    return all_markets
+
+
+def _parse_price(raw: str | float | int | None, fallback: float = 0.50) -> float:
+    """Parse a price value from Kalshi (dollar strings like '0.56' or cents)."""
+    if raw is None:
+        return fallback
+    try:
+        val = float(raw)
+        # If it looks like cents (> 1), convert to dollars
+        if val > 1.0:
+            val = val / 100.0
+        return max(0.01, min(0.99, val))
+    except (ValueError, TypeError):
+        return fallback
+
+
+def _parse_market(m: dict, series_ticker: str, category: Category) -> KalshiMarket:
+    """Parse a raw Kalshi market dict into our model."""
+    ticker = m.get("ticker", "")
+
+    # Price priority: yes_ask > last_price > yes_bid
+    yes_price = _parse_price(
+        m.get("yes_ask_dollars") or m.get("last_price_dollars") or m.get("yes_bid_dollars")
+    )
+    no_price = 1.0 - yes_price
+
+    close_str = m.get("close_time") or m.get("expiration_time")
+    close_date = None
+    if close_str:
+        try:
+            close_date = datetime.fromisoformat(close_str.replace("Z", "+00:00"))
+        except (ValueError, TypeError):
+            pass
+
+    volume_raw = m.get("volume_fp") or m.get("volume") or "0"
+    try:
+        volume = int(float(volume_raw))
+    except (ValueError, TypeError):
+        volume = 0
+
+    return KalshiMarket(
+        market_id=ticker,
+        ticker=ticker,
+        event_ticker=m.get("event_ticker", ""),
+        series_ticker=series_ticker,
+        title=m.get("title", ""),
+        subtitle=m.get("subtitle", "") or m.get("yes_sub_title", "") or "",
+        yes_price=yes_price,
+        no_price=no_price,
+        volume=volume,
+        close_date=close_date,
+        category=category,
+        url=f"https://kalshi.com/markets/{ticker}",
+    )
+
+
+async def fetch_kalshi_markets(cache: Cache) -> tuple[list[KalshiMarket], list[FilteredMarket], int]:
+    """Fetch markets from Kalshi using structured category filtering.
+
+    Returns (qualifying_markets, filtered_markets, total_scanned).
+    """
+    cached = cache.get("kalshi_v2_markets")
+    cached_filtered = cache.get("kalshi_v2_filtered")
+    cached_total = cache.get("kalshi_v2_total")
+    if cached is not None and cached_filtered is not None and cached_total is not None:
+        logger.info("Using cached Kalshi data (%d markets)", len(cached))
+        return cached, cached_filtered, cached_total
 
     markets: list[KalshiMarket] = []
     filtered: list[FilteredMarket] = []
-    cursor: Optional[str] = None
+    total_scanned = 0
 
     async with httpx.AsyncClient(timeout=30.0) as client:
-        for _ in range(20):  # safety limit on pages
-            params: dict = {"limit": 200, "status": "open"}
-            if cursor:
-                params["cursor"] = cursor
+        # Step 1: Fetch all series to discover categories
+        all_series = await fetch_series(client)
+        logger.info("Found %d series on Kalshi", len(all_series))
 
-            try:
-                resp = await client.get(f"{KALSHI_API_BASE}/markets", params=params)
-                resp.raise_for_status()
-            except httpx.HTTPError as e:
-                logger.error("Kalshi API error: %s", e)
-                break
+        included_series: list[tuple[dict, Category]] = []
 
-            data = resp.json()
-            raw_markets = data.get("markets", [])
-            if not raw_markets:
-                break
+        for s in all_series:
+            series_category = s.get("category", "")
+            series_ticker = s.get("ticker", "")
+            series_title = s.get("title", "")
+
+            # Check if this series maps to a category we want
+            our_category = None
+            for kalshi_cat, cat in CATEGORY_MAP.items():
+                if kalshi_cat.lower() in series_category.lower():
+                    our_category = cat
+                    break
+
+            if our_category:
+                included_series.append((s, our_category))
+            else:
+                # Track as filtered
+                reason = FilterReason.UNSUPPORTED
+                for excl_cat, excl_reason in EXCLUDE_REASON_MAP.items():
+                    if excl_cat.lower() in series_category.lower():
+                        reason = excl_reason
+                        break
+                filtered.append(FilteredMarket(
+                    title=f"[Series] {series_title}",
+                    reason=reason,
+                    market_id=series_ticker,
+                ))
+                total_scanned += 1
+
+        logger.info("Found %d weather/economic series", len(included_series))
+
+        # Step 2: Fetch markets for each qualifying series
+        for series, category in included_series:
+            series_ticker = series.get("ticker", "")
+            raw_markets = await fetch_markets_for_series(client, series_ticker)
 
             for m in raw_markets:
-                title = m.get("title", "") or m.get("subtitle", "") or ""
-                full_text = f"{title} {m.get('subtitle', '')}"
-                category, reason = classify_market(full_text)
+                total_scanned += 1
+                parsed = _parse_market(m, series_ticker, category)
+                markets.append(parsed)
 
-                if reason is not None:
-                    filtered.append(FilteredMarket(
-                        title=title,
-                        reason=reason,
-                        market_id=m.get("ticker", ""),
-                    ))
-                    continue
+    total_scanned += len(markets)
 
-                yes_price = m.get("yes_ask", 0) or m.get("last_price", 50) or 50
-                no_price = 100 - yes_price
+    cache.set("kalshi_v2_markets", markets, expire=CACHE_TTL)
+    cache.set("kalshi_v2_filtered", filtered, expire=CACHE_TTL)
+    cache.set("kalshi_v2_total", total_scanned, expire=CACHE_TTL)
 
-                close_str = m.get("close_time") or m.get("expiration_time")
-                close_date = None
-                if close_str:
-                    try:
-                        close_date = datetime.fromisoformat(close_str.replace("Z", "+00:00"))
-                    except (ValueError, TypeError):
-                        pass
-
-                ticker = m.get("ticker", "")
-                markets.append(KalshiMarket(
-                    market_id=ticker,
-                    title=title,
-                    yes_price=yes_price,
-                    no_price=no_price,
-                    volume=m.get("volume", 0) or 0,
-                    close_date=close_date,
-                    category=category,
-                    url=f"https://kalshi.com/markets/{ticker}",
-                    ticker=ticker,
-                    subtitle=m.get("subtitle", ""),
-                ))
-
-            cursor = data.get("cursor")
-            if not cursor:
-                break
-
-    cache.set("kalshi_markets", markets, expire=CACHE_TTL)
-    cache.set("kalshi_filtered", filtered, expire=CACHE_TTL)
-    logger.info("Fetched %d qualifying markets, filtered %d", len(markets), len(filtered))
-    return markets, filtered
+    logger.info(
+        "Kalshi fetch complete: %d qualifying markets from %d series, %d filtered series",
+        len(markets), len(included_series), len(filtered),
+    )
+    return markets, filtered, total_scanned

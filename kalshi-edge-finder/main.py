@@ -51,7 +51,7 @@ async def refresh_data(edge_threshold: float = 0.10) -> None:
     """Fetch markets, estimate probabilities, find edges."""
     logger.info("Starting data refresh...")
     try:
-        markets, filtered = await fetch_kalshi_markets(cache)
+        markets, filtered, total_api_scanned = await fetch_kalshi_markets(cache)
     except Exception as e:
         logger.error("Failed to fetch Kalshi markets: %s", e)
         return
@@ -91,7 +91,7 @@ async def refresh_data(edge_threshold: float = 0.10) -> None:
 
     state.opportunities = opportunities
     state.filtered_markets = all_filtered[-50:]  # keep last 50
-    state.total_scanned = len(markets) + len(filtered)
+    state.total_scanned = total_api_scanned
     state.last_updated = datetime.now(timezone.utc)
     state.filter_breakdown = breakdown
 
