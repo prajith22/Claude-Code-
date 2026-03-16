@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -35,15 +34,25 @@ class FilterReason(str, Enum):
 @dataclass
 class KalshiMarket:
     market_id: str
+    ticker: str
+    event_ticker: str
+    series_ticker: str
     title: str
-    yes_price: float  # cents, 0-100
-    no_price: float
+    subtitle: str
+    yes_price: float  # 0-1 (dollars)
+    no_price: float   # 0-1 (dollars)
     volume: int
     close_date: Optional[datetime]
-    category: Optional[Category] = None
+    category: Category
     url: str = ""
-    ticker: str = ""
-    subtitle: str = ""
+
+    @property
+    def yes_cents(self) -> float:
+        return self.yes_price * 100
+
+    @property
+    def no_cents(self) -> float:
+        return self.no_price * 100
 
 
 @dataclass
@@ -70,7 +79,7 @@ class Opportunity:
     estimate: ProbabilityEstimate
     yes_edge: EdgeResult
     no_edge: EdgeResult
-    best_edge: EdgeResult  # whichever side has larger edge
+    best_edge: EdgeResult
 
 
 @dataclass
@@ -89,14 +98,16 @@ class DashboardState:
     filter_breakdown: dict[str, int] = field(default_factory=dict)
 
 
-def calculate_edge(market_yes_price: float, our_probability: float, edge_threshold: float = 0.10) -> EdgeResult:
-    """Calculate edge for the YES side."""
-    market_implied_prob = market_yes_price / 100.0
-    edge = our_probability - market_implied_prob
+def calculate_edge(market_price: float, our_probability: float, edge_threshold: float = 0.10) -> EdgeResult:
+    """Calculate edge for the YES side.
 
-    payout_if_win = 1.0 - market_yes_price / 100.0
-    cost = market_yes_price / 100.0
-    ev = (our_probability * payout_if_win) - ((1.0 - our_probability) * cost)
+    market_price: Kalshi price in dollars (0-1)
+    our_probability: our estimated probability (0-1)
+    """
+    edge = our_probability - market_price
+
+    payout_if_win = 1.0 - market_price
+    ev = (our_probability * payout_if_win) - ((1.0 - our_probability) * market_price)
 
     if payout_if_win > 0:
         kelly = edge / payout_if_win
@@ -113,9 +124,9 @@ def calculate_edge(market_yes_price: float, our_probability: float, edge_thresho
     )
 
 
-def calculate_no_edge(market_yes_price: float, our_probability: float, edge_threshold: float = 0.10) -> EdgeResult:
+def calculate_no_edge(market_price: float, our_probability: float, edge_threshold: float = 0.10) -> EdgeResult:
     """Calculate edge for the NO side."""
-    no_price = 100.0 - market_yes_price
+    no_price = 1.0 - market_price
     no_probability = 1.0 - our_probability
     result = calculate_edge(no_price, no_probability, edge_threshold)
     result.side = "NO"
@@ -135,8 +146,6 @@ def evaluate_market(
 
     if not best.show:
         return None
-
-    # Never show LOW confidence
     if estimate.confidence_tier == ConfidenceTier.LOW:
         return None
 

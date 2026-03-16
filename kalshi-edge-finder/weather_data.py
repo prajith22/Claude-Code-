@@ -1,38 +1,47 @@
-"""Weather data sources: Open-Meteo forecast + NOAA historical."""
+"""Weather probability estimation using Open-Meteo ensemble forecasts.
+
+Core approach: fetch 40 ensemble members, compute daily max/min per member,
+count how many members exceed the threshold = direct probability estimate.
+"""
 
 from __future__ import annotations
 
 import logging
-import os
 import re
 import statistics
-from datetime import datetime, timedelta, timezone
+from collections import defaultdict
+from datetime import datetime, timezone
 from typing import Optional
 
 import httpx
 from diskcache import Cache
 
-from models import ConfidenceTier, ProbabilityEstimate
+from models import ConfidenceTier, KalshiMarket, ProbabilityEstimate
 
 logger = logging.getLogger(__name__)
 
 CACHE_TTL = 3600
+NUM_ENSEMBLE_MEMBERS = 40
 
-# Major cities with coordinates for weather market matching
-CITY_COORDS = {
+# City coordinates for weather markets — matched against market titles/tickers
+CITY_COORDS: dict[str, tuple[float, float]] = {
     "new york": (40.7128, -74.0060),
     "nyc": (40.7128, -74.0060),
+    "ny": (40.7128, -74.0060),
     "los angeles": (34.0522, -118.2437),
     "la": (34.0522, -118.2437),
     "chicago": (41.8781, -87.6298),
+    "chi": (41.8781, -87.6298),
     "houston": (29.7604, -95.3698),
     "phoenix": (33.4484, -112.0740),
     "philadelphia": (39.9526, -75.1652),
+    "philly": (39.9526, -75.1652),
     "san antonio": (29.4241, -98.4936),
     "san diego": (32.7157, -117.1611),
     "dallas": (32.7767, -96.7970),
     "miami": (25.7617, -80.1918),
     "atlanta": (33.7490, -84.3880),
+    "atl": (33.7490, -84.3880),
     "boston": (42.3601, -71.0589),
     "seattle": (47.6062, -122.3321),
     "denver": (39.7392, -104.9903),
@@ -51,7 +60,6 @@ CITY_COORDS = {
     "charlotte": (35.2271, -80.8431),
     "indianapolis": (39.7684, -86.1581),
     "columbus": (39.9612, -82.9988),
-    "jacksonville": (30.3322, -81.6557),
     "memphis": (35.1495, -90.0490),
     "oklahoma city": (35.4676, -97.5164),
     "milwaukee": (43.0389, -87.9065),
@@ -61,68 +69,129 @@ CITY_COORDS = {
     "honolulu": (21.3069, -157.8583),
 }
 
-# NOAA station IDs for major cities
-NOAA_STATIONS = {
-    "new york": "GHCND:USW00094728",
-    "nyc": "GHCND:USW00094728",
-    "chicago": "GHCND:USW00094846",
-    "los angeles": "GHCND:USW00023174",
-    "la": "GHCND:USW00023174",
-    "miami": "GHCND:USW00012839",
-    "houston": "GHCND:USW00012960",
-    "phoenix": "GHCND:USW00023183",
-    "denver": "GHCND:USW00023062",
-    "seattle": "GHCND:USW00024233",
-    "boston": "GHCND:USW00014739",
-    "atlanta": "GHCND:USW00013874",
-    "dallas": "GHCND:USW00013960",
-    "washington": "GHCND:USW00013743",
-    "dc": "GHCND:USW00013743",
-    "san francisco": "GHCND:USW00023234",
-    "sf": "GHCND:USW00023234",
-    "minneapolis": "GHCND:USW00014922",
-    "detroit": "GHCND:USW00094847",
-    "philadelphia": "GHCND:USW00013739",
+# Known Kalshi weather ticker patterns → city mapping
+# e.g., KXHIGHNY → New York, KXHIGHCHI → Chicago
+TICKER_CITY_MAP: dict[str, str] = {
+    "NY": "new york",
+    "CHI": "chicago",
+    "LA": "los angeles",
+    "HOU": "houston",
+    "PHX": "phoenix",
+    "MIA": "miami",
+    "ATL": "atlanta",
+    "BOS": "boston",
+    "SEA": "seattle",
+    "DEN": "denver",
+    "DC": "washington",
+    "DFW": "dallas",
+    "SF": "san francisco",
+    "LV": "las vegas",
+    "DET": "detroit",
+    "MSP": "minneapolis",
+    "PDX": "portland",
+    "STL": "st. louis",
+    "TPA": "tampa",
+    "AUS": "austin",
+    "CLT": "charlotte",
+    "IND": "indianapolis",
+    "CMH": "columbus",
+    "MEM": "memphis",
+    "OKC": "oklahoma city",
+    "MKE": "milwaukee",
+    "BAL": "baltimore",
+    "SLC": "salt lake city",
+    "ANC": "anchorage",
+    "HNL": "honolulu",
+    "PHL": "philadelphia",
+    "SAN": "san antonio",
+    "SD": "san diego",
+    "NAS": "nashville",
 }
 
 
-def extract_city(market_title: str) -> Optional[str]:
-    """Extract a known city name from a market title."""
-    title_lower = market_title.lower()
-    # Try longest names first
+def extract_city(market: KalshiMarket) -> Optional[str]:
+    """Extract city from market ticker or title."""
+    ticker = market.series_ticker.upper()
+
+    # Try ticker suffix matching (e.g., KXHIGHNY → NY)
+    for code, city in TICKER_CITY_MAP.items():
+        if ticker.endswith(code):
+            return city
+
+    # Fallback: search title for city names
+    title_lower = market.title.lower()
     for city in sorted(CITY_COORDS.keys(), key=len, reverse=True):
         if city in title_lower:
             return city
+
     return None
 
 
-def extract_temperature_threshold(title: str) -> Optional[tuple[str, float]]:
-    """Extract temperature condition from market title.
+def extract_weather_params(market: KalshiMarket) -> Optional[dict]:
+    """Extract weather parameters from market ticker and title.
 
-    Returns (comparison, temp_f) e.g. ("above", 75.0) or ("below", 32.0).
+    Returns dict with keys: metric (high/low/precip), comparison (above/below),
+    threshold (float), target_date (str YYYY-MM-DD or None).
     """
-    title_lower = title.lower()
+    ticker = market.ticker.upper()
+    title = market.title.lower()
 
-    patterns = [
-        (r"(?:high|temperature).*(?:above|exceed|over|at least|reach)\s*(\d+)", "above"),
-        (r"(?:above|exceed|over|at least|reach)\s*(\d+).*(?:°|degree|temp)", "above"),
-        (r"(\d+)\s*°?\s*f?\s*or\s*(?:above|higher|more)", "above"),
-        (r"(?:high|temperature).*(?:below|under|at most|drop)\s*(\d+)", "below"),
-        (r"(?:below|under|at most)\s*(\d+).*(?:°|degree|temp)", "below"),
-        (r"(\d+)\s*°?\s*f?\s*or\s*(?:below|lower|less)", "below"),
-    ]
+    result = {}
 
-    for pattern, comparison in patterns:
-        match = re.search(pattern, title_lower)
-        if match:
-            return comparison, float(match.group(1))
+    # Detect metric from ticker pattern
+    if "HIGH" in ticker or "high" in title:
+        result["metric"] = "high"
+    elif "LOW" in ticker or "low" in title:
+        result["metric"] = "low"
+    elif "PRECIP" in ticker or "rain" in title or "precipitation" in title:
+        result["metric"] = "precip"
+    elif "SNOW" in ticker or "snow" in title:
+        result["metric"] = "snow"
+    else:
+        result["metric"] = "high"  # default assumption
 
-    return None
+    # Extract threshold from ticker (e.g., -T60 means 60°F)
+    t_match = re.search(r"-T(\d+)", ticker)
+    if t_match:
+        result["threshold"] = float(t_match.group(1))
+    else:
+        # Try title
+        temp_match = re.search(r"(\d+)\s*°?\s*[fF]", title)
+        if temp_match:
+            result["threshold"] = float(temp_match.group(1))
+        else:
+            num_match = re.search(r"(?:above|below|exceed|over|under|at least|reach)\s*(\d+)", title)
+            if num_match:
+                result["threshold"] = float(num_match.group(1))
+            else:
+                return None
+
+    # Comparison direction
+    if any(kw in title for kw in ["above", "exceed", "over", "at least", "or higher", "reach"]):
+        result["comparison"] = "above"
+    elif any(kw in title for kw in ["below", "under", "at most", "or lower", "drop"]):
+        result["comparison"] = "below"
+    elif result["metric"] == "high":
+        result["comparison"] = "above"  # "high temp" markets are typically "will it reach X?"
+    elif result["metric"] == "low":
+        result["comparison"] = "below"
+    else:
+        result["comparison"] = "above"
+
+    # Extract target date from title or close_date
+    target_date = _extract_date_from_title(title)
+    if target_date:
+        result["target_date"] = target_date
+    elif market.close_date:
+        result["target_date"] = market.close_date.strftime("%Y-%m-%d")
+    else:
+        result["target_date"] = None
+
+    return result
 
 
-def extract_date_from_title(title: str) -> Optional[datetime]:
+def _extract_date_from_title(title: str) -> Optional[str]:
     """Try to extract a target date from market title."""
-    # Patterns like "on March 15" or "March 15, 2026"
     months = {
         "january": 1, "february": 2, "march": 3, "april": 4,
         "may": 5, "june": 6, "july": 7, "august": 8,
@@ -130,62 +199,28 @@ def extract_date_from_title(title: str) -> Optional[datetime]:
         "jan": 1, "feb": 2, "mar": 3, "apr": 4,
         "jun": 6, "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12,
     }
-    title_lower = title.lower()
     for month_name, month_num in months.items():
         pattern = rf"{month_name}\s+(\d{{1,2}})(?:\s*,?\s*(\d{{4}}))?"
-        match = re.search(pattern, title_lower)
+        match = re.search(pattern, title)
         if match:
             day = int(match.group(1))
             year = int(match.group(2)) if match.group(2) else datetime.now().year
             try:
-                return datetime(year, month_num, day, tzinfo=timezone.utc)
+                return f"{year}-{month_num:02d}-{day:02d}"
             except ValueError:
                 continue
     return None
 
 
-async def get_openmeteo_forecast(
+async def fetch_ensemble_forecast(
     lat: float, lon: float, cache: Cache
 ) -> Optional[dict]:
-    """Fetch 7-day hourly forecast from Open-Meteo with ensemble data."""
-    cache_key = f"openmeteo_{lat:.2f}_{lon:.2f}"
+    """Fetch ensemble forecast from Open-Meteo (40 members, hourly, ~7 days)."""
+    cache_key = f"ensemble_{lat:.2f}_{lon:.2f}"
     cached = cache.get(cache_key)
     if cached is not None:
         return cached
 
-    url = "https://api.open-meteo.com/v1/forecast"
-    params = {
-        "latitude": lat,
-        "longitude": lon,
-        "hourly": "temperature_2m,precipitation_probability",
-        "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max",
-        "temperature_unit": "fahrenheit",
-        "timezone": "America/New_York",
-        "forecast_days": 7,
-    }
-
-    async with httpx.AsyncClient(timeout=15.0) as client:
-        try:
-            resp = await client.get(url, params=params)
-            resp.raise_for_status()
-            data = resp.json()
-            cache.set(cache_key, data, expire=CACHE_TTL)
-            return data
-        except httpx.HTTPError as e:
-            logger.error("Open-Meteo error: %s", e)
-            return None
-
-
-async def get_openmeteo_ensemble(
-    lat: float, lon: float, cache: Cache
-) -> Optional[dict]:
-    """Fetch ensemble forecast for confidence estimation."""
-    cache_key = f"openmeteo_ensemble_{lat:.2f}_{lon:.2f}"
-    cached = cache.get(cache_key)
-    if cached is not None:
-        return cached
-
-    url = "https://ensemble-api.open-meteo.com/v1/ensemble"
     params = {
         "latitude": lat,
         "longitude": lon,
@@ -195,199 +230,178 @@ async def get_openmeteo_ensemble(
         "models": "icon_seamless",
     }
 
-    async with httpx.AsyncClient(timeout=15.0) as client:
+    async with httpx.AsyncClient(timeout=20.0) as client:
         try:
-            resp = await client.get(url, params=params)
+            resp = await client.get(
+                "https://ensemble-api.open-meteo.com/v1/ensemble",
+                params=params,
+            )
             resp.raise_for_status()
             data = resp.json()
             cache.set(cache_key, data, expire=CACHE_TTL)
             return data
         except httpx.HTTPError as e:
-            logger.warning("Open-Meteo ensemble error: %s", e)
+            logger.error("Open-Meteo ensemble error: %s", e)
             return None
 
 
-async def get_noaa_historical(
-    station_id: str, month: int, day: int, cache: Cache
-) -> Optional[list[float]]:
-    """Fetch 30 years of historical daily max temps for a given date from NOAA CDO.
+def compute_daily_extremes(ensemble_data: dict) -> dict[str, dict[str, list[float]]]:
+    """Compute daily max and min temperature for each ensemble member.
 
-    Returns list of max temps (°F) for this date across available years.
+    Returns: {date_str: {"max": [40 values], "min": [40 values]}}
     """
-    token = os.environ.get("NOAA_API_TOKEN", "")
-    if not token:
+    hourly = ensemble_data.get("hourly", {})
+    times = hourly.get("time", [])
+
+    # Collect member keys
+    member_keys = sorted(
+        k for k in hourly.keys()
+        if k.startswith("temperature_2m_member")
+    )
+
+    if not member_keys or not times:
+        return {}
+
+    # Group hourly temps by date for each member
+    # {date: {member_idx: [temps...]}}
+    by_date: dict[str, dict[int, list[float]]] = defaultdict(lambda: defaultdict(list))
+
+    for i, time_str in enumerate(times):
+        date_str = time_str[:10]  # "2026-03-16"
+        for member_idx, key in enumerate(member_keys):
+            vals = hourly.get(key, [])
+            if i < len(vals) and vals[i] is not None:
+                by_date[date_str][member_idx].append(vals[i])
+
+    # Compute daily max/min per member
+    result: dict[str, dict[str, list[float]]] = {}
+    for date_str, members in by_date.items():
+        daily_maxes = []
+        daily_mins = []
+        for member_idx in range(len(member_keys)):
+            temps = members.get(member_idx, [])
+            if temps:
+                daily_maxes.append(max(temps))
+                daily_mins.append(min(temps))
+        if daily_maxes:
+            result[date_str] = {"max": daily_maxes, "min": daily_mins}
+
+    return result
+
+
+def compute_probability_from_ensemble(
+    daily_extremes: dict[str, dict[str, list[float]]],
+    target_date: Optional[str],
+    metric: str,
+    comparison: str,
+    threshold: float,
+) -> Optional[tuple[float, float, int]]:
+    """Count ensemble members exceeding threshold.
+
+    Returns (probability, spread_stdev, member_count) or None.
+    """
+    if target_date and target_date in daily_extremes:
+        data = daily_extremes[target_date]
+    elif daily_extremes:
+        # Use the first available date if no specific target
+        data = next(iter(daily_extremes.values()))
+    else:
         return None
 
-    cache_key = f"noaa_{station_id}_{month}_{day}"
-    cached = cache.get(cache_key)
-    if cached is not None:
-        return cached
+    if metric in ("high", "precip", "snow"):
+        values = data.get("max", [])
+    else:
+        values = data.get("min", [])
 
-    now = datetime.now()
-    results: list[float] = []
+    if not values:
+        return None
 
-    async with httpx.AsyncClient(timeout=30.0) as client:
-        # Fetch in 5-year chunks to stay within NOAA limits
-        for start_year in range(now.year - 30, now.year, 5):
-            end_year = min(start_year + 4, now.year - 1)
-            try:
-                start_date = f"{start_year}-{month:02d}-{day:02d}"
-                end_date = f"{end_year}-{month:02d}-{day:02d}"
-            except ValueError:
-                continue
+    if comparison == "above":
+        count = sum(1 for v in values if v >= threshold)
+    else:
+        count = sum(1 for v in values if v <= threshold)
 
-            params = {
-                "datasetid": "GHCND",
-                "stationid": station_id,
-                "datatypeid": "TMAX",
-                "startdate": start_date,
-                "enddate": end_date,
-                "units": "standard",
-                "limit": 100,
-            }
+    probability = count / len(values)
+    spread = statistics.stdev(values) if len(values) > 1 else 5.0
 
-            try:
-                resp = await client.get(
-                    "https://www.ncdc.noaa.gov/cdo-web/api/v2/data",
-                    params=params,
-                    headers={"token": token},
-                )
-                resp.raise_for_status()
-                data = resp.json()
-                for r in data.get("results", []):
-                    # Filter to only the target month/day
-                    d = r.get("date", "")
-                    if f"-{month:02d}-{day:02d}" in d:
-                        results.append(r["value"])
-            except httpx.HTTPError as e:
-                logger.warning("NOAA error for %s-%s: %s", start_year, end_year, e)
-                continue
-
-    if results:
-        cache.set(cache_key, results, expire=86400)  # cache 24h
-    return results if results else None
+    return probability, spread, len(values)
 
 
 async def estimate_weather_probability(
-    market: "KalshiMarket", cache: Cache
+    market: KalshiMarket, cache: Cache
 ) -> Optional[ProbabilityEstimate]:
-    """Estimate probability for a weather market using forecast + historical data."""
-    from models import KalshiMarket
-
-    city = extract_city(market.title)
+    """Estimate probability for a weather market using ensemble forecast."""
+    city = extract_city(market)
     if not city:
+        logger.debug("No city found for market %s", market.ticker)
         return None
 
     coords = CITY_COORDS.get(city)
     if not coords:
         return None
 
-    temp_info = extract_temperature_threshold(market.title)
-    target_date = extract_date_from_title(market.title)
-
-    if not temp_info:
-        # For now, only handle temperature markets
+    params = extract_weather_params(market)
+    if not params or "threshold" not in params:
+        logger.debug("Could not parse weather params from %s: %s", market.ticker, market.title)
         return None
 
-    comparison, threshold = temp_info
     lat, lon = coords
-    data_sources = []
-
-    # --- Open-Meteo forecast probability ---
-    forecast_prob = None
-    forecast = await get_openmeteo_forecast(lat, lon, cache)
-
-    if forecast and target_date:
-        daily = forecast.get("daily", {})
-        dates = daily.get("time", [])
-        maxes = daily.get("temperature_2m_max", [])
-
-        target_str = target_date.strftime("%Y-%m-%d")
-        if target_str in dates:
-            idx = dates.index(target_str)
-            forecast_max = maxes[idx]
-            # Simple probability from point forecast — use distance from threshold
-            diff = forecast_max - threshold
-            if comparison == "above":
-                # Use a logistic-like function based on how far forecast is from threshold
-                forecast_prob = 1.0 / (1.0 + 2.718 ** (-diff / 3.0))
-            else:
-                forecast_prob = 1.0 / (1.0 + 2.718 ** (diff / 3.0))
-            data_sources.append("Open-Meteo 7-day forecast")
-
-    # --- Ensemble spread for confidence ---
-    ensemble_spread = None
-    ensemble = await get_openmeteo_ensemble(lat, lon, cache)
-    if ensemble:
-        hourly = ensemble.get("hourly", {})
-        # Get temperature spread across ensemble members
-        temps = hourly.get("temperature_2m", [])
-        if temps and isinstance(temps, list) and len(temps) > 24:
-            # Sample a day's worth of max temps
-            valid_temps = [t for t in temps[:48] if t is not None]
-            if len(valid_temps) > 5:
-                ensemble_spread = statistics.stdev(valid_temps)
-                data_sources.append("Open-Meteo ensemble spread")
-
-    # --- NOAA historical base rate ---
-    historical_prob = None
-    station_id = NOAA_STATIONS.get(city)
-    ref_date = target_date or (market.close_date if market.close_date else None)
-
-    if station_id and ref_date:
-        historicals = await get_noaa_historical(
-            station_id, ref_date.month, ref_date.day, cache
-        )
-        if historicals and len(historicals) >= 5:
-            if comparison == "above":
-                count_above = sum(1 for t in historicals if t >= threshold)
-            else:
-                count_above = sum(1 for t in historicals if t <= threshold)
-            historical_prob = count_above / len(historicals)
-            data_sources.append(f"NOAA {len(historicals)}-year historical")
-
-    # --- Combine probabilities ---
-    if forecast_prob is not None and historical_prob is not None:
-        # Weight forecast more heavily for near-term, historical for far-term
-        days_out = (target_date - datetime.now(timezone.utc)).days if target_date else 7
-        if days_out <= 3:
-            forecast_weight = 0.75
-        elif days_out <= 5:
-            forecast_weight = 0.60
-        else:
-            forecast_weight = 0.45
-        final_prob = forecast_weight * forecast_prob + (1 - forecast_weight) * historical_prob
-    elif forecast_prob is not None:
-        final_prob = forecast_prob
-    elif historical_prob is not None:
-        final_prob = historical_prob
-    else:
+    ensemble_data = await fetch_ensemble_forecast(lat, lon, cache)
+    if not ensemble_data:
         return None
 
-    final_prob = max(0.01, min(0.99, final_prob))
+    daily_extremes = compute_daily_extremes(ensemble_data)
+    if not daily_extremes:
+        return None
+
+    result = compute_probability_from_ensemble(
+        daily_extremes,
+        params.get("target_date"),
+        params["metric"],
+        params["comparison"],
+        params["threshold"],
+    )
+
+    if result is None:
+        return None
+
+    probability, spread, member_count = result
+    probability = max(0.01, min(0.99, probability))
 
     # Confidence interval from ensemble spread
-    if ensemble_spread is not None:
-        ci = min(ensemble_spread / 100.0 * 2, 0.25)
-    elif historical_prob is not None and forecast_prob is not None:
-        ci = abs(forecast_prob - historical_prob) / 2.0
+    # Wider spread = less certain
+    ci = min(spread / 50.0, 0.25)  # normalize: 10°F spread → 0.20 CI
+    ci = max(0.03, ci)
+
+    # Confidence tier based on ensemble agreement and date proximity
+    target_date = params.get("target_date")
+    if target_date:
+        try:
+            days_out = (datetime.strptime(target_date, "%Y-%m-%d") -
+                       datetime.now()).days
+        except ValueError:
+            days_out = 7
     else:
-        ci = 0.15
+        days_out = 7
 
-    ci = max(0.03, min(ci, 0.25))
-
-    # Confidence tier
-    if forecast_prob is not None and historical_prob is not None and ci < 0.10:
+    if days_out <= 3 and spread < 8:
         tier = ConfidenceTier.HIGH
-    elif ci > 0.20:
+    elif days_out <= 5 and spread < 12:
+        tier = ConfidenceTier.MEDIUM
+    elif spread > 15 or days_out > 6:
         tier = ConfidenceTier.LOW
     else:
         tier = ConfidenceTier.MEDIUM
 
     return ProbabilityEstimate(
-        probability=round(final_prob, 3),
+        probability=round(probability, 3),
         confidence_interval=round(ci, 3),
         confidence_tier=tier,
-        data_sources=data_sources,
-        reasoning=f"{'Forecast' if forecast_prob else 'Historical'}-driven estimate for {city.title()} temp {comparison} {threshold}°F",
+        data_sources=[f"Open-Meteo ensemble ({member_count} members)"],
+        reasoning=(
+            f"{city.title()} {params['metric']} temp {params['comparison']} "
+            f"{params['threshold']}°F on {target_date or 'upcoming'}: "
+            f"{int(probability * member_count)}/{member_count} members agree "
+            f"(spread: {spread:.1f}°F)"
+        ),
     )

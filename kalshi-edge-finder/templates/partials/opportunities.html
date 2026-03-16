@@ -23,12 +23,12 @@
         <div class="flex justify-between items-center mb-3 bg-gray-800/50 rounded-lg px-3 py-2">
             <div class="text-center">
                 <p class="text-xs text-gray-500">YES</p>
-                <p class="text-lg font-bold text-green-400">{{ opp.market.yes_price|round(0)|int }}&cent;</p>
+                <p class="text-lg font-bold text-green-400">{{ opp.market.yes_cents|round(0)|int }}&cent;</p>
             </div>
             <div class="text-gray-600">|</div>
             <div class="text-center">
                 <p class="text-xs text-gray-500">NO</p>
-                <p class="text-lg font-bold text-red-400">{{ opp.market.no_price|round(0)|int }}&cent;</p>
+                <p class="text-lg font-bold text-red-400">{{ opp.market.no_cents|round(0)|int }}&cent;</p>
             </div>
         </div>
 
