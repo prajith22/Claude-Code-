@@ -14,7 +14,7 @@ from models import Category, FilterReason, FilteredMarket, KalshiMarket
 
 logger = logging.getLogger(__name__)
 
-KALSHI_API_BASE = "https://trading.kalshi.com/trade-api/v2"
+KALSHI_API_BASE = "https://api.elections.kalshi.com/trade-api/v2"
 CACHE_TTL = 3600  # 1 hour
 
 # Keywords for hard-filter exclusions (case-insensitive)
