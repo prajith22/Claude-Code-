@@ -105,19 +105,19 @@ async def refresh_data(edge_threshold: float = 0.10) -> None:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Start scheduler and run initial data load."""
+    """Start scheduler and kick off initial data load in background."""
     scheduler = AsyncIOScheduler()
     scheduler.add_job(
         refresh_data,
         "interval",
         minutes=REFRESH_INTERVAL_MINUTES,
         id="refresh",
-        next_run_time=None,  # don't run immediately via scheduler
+        next_run_time=None,
     )
     scheduler.start()
 
-    # Initial load
-    await refresh_data()
+    # Run initial load in background so the server starts immediately
+    asyncio.create_task(refresh_data())
 
     yield
 
