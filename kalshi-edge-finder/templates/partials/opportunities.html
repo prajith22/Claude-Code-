@@ -1,4 +1,18 @@
-{% if state.opportunities %}
+{% if not state.last_updated %}
+<!-- Still loading initial data — auto-poll every 3s until ready -->
+<div class="card-gradient rounded-xl border border-gray-700/50 p-12 text-center"
+     hx-get="/partials/opportunities?bankroll={{ bankroll }}&threshold={{ threshold }}"
+     hx-trigger="every 3s" hx-swap="outerHTML">
+    <svg class="w-12 h-12 mx-auto text-blue-500 mb-4 animate-spin" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+    </svg>
+    <h3 class="text-xl font-medium text-gray-400 mb-2">Fetching Markets...</h3>
+    <p class="text-gray-500 text-sm max-w-md mx-auto">
+        Scanning Kalshi markets and estimating probabilities. This may take a minute on first load due to rate limiting.
+    </p>
+</div>
+{% elif state.opportunities %}
 <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
     {% for opp in state.opportunities %}
     <div class="card-gradient rounded-xl border border-gray-700/50 p-5 hover:border-gray-600 transition {% if opp.best_edge.edge >= 0.15 %}edge-glow{% endif %}">

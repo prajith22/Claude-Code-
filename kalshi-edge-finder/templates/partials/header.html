@@ -8,7 +8,9 @@
             {% if state.last_updated %}
                 Last updated: {{ state.last_updated.strftime('%Y-%m-%d %H:%M UTC') }}
             {% else %}
-                Loading...
+                <span hx-get="/partials/header" hx-trigger="every 3s" hx-target="#header-section" hx-swap="innerHTML">
+                    Loading data...
+                </span>
             {% endif %}
         </p>
     </div>
