@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import datetime, timezone
 from typing import Optional
@@ -14,7 +15,12 @@ from models import Category, FilterReason, FilteredMarket, KalshiMarket
 logger = logging.getLogger(__name__)
 
 KALSHI_API_BASE = "https://api.elections.kalshi.com/trade-api/v2"
-CACHE_TTL = 3600  # 1 hour
+CACHE_TTL = 3600  # 60 minutes
+
+# Rate limiting
+REQUEST_DELAY = 0.5  # seconds between requests
+BACKOFF_BASE = 2  # seconds for first 429 retry
+MAX_RETRIES = 3  # retry up to 3 times on 429 (waits: 2s, 4s, 8s)
 
 # Kalshi category names that map to our categories
 CATEGORY_MAP = {
@@ -55,14 +61,37 @@ EXCLUDE_REASON_MAP = {
 
 
 async def _fetch_json(client: httpx.AsyncClient, path: str, params: dict = None) -> Optional[dict]:
-    """Fetch JSON from Kalshi API with error handling."""
-    try:
-        resp = await client.get(f"{KALSHI_API_BASE}{path}", params=params or {})
-        resp.raise_for_status()
-        return resp.json()
-    except httpx.HTTPError as e:
-        logger.error("Kalshi API error on %s: %s", path, e)
-        return None
+    """Fetch JSON from Kalshi API with rate limiting and exponential backoff on 429."""
+    url = f"{KALSHI_API_BASE}{path}"
+
+    for attempt in range(MAX_RETRIES + 1):
+        try:
+            resp = await client.get(url, params=params or {})
+
+            if resp.status_code == 429:
+                if attempt >= MAX_RETRIES:
+                    logger.error("Kalshi 429 on %s after %d retries, giving up", path, MAX_RETRIES)
+                    return None
+                wait = BACKOFF_BASE * (2 ** attempt)  # 2s, 4s, 8s
+                logger.warning("Kalshi 429 on %s, retrying in %ds (attempt %d/%d)",
+                               path, wait, attempt + 1, MAX_RETRIES)
+                await asyncio.sleep(wait)
+                continue
+
+            resp.raise_for_status()
+            return resp.json()
+
+        except httpx.HTTPError as e:
+            logger.error("Kalshi API error on %s: %s", path, e)
+            return None
+
+    return None
+
+
+async def _throttled_fetch(client: httpx.AsyncClient, path: str, params: dict = None) -> Optional[dict]:
+    """Fetch with a delay before the request to stay under rate limits."""
+    await asyncio.sleep(REQUEST_DELAY)
+    return await _fetch_json(client, path, params)
 
 
 async def fetch_series(client: httpx.AsyncClient) -> list[dict]:
@@ -73,25 +102,10 @@ async def fetch_series(client: httpx.AsyncClient) -> list[dict]:
     return data.get("series", [])
 
 
-async def fetch_events_for_series(
-    client: httpx.AsyncClient, series_ticker: str
-) -> list[dict]:
-    """Fetch open events for a given series."""
-    data = await _fetch_json(client, "/events", {
-        "series_ticker": series_ticker,
-        "status": "open",
-        "with_nested_markets": "true",
-        "limit": 100,
-    })
-    if not data:
-        return []
-    return data.get("events", [])
-
-
 async def fetch_markets_for_series(
     client: httpx.AsyncClient, series_ticker: str
 ) -> list[dict]:
-    """Fetch open markets for a given series."""
+    """Fetch open markets for a given series with pagination."""
     all_markets = []
     cursor = None
 
@@ -104,7 +118,7 @@ async def fetch_markets_for_series(
         if cursor:
             params["cursor"] = cursor
 
-        data = await _fetch_json(client, "/markets", params)
+        data = await _throttled_fetch(client, "/markets", params)
         if not data:
             break
 
@@ -227,7 +241,7 @@ async def fetch_kalshi_markets(cache: Cache) -> tuple[list[KalshiMarket], list[F
 
         logger.info("Found %d weather/economic series", len(included_series))
 
-        # Step 2: Fetch markets for each qualifying series
+        # Step 2: Fetch markets for each qualifying series (throttled)
         for series, category in included_series:
             series_ticker = series.get("ticker", "")
             raw_markets = await fetch_markets_for_series(client, series_ticker)
