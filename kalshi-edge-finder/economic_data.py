@@ -26,7 +26,7 @@ from models import ConfidenceTier, KalshiMarket, ProbabilityEstimate
 
 logger = logging.getLogger(__name__)
 
-CACHE_TTL = 3600
+FORECAST_CACHE_TTL = 3600  # 60 min for FRED data
 FRED_BASE = "https://api.stlouisfed.org/fred"
 
 # FRED series IDs for economic indicators
@@ -70,7 +70,7 @@ def detect_indicator(market: KalshiMarket) -> Optional[str]:
     return None
 
 
-def extract_threshold(market: KalshiMarket) -> Optional[tuple[str, float]]:
+def extract_threshold(market: KalshiMarket, indicator: Optional[str] = None) -> Optional[tuple[str, float]]:
     """Extract threshold from market title.
 
     Returns (comparison, value) e.g. ("above", 3.5).
@@ -82,8 +82,11 @@ def extract_threshold(market: KalshiMarket) -> Optional[tuple[str, float]]:
     t_match = re.search(r"-T(\d+)", ticker)
     if t_match:
         raw = float(t_match.group(1))
-        # Heuristic: if the value looks like it needs decimal scaling
-        if raw > 100:
+        # Nonfarm payrolls: raw ticker value IS the threshold in thousands
+        # (e.g., -T150 means 150K jobs). Skip decimal scaling.
+        if indicator == "nonfarm_payroll":
+            value = raw
+        elif raw > 100:
             value = raw / 100.0  # e.g., 350 → 3.50
         elif raw > 20:
             value = raw / 10.0   # e.g., 35 → 3.5
@@ -163,7 +166,7 @@ async def fetch_fred_series(
             continue
 
     if values:
-        cache.set(cache_key, values, expire=CACHE_TTL)
+        cache.set(cache_key, values, expire=FORECAST_CACHE_TTL)
     return values if values else None
 
 
@@ -239,7 +242,7 @@ async def estimate_economic_probability(
     if not values:
         return None
 
-    threshold_info = extract_threshold(market)
+    threshold_info = extract_threshold(market, indicator)
     if not threshold_info:
         return None
 

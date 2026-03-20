@@ -17,12 +17,23 @@
     {% for opp in state.opportunities %}
     <div class="card-gradient rounded-xl border border-gray-700/50 p-5 hover:border-gray-600 transition {% if opp.best_edge.edge >= 0.15 %}edge-glow{% endif %}">
 
-        <!-- Category Badge + Title -->
-        <div class="flex items-start gap-3 mb-4">
-            <span class="px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider {{ opp.market.category.value|badge_color }} text-white shrink-0 mt-0.5">
-                {{ opp.market.category.value }}
+        <!-- Category Badge + BET YES/NO Badge -->
+        <div class="flex items-start justify-between gap-2 mb-3">
+            <div class="flex items-start gap-2">
+                <span class="px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider {{ opp.market.category.value|badge_color }} text-white shrink-0 mt-0.5">
+                    {{ opp.market.category.value }}
+                </span>
+                <h3 class="text-sm font-medium text-gray-200 leading-tight">{{ opp.market.title }}</h3>
+            </div>
+            {% if opp.best_edge.side == "YES" %}
+            <span class="px-3 py-1 rounded-lg text-sm font-black uppercase tracking-wider bg-green-600 text-white shrink-0">
+                BET YES
             </span>
-            <h3 class="text-sm font-medium text-gray-200 leading-tight">{{ opp.market.title }}</h3>
+            {% else %}
+            <span class="px-3 py-1 rounded-lg text-sm font-black uppercase tracking-wider bg-red-600 text-white shrink-0">
+                BET NO
+            </span>
+            {% endif %}
         </div>
 
         <!-- Edge (large) -->
@@ -30,6 +41,13 @@
             <p class="text-xs text-gray-500 uppercase tracking-wider">{{ opp.best_edge.side }} Edge</p>
             <p class="text-4xl font-black {{ opp.best_edge.edge|edge_color }}">
                 {{ (opp.best_edge.edge * 100)|round(1) }}%
+            </p>
+        </div>
+
+        <!-- Data Reasoning (prominent) -->
+        <div class="bg-gray-800/70 rounded-lg px-3 py-2 mb-3 border border-gray-700/30">
+            <p class="text-sm text-gray-200 leading-relaxed">
+                {{ opp.estimate.reasoning }}
             </p>
         </div>
 
@@ -44,18 +62,19 @@
                 <p class="text-xs text-gray-500">NO</p>
                 <p class="text-lg font-bold text-red-400">{{ opp.market.no_cents|round(0)|int }}&cent;</p>
             </div>
+            <div class="text-gray-600">|</div>
+            <div class="text-center">
+                <p class="text-xs text-gray-500">Our Est.</p>
+                <p class="text-lg font-bold text-white">
+                    {{ (opp.estimate.probability * 100)|round(0)|int }}%
+                    <span class="text-xs text-gray-500">&plusmn;{{ (opp.estimate.confidence_interval * 100)|round(0)|int }}%</span>
+                </p>
+            </div>
         </div>
 
-        <!-- Our Estimate -->
+        <!-- Sizing -->
         <div class="mb-3">
             <div class="flex justify-between text-sm">
-                <span class="text-gray-400">Our estimate:</span>
-                <span class="text-white font-medium">
-                    {{ (opp.estimate.probability * 100)|round(0)|int }}%
-                    <span class="text-gray-500">&plusmn;{{ (opp.estimate.confidence_interval * 100)|round(0)|int }}%</span>
-                </span>
-            </div>
-            <div class="flex justify-between text-sm mt-1">
                 <span class="text-gray-400">EV per $100:</span>
                 <span class="text-green-400 font-medium">${{ (opp.best_edge.ev * 100)|round(2) }}</span>
             </div>
@@ -71,7 +90,7 @@
             {% endif %}
         </div>
 
-        <!-- Confidence + Sources -->
+        <!-- Confidence + Sources + Timestamp -->
         <div class="border-t border-gray-700/50 pt-3 mt-3">
             <div class="flex items-center justify-between mb-2">
                 <span class="text-xs {{ opp.estimate.confidence_tier.value|confidence_color }} font-bold uppercase tracking-wider">
@@ -83,31 +102,42 @@
                 </span>
                 {% endif %}
             </div>
-            <div class="text-xs text-gray-500">
+            <div class="text-xs text-gray-500 mb-2">
                 {% for src in opp.estimate.data_sources %}
                 <span class="inline-block bg-gray-800 rounded px-2 py-0.5 mr-1 mb-1">{{ src }}</span>
                 {% endfor %}
             </div>
+            {% if state.last_updated %}
+            <p class="text-xs text-gray-600">Last forecast data: {{ state.last_updated.strftime('%Y-%m-%d %H:%M UTC') }}</p>
+            {% endif %}
         </div>
 
-        <!-- Market Link -->
+        <!-- Market Link (prominent CTA) -->
         <a href="{{ opp.market.url }}" target="_blank" rel="noopener"
-           class="mt-3 block text-center text-sm text-blue-400 hover:text-blue-300 transition">
-            View on Kalshi &rarr;
+           class="mt-3 block text-center text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg px-4 py-2 transition">
+            Open on Kalshi &rarr;
         </a>
     </div>
     {% endfor %}
 </div>
 {% else %}
+<!-- No opportunities — helpful explanation -->
 <div class="card-gradient rounded-xl border border-gray-700/50 p-12 text-center">
     <svg class="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
     </svg>
-    <h3 class="text-xl font-medium text-gray-400 mb-2">No Opportunities Found</h3>
+    <h3 class="text-xl font-medium text-gray-400 mb-2">No Opportunities Right Now</h3>
     <p class="text-gray-500 text-sm max-w-md mx-auto">
-        No markets currently meet the edge threshold. This could mean markets are efficiently priced,
-        or that no estimable weather/economic markets are currently open. Check back later.
+        Scanned {{ state.total_scanned }} market{{ "s" if state.total_scanned != 1 else "" }}
+        &mdash; none had &gt;{{ (threshold * 100)|round(0)|int }}% edge today.
+        Markets may be efficiently priced, or current forecasts align with Kalshi prices.
+        Check back after the next forecast update.
     </p>
+    {% if state.last_updated %}
+    <p class="text-gray-600 text-xs mt-4">
+        Last scan: {{ state.last_updated.strftime('%Y-%m-%d %H:%M UTC') }}
+    </p>
+    {% endif %}
 </div>
 {% endif %}

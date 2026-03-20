@@ -98,7 +98,7 @@ class DashboardState:
     filter_breakdown: dict[str, int] = field(default_factory=dict)
 
 
-def calculate_edge(market_price: float, our_probability: float, edge_threshold: float = 0.10) -> EdgeResult:
+def calculate_edge(market_price: float, our_probability: float, edge_threshold: float = 0.08) -> EdgeResult:
     """Calculate edge for the YES side.
 
     market_price: Kalshi price in dollars (0-1)
@@ -124,7 +124,7 @@ def calculate_edge(market_price: float, our_probability: float, edge_threshold: 
     )
 
 
-def calculate_no_edge(market_price: float, our_probability: float, edge_threshold: float = 0.10) -> EdgeResult:
+def calculate_no_edge(market_price: float, our_probability: float, edge_threshold: float = 0.08) -> EdgeResult:
     """Calculate edge for the NO side."""
     no_price = 1.0 - market_price
     no_probability = 1.0 - our_probability
@@ -136,7 +136,7 @@ def calculate_no_edge(market_price: float, our_probability: float, edge_threshol
 def evaluate_market(
     market: KalshiMarket,
     estimate: ProbabilityEstimate,
-    edge_threshold: float = 0.10,
+    edge_threshold: float = 0.08,
 ) -> Optional[Opportunity]:
     """Evaluate a market and return an Opportunity if edge >= threshold on either side."""
     yes_edge = calculate_edge(market.yes_price, estimate.probability, edge_threshold)

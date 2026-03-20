@@ -1,7 +1,8 @@
 """Weather probability estimation using Open-Meteo ensemble forecasts.
 
-Core approach: fetch 40 ensemble members, compute daily max/min per member,
-count how many members exceed the threshold = direct probability estimate.
+Core approach: fetch 51 ensemble members (ECMWF IFS 0.25°), compute daily
+max/min per member, count how many members exceed the threshold = direct
+probability estimate.
 """
 
 from __future__ import annotations
@@ -20,8 +21,11 @@ from models import ConfidenceTier, KalshiMarket, ProbabilityEstimate
 
 logger = logging.getLogger(__name__)
 
-CACHE_TTL = 3600
-NUM_ENSEMBLE_MEMBERS = 40
+FORECAST_CACHE_TTL = 3600  # 60 min for forecast data
+NUM_ENSEMBLE_MEMBERS = 51
+
+# Build the hourly parameter requesting all 51 members explicitly
+_MEMBER_VARS = ",".join(f"temperature_2m_member{i:02d}" for i in range(NUM_ENSEMBLE_MEMBERS))
 
 # City coordinates for weather markets — matched against market titles/tickers
 CITY_COORDS: dict[str, tuple[float, float]] = {
@@ -139,16 +143,21 @@ def extract_weather_params(market: KalshiMarket) -> Optional[dict]:
     result = {}
 
     # Detect metric from ticker pattern
+    has_explicit_metric = False
     if "HIGH" in ticker or "high" in title:
         result["metric"] = "high"
+        has_explicit_metric = True
     elif "LOW" in ticker or "low" in title:
         result["metric"] = "low"
+        has_explicit_metric = True
     elif "PRECIP" in ticker or "rain" in title or "precipitation" in title:
         result["metric"] = "precip"
+        has_explicit_metric = True
     elif "SNOW" in ticker or "snow" in title:
         result["metric"] = "snow"
+        has_explicit_metric = True
     else:
-        result["metric"] = "high"  # default assumption
+        result["metric"] = "high"  # default, may be overridden below
 
     # Extract threshold from ticker (e.g., -T60 means 60°F)
     t_match = re.search(r"-T(\d+)", ticker)
@@ -172,11 +181,16 @@ def extract_weather_params(market: KalshiMarket) -> Optional[dict]:
     elif any(kw in title for kw in ["below", "under", "at most", "or lower", "drop"]):
         result["comparison"] = "below"
     elif result["metric"] == "high":
-        result["comparison"] = "above"  # "high temp" markets are typically "will it reach X?"
+        result["comparison"] = "above"
     elif result["metric"] == "low":
         result["comparison"] = "below"
     else:
         result["comparison"] = "above"
+
+    # BUG 3 FIX: If comparison is "below" but no explicit high/low keyword was
+    # found, use daily MIN (metric="low") instead of daily MAX.
+    if result["comparison"] == "below" and not has_explicit_metric:
+        result["metric"] = "low"
 
     # Extract target date from title or close_date
     target_date = _extract_date_from_title(title)
@@ -204,7 +218,7 @@ def _extract_date_from_title(title: str) -> Optional[str]:
         match = re.search(pattern, title)
         if match:
             day = int(match.group(1))
-            year = int(match.group(2)) if match.group(2) else datetime.now().year
+            year = int(match.group(2)) if match.group(2) else datetime.now(timezone.utc).year
             try:
                 return f"{year}-{month_num:02d}-{day:02d}"
             except ValueError:
@@ -215,7 +229,7 @@ def _extract_date_from_title(title: str) -> Optional[str]:
 async def fetch_ensemble_forecast(
     lat: float, lon: float, cache: Cache
 ) -> Optional[dict]:
-    """Fetch ensemble forecast from Open-Meteo (40 members, hourly, ~7 days)."""
+    """Fetch ensemble forecast from Open-Meteo (51 ECMWF IFS members, hourly)."""
     cache_key = f"ensemble_{lat:.2f}_{lon:.2f}"
     cached = cache.get(cache_key)
     if cached is not None:
@@ -224,13 +238,13 @@ async def fetch_ensemble_forecast(
     params = {
         "latitude": lat,
         "longitude": lon,
-        "hourly": "temperature_2m",
+        "hourly": _MEMBER_VARS,
         "temperature_unit": "fahrenheit",
         "timezone": "America/New_York",
-        "models": "icon_seamless",
+        "models": "ecmwf_ifs025",
     }
 
-    async with httpx.AsyncClient(timeout=20.0) as client:
+    async with httpx.AsyncClient(timeout=30.0) as client:
         try:
             resp = await client.get(
                 "https://ensemble-api.open-meteo.com/v1/ensemble",
@@ -238,7 +252,7 @@ async def fetch_ensemble_forecast(
             )
             resp.raise_for_status()
             data = resp.json()
-            cache.set(cache_key, data, expire=CACHE_TTL)
+            cache.set(cache_key, data, expire=FORECAST_CACHE_TTL)
             return data
         except httpx.HTTPError as e:
             logger.error("Open-Meteo ensemble error: %s", e)
@@ -248,7 +262,7 @@ async def fetch_ensemble_forecast(
 def compute_daily_extremes(ensemble_data: dict) -> dict[str, dict[str, list[float]]]:
     """Compute daily max and min temperature for each ensemble member.
 
-    Returns: {date_str: {"max": [40 values], "min": [40 values]}}
+    Returns: {date_str: {"max": [51 values], "min": [51 values]}}
     """
     hourly = ensemble_data.get("hourly", {})
     times = hourly.get("time", [])
@@ -373,12 +387,12 @@ async def estimate_weather_probability(
     ci = min(spread / 50.0, 0.25)  # normalize: 10°F spread → 0.20 CI
     ci = max(0.03, ci)
 
-    # Confidence tier based on ensemble agreement and date proximity
+    # BUG 4 FIX: Use timezone-aware UTC datetime for days_out calculation
     target_date = params.get("target_date")
     if target_date:
         try:
-            days_out = (datetime.strptime(target_date, "%Y-%m-%d") -
-                       datetime.now()).days
+            days_out = (datetime.strptime(target_date, "%Y-%m-%d").replace(tzinfo=timezone.utc) -
+                       datetime.now(timezone.utc)).days
         except ValueError:
             days_out = 7
     else:
@@ -397,11 +411,14 @@ async def estimate_weather_probability(
         probability=round(probability, 3),
         confidence_interval=round(ci, 3),
         confidence_tier=tier,
-        data_sources=[f"Open-Meteo ensemble ({member_count} members)"],
+        data_sources=[f"Open-Meteo ECMWF ensemble ({member_count} members)"],
         reasoning=(
+            f"{int(probability * member_count)}/{member_count} ensemble members show "
             f"{city.title()} {params['metric']} temp {params['comparison']} "
-            f"{params['threshold']}°F on {target_date or 'upcoming'}: "
-            f"{int(probability * member_count)}/{member_count} members agree "
-            f"(spread: {spread:.1f}°F)"
+            f"{params['threshold']:.0f}\u00b0F on {target_date or 'upcoming'} "
+            f"({probability * 100:.0f}%) vs Kalshi price of "
+            f"{market.yes_cents:.0f}\u00a2 \u2014 "
+            f"{abs(probability - market.yes_price) * 100:.0f}% edge "
+            f"(spread: {spread:.1f}\u00b0F)"
         ),
     )

@@ -47,7 +47,7 @@ state = DashboardState()
 REFRESH_INTERVAL_MINUTES = 60
 
 
-async def refresh_data(edge_threshold: float = 0.10) -> None:
+async def refresh_data(edge_threshold: float = 0.08) -> None:
     """Fetch markets, estimate probabilities, find edges."""
     logger.info("Starting data refresh...")
     try:
@@ -144,7 +144,7 @@ def edge_color(edge: float) -> str:
         return "text-green-400"
     if edge >= 0.15:
         return "text-green-500"
-    if edge >= 0.10:
+    if edge >= 0.08:
         return "text-yellow-400"
     return "text-gray-400"
 
@@ -173,7 +173,7 @@ templates.env.filters["confidence_color"] = confidence_color
 # --- Routes ---
 
 @app.get("/", response_class=HTMLResponse)
-async def index(request: Request, bankroll: float = Query(1000), threshold: float = Query(0.10)):
+async def index(request: Request, bankroll: float = Query(1000), threshold: float = Query(0.08)):
     return templates.TemplateResponse("index.html", {
         "request": request,
         "state": state,
@@ -184,7 +184,7 @@ async def index(request: Request, bankroll: float = Query(1000), threshold: floa
 
 
 @app.get("/partials/opportunities", response_class=HTMLResponse)
-async def opportunities_partial(request: Request, bankroll: float = Query(1000), threshold: float = Query(0.10)):
+async def opportunities_partial(request: Request, bankroll: float = Query(1000), threshold: float = Query(0.08)):
     """HTMX partial: re-render opportunity cards."""
     return templates.TemplateResponse("partials/opportunities.html", {
         "request": request,
@@ -213,7 +213,7 @@ async def header_partial(request: Request):
 
 
 @app.post("/refresh")
-async def trigger_refresh(threshold: float = Query(0.10)):
+async def trigger_refresh(threshold: float = Query(0.08)):
     """Manual refresh trigger."""
     await refresh_data(edge_threshold=threshold)
     return {"status": "ok", "opportunities": len(state.opportunities)}
