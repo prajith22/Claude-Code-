@@ -15,7 +15,8 @@ from models import Category, FilterReason, FilteredMarket, KalshiMarket
 logger = logging.getLogger(__name__)
 
 KALSHI_API_BASE = "https://api.elections.kalshi.com/trade-api/v2"
-CACHE_TTL = 3600  # 60 minutes
+MARKET_CACHE_TTL = 900  # 15 min for market prices (change frequently)
+FORECAST_CACHE_TTL = 3600  # 60 min for weather/FRED data
 
 # Rate limiting
 REQUEST_DELAY = 0.5  # seconds between requests
@@ -184,7 +185,7 @@ def _parse_market(m: dict, series_ticker: str, category: Category) -> KalshiMark
         volume=volume,
         close_date=close_date,
         category=category,
-        url=f"https://kalshi.com/markets/{ticker}",
+        url=f"https://kalshi.com/markets/{m.get('event_ticker', '')}/{ticker}",
     )
 
 
@@ -253,9 +254,9 @@ async def fetch_kalshi_markets(cache: Cache) -> tuple[list[KalshiMarket], list[F
 
     total_scanned += len(markets)
 
-    cache.set("kalshi_v2_markets", markets, expire=CACHE_TTL)
-    cache.set("kalshi_v2_filtered", filtered, expire=CACHE_TTL)
-    cache.set("kalshi_v2_total", total_scanned, expire=CACHE_TTL)
+    cache.set("kalshi_v2_markets", markets, expire=MARKET_CACHE_TTL)
+    cache.set("kalshi_v2_filtered", filtered, expire=MARKET_CACHE_TTL)
+    cache.set("kalshi_v2_total", total_scanned, expire=MARKET_CACHE_TTL)
 
     logger.info(
         "Kalshi fetch complete: %d qualifying markets from %d series, %d filtered series",
