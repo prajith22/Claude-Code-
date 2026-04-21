@@ -31,6 +31,9 @@
     "scheme": "dopiq",
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "ODDS_API_KEY": ""
     }
   }
 }

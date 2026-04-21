@@ -1,0 +1,196 @@
+[
+  {
+    "id": "r1",
+    "name": "Inferno Pies",
+    "cuisine": "Pizza",
+    "rating": 4.7,
+    "deliveryTime": "25-35 min",
+    "deliveryFee": 2.99,
+    "menu": [
+      { "id": "r1-a1", "name": "Garlic Knots (6pc)", "description": "Oven-baked knots with roasted garlic butter and parmesan.", "price": 6.99, "category": "appetizer" },
+      { "id": "r1-m1", "name": "Diavola Pizza", "description": "San Marzano tomato, fresh mozzarella, spicy salami, chili oil.", "price": 18.99, "category": "main" },
+      { "id": "r1-m2", "name": "Margherita Pizza", "description": "Classic tomato sauce, buffalo mozzarella, fresh basil.", "price": 15.99, "category": "main" },
+      { "id": "r1-m3", "name": "White Truffle Pizza", "description": "Truffle cream base, fontina, wild mushrooms, arugula.", "price": 22.99, "category": "main" },
+      { "id": "r1-d1", "name": "Sparkling Lemonade", "description": "House-made with Meyer lemon and a touch of honey.", "price": 3.99, "category": "drink" },
+      { "id": "r1-ds1", "name": "Nutella Calzone", "description": "Crispy folded dough filled with Nutella and powdered sugar.", "price": 7.99, "category": "dessert" }
+    ]
+  },
+  {
+    "id": "r2",
+    "name": "Slice District",
+    "cuisine": "Pizza",
+    "rating": 4.4,
+    "deliveryTime": "20-30 min",
+    "deliveryFee": 1.99,
+    "menu": [
+      { "id": "r2-a1", "name": "Mozzarella Sticks (5pc)", "description": "Golden fried with marinara dipping sauce.", "price": 7.49, "category": "appetizer" },
+      { "id": "r2-m1", "name": "Pepperoni Deep Dish", "description": "Chicago-style thick crust loaded with pepperoni and extra cheese.", "price": 20.99, "category": "main" },
+      { "id": "r2-m2", "name": "BBQ Chicken Pizza", "description": "Smoky BBQ base, grilled chicken, red onion, cilantro.", "price": 17.99, "category": "main" },
+      { "id": "r2-d1", "name": "Root Beer Float", "description": "Craft root beer with two scoops of vanilla ice cream.", "price": 4.99, "category": "drink" },
+      { "id": "r2-ds1", "name": "Cannoli (2pc)", "description": "Crispy shells filled with sweet ricotta and mini chocolate chips.", "price": 5.99, "category": "dessert" }
+    ]
+  },
+  {
+    "id": "r3",
+    "name": "Dragon Wok",
+    "cuisine": "Chinese",
+    "rating": 4.6,
+    "deliveryTime": "30-40 min",
+    "deliveryFee": 2.49,
+    "menu": [
+      { "id": "r3-a1", "name": "Spring Rolls (3pc)", "description": "Crispy veggie rolls with sweet chili dipping sauce.", "price": 5.99, "category": "appetizer" },
+      { "id": "r3-a2", "name": "Potstickers (6pc)", "description": "Pan-fried pork and ginger dumplings with soy ginger sauce.", "price": 8.49, "category": "appetizer" },
+      { "id": "r3-m1", "name": "Kung Pao Chicken", "description": "Wok-tossed chicken, peanuts, dried chilies, and scallions.", "price": 14.99, "category": "main" },
+      { "id": "r3-m2", "name": "Beef and Broccoli", "description": "Tender flank steak with broccoli in savory oyster sauce.", "price": 15.99, "category": "main" },
+      { "id": "r3-m3", "name": "Shrimp Fried Rice", "description": "Wok-fried jasmine rice with shrimp, egg, and vegetables.", "price": 13.99, "category": "main" },
+      { "id": "r3-d1", "name": "Jasmine Tea", "description": "Hot or iced, lightly floral and refreshing.", "price": 2.49, "category": "drink" },
+      { "id": "r3-ds1", "name": "Mango Pudding", "description": "Silky fresh mango pudding topped with coconut cream.", "price": 4.99, "category": "dessert" }
+    ]
+  },
+  {
+    "id": "r4",
+    "name": "Jade Palace",
+    "cuisine": "Chinese",
+    "rating": 4.3,
+    "deliveryTime": "35-50 min",
+    "deliveryFee": 3.49,
+    "menu": [
+      { "id": "r4-a1", "name": "Crab Rangoon (4pc)", "description": "Crispy wontons with cream cheese and imitation crab.", "price": 6.49, "category": "appetizer" },
+      { "id": "r4-m1", "name": "General Tso's Chicken", "description": "Crispy fried chicken in a sweet and spicy tangy sauce.", "price": 15.49, "category": "main" },
+      { "id": "r4-m2", "name": "Mapo Tofu", "description": "Silken tofu in a spicy fermented black bean sauce with ground pork.", "price": 13.49, "category": "main" },
+      { "id": "r4-d1", "name": "Bubble Tea (Taro)", "description": "Creamy taro milk tea with tapioca pearls.", "price": 5.49, "category": "drink" },
+      { "id": "r4-ds1", "name": "Sesame Balls (3pc)", "description": "Fried glutinous rice balls filled with red bean paste.", "price": 4.49, "category": "dessert" }
+    ]
+  },
+  {
+    "id": "r5",
+    "name": "Taqueria Fuego",
+    "cuisine": "Mexican",
+    "rating": 4.8,
+    "deliveryTime": "20-30 min",
+    "deliveryFee": 1.49,
+    "menu": [
+      { "id": "r5-a1", "name": "Chips & Guacamole", "description": "House-made guac with tortilla chips and fresh pico de gallo.", "price": 7.99, "category": "appetizer" },
+      { "id": "r5-m1", "name": "Birria Tacos (3pc)", "description": "Braised beef tacos with consommé for dipping, onion, cilantro.", "price": 16.99, "category": "main" },
+      { "id": "r5-m2", "name": "Al Pastor Burrito", "description": "Marinated pork, pineapple, rice, beans, and crema in a flour tortilla.", "price": 13.99, "category": "main" },
+      { "id": "r5-m3", "name": "Elote Bowl", "description": "Mexican street corn, cotija, chili powder, lime, and chipotle mayo over rice.", "price": 12.49, "category": "main" },
+      { "id": "r5-d1", "name": "Horchata", "description": "Chilled rice milk with cinnamon and vanilla.", "price": 3.49, "category": "drink" },
+      { "id": "r5-d2", "name": "Agua Fresca (Watermelon)", "description": "Fresh watermelon blended with lime and a pinch of salt.", "price": 3.49, "category": "drink" },
+      { "id": "r5-ds1", "name": "Churros (4pc)", "description": "Golden fried churros with cinnamon sugar and chocolate dipping sauce.", "price": 6.99, "category": "dessert" }
+    ]
+  },
+  {
+    "id": "r6",
+    "name": "Casa Nómada",
+    "cuisine": "Mexican",
+    "rating": 4.5,
+    "deliveryTime": "25-40 min",
+    "deliveryFee": 2.99,
+    "menu": [
+      { "id": "r6-a1", "name": "Queso Fundido", "description": "Melted Oaxacan cheese with chorizo and roasted peppers. Served with tortillas.", "price": 8.99, "category": "appetizer" },
+      { "id": "r6-m1", "name": "Carnitas Plate", "description": "Slow-cooked pulled pork, black beans, rice, tortillas, and salsas.", "price": 15.99, "category": "main" },
+      { "id": "r6-m2", "name": "Enchiladas Rojas (3pc)", "description": "Corn tortillas filled with chicken, topped with red chile sauce and queso fresco.", "price": 13.99, "category": "main" },
+      { "id": "r6-d1", "name": "Tamarind Soda", "description": "Sweet-tart tamarind with sparkling water and a chili-lime rim.", "price": 3.99, "category": "drink" },
+      { "id": "r6-ds1", "name": "Flan", "description": "Classic Mexican caramel custard with a dark caramel glaze.", "price": 5.49, "category": "dessert" }
+    ]
+  },
+  {
+    "id": "r7",
+    "name": "Stack & Smash",
+    "cuisine": "Burgers",
+    "rating": 4.9,
+    "deliveryTime": "15-25 min",
+    "deliveryFee": 1.99,
+    "menu": [
+      { "id": "r7-a1", "name": "Chili Cheese Fries", "description": "Crinkle-cut fries smothered in beef chili and melted cheddar.", "price": 8.99, "category": "appetizer" },
+      { "id": "r7-a2", "name": "Onion Rings (8pc)", "description": "Beer-battered thick-cut onion rings with chipotle dip.", "price": 6.99, "category": "appetizer" },
+      { "id": "r7-m1", "name": "Double Smash Burger", "description": "Two smashed beef patties, American cheese, pickles, smash sauce on a brioche bun.", "price": 14.99, "category": "main" },
+      { "id": "r7-m2", "name": "Mushroom Swiss Burger", "description": "Single patty, sautéed mushrooms, Swiss cheese, garlic aioli.", "price": 12.99, "category": "main" },
+      { "id": "r7-m3", "name": "Crispy Chicken Sandwich", "description": "Buttermilk fried chicken thigh, coleslaw, pickles, hot honey on a brioche bun.", "price": 13.49, "category": "main" },
+      { "id": "r7-d1", "name": "Vanilla Milkshake", "description": "Thick hand-spun shake made with real vanilla bean ice cream.", "price": 6.99, "category": "drink" },
+      { "id": "r7-ds1", "name": "Cookie Skillet", "description": "Warm chocolate chip cookie baked in a cast iron, topped with vanilla ice cream.", "price": 7.99, "category": "dessert" }
+    ]
+  },
+  {
+    "id": "r8",
+    "name": "Grind House Burgers",
+    "cuisine": "Burgers",
+    "rating": 4.5,
+    "deliveryTime": "20-35 min",
+    "deliveryFee": 2.49,
+    "menu": [
+      { "id": "r8-a1", "name": "Loaded Nachos", "description": "Tortilla chips, pulled pork, jalapeños, queso, sour cream, pico.", "price": 10.99, "category": "appetizer" },
+      { "id": "r8-m1", "name": "BBQ Bacon Burger", "description": "Beef patty, smoked bacon, cheddar, crispy onions, BBQ sauce.", "price": 13.99, "category": "main" },
+      { "id": "r8-m2", "name": "The Plant Burger", "description": "House-made black bean patty, avocado, sprouts, chipotle mayo on a whole wheat bun.", "price": 12.49, "category": "main" },
+      { "id": "r8-d1", "name": "Strawberry Lemonade", "description": "Fresh-squeezed lemonade blended with strawberry purée.", "price": 4.49, "category": "drink" },
+      { "id": "r8-ds1", "name": "Brownie Sundae", "description": "Warm fudge brownie with vanilla ice cream and hot fudge drizzle.", "price": 6.99, "category": "dessert" }
+    ]
+  },
+  {
+    "id": "r9",
+    "name": "Umi Sushi Bar",
+    "cuisine": "Sushi",
+    "rating": 4.8,
+    "deliveryTime": "35-50 min",
+    "deliveryFee": 3.99,
+    "menu": [
+      { "id": "r9-a1", "name": "Edamame", "description": "Steamed salted edamame pods.", "price": 4.49, "category": "appetizer" },
+      { "id": "r9-a2", "name": "Miso Soup", "description": "Dashi broth with silken tofu, wakame, and scallions.", "price": 3.49, "category": "appetizer" },
+      { "id": "r9-m1", "name": "Dragon Roll (8pc)", "description": "Shrimp tempura inside, avocado on top, eel sauce and sesame.", "price": 17.99, "category": "main" },
+      { "id": "r9-m2", "name": "Spicy Tuna Roll (8pc)", "description": "Bluefin tuna, sriracha mayo, cucumber, and tobiko.", "price": 14.99, "category": "main" },
+      { "id": "r9-m3", "name": "Salmon Sashimi (6pc)", "description": "Premium Atlantic salmon, thinly sliced, served with ginger and wasabi.", "price": 16.99, "category": "main" },
+      { "id": "r9-d1", "name": "Sake (Hot)", "description": "House Japanese rice wine, served warm.", "price": 6.99, "category": "drink" },
+      { "id": "r9-d2", "name": "Yuzu Lemonade", "description": "Bright citrus yuzu with sparkling water and honey.", "price": 4.49, "category": "drink" },
+      { "id": "r9-ds1", "name": "Mochi Ice Cream (3pc)", "description": "Choose mango, strawberry, or matcha.", "price": 6.99, "category": "dessert" }
+    ]
+  },
+  {
+    "id": "r10",
+    "name": "Nori & Co.",
+    "cuisine": "Sushi",
+    "rating": 4.5,
+    "deliveryTime": "30-45 min",
+    "deliveryFee": 2.99,
+    "menu": [
+      { "id": "r10-a1", "name": "Gyoza (5pc)", "description": "Pan-fried chicken and ginger dumplings with ponzu dipping sauce.", "price": 7.49, "category": "appetizer" },
+      { "id": "r10-m1", "name": "Rainbow Roll (8pc)", "description": "California roll topped with assorted sashimi and avocado.", "price": 18.99, "category": "main" },
+      { "id": "r10-m2", "name": "Chirashi Bowl", "description": "Assorted sashimi over seasoned sushi rice with pickled ginger.", "price": 21.99, "category": "main" },
+      { "id": "r10-d1", "name": "Matcha Latte", "description": "Ceremonial grade matcha whisked with oat milk and a touch of honey.", "price": 5.49, "category": "drink" },
+      { "id": "r10-ds1", "name": "Tempura Ice Cream", "description": "Vanilla ice cream ball fried in crispy tempura batter, served with chocolate sauce.", "price": 7.99, "category": "dessert" }
+    ]
+  },
+  {
+    "id": "r11",
+    "name": "Trattoria Bello",
+    "cuisine": "Italian",
+    "rating": 4.7,
+    "deliveryTime": "30-45 min",
+    "deliveryFee": 3.49,
+    "menu": [
+      { "id": "r11-a1", "name": "Bruschetta (4pc)", "description": "Grilled sourdough with fresh tomato, basil, and aged balsamic.", "price": 8.49, "category": "appetizer" },
+      { "id": "r11-a2", "name": "Burrata", "description": "Fresh burrata with heirloom tomatoes, pesto oil, and sea salt.", "price": 12.99, "category": "appetizer" },
+      { "id": "r11-m1", "name": "Rigatoni Bolognese", "description": "Slow-cooked beef and pork ragù, rigatoni, parmigiano reggiano.", "price": 18.99, "category": "main" },
+      { "id": "r11-m2", "name": "Cacio e Pepe", "description": "Tonnarelli pasta, Pecorino Romano, coarsely cracked black pepper.", "price": 16.99, "category": "main" },
+      { "id": "r11-m3", "name": "Chicken Piccata", "description": "Pan-seared chicken in lemon caper butter sauce with angel hair.", "price": 19.99, "category": "main" },
+      { "id": "r11-d1", "name": "Sparkling Water", "description": "San Pellegrino, 500ml.", "price": 2.99, "category": "drink" },
+      { "id": "r11-d2", "name": "House Red Wine", "description": "A smooth Montepulciano d'Abruzzo by the glass.", "price": 8.99, "category": "drink" },
+      { "id": "r11-ds1", "name": "Tiramisu", "description": "Classic mascarpone cream, espresso-soaked ladyfingers, cocoa dusting.", "price": 8.49, "category": "dessert" },
+      { "id": "r11-ds2", "name": "Panna Cotta", "description": "Vanilla bean panna cotta with a wild berry coulis.", "price": 7.49, "category": "dessert" }
+    ]
+  },
+  {
+    "id": "r12",
+    "name": "Osteria Lumina",
+    "cuisine": "Italian",
+    "rating": 4.6,
+    "deliveryTime": "35-50 min",
+    "deliveryFee": 3.99,
+    "menu": [
+      { "id": "r12-a1", "name": "Arancini (3pc)", "description": "Crispy risotto balls filled with mozzarella and served with marinara.", "price": 9.49, "category": "appetizer" },
+      { "id": "r12-m1", "name": "Truffle Tagliatelle", "description": "Fresh egg pasta with black truffle, butter, and aged parmigiano.", "price": 24.99, "category": "main" },
+      { "id": "r12-m2", "name": "Eggplant Parmigiana", "description": "Layers of breaded eggplant, tomato sauce, and melted mozzarella.", "price": 15.99, "category": "main" },
+      { "id": "r12-d1", "name": "Aperol Spritz", "description": "Prosecco, Aperol, and a splash of soda with an orange slice.", "price": 9.99, "category": "drink" },
+      { "id": "r12-ds1", "name": "Cannoli Tart", "description": "Pastry shell filled with sweet ricotta, candied orange, and pistachio.", "price": 7.99, "category": "dessert" }
+    ]
+  }
+]
