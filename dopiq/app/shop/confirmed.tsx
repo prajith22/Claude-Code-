@@ -61,7 +61,7 @@ export default function OrderConfirmed() {
   return (
     <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       {/* Confetti */}
-      <View style={styles.confettiLayer} pointerEvents="none">
+      <View style={[styles.confettiLayer, { pointerEvents: 'none' }]}>
         {confettiDots.map((dot, i) => (
           <ConfettiDot key={i} {...dot} />
         ))}

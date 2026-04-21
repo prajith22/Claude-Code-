@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   payoutRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 },
   payoutLabel: { color: Colors.textSecondary, fontSize: 14 },
   payoutValue: { color: Colors.textPrimary, fontSize: 14, fontWeight: '700' },
-  footer: { paddingHorizontal: Spacing.lg, paddingTop: Spacing.md, marginTop: 'auto' as any },
+  footer: { paddingHorizontal: Spacing.lg, paddingTop: Spacing.md },
   confirmBtn: {
     backgroundColor: Colors.sport, borderRadius: Radius.lg,
     paddingVertical: Spacing.md + 2, alignItems: 'center', marginBottom: Spacing.sm,

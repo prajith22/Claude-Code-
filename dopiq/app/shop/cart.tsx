@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   },
   qtyBtnText: { color: Colors.textPrimary, fontSize: 16, fontWeight: '700' },
   qtyNum: { fontSize: 15, fontWeight: '700', color: Colors.textPrimary, minWidth: 20, textAlign: 'center' },
-  removeBtn: { marginLeft: 'auto' as any },
+  removeBtn: { flex: 1, alignItems: 'flex-end' },
   removeBtnText: { color: Colors.error, fontSize: 12 },
   summary: {
     paddingHorizontal: Spacing.lg, paddingTop: Spacing.md,
