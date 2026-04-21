@@ -99,7 +99,7 @@ export default function ProductDetail() {
           }}
           activeOpacity={0.85}
         >
-          <Text style={styles.ctaText}>
+          <Text style={[styles.ctaText, inCart && styles.ctaTextSecondary]}>
             {inCart ? `Add Another (${inCart.quantity} in cart)` : 'Add to Cart'}
           </Text>
         </TouchableOpacity>
@@ -169,4 +169,5 @@ const styles = StyleSheet.create({
   ctaPrimary: { backgroundColor: Colors.shop },
   ctaSecondary: { backgroundColor: Colors.bgCard, borderWidth: 1.5, borderColor: Colors.shop },
   ctaText: { color: '#fff', fontSize: 17, fontWeight: '700' },
+  ctaTextSecondary: { color: Colors.shop },
 });

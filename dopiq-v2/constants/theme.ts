@@ -1,49 +1,49 @@
 export const Colors = {
-  // Background layers
-  bg: '#0a0a0f',
-  bgCard: '#13131a',
-  bgElevated: '#1a1a24',
-  bgModal: '#1e1e2a',
+  // Backgrounds
+  bg: '#FFFFFF',
+  bgCard: '#FFFFFF',
+  bgElevated: '#F5F5F5',
+  bgModal: '#FFFFFF',
 
-  // Brand
-  accent: '#7c5cff',
-  accentLight: '#9b7fff',
-  accentDark: '#5a3fd4',
-  accentGlow: 'rgba(124, 92, 255, 0.25)',
+  // Brand — Amazon-style professional green
+  accent: '#00A650',
+  accentLight: '#007A3D',
+  accentDark: '#007A3D',
+  accentGlow: 'rgba(0, 166, 80, 0.10)',
 
   // Sport blue (betting)
-  sport: '#3b82f6',
-  sportLight: '#60a5fa',
+  sport: '#2563EB',
+  sportLight: '#3B82F6',
 
   // Food orange
-  food: '#f97316',
-  foodLight: '#fb923c',
+  food: '#EA6B0A',
+  foodLight: '#F97316',
 
   // Shop teal
-  shop: '#14b8a6',
-  shopLight: '#2dd4bf',
+  shop: '#0D9488',
+  shopLight: '#14B8A6',
 
   // Tracker green
-  tracker: '#22c55e',
-  trackerLight: '#4ade80',
+  tracker: '#00A650',
+  trackerLight: '#22C55E',
 
   // Status
-  success: '#22c55e',
-  error: '#ef4444',
-  warning: '#f59e0b',
+  success: '#00A650',
+  error: '#DC2626',
+  warning: '#D97706',
 
   // Text
-  textPrimary: '#ffffff',
-  textSecondary: '#a1a1aa',
-  textMuted: '#52525b',
-  textInverse: '#0a0a0f',
+  textPrimary: '#1A1A1A',
+  textSecondary: '#666666',
+  textMuted: '#999999',
+  textInverse: '#FFFFFF',
 
   // Borders
-  border: 'rgba(255,255,255,0.08)',
-  borderStrong: 'rgba(255,255,255,0.15)',
+  border: '#E8E8E8',
+  borderStrong: '#D1D5DB',
 
   // Overlay
-  overlay: 'rgba(0,0,0,0.6)',
+  overlay: 'rgba(0,0,0,0.5)',
 };
 
 export const Spacing = {
