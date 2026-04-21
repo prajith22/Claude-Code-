@@ -1,0 +1,102 @@
+[
+  {
+    "id": "p1",
+    "name": "Velocity Slim Joggers",
+    "description": "Lightweight tapered joggers with a 4-way stretch fabric and zip ankle cuffs. Perfect for workouts or everyday wear.",
+    "price": 54.99,
+    "category": "Clothes",
+    "rating": 4.6,
+    "reviewCount": 1243,
+    "image": null
+  },
+  {
+    "id": "p2",
+    "name": "Cloudstitch Oversized Hoodie",
+    "description": "Ultra-soft fleece hoodie with a relaxed drop-shoulder fit. Features a kangaroo pocket and ribbed cuffs.",
+    "price": 72.00,
+    "category": "Clothes",
+    "rating": 4.8,
+    "reviewCount": 874,
+    "image": null
+  },
+  {
+    "id": "p3",
+    "name": "NovaBuds Pro Wireless Earbuds",
+    "description": "Active noise cancellation, 32-hour total battery life, and IPX5 water resistance. Includes a wireless charging case.",
+    "price": 129.99,
+    "category": "Electronics",
+    "rating": 4.5,
+    "reviewCount": 3102,
+    "image": null
+  },
+  {
+    "id": "p4",
+    "name": "LuminaTab 10 Smart Tablet",
+    "description": "10-inch display, octa-core processor, 128GB storage. Great for streaming, reading, and light productivity.",
+    "price": 249.00,
+    "category": "Electronics",
+    "rating": 4.3,
+    "reviewCount": 569,
+    "image": null
+  },
+  {
+    "id": "p5",
+    "name": "Arcadia Ceramic Diffuser",
+    "description": "Whisper-quiet ultrasonic diffuser with a hand-painted ceramic shell and 7-color ambient light mode. Runs up to 8 hours.",
+    "price": 44.99,
+    "category": "Home Goods",
+    "rating": 4.7,
+    "reviewCount": 2018,
+    "image": null
+  },
+  {
+    "id": "p6",
+    "name": "Woven Linen Throw Blanket",
+    "description": "100% stone-washed linen throw, 50x60 inches. Breathable, pre-washed for softness, and available in four earthy tones.",
+    "price": 68.00,
+    "category": "Home Goods",
+    "rating": 4.9,
+    "reviewCount": 731,
+    "image": null
+  },
+  {
+    "id": "p7",
+    "name": "Glow Theory Vitamin C Serum",
+    "description": "15% L-ascorbic acid formula with hyaluronic acid and vitamin E. Brightens, firms, and evens skin tone over 4 weeks.",
+    "price": 38.00,
+    "category": "Beauty",
+    "rating": 4.6,
+    "reviewCount": 4450,
+    "image": null
+  },
+  {
+    "id": "p8",
+    "name": "BareSolve SPF 50 Tinted Moisturizer",
+    "description": "Lightweight tinted moisturizer with mineral SPF 50. Blurs pores, hydrates for 24 hours, and suits all skin tones.",
+    "price": 32.99,
+    "category": "Beauty",
+    "rating": 4.4,
+    "reviewCount": 1987,
+    "image": null
+  },
+  {
+    "id": "p9",
+    "name": "IronCore Adjustable Dumbbell Set",
+    "description": "Single dumbbell adjusts from 5 to 52.5 lbs in 2.5 lb increments. Replaces 15 individual dumbbells. Sold as a pair.",
+    "price": 299.00,
+    "category": "Sports",
+    "rating": 4.8,
+    "reviewCount": 622,
+    "image": null
+  },
+  {
+    "id": "p10",
+    "name": "TrailSync GPS Running Watch",
+    "description": "Built-in GPS, heart rate monitor, VO2 max tracking, and up to 14 days of battery life. Water-resistant to 50 meters.",
+    "price": 189.99,
+    "category": "Sports",
+    "rating": 4.5,
+    "reviewCount": 1104,
+    "image": null
+  }
+]
