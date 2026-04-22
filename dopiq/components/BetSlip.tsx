@@ -35,7 +35,7 @@ export function BetSlip({
 
   const stake = Number.parseFloat(amount || "0") || 0;
   const potential = selection ? americanOddsToPayout(stake, selection.odds) : 0;
-  const total = stake + potential;
+  const totalReturn = stake + potential;
 
   const canPlace =
     !!selection && stake > 0 && stake <= walletBalance && !placing;
@@ -155,25 +155,23 @@ export function BetSlip({
         onSelect={setSelection}
       />
 
-      <div className="card p-4">
-        <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
+      {/* Bet slip card */}
+      <div className="card-navy p-5">
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40">
           Bet slip
         </p>
         {selection ? (
           <>
-            <p className="mt-2 text-[15px] font-medium">{selection.label}</p>
-            <p className="text-sm text-ink-muted">
+            <p className="mt-3 text-[17px] font-bold text-white">{selection.label}</p>
+            <p className="mt-0.5 text-[13px] text-white/60">
               Odds {formatOdds(selection.odds)}
             </p>
 
-            <label
-              className="mt-4 block text-sm font-medium"
-              htmlFor="stake"
-            >
+            <label className="mt-5 block text-[12px] font-semibold uppercase tracking-widest text-white/40" htmlFor="stake">
               Amount
             </label>
-            <div className="mt-1 flex items-center gap-2">
-              <span className="text-ink-muted">$</span>
+            <div className="mt-2 flex items-center gap-2">
+              <span className="text-white/60">$</span>
               <input
                 id="stake"
                 type="number"
@@ -182,40 +180,40 @@ export function BetSlip({
                 inputMode="decimal"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="input"
+                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-[16px] font-semibold text-white placeholder:text-white/30 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30 transition-all duration-150"
               />
             </div>
-            <div className="mt-2 flex gap-2 text-xs">
+            <div className="mt-3 flex gap-2">
               {[10, 25, 50, 100].map((v) => (
                 <button
                   key={v}
                   type="button"
                   onClick={() => setAmount(String(v))}
-                  className="rounded-full border border-surface-border px-3 py-1 font-medium text-ink-muted hover:text-ink"
+                  className="rounded-full border border-white/20 px-3 py-1.5 text-[12px] font-semibold text-white/60 transition hover:border-brand hover:text-brand"
                 >
                   ${v}
                 </button>
               ))}
             </div>
 
-            <div className="mt-4 space-y-1 text-[15px]">
-              <div className="flex justify-between">
-                <span className="text-ink-muted">To win</span>
-                <span className="font-medium">{formatUSD(potential)}</span>
+            <div className="mt-5 space-y-2 border-t border-white/10 pt-4">
+              <div className="flex justify-between text-[15px]">
+                <span className="text-white/60">To win</span>
+                <span className="font-bold text-brand money">{formatUSD(potential)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-ink-muted">Total return</span>
-                <span className="font-semibold">{formatUSD(total)}</span>
+              <div className="flex justify-between text-[15px]">
+                <span className="text-white/60">Total return</span>
+                <span className="font-bold text-white money">{formatUSD(totalReturn)}</span>
               </div>
             </div>
 
             {error && (
-              <p className="mt-3 rounded-xl bg-red-50 px-4 py-2 text-sm text-red-700">
+              <p className="mt-3 rounded-xl bg-red-900/40 px-4 py-2 text-sm text-red-300">
                 {error}
               </p>
             )}
             {stake > walletBalance && (
-              <p className="mt-3 rounded-xl bg-red-50 px-4 py-2 text-sm text-red-700">
+              <p className="mt-3 rounded-xl bg-red-900/40 px-4 py-2 text-sm text-red-300">
                 Not enough fake funds. Balance: {formatUSD(walletBalance)}
               </p>
             )}
@@ -224,18 +222,16 @@ export function BetSlip({
               type="button"
               disabled={!canPlace}
               onClick={place}
-              className="btn-primary mt-4 w-full"
+              className="btn-primary mt-5 w-full"
             >
-              {placing
-                ? "Placing bet…"
-                : `Place bet · ${formatUSD(stake)}`}
+              {placing ? "Placing bet…" : `Place bet · ${formatUSD(stake)}`}
             </button>
-            <p className="mt-2 text-center text-xs text-ink-muted">
-              Simulated. No real money is at risk.
+            <p className="mt-2 text-center text-[11px] text-white/40">
+              Simulated · No real money at risk
             </p>
           </>
         ) : (
-          <p className="mt-2 text-sm text-ink-muted">
+          <p className="mt-3 text-[14px] text-white/50">
             Pick a market above to build your bet.
           </p>
         )}
@@ -257,7 +253,7 @@ function MarketRow({
 }) {
   return (
     <section>
-      <h3 className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
+      <h3 className="mb-2 text-[12px] font-semibold uppercase tracking-widest text-ink-muted">
         {title}
       </h3>
       <div className="grid grid-cols-2 gap-2">
@@ -272,19 +268,19 @@ function MarketRow({
               type="button"
               onClick={() => onSelect(o.selection)}
               className={cn(
-                "flex flex-col items-start rounded-2xl border p-3 text-left transition",
+                "flex flex-col items-start rounded-2xl border p-3.5 text-left transition-all duration-150",
                 active
-                  ? "border-brand bg-brand-light"
-                  : "border-surface-border bg-white hover:bg-surface-alt",
+                  ? "border-brand bg-brand-light shadow-sm"
+                  : "border-surface-border bg-white hover:bg-surface-alt hover:shadow-card",
               )}
             >
-              <span className="text-[14px] font-medium text-ink">
+              <span className="text-[13px] font-medium text-ink-muted line-clamp-1">
                 {o.primary}
               </span>
               <span
                 className={cn(
-                  "mt-1 text-[14px] font-semibold",
-                  active ? "text-brand" : "text-ink",
+                  "mt-1 text-[17px] font-bold money",
+                  active ? "text-brand" : o.selection.odds > 0 ? "text-brand" : "text-navy",
                 )}
               >
                 {o.secondary}

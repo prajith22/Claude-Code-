@@ -23,43 +23,51 @@ export default function RestaurantPage({
   );
 
   return (
-    <div className="space-y-6">
-      <div className="relative -mx-4 aspect-[16/9] overflow-hidden bg-surface-alt md:mx-0 md:rounded-2xl">
+    <div className="space-y-6 pb-4">
+      {/* Hero banner */}
+      <div className="relative -mx-4 h-52 overflow-hidden bg-surface-alt md:mx-0 md:rounded-card">
         <Image
           src={r.imageUrl}
           alt={r.name}
           fill
-          sizes="(max-width: 768px) 100vw, 40rem"
+          sizes="(max-width: 768px) 100vw, 48rem"
           priority
           className="object-cover"
         />
-      </div>
-
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-[24px] font-semibold leading-tight tracking-tight">
-            {r.name}
-          </h1>
-          <p className="mt-1 text-sm text-ink-muted">
+        <div className="absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent" />
+        <div className="absolute bottom-4 left-4 right-4">
+          <p className="text-[22px] font-bold text-white leading-tight">{r.name}</p>
+          <p className="mt-0.5 text-[13px] text-white/70">
             {r.cuisine} · ★ {r.rating.toFixed(1)} · {r.deliveryTime} ·{" "}
             {formatUSD(r.deliveryFee)} delivery
           </p>
         </div>
+      </div>
+
+      {/* Cart button */}
+      <div className="flex items-center justify-between">
+        <div>
+          <span className="pill-navy">Open Now</span>
+        </div>
         <CartButton kind="food" />
       </div>
 
+      {/* Menu sections */}
       {Object.entries(byCategory).map(([category, items]) => (
         <section key={category}>
-          <h2 className="mb-3 text-[17px] font-semibold">{category}</h2>
+          <h2 className="mb-3 text-[17px] font-bold tracking-tight">{category}</h2>
           <ul className="space-y-3">
             {items.map((m) => (
-              <li key={m.id} className="card flex items-center justify-between gap-3 p-4">
-                <div className="min-w-0">
-                  <p className="text-[15px] font-medium">{m.name}</p>
-                  <p className="mt-1 line-clamp-2 text-sm text-ink-muted">
+              <li
+                key={m.id}
+                className="card flex items-center justify-between gap-4 p-4"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-[15px] font-bold text-ink">{m.name}</p>
+                  <p className="mt-1 line-clamp-2 text-[13px] leading-snug text-ink-muted">
                     {m.description}
                   </p>
-                  <p className="mt-2 text-[15px] font-semibold">
+                  <p className="mt-2 text-[16px] font-bold text-navy money">
                     {formatUSD(m.price)}
                   </p>
                 </div>

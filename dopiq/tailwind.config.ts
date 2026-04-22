@@ -9,33 +9,49 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: "#00A650",
-          dark: "#008a43",
-          light: "#e6f7ee",
+          DEFAULT: "#00C853",
+          dark: "#00a844",
+          light: "#e6f9ee",
+          vivid: "#00E676",
+        },
+        navy: {
+          DEFAULT: "#0A0F1E",
+          light: "#151C33",
+          muted: "#1E2740",
         },
         ink: {
-          DEFAULT: "#1A1A1A",
-          muted: "#666666",
+          DEFAULT: "#0A0F1E",
+          muted: "#6B7280",
+          faint: "#9CA3AF",
         },
         surface: {
           DEFAULT: "#FFFFFF",
-          alt: "#F5F5F5",
-          border: "#E8E8E8",
+          alt: "#F7F8FA",
+          border: "#E5E7EB",
         },
       },
       fontFamily: {
         sans: [
           "-apple-system",
           "BlinkMacSystemFont",
-          "SF Pro Text",
+          "SF Pro Display",
           "Inter",
           "system-ui",
           "sans-serif",
         ],
       },
+      borderRadius: {
+        card: "16px",
+        pill: "9999px",
+      },
       boxShadow: {
-        card: "0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04)",
-        cardHover: "0 4px 12px rgba(0,0,0,0.08)",
+        card: "0 2px 12px rgba(0,0,0,0.08)",
+        cardHover: "0 8px 24px rgba(0,0,0,0.12)",
+        navy: "0 2px 12px rgba(10,15,30,0.25)",
+        navyHover: "0 8px 32px rgba(10,15,30,0.35)",
+      },
+      fontSize: {
+        "2xs": ["11px", "16px"],
       },
     },
   },

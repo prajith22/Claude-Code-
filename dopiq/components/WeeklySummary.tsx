@@ -25,10 +25,7 @@ export function WeeklySummary({ entries }: { entries: SpendingEntry[] }) {
     for (const e of entries) {
       const t = new Date(e.date).getTime();
       if (t >= thisWeekStart.getTime()) current += e.amount;
-      else if (
-        t >= lastWeekStart.getTime() &&
-        t < thisWeekStart.getTime()
-      )
+      else if (t >= lastWeekStart.getTime() && t < thisWeekStart.getTime())
         previous += e.amount;
     }
     return { current, previous };
@@ -42,34 +39,35 @@ export function WeeklySummary({ entries }: { entries: SpendingEntry[] }) {
   const message = improved
     ? current === 0 && previous === 0
       ? "Nothing logged yet — add one to see the trend."
-      : "Nice. You’re pulling back. Keep that energy."
-    : "You’re up this week. Small cuts add up — try a no-spend day.";
+      : "Nice. You're pulling back. Keep that energy."
+    : "You're up this week. Small cuts add up — try a no-spend day.";
 
   return (
-    <div className="card p-5">
-      <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">
+    <div className="card-navy px-6 py-5">
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40">
         This week
       </p>
       <div className="mt-2 flex items-end justify-between gap-4">
-        <p className="text-[32px] font-semibold tracking-tight">
+        <p className="text-[38px] font-bold tracking-tight text-white money">
           {formatUSD(current)}
         </p>
-        <Arrow improved={improved} pct={pct} />
+        <TrendBadge improved={improved} pct={pct} />
       </div>
-      <p className="mt-1 text-sm text-ink-muted">
+      <p className="mt-1 text-[13px] text-white/50">
         Last week: {formatUSD(previous)}
       </p>
-      <p className="mt-3 text-[14px] text-ink">{message}</p>
+      <p className="mt-3 text-[14px] leading-snug text-white/70">{message}</p>
     </div>
   );
 }
 
-function Arrow({ improved, pct }: { improved: boolean; pct: number }) {
-  const color = improved ? "text-brand" : "text-red-600";
-  const bg = improved ? "bg-brand-light" : "bg-red-50";
+function TrendBadge({ improved, pct }: { improved: boolean; pct: number }) {
+  if (pct === 0) return null;
+  const color = improved ? "text-brand" : "text-red-400";
+  const bg = improved ? "bg-brand/20" : "bg-red-500/20";
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${bg} ${color}`}
+      className={`flex-none inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-[12px] font-bold ${bg} ${color}`}
     >
       <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" aria-hidden>
         <path

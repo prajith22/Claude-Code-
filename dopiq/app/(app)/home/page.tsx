@@ -6,111 +6,101 @@ import { formatUSD } from "@/lib/utils";
 
 export default async function HomePage() {
   const user = await requireOnboardedSubscribedUser();
-  const wallet = await prisma.fakeWallet.findUnique({
-    where: { userId: user.id },
-  });
+  const wallet = await prisma.fakeWallet.findUnique({ where: { userId: user.id } });
   const trialLeft = trialDaysRemaining(user.trialStartDate);
-  const showTrial =
-    user.subscriptionStatus === "trialing" && trialLeft > 0 && trialLeft <= 30;
-
+  const showTrial = user.subscriptionStatus === "trialing" && trialLeft > 0;
   const firstName = user.name?.split(" ")[0] ?? "there";
 
   return (
-    <div className="space-y-6">
-      <div className="pt-2">
-        <p className="text-sm text-ink-muted">Hey, {firstName}</p>
-        <h1 className="mt-1 text-[28px] font-semibold leading-tight tracking-tight">
-          Get the hit, keep the bank account.
-        </h1>
-      </div>
-
-      {showTrial && (
-        <div className="rounded-2xl border border-surface-border bg-surface-alt px-4 py-3 text-sm">
-          <span className="font-semibold text-ink">
-            {trialLeft} {trialLeft === 1 ? "day" : "days"} left in trial
-          </span>
-          <span className="text-ink-muted"> · $3.99/mo after</span>
+    <div className="space-y-5 pb-4">
+      {/* Hero card */}
+      <div className="card-navy px-6 py-8 md:px-8">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[13px] font-medium text-brand uppercase tracking-widest">
+              Welcome back
+            </p>
+            <h1 className="mt-1 text-[30px] font-bold leading-tight tracking-tight text-white md:text-[36px]">
+              Hey, {firstName}.
+            </h1>
+            <p className="mt-1 text-[15px] text-white/60">
+              Get the hit. Keep the bank account.
+            </p>
+          </div>
+          {showTrial && (
+            <span className="flex-none rounded-pill bg-white/10 px-3 py-1.5 text-[12px] font-semibold text-white/80 whitespace-nowrap">
+              {trialLeft}d left
+            </span>
+          )}
         </div>
-      )}
 
-      <div className="card flex items-center justify-between px-4 py-4">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-ink-muted">
+        <div className="mt-8 border-t border-white/10 pt-6">
+          <p className="text-[12px] font-semibold uppercase tracking-widest text-white/40">
             Fake wallet
           </p>
-          <p className="mt-1 text-[24px] font-semibold tracking-tight">
+          <p className="mt-1 text-[42px] font-bold tracking-tight text-brand money md:text-[52px]">
             {formatUSD(wallet?.balance ?? 0)}
           </p>
+          <p className="mt-1 text-[12px] text-white/40">Simulated balance · never real</p>
         </div>
-        <Link href="/bet" className="btn-secondary px-4 py-2 text-sm">
-          Place a bet
-        </Link>
       </div>
 
-      <div className="space-y-3">
-        <FeatureCard
-          href="/shop"
-          title="Shop"
-          subtitle="Fake checkout, real dopamine."
-          accent="Simulated"
-        />
-        <FeatureCard
-          href="/food"
-          title="Food"
-          subtitle="Order in, watch the delivery, no delivery."
-          accent="Simulated"
-        />
-        <FeatureCard
-          href="/bet"
-          title="Bet"
-          subtitle="NFL & NBA odds with fake money only."
-          accent="Simulated"
-        />
-        <FeatureCard
-          href="/tracker"
-          title="Tracker"
-          subtitle="Log what you actually spent this week."
-          accent="Real"
-        />
+      {/* 2×2 simulator grid */}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <SimCard href="/shop"    emoji="🛍️" label="Shop"    desc="Fake checkout" />
+        <SimCard href="/food"    emoji="🍔" label="Food"    desc="Order in" />
+        <SimCard href="/bet"     emoji="🎰" label="Bet"     desc="Fake money only" />
+        <SimCard href="/tracker" emoji="📊" label="Tracker" desc="Real spending" real />
+      </div>
+
+      {/* Quick actions */}
+      <div className="card p-4">
+        <h2 className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
+          Quick actions
+        </h2>
+        <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-4">
+          <Link href="/shop"          className="quick-action">Browse products</Link>
+          <Link href="/food"          className="quick-action">Order food</Link>
+          <Link href="/bet"           className="quick-action">Place a bet</Link>
+          <Link href="/bet/history"   className="quick-action">Bet history</Link>
+        </div>
       </div>
     </div>
   );
 }
 
-function FeatureCard({
-  href,
-  title,
-  subtitle,
-  accent,
+function SimCard({
+  href, emoji, label, desc, real,
 }: {
-  href: string;
-  title: string;
-  subtitle: string;
-  accent: "Simulated" | "Real";
+  href: string; emoji: string; label: string; desc: string; real?: boolean;
 }) {
   return (
     <Link
       href={href}
-      className="card flex items-center justify-between gap-4 px-4 py-4 transition hover:shadow-cardHover active:scale-[0.995]"
+      className="group card-navy flex flex-col gap-3 p-4 transition-all duration-150 hover:scale-[1.02] hover:shadow-navyHover md:p-5"
     >
-      <div className="min-w-0">
+      <span className="text-[32px] leading-none">{emoji}</span>
+      <div>
         <div className="flex items-center gap-2">
-          <p className="text-[17px] font-semibold text-ink">{title}</p>
-          <span
-            className={
-              accent === "Simulated"
-                ? "pill"
-                : "inline-flex items-center rounded-full border border-brand/30 bg-brand-light px-3 py-1 text-xs font-medium text-brand"
-            }
-          >
-            {accent}
-          </span>
+          <p className="text-[16px] font-bold text-white">{label}</p>
+          {real && (
+            <span className="rounded-pill bg-brand px-2 py-0.5 text-[10px] font-bold text-navy">
+              REAL
+            </span>
+          )}
         </div>
-        <p className="mt-1 text-[14px] text-ink-muted">{subtitle}</p>
+        <p className="mt-0.5 text-[12px] text-white/50">{desc}</p>
       </div>
-      <span className="flex-none text-ink-muted" aria-hidden="true">
-        ›
+      <span className="mt-auto text-brand opacity-0 transition-opacity duration-150 group-hover:opacity-100 text-lg">
+        →
       </span>
     </Link>
   );
+}
+
+/* inline tailwind arbitrary value shorthand */
+declare module "react" {
+  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+    className?: string;
+  }
 }
