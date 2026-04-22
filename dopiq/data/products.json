@@ -1,0 +1,12 @@
+[
+  {
+    "id": "p-clothes-1",
+    "name": "Oversized Everyday Hoodie",
+    "description": "A buttery-soft heavyweight hoodie with a relaxed oversized fit, brushed interior, and a kangaroo pocket. Built for lazy Sundays, campus runs, and late-night takeout — somehow makes any outfit feel put together.",
+    "price": 48.99,
+    "category": "Clothes",
+    "rating": 4.7,
+    "reviewCount": 2841,
+    "imageUrl": "https://picsum.photos/seed/dopiq-hoodie/800/800"
+  }
+]
