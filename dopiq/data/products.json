@@ -8,5 +8,15 @@
     "rating": 4.7,
     "reviewCount": 2841,
     "imageUrl": "https://picsum.photos/seed/dopiq-hoodie/800/800"
+  },
+  {
+    "id": "p-electronics-1",
+    "name": "AeroBuds Pro Wireless Earbuds",
+    "description": "Active noise cancellation, 30-hour battery with the charging case, transparency mode, and USB-C fast charging. Pair in two seconds and forget they're in your ears — the kind of audio upgrade you notice on day one.",
+    "price": 129.0,
+    "category": "Electronics",
+    "rating": 4.6,
+    "reviewCount": 10423,
+    "imageUrl": "https://picsum.photos/seed/dopiq-earbuds/800/800"
   }
 ]
