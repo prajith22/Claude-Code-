@@ -87,7 +87,7 @@ export type SpendingCategory = "Shopping" | "Food" | "Gambling" | "Other";
 export type SpendingEntry = {
   id: string;
   amount: number;
-  category: SpendingCategory;
+  category: string;
   note: string | null;
   date: string;
 };
