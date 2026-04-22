@@ -26,18 +26,44 @@ export function TopNav() {
   const avatar = session?.user?.image;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-surface-border bg-white/95 backdrop-blur-sm safe-top">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-navy backdrop-blur-sm safe-top">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
-        <Link
-          href="/home"
-          className="flex items-center gap-2.5 text-[20px] font-bold tracking-tight text-navy"
-        >
-          <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-brand text-navy font-black text-[13px]">
-            D
-          </span>
-          Dopiq
+
+        {/* Logo */}
+        <Link href="/home" className="flex items-center gap-3">
+          <svg
+            width="44"
+            height="44"
+            viewBox="0 0 44 44"
+            fill="none"
+            aria-hidden="true"
+            className="flex-none"
+          >
+            <rect width="44" height="44" rx="10" fill="#00C853" />
+            <path
+              d="M10 10 L10 34 L18 34 Q30 34 30 22 Q30 10 18 10 Z"
+              fill="white"
+            />
+            <line
+              x1="10"
+              y1="22"
+              x2="27"
+              y2="22"
+              stroke="#00C853"
+              strokeWidth="2.5"
+            />
+          </svg>
+          <div className="flex flex-col leading-none">
+            <span className="text-[28px] font-extrabold leading-none text-white">
+              dopiq
+            </span>
+            <span className="mt-[3px] text-[11px] font-medium text-[#6B7280]">
+              spend smarter
+            </span>
+          </div>
         </Link>
 
+        {/* Desktop nav */}
         <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
           {TABS.map((t) => {
             const active = pathname === t.href || pathname.startsWith(t.href + "/");
@@ -48,8 +74,8 @@ export function TopNav() {
                 className={cn(
                   "rounded-pill px-4 py-1.5 text-[14px] font-semibold transition-all duration-150",
                   active
-                    ? "bg-navy text-white"
-                    : "text-ink-muted hover:bg-surface-alt hover:text-ink",
+                    ? "bg-white/15 text-white"
+                    : "text-white/60 hover:bg-white/10 hover:text-white",
                 )}
               >
                 {t.label}
@@ -58,11 +84,12 @@ export function TopNav() {
           })}
         </nav>
 
+        {/* User menu */}
         <div className="relative" ref={ref}>
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
-            className="flex items-center gap-2.5 rounded-pill border border-surface-border bg-surface-alt px-3 py-1.5 transition-all duration-150 hover:bg-surface-border"
+            className="flex items-center gap-2.5 rounded-pill border border-white/20 bg-white/10 px-3 py-1.5 transition-all duration-150 hover:bg-white/15"
           >
             {avatar ? (
               <Image
@@ -73,15 +100,26 @@ export function TopNav() {
                 className="rounded-full"
               />
             ) : (
-              <span className="inline-flex h-[26px] w-[26px] items-center justify-center rounded-full bg-navy text-[11px] font-bold text-white">
+              <span className="inline-flex h-[26px] w-[26px] items-center justify-center rounded-full bg-white/20 text-[11px] font-bold text-white">
                 {initials}
               </span>
             )}
-            <span className="hidden text-[13px] font-semibold text-ink sm:block">
+            <span className="hidden text-[13px] font-semibold text-white/80 sm:block">
               {name.split(" ")[0]}
             </span>
-            <svg viewBox="0 0 16 16" className="h-3 w-3 text-ink-muted" fill="currentColor" aria-hidden>
-              <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth={1.5} fill="none" strokeLinecap="round" />
+            <svg
+              viewBox="0 0 16 16"
+              className="h-3 w-3 text-white/40"
+              fill="currentColor"
+              aria-hidden
+            >
+              <path
+                d="M4 6l4 4 4-4"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                fill="none"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
 
@@ -91,7 +129,9 @@ export function TopNav() {
               <div className="absolute right-0 top-full z-50 mt-2 w-44 rounded-2xl border border-surface-border bg-white py-1 shadow-cardHover">
                 <div className="border-b border-surface-border px-4 py-2.5">
                   <p className="text-[13px] font-semibold text-ink">{name}</p>
-                  <p className="text-[11px] text-ink-muted">{session?.user?.email ?? "Guest"}</p>
+                  <p className="text-[11px] text-ink-muted">
+                    {session?.user?.email ?? "Guest"}
+                  </p>
                 </div>
                 <button
                   type="button"
