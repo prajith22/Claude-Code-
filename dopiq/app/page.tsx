@@ -21,8 +21,8 @@ export default async function LandingPage() {
         </h1>
         <p className="mt-5 text-[17px] leading-relaxed text-ink-muted">
           Simulate shopping, food delivery, and sports betting with fake money —
-          get the hit, keep the bank account. One separate tool helps track what
-          you actually spend in the real world.
+          spend it all, keep it all. One separate tool helps track what you
+          actually spend in the real world.
         </p>
         <div className="mt-10 space-y-3">
           <Link href="/signin" className="btn-primary w-full">
