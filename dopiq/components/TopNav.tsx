@@ -54,10 +54,10 @@ export function TopNav() {
             />
           </svg>
           <div className="flex flex-col leading-none">
-            <span className="text-[28px] font-extrabold leading-none text-white">
+            <span className="font-heading text-[28px] font-extrabold leading-none text-white">
               dopiq
             </span>
-            <span className="mt-[3px] text-[11px] font-medium text-[#6B7280]">
+            <span className="font-sans mt-[3px] text-[11px] font-medium text-[#6B7280]">
               spend smarter
             </span>
           </div>
