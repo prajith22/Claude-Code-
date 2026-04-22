@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import products from "@/data/products.json";
 import type { Product } from "@/types";
@@ -16,56 +15,61 @@ export default function ProductDetailPage({
   const reviews = buildFakeReviews(product);
 
   return (
-    <div className="space-y-6">
-      <div className="relative -mx-4 aspect-square overflow-hidden bg-surface-alt md:mx-0 md:rounded-2xl">
-        <Image
+    <div className="space-y-6 pb-4">
+      {/* Hero image — no Next/Image since Unsplash redirects */}
+      <div className="relative -mx-4 aspect-square overflow-hidden bg-surface-alt md:mx-0 md:rounded-card">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={product.imageUrl}
           alt={product.name}
-          fill
-          sizes="(max-width: 768px) 100vw, 40rem"
-          priority
-          className="object-cover"
+          className="h-full w-full object-cover"
         />
       </div>
 
+      {/* Info */}
       <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-ink-muted">
-          {product.category}
-        </p>
-        <h1 className="mt-1 text-[24px] font-semibold leading-tight tracking-tight">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="pill-navy">{product.category}</span>
+          <span className="pill-brand">No real money</span>
+        </div>
+        <h1 className="mt-3 text-[26px] font-bold leading-tight tracking-tight text-ink">
           {product.name}
         </h1>
-        <div className="mt-2 flex items-center gap-2 text-sm text-ink-muted">
-          <span>★ {product.rating.toFixed(1)}</span>
-          <span>·</span>
-          <span>{product.reviewCount.toLocaleString()} reviews</span>
+        <div className="mt-2 flex items-center gap-2 text-sm">
+          <span className="font-semibold text-brand">★ {product.rating.toFixed(1)}</span>
+          <span className="text-ink-muted">·</span>
+          <span className="text-ink-muted">
+            {product.reviewCount.toLocaleString()} reviews
+          </span>
         </div>
-        <p className="mt-4 text-[28px] font-semibold tracking-tight">
+        <p className="mt-3 text-[34px] font-bold tracking-tight text-navy money">
           {formatUSD(product.price)}
         </p>
       </div>
 
-      <p className="text-[15px] leading-relaxed text-ink">
-        {product.description}
-      </p>
+      <p className="text-[15px] leading-relaxed text-ink">{product.description}</p>
 
+      {/* Add to cart — sticky on mobile, inline on desktop */}
       <AddToCartControls product={product} />
 
-      <section aria-labelledby="reviews" className="pt-2">
-        <h2 id="reviews" className="text-[17px] font-semibold">
+      {/* Reviews */}
+      <section aria-labelledby="reviews-heading" className="pt-2">
+        <h2
+          id="reviews-heading"
+          className="mb-3 text-[17px] font-bold tracking-tight"
+        >
           What buyers say
         </h2>
-        <ul className="mt-3 space-y-3">
+        <ul className="space-y-3">
           {reviews.map((r) => (
-            <li
-              key={r.author}
-              className="card p-4"
-            >
-              <div className="flex items-center justify-between text-xs text-ink-muted">
-                <span className="font-medium text-ink">{r.author}</span>
-                <span>★ {r.rating}</span>
+            <li key={r.author} className="card p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[14px] font-semibold text-ink">{r.author}</span>
+                <span className="text-[12px] font-semibold text-brand">★ {r.rating}</span>
               </div>
-              <p className="mt-2 text-[14px] text-ink">{r.body}</p>
+              <p className="mt-2 text-[14px] leading-relaxed text-ink">
+                {r.body}
+              </p>
             </li>
           ))}
         </ul>

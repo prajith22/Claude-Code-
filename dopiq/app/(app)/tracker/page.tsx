@@ -21,11 +21,11 @@ export default async function TrackerPage() {
   }));
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 pb-4">
       <header className="pt-2">
-        <h1 className="text-[24px] font-semibold tracking-tight">Tracker</h1>
-        <p className="text-sm text-ink-muted">
-          Log what you actually spent. This is real money, not a simulation.
+        <h1 className="text-[26px] font-bold tracking-tight">Tracker</h1>
+        <p className="mt-0.5 text-sm text-ink-muted">
+          Real money. Real consequences. Log it honestly.
         </p>
       </header>
 

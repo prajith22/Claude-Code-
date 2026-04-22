@@ -20,50 +20,69 @@ export default async function FoodPage() {
       : all;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 pb-4">
       <header className="flex items-center justify-between pt-2">
         <div>
-          <h1 className="text-[24px] font-semibold tracking-tight">Food</h1>
-          <p className="text-sm text-ink-muted">
+          <h1 className="text-[26px] font-bold tracking-tight">Food</h1>
+          <p className="mt-0.5 text-sm text-ink-muted">
             {preferred.length > 0
-              ? `Favorites nearby: ${preferred.join(", ")}`
-              : "Order in, no one actually cooks."}
+              ? `Favorites: ${preferred.join(", ")}`
+              : "Order in. No one actually cooks."}
           </p>
         </div>
         <CartButton kind="food" />
       </header>
 
-      <ul className="space-y-3">
+      <ul className="space-y-4">
         {ordered.map((r) => (
           <li key={r.id}>
             <Link
               href={`/food/${r.id}`}
-              className="card flex gap-3 overflow-hidden p-3 transition hover:shadow-cardHover active:scale-[0.995]"
+              className="group card overflow-hidden transition-all duration-150 hover:shadow-cardHover active:scale-[0.995]"
             >
-              <div className="relative h-24 w-24 flex-none overflow-hidden rounded-xl bg-surface-alt">
+              {/* Large banner image */}
+              <div className="relative h-44 w-full overflow-hidden bg-surface-alt md:h-52">
                 <Image
                   src={r.imageUrl}
                   alt={r.name}
                   fill
-                  sizes="96px"
-                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 48rem"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-              </div>
-              <div className="flex min-w-0 flex-1 flex-col justify-between">
-                <div>
-                  <p className="line-clamp-1 text-[16px] font-semibold">
-                    {r.name}
-                  </p>
-                  <p className="text-xs text-ink-muted">{r.cuisine}</p>
-                </div>
-                <div className="flex items-center gap-3 text-xs text-ink-muted">
-                  <span className="inline-flex items-center gap-1 text-ink">
-                    <span aria-hidden>★</span> {r.rating.toFixed(1)}
+                {/* Open Now badge */}
+                <span className="absolute left-3 top-3 flex items-center gap-1.5 rounded-pill bg-navy/80 px-3 py-1.5 backdrop-blur-sm">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-brand" />
                   </span>
-                  <span>·</span>
-                  <span>{r.deliveryTime}</span>
-                  <span>·</span>
-                  <span>{formatUSD(r.deliveryFee)} delivery</span>
+                  <span className="text-[11px] font-bold text-white">Open Now</span>
+                </span>
+              </div>
+
+              {/* Info */}
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[18px] font-bold text-ink leading-tight">
+                      {r.name}
+                    </p>
+                    <p className="mt-0.5 text-[13px] text-ink-muted">{r.cuisine}</p>
+                  </div>
+                  <span className="flex-none rounded-pill border border-surface-border px-3 py-1 text-[12px] font-semibold text-ink-muted">
+                    {r.deliveryTime}
+                  </span>
+                </div>
+
+                <div className="mt-3 flex items-center gap-3 text-[13px]">
+                  <span className="flex items-center gap-1 font-semibold text-brand">
+                    ★ {r.rating.toFixed(1)}
+                  </span>
+                  <span className="text-ink-muted">·</span>
+                  <span className="text-ink-muted">
+                    {formatUSD(r.deliveryFee)} delivery
+                  </span>
+                  <span className="text-ink-muted">·</span>
+                  <span className="text-ink-muted">Simulated order</span>
                 </div>
               </div>
             </Link>

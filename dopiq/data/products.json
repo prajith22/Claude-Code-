@@ -7,7 +7,7 @@
     "category": "Clothes",
     "rating": 4.7,
     "reviewCount": 2841,
-    "imageUrl": "https://picsum.photos/seed/dopiq-hoodie/800/800"
+    "imageUrl": "https://source.unsplash.com/400x400/?hoodie,clothing"
   },
   {
     "id": "p-electronics-1",
@@ -17,7 +17,7 @@
     "category": "Electronics",
     "rating": 4.6,
     "reviewCount": 10423,
-    "imageUrl": "https://picsum.photos/seed/dopiq-earbuds/800/800"
+    "imageUrl": "https://source.unsplash.com/400x400/?earbuds,electronics"
   },
   {
     "id": "p-home-1",
@@ -27,7 +27,7 @@
     "category": "Home Goods",
     "rating": 4.8,
     "reviewCount": 1912,
-    "imageUrl": "https://picsum.photos/seed/dopiq-throw/800/800"
+    "imageUrl": "https://source.unsplash.com/400x400/?home-decor,blanket"
   },
   {
     "id": "p-beauty-1",
@@ -37,7 +37,7 @@
     "category": "Beauty",
     "rating": 4.5,
     "reviewCount": 6077,
-    "imageUrl": "https://picsum.photos/seed/dopiq-serum/800/800"
+    "imageUrl": "https://source.unsplash.com/400x400/?skincare,serum"
   },
   {
     "id": "p-sports-1",
@@ -47,6 +47,6 @@
     "category": "Sports",
     "rating": 4.7,
     "reviewCount": 3489,
-    "imageUrl": "https://picsum.photos/seed/dopiq-sneakers/800/800"
+    "imageUrl": "https://source.unsplash.com/400x400/?sneakers,running"
   }
 ]
