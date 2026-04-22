@@ -1,0 +1,34 @@
+[
+  {
+    "id": "r-pizza-1",
+    "name": "Slice Society",
+    "cuisine": "Pizza",
+    "rating": 4.7,
+    "deliveryTime": "20-35 min",
+    "deliveryFee": 1.99,
+    "imageUrl": "https://picsum.photos/seed/dopiq-slice-society/800/600",
+    "menu": [
+      {
+        "id": "r-pizza-1-m1",
+        "name": "Classic Margherita",
+        "description": "Hand-stretched dough, crushed San Marzano tomatoes, fresh mozzarella, basil, olive oil.",
+        "price": 16.5,
+        "category": "Pizzas"
+      },
+      {
+        "id": "r-pizza-1-m2",
+        "name": "Spicy Pepperoni",
+        "description": "Cup-and-char pepperoni with hot honey drizzle on a crispy-bottom crust.",
+        "price": 19.0,
+        "category": "Pizzas"
+      },
+      {
+        "id": "r-pizza-1-m3",
+        "name": "Garlic Parm Knots",
+        "description": "Six warm knots tossed in garlic butter, parmesan, and parsley. Comes with marinara.",
+        "price": 7.25,
+        "category": "Sides"
+      }
+    ]
+  }
+]
