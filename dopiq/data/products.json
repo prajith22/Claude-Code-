@@ -38,5 +38,15 @@
     "rating": 4.5,
     "reviewCount": 6077,
     "imageUrl": "https://picsum.photos/seed/dopiq-serum/800/800"
+  },
+  {
+    "id": "p-sports-1",
+    "name": "Trailrunner Performance Sneakers",
+    "description": "A breathable mesh upper with a responsive cushioned midsole and all-terrain outsole. Light enough for a morning run, stable enough for a weekend hike. Breaks in on day one.",
+    "price": 112.0,
+    "category": "Sports",
+    "rating": 4.7,
+    "reviewCount": 3489,
+    "imageUrl": "https://picsum.photos/seed/dopiq-sneakers/800/800"
   }
 ]
