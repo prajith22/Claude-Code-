@@ -28,5 +28,15 @@
     "rating": 4.8,
     "reviewCount": 1912,
     "imageUrl": "https://picsum.photos/seed/dopiq-throw/800/800"
+  },
+  {
+    "id": "p-beauty-1",
+    "name": "Glow Routine Hydrating Serum",
+    "description": "A lightweight hyaluronic acid + niacinamide serum that plumps, hydrates, and gives skin that 'did you just get back from vacation?' glow. Fragrance-free, non-comedogenic, layers under anything.",
+    "price": 28.0,
+    "category": "Beauty",
+    "rating": 4.5,
+    "reviewCount": 6077,
+    "imageUrl": "https://picsum.photos/seed/dopiq-serum/800/800"
   }
 ]
