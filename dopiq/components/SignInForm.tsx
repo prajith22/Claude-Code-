@@ -9,29 +9,8 @@ const isDev = process.env.NODE_ENV === "development";
 export function SignInForm() {
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/home";
+  const dbError = params.get("error");
   const [loading, setLoading] = useState(false);
-  const [guestLoading, setGuestLoading] = useState(false);
-  const [guestError, setGuestError] = useState<string | null>(null);
-
-  async function signInAsGuest() {
-    setGuestLoading(true);
-    setGuestError(null);
-    try {
-      const res = await fetch("/api/dev/guest-login", { method: "POST" });
-      if (!res.ok) {
-        let msg = "Guest login failed.";
-        try {
-          const data = await res.json();
-          if (data?.error) msg = data.error;
-        } catch {}
-        throw new Error(msg);
-      }
-      window.location.href = callbackUrl;
-    } catch (e) {
-      setGuestError(e instanceof Error ? e.message : "Something went wrong.");
-      setGuestLoading(false);
-    }
-  }
 
   return (
     <div className="flex-1 flex flex-col justify-center">
@@ -44,7 +23,7 @@ export function SignInForm() {
 
       <button
         type="button"
-        disabled={loading || guestLoading}
+        disabled={loading}
         onClick={() => {
           setLoading(true);
           signIn("google", { callbackUrl });
@@ -64,17 +43,15 @@ export function SignInForm() {
             </span>
             <div className="h-px flex-1 bg-surface-border" />
           </div>
-          <button
-            type="button"
-            disabled={loading || guestLoading}
-            onClick={signInAsGuest}
+          <a
+            href="/api/dev/guest-login"
             className="btn-secondary w-full"
           >
-            {guestLoading ? "Signing in…" : "Continue as Guest"}
-          </button>
-          {guestError && (
+            Continue as Guest
+          </a>
+          {dbError && (
             <p className="mt-2 rounded-xl bg-red-50 px-4 py-2 text-center text-xs text-red-700">
-              {guestError}
+              {dbError}
             </p>
           )}
           <p className="mt-2 text-center text-[11px] text-ink-muted">
