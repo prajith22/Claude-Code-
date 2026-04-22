@@ -24,6 +24,9 @@ export async function middleware(req: NextRequest) {
 
   if (!token) {
     if (PUBLIC_PATHS.includes(pathname)) return NextResponse.next();
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const signin = req.nextUrl.clone();
     signin.pathname = "/signin";
     signin.searchParams.set("callbackUrl", pathname);
