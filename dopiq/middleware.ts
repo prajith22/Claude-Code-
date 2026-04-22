@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
 import type { NextRequest } from "next/server";
 
 const PUBLIC_PATHS = ["/", "/signin"];
@@ -14,16 +13,22 @@ const ALWAYS_ALLOW_PREFIXES = [
   "/robots.txt",
 ];
 
-export async function middleware(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (ALWAYS_ALLOW_PREFIXES.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
   }
 
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  // authOptions uses strategy:"database" — the cookie holds a plain session ID,
+  // not a JWT. getToken() only decodes JWTs so it always returns null here.
+  // We check cookie presence instead; the real auth validation (DB lookup) happens
+  // in getServerSession() inside each page's requireUser() server-side guard.
+  const sessionToken =
+    req.cookies.get("next-auth.session-token")?.value ??
+    req.cookies.get("__Secure-next-auth.session-token")?.value;
 
-  if (!token) {
+  if (!sessionToken) {
     if (PUBLIC_PATHS.includes(pathname)) return NextResponse.next();
     if (pathname.startsWith("/api/")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
