@@ -1,0 +1,110 @@
+[
+  {
+    "id": "g-nfl-1",
+    "sport": "NFL",
+    "homeTeam": "Coastal Harbor Waves",
+    "awayTeam": "Mountain Ridge Elk",
+    "startsAt": "2025-09-14T20:20:00.000Z",
+    "odds": {
+      "moneylineHome": -145,
+      "moneylineAway": 125,
+      "spreadHome": -2.5,
+      "spreadHomeOdds": -110,
+      "spreadAway": 2.5,
+      "spreadAwayOdds": -110,
+      "total": 47.5,
+      "overOdds": -110,
+      "underOdds": -110
+    }
+  },
+  {
+    "id": "g-nfl-2",
+    "sport": "NFL",
+    "homeTeam": "Prairie State Raiders",
+    "awayTeam": "Golden Gate Foghorns",
+    "startsAt": "2025-09-15T17:00:00.000Z",
+    "odds": {
+      "moneylineHome": 105,
+      "moneylineAway": -125,
+      "spreadHome": 1.5,
+      "spreadHomeOdds": -110,
+      "spreadAway": -1.5,
+      "spreadAwayOdds": -110,
+      "total": 44.5,
+      "overOdds": -115,
+      "underOdds": -105
+    }
+  },
+  {
+    "id": "g-nfl-3",
+    "sport": "NFL",
+    "homeTeam": "Redwood City Timber",
+    "awayTeam": "Lone Star Riders",
+    "startsAt": "2025-09-16T00:15:00.000Z",
+    "odds": {
+      "moneylineHome": -220,
+      "moneylineAway": 185,
+      "spreadHome": -5.5,
+      "spreadHomeOdds": -110,
+      "spreadAway": 5.5,
+      "spreadAwayOdds": -110,
+      "total": 49.5,
+      "overOdds": -110,
+      "underOdds": -110
+    }
+  },
+  {
+    "id": "g-nba-1",
+    "sport": "NBA",
+    "homeTeam": "Midtown Metros",
+    "awayTeam": "Lakefront Current",
+    "startsAt": "2025-01-22T00:00:00.000Z",
+    "odds": {
+      "moneylineHome": -180,
+      "moneylineAway": 155,
+      "spreadHome": -4.5,
+      "spreadHomeOdds": -110,
+      "spreadAway": 4.5,
+      "spreadAwayOdds": -110,
+      "total": 224.5,
+      "overOdds": -110,
+      "underOdds": -110
+    }
+  },
+  {
+    "id": "g-nba-2",
+    "sport": "NBA",
+    "homeTeam": "Silver Peak Summit",
+    "awayTeam": "Capitol City Senators",
+    "startsAt": "2025-01-22T02:30:00.000Z",
+    "odds": {
+      "moneylineHome": 115,
+      "moneylineAway": -135,
+      "spreadHome": 2.5,
+      "spreadHomeOdds": -110,
+      "spreadAway": -2.5,
+      "spreadAwayOdds": -110,
+      "total": 229.5,
+      "overOdds": -108,
+      "underOdds": -112
+    }
+  },
+  {
+    "id": "g-nba-3",
+    "sport": "NBA",
+    "homeTeam": "Harbor District Anchors",
+    "awayTeam": "Desert Valley Jackrabbits",
+    "startsAt": "2025-01-23T01:00:00.000Z",
+    "odds": {
+      "moneylineHome": -110,
+      "moneylineAway": -110,
+      "spreadHome": -1.0,
+      "spreadHomeOdds": -110,
+      "spreadAway": 1.0,
+      "spreadAwayOdds": -110,
+      "total": 218.5,
+      "overOdds": -110,
+      "underOdds": -110
+    }
+  }
+]
