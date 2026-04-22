@@ -4,10 +4,29 @@ import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
+const isDev = process.env.NODE_ENV === "development";
+
 export function SignInForm() {
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/home";
   const [loading, setLoading] = useState(false);
+  const [guestLoading, setGuestLoading] = useState(false);
+  const [guestError, setGuestError] = useState<string | null>(null);
+
+  async function signInAsGuest() {
+    setGuestLoading(true);
+    setGuestError(null);
+    try {
+      const res = await fetch("/api/dev/guest-login", { method: "POST" });
+      if (!res.ok) {
+        throw new Error((await res.json()).error ?? "Guest login failed");
+      }
+      window.location.href = callbackUrl;
+    } catch (e) {
+      setGuestError(e instanceof Error ? e.message : "Something went wrong.");
+      setGuestLoading(false);
+    }
+  }
 
   return (
     <div className="flex-1 flex flex-col justify-center">
@@ -20,7 +39,7 @@ export function SignInForm() {
 
       <button
         type="button"
-        disabled={loading}
+        disabled={loading || guestLoading}
         onClick={() => {
           setLoading(true);
           signIn("google", { callbackUrl });
@@ -30,6 +49,34 @@ export function SignInForm() {
         <GoogleMark />
         <span>{loading ? "Opening Google…" : "Continue with Google"}</span>
       </button>
+
+      {isDev && (
+        <div className="mt-8">
+          <div className="relative mb-4 flex items-center">
+            <div className="h-px flex-1 bg-surface-border" />
+            <span className="mx-3 text-[11px] font-semibold uppercase tracking-wide text-ink-muted">
+              Dev only
+            </span>
+            <div className="h-px flex-1 bg-surface-border" />
+          </div>
+          <button
+            type="button"
+            disabled={loading || guestLoading}
+            onClick={signInAsGuest}
+            className="btn-secondary w-full"
+          >
+            {guestLoading ? "Signing in…" : "Continue as Guest"}
+          </button>
+          {guestError && (
+            <p className="mt-2 rounded-xl bg-red-50 px-4 py-2 text-center text-xs text-red-700">
+              {guestError}
+            </p>
+          )}
+          <p className="mt-2 text-center text-[11px] text-ink-muted">
+            Local-only bypass. Unavailable in production.
+          </p>
+        </div>
+      )}
 
       <p className="mt-6 text-center text-xs text-ink-muted">
         By continuing you agree to the terms and privacy policy.

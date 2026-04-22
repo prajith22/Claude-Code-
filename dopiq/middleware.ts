@@ -6,6 +6,7 @@ const PUBLIC_PATHS = ["/", "/signin"];
 const ALWAYS_ALLOW_PREFIXES = [
   "/api/auth",
   "/api/stripe/webhook",
+  "/api/dev/",
   "/_next",
   "/favicon.ico",
   "/icon",
