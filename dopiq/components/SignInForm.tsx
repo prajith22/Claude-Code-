@@ -19,7 +19,12 @@ export function SignInForm() {
     try {
       const res = await fetch("/api/dev/guest-login", { method: "POST" });
       if (!res.ok) {
-        throw new Error((await res.json()).error ?? "Guest login failed");
+        let msg = "Guest login failed.";
+        try {
+          const data = await res.json();
+          if (data?.error) msg = data.error;
+        } catch {}
+        throw new Error(msg);
       }
       window.location.href = callbackUrl;
     } catch (e) {

@@ -14,6 +14,19 @@ export async function POST() {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
+  try {
+    return await createGuestSession();
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Unknown error";
+    console.error("[guest-login]", message);
+    return NextResponse.json(
+      { error: `DB error — have you run 'npx prisma db push'? (${message})` },
+      { status: 500 },
+    );
+  }
+}
+
+async function createGuestSession() {
   const user = await prisma.user.upsert({
     where: { email: GUEST_EMAIL },
     update: {
