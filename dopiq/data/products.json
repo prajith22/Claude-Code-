@@ -18,5 +18,15 @@
     "rating": 4.6,
     "reviewCount": 10423,
     "imageUrl": "https://picsum.photos/seed/dopiq-earbuds/800/800"
+  },
+  {
+    "id": "p-home-1",
+    "name": "Stonewashed Linen Throw Blanket",
+    "description": "A cotton-linen blend throw in a soft oat tone, stonewashed for that perfectly lived-in feel. Drapes over a couch like it was styled by a magazine, feels like it's been yours for years.",
+    "price": 64.5,
+    "category": "Home Goods",
+    "rating": 4.8,
+    "reviewCount": 1912,
+    "imageUrl": "https://picsum.photos/seed/dopiq-throw/800/800"
   }
 ]
