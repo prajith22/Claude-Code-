@@ -24,7 +24,7 @@ export default async function HomePage() {
               Hey, {firstName}.
             </h1>
             <p className="mt-1 text-[15px] text-white/60">
-              Get the hit. Keep the bank account.
+              Spend it all. Keep it all.
             </p>
           </div>
           {showTrial && (
@@ -51,19 +51,6 @@ export default async function HomePage() {
         <SimCard href="/food"    emoji="🍔" label="Food"    desc="Order in" />
         <SimCard href="/bet"     emoji="🎰" label="Bet"     desc="Fake money only" />
         <SimCard href="/tracker" emoji="📊" label="Tracker" desc="Real spending" real />
-      </div>
-
-      {/* Quick actions */}
-      <div className="card p-4">
-        <h2 className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
-          Quick actions
-        </h2>
-        <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-4">
-          <Link href="/shop"          className="quick-action">Browse products</Link>
-          <Link href="/food"          className="quick-action">Order food</Link>
-          <Link href="/bet"           className="quick-action">Place a bet</Link>
-          <Link href="/bet/history"   className="quick-action">Bet history</Link>
-        </div>
       </div>
     </div>
   );

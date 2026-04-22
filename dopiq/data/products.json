@@ -7,7 +7,7 @@
     "category": "Clothes",
     "rating": 4.7,
     "reviewCount": 2841,
-    "imageUrl": "https://source.unsplash.com/400x400/?hoodie,clothing"
+    "imageUrl": "https://picsum.photos/seed/oversized-everyday-hoodie/400/400"
   },
   {
     "id": "p-electronics-1",
@@ -17,7 +17,7 @@
     "category": "Electronics",
     "rating": 4.6,
     "reviewCount": 10423,
-    "imageUrl": "https://source.unsplash.com/400x400/?earbuds,electronics"
+    "imageUrl": "https://picsum.photos/seed/aerobuds-pro-wireless-earbuds/400/400"
   },
   {
     "id": "p-home-1",
@@ -27,7 +27,7 @@
     "category": "Home Goods",
     "rating": 4.8,
     "reviewCount": 1912,
-    "imageUrl": "https://source.unsplash.com/400x400/?home-decor,blanket"
+    "imageUrl": "https://picsum.photos/seed/stonewashed-linen-throw-blanket/400/400"
   },
   {
     "id": "p-beauty-1",
@@ -37,7 +37,7 @@
     "category": "Beauty",
     "rating": 4.5,
     "reviewCount": 6077,
-    "imageUrl": "https://source.unsplash.com/400x400/?skincare,serum"
+    "imageUrl": "https://picsum.photos/seed/glow-routine-hydrating-serum/400/400"
   },
   {
     "id": "p-sports-1",
@@ -47,6 +47,6 @@
     "category": "Sports",
     "rating": 4.7,
     "reviewCount": 3489,
-    "imageUrl": "https://source.unsplash.com/400x400/?sneakers,running"
+    "imageUrl": "https://picsum.photos/seed/trailrunner-performance-sneakers/400/400"
   }
 ]
