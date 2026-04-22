@@ -30,5 +30,976 @@
         "category": "Sides"
       }
     ]
+  },
+  {
+    "id": "r-golden-arch",
+    "name": "Golden Arch Burgers",
+    "cuisine": "Burgers",
+    "rating": 4.3,
+    "deliveryTime": "15-25 min",
+    "deliveryFee": 1.99,
+    "imageUrl": "https://picsum.photos/seed/golden-arch/400/200",
+    "menu": [
+      {
+        "id": "r-golden-arch-m1",
+        "name": "Classic Smash Burger",
+        "description": "Thin smashed beef patty, American cheese, pickles, and house sauce on a toasted bun.",
+        "price": 6.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-golden-arch-m2",
+        "name": "Double Stack Deluxe",
+        "description": "Two smashed patties stacked with double cheese, lettuce, tomato, and onion.",
+        "price": 8.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-golden-arch-m3",
+        "name": "Crispy Chicken Sandwich",
+        "description": "Buttermilk-brined chicken fillet with mayo and crisp pickles on a brioche bun.",
+        "price": 7.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-golden-arch-m4",
+        "name": "Spicy McFire Burger",
+        "description": "Beef patty with pepper jack, jalapeños, and fiery chipotle aioli.",
+        "price": 7.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-golden-arch-m5",
+        "name": "Filet-O-Fish Sandwich",
+        "description": "Crispy battered fish with melty American cheese and tartar sauce on a steamed bun.",
+        "price": 6.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-golden-arch-m6",
+        "name": "Golden Fries",
+        "description": "Iconic thin-cut fries, salted and served hot.",
+        "price": 2.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-golden-arch-m7",
+        "name": "Mozzarella Dippers",
+        "description": "Breaded mozzarella sticks served with warm marinara.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-golden-arch-m8",
+        "name": "Chicken Nuggets 6pc",
+        "description": "Six crispy chicken nuggets with your choice of dipping sauce.",
+        "price": 4.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-golden-arch-m9",
+        "name": "Vanilla Milkshake",
+        "description": "Thick and creamy vanilla shake topped with whipped cream.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-golden-arch-m10",
+        "name": "Strawberry Milkshake",
+        "description": "Real strawberry shake blended thick with whipped cream on top.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-golden-arch-m11",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-golden-arch-m12",
+        "name": "Hot Fudge Sundae",
+        "description": "Soft-serve vanilla ice cream drowned in warm hot fudge.",
+        "price": 2.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-golden-arch-m13",
+        "name": "Apple Pie Pocket",
+        "description": "Crispy fried hand pie stuffed with warm cinnamon apple filling.",
+        "price": 1.49,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-canyon-burrito",
+    "name": "Canyon Burrito Co.",
+    "cuisine": "Mexican",
+    "rating": 4.5,
+    "deliveryTime": "20-30 min",
+    "deliveryFee": 0.99,
+    "imageUrl": "https://picsum.photos/seed/canyon-burrito/400/200",
+    "menu": [
+      {
+        "id": "r-canyon-burrito-m1",
+        "name": "Steak Burrito Bowl",
+        "description": "Marinated grilled steak over cilantro lime rice with black beans, salsa, and guac.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-canyon-burrito-m2",
+        "name": "Chicken Burrito",
+        "description": "Flame-grilled chicken wrapped with rice, beans, salsa, cheese, and sour cream.",
+        "price": 10.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-canyon-burrito-m3",
+        "name": "Carnitas Tacos 3pc",
+        "description": "Three soft corn tacos with slow-braised carnitas, onion, and cilantro.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-canyon-burrito-m4",
+        "name": "Veggie Burrito",
+        "description": "Fajita peppers, rice, beans, fresh pico, cheese, and guac in a warm flour tortilla.",
+        "price": 9.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-canyon-burrito-m5",
+        "name": "Sofritas Bowl",
+        "description": "Braised tofu sofritas over rice and beans with salsa and lettuce.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-canyon-burrito-m6",
+        "name": "Chips & Guacamole",
+        "description": "Warm tortilla chips with a generous side of house-made guac.",
+        "price": 3.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-canyon-burrito-m7",
+        "name": "Queso Dip & Chips",
+        "description": "Creamy white cheese queso dip served with crispy tortilla chips.",
+        "price": 2.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-canyon-burrito-m8",
+        "name": "Horchata",
+        "description": "Sweet rice milk drink with a hint of cinnamon, served over ice.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-canyon-burrito-m9",
+        "name": "Lemonade",
+        "description": "Fresh-squeezed lemonade with a splash of agave.",
+        "price": 2.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-canyon-burrito-m10",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-canyon-burrito-m11",
+        "name": "Churro Bites",
+        "description": "Warm cinnamon-sugar churros with a chocolate dipping sauce.",
+        "price": 2.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-southern-cluck",
+    "name": "Southern Cluck",
+    "cuisine": "Chicken",
+    "rating": 4.6,
+    "deliveryTime": "20-35 min",
+    "deliveryFee": 1.49,
+    "imageUrl": "https://picsum.photos/seed/southern-cluck/400/200",
+    "menu": [
+      {
+        "id": "r-southern-cluck-m1",
+        "name": "Original Crispy Chicken Sandwich",
+        "description": "Hand-breaded chicken breast with crisp pickles on a toasted butter bun.",
+        "price": 8.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-southern-cluck-m2",
+        "name": "Spicy Deluxe Sandwich",
+        "description": "Cayenne-seasoned crispy chicken with pepper jack, lettuce, and tomato.",
+        "price": 8.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-southern-cluck-m3",
+        "name": "Grilled Chicken Club",
+        "description": "Grilled chicken with bacon, Colby Jack, lettuce, and tomato on a multigrain bun.",
+        "price": 9.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-southern-cluck-m4",
+        "name": "Chicken Tenders 3pc",
+        "description": "Three juicy hand-breaded tenders with your choice of dipping sauce.",
+        "price": 8.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-southern-cluck-m5",
+        "name": "Nuggets 8pc",
+        "description": "Eight bite-sized crispy chicken nuggets with a sauce of your choice.",
+        "price": 6.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-southern-cluck-m6",
+        "name": "Waffle Fries",
+        "description": "Crispy seasoned waffle-cut fries, the perfect side for any meal.",
+        "price": 3.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-southern-cluck-m7",
+        "name": "Mac & Cheese Bites",
+        "description": "Golden fried mac and cheese bites served with ranch.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-southern-cluck-m8",
+        "name": "Peach Lemonade",
+        "description": "Homestyle lemonade with real peach puree over ice.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-southern-cluck-m9",
+        "name": "Sweet Tea",
+        "description": "Freshly brewed Southern-style sweet tea, served chilled.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-southern-cluck-m10",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-southern-cluck-m11",
+        "name": "Chocolate Chunk Cookie",
+        "description": "Warm, chewy cookie loaded with semi-sweet chocolate chunks.",
+        "price": 1.49,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-southern-cluck-m12",
+        "name": "Vanilla Milkshake",
+        "description": "Hand-spun thick vanilla shake with whipped cream on top.",
+        "price": 3.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-taco-mirage",
+    "name": "Taco Mirage",
+    "cuisine": "Mexican",
+    "rating": 4.1,
+    "deliveryTime": "15-25 min",
+    "deliveryFee": 0.99,
+    "imageUrl": "https://picsum.photos/seed/taco-mirage/400/200",
+    "menu": [
+      {
+        "id": "r-taco-mirage-m1",
+        "name": "Crunchy Beef Taco",
+        "description": "Seasoned ground beef in a crunchy corn shell with lettuce and cheddar.",
+        "price": 2.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-taco-mirage-m2",
+        "name": "Chicken Quesadilla",
+        "description": "Grilled chicken with a three-cheese blend melted in a warm flour tortilla.",
+        "price": 5.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-taco-mirage-m3",
+        "name": "Loaded Nachos",
+        "description": "Tortilla chips loaded with seasoned beef, nacho cheese, jalapeños, and sour cream.",
+        "price": 6.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-taco-mirage-m4",
+        "name": "Burrito Supreme",
+        "description": "Beef, beans, rice, cheese, sour cream, and pico rolled in a big flour tortilla.",
+        "price": 7.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-taco-mirage-m5",
+        "name": "Cheesy Gordita Crunch",
+        "description": "A crunchy taco wrapped in a soft gordita flatbread with three-cheese blend.",
+        "price": 5.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-taco-mirage-m6",
+        "name": "Chips & Nacho Cheese",
+        "description": "Warm tortilla chips served with a cup of melty nacho cheese dip.",
+        "price": 2.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-taco-mirage-m7",
+        "name": "Cinnamon Twists",
+        "description": "Crispy puffed twists dusted in cinnamon and sugar.",
+        "price": 1.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-taco-mirage-m8",
+        "name": "Mountain Freeze Slushie",
+        "description": "Icy citrus slushie in a tall cup, the kind that turns your tongue neon.",
+        "price": 2.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-taco-mirage-m9",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-taco-mirage-m10",
+        "name": "Churro Sticks",
+        "description": "Crispy churro sticks dusted with cinnamon sugar and a caramel dip.",
+        "price": 2.49,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-taco-mirage-m11",
+        "name": "Choco Taco",
+        "description": "Waffle cone taco filled with vanilla ice cream and chocolate coating.",
+        "price": 2.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-sub-station",
+    "name": "The Sub Station",
+    "cuisine": "Sandwiches",
+    "rating": 4.0,
+    "deliveryTime": "15-25 min",
+    "deliveryFee": 1.99,
+    "imageUrl": "https://picsum.photos/seed/sub-station/400/200",
+    "menu": [
+      {
+        "id": "r-sub-station-m1",
+        "name": "Italian BMT Sub",
+        "description": "Salami, pepperoni, and ham piled with cheese, lettuce, tomato, and Italian dressing.",
+        "price": 8.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sub-station-m2",
+        "name": "Turkey Breast Club",
+        "description": "Sliced turkey, bacon, Swiss, lettuce, tomato, and mayo on toasted bread.",
+        "price": 8.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sub-station-m3",
+        "name": "Spicy Italian Sub",
+        "description": "Pepperoni and spicy salami with provolone, banana peppers, and oil and vinegar.",
+        "price": 8.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sub-station-m4",
+        "name": "Meatball Marinara",
+        "description": "Tender meatballs in marinara sauce with melted mozzarella on a hoagie roll.",
+        "price": 7.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sub-station-m5",
+        "name": "Tuna Melt Sub",
+        "description": "House tuna salad with American cheese grilled golden on Italian bread.",
+        "price": 8.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sub-station-m6",
+        "name": "Soup of the Day",
+        "description": "A rotating bowl of hearty soup, made fresh every morning.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sub-station-m7",
+        "name": "Side Salad",
+        "description": "Mixed greens, tomato, cucumber, and shredded cheese with choice of dressing.",
+        "price": 4.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sub-station-m8",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sub-station-m9",
+        "name": "Bottled Water",
+        "description": "Refreshing bottled spring water, served chilled.",
+        "price": 1.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sub-station-m10",
+        "name": "Iced Tea",
+        "description": "Freshly brewed unsweetened iced tea with a lemon wedge.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sub-station-m11",
+        "name": "Chocolate Chip Cookie",
+        "description": "Soft-baked cookie packed with melty chocolate chips.",
+        "price": 1.29,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-sub-station-m12",
+        "name": "Double Chocolate Cookie",
+        "description": "Fudgy chocolate cookie studded with dark chocolate chunks.",
+        "price": 1.29,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-slice-district",
+    "name": "Slice District",
+    "cuisine": "Pizza",
+    "rating": 4.2,
+    "deliveryTime": "25-40 min",
+    "deliveryFee": 2.99,
+    "imageUrl": "https://picsum.photos/seed/slice-district/400/200",
+    "menu": [
+      {
+        "id": "r-slice-district-m1",
+        "name": "Pepperoni Pizza 12in",
+        "description": "A 12-inch classic loaded with pepperoni and melted mozzarella.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-slice-district-m2",
+        "name": "Margherita Pizza 12in",
+        "description": "San Marzano tomato sauce, fresh mozzarella, and basil on a thin crust.",
+        "price": 11.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-slice-district-m3",
+        "name": "BBQ Chicken Pizza 12in",
+        "description": "Grilled chicken, red onion, and mozzarella over smoky BBQ sauce.",
+        "price": 13.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-slice-district-m4",
+        "name": "Meat Lovers Pizza 12in",
+        "description": "Pepperoni, sausage, bacon, and ham piled on a 12-inch pie.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-slice-district-m5",
+        "name": "Veggie Supreme Pizza 12in",
+        "description": "Peppers, mushrooms, onions, olives, and tomato on a crispy thin crust.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-slice-district-m6",
+        "name": "Garlic Bread Twists",
+        "description": "Buttery garlic bread twists sprinkled with parmesan and parsley.",
+        "price": 4.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-slice-district-m7",
+        "name": "Buffalo Wings 8pc",
+        "description": "Eight crispy wings tossed in tangy buffalo sauce with ranch on the side.",
+        "price": 8.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-slice-district-m8",
+        "name": "Stuffed Cheesy Bread",
+        "description": "Warm breadsticks stuffed with mozzarella and cheddar, served with marinara.",
+        "price": 5.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-slice-district-m9",
+        "name": "2-Liter Soda",
+        "description": "A two-liter bottle of soda, perfect for sharing with a pie.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-slice-district-m10",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-slice-district-m11",
+        "name": "Lava Chocolate Cake",
+        "description": "Warm chocolate cake with a molten chocolate center, served with vanilla.",
+        "price": 4.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-slice-district-m12",
+        "name": "Cinnamon Bread Twists",
+        "description": "Soft bread twists rolled in cinnamon sugar with a vanilla icing dip.",
+        "price": 3.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-dragon-wok",
+    "name": "Dragon Wok Express",
+    "cuisine": "Chinese",
+    "rating": 4.4,
+    "deliveryTime": "20-35 min",
+    "deliveryFee": 1.49,
+    "imageUrl": "https://picsum.photos/seed/dragon-wok/400/200",
+    "menu": [
+      {
+        "id": "r-dragon-wok-m1",
+        "name": "Orange Chicken Bowl",
+        "description": "Crispy chicken tossed in sweet-tangy orange glaze over steamed white rice.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-dragon-wok-m2",
+        "name": "Beijing Beef Bowl",
+        "description": "Crispy beef and bell peppers in a sweet-and-tangy sauce over rice.",
+        "price": 11.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-dragon-wok-m3",
+        "name": "Kung Pao Shrimp Bowl",
+        "description": "Wok-fired shrimp with peanuts, chilies, and veggies in a spicy kung pao sauce.",
+        "price": 12.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-dragon-wok-m4",
+        "name": "Honey Walnut Shrimp",
+        "description": "Lightly battered shrimp in a creamy honey sauce with candied walnuts.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-dragon-wok-m5",
+        "name": "Broccoli Beef Bowl",
+        "description": "Tender beef and fresh broccoli in a classic ginger soy sauce over rice.",
+        "price": 10.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-dragon-wok-m6",
+        "name": "Egg Rolls 2pc",
+        "description": "Two crispy golden egg rolls stuffed with cabbage and pork.",
+        "price": 3.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-dragon-wok-m7",
+        "name": "Cream Cheese Rangoons 3pc",
+        "description": "Three crispy wontons filled with sweet cream cheese, served with sweet chili.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-dragon-wok-m8",
+        "name": "Chow Mein Side",
+        "description": "Stir-fried lo mein noodles with cabbage, onions, and celery.",
+        "price": 3.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-dragon-wok-m9",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-dragon-wok-m10",
+        "name": "Hot Green Tea",
+        "description": "A steaming pot of authentic jasmine green tea.",
+        "price": 1.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-dragon-wok-m11",
+        "name": "Lychee Lemonade",
+        "description": "Fresh lemonade with sweet lychee, served over crushed ice.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-dragon-wok-m12",
+        "name": "Fortune Cookie",
+        "description": "A crisp vanilla cookie with a surprise fortune tucked inside.",
+        "price": 0.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-dragon-wok-m13",
+        "name": "Mango Pudding Cup",
+        "description": "Silky chilled mango pudding topped with a splash of cream.",
+        "price": 2.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-five-brothers",
+    "name": "Five Brothers Burgers",
+    "cuisine": "Burgers",
+    "rating": 4.7,
+    "deliveryTime": "20-30 min",
+    "deliveryFee": 1.99,
+    "imageUrl": "https://picsum.photos/seed/five-brothers/400/200",
+    "menu": [
+      {
+        "id": "r-five-brothers-m1",
+        "name": "Five Brothers Style Burger",
+        "description": "Classic all-beef burger with American cheese, lettuce, tomato, and the works.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-five-brothers-m2",
+        "name": "Bacon Cheeseburger",
+        "description": "Fresh beef patty with crispy bacon, melted cheese, and pickles on a toasted bun.",
+        "price": 10.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-five-brothers-m3",
+        "name": "Little Brother Burger",
+        "description": "A single-patty cheeseburger with all your favorite fresh toppings.",
+        "price": 7.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-five-brothers-m4",
+        "name": "Veggie Burger",
+        "description": "A grilled veggie patty with lettuce, tomato, onion, and house sauce.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-five-brothers-m5",
+        "name": "Grilled Cheese Sandwich",
+        "description": "Three melted cheeses on buttery grilled sourdough, simple and perfect.",
+        "price": 6.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-five-brothers-m6",
+        "name": "Cajun Style Fries",
+        "description": "Fresh-cut fries tossed in a zesty Cajun seasoning blend.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-five-brothers-m7",
+        "name": "Regular Fries",
+        "description": "Classic fresh-cut fries cooked in peanut oil until golden.",
+        "price": 2.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-five-brothers-m8",
+        "name": "Cheese Dog",
+        "description": "All-beef hot dog topped with melted cheese in a toasted bun.",
+        "price": 4.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-five-brothers-m9",
+        "name": "Hand-Spun Vanilla Milkshake",
+        "description": "Thick hand-spun vanilla ice cream shake with whipped cream on top.",
+        "price": 5.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-five-brothers-m10",
+        "name": "Hand-Spun Chocolate Milkshake",
+        "description": "Rich hand-spun chocolate shake made with real ice cream.",
+        "price": 5.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-five-brothers-m11",
+        "name": "Hand-Spun Strawberry Milkshake",
+        "description": "Thick strawberry shake with real strawberry chunks blended in.",
+        "price": 5.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-five-brothers-m12",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      }
+    ]
+  },
+  {
+    "id": "r-shack-shake",
+    "name": "Shack & Shake",
+    "cuisine": "Burgers",
+    "rating": 4.6,
+    "deliveryTime": "20-30 min",
+    "deliveryFee": 2.49,
+    "imageUrl": "https://picsum.photos/seed/shack-shake/400/200",
+    "menu": [
+      {
+        "id": "r-shack-shake-m1",
+        "name": "ShackBurger",
+        "description": "A cheeseburger with lettuce, tomato, and ShackSauce on a toasted potato bun.",
+        "price": 9.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-shack-shake-m2",
+        "name": "SmokeShack Burger",
+        "description": "Cheeseburger topped with applewood bacon, cherry peppers, and ShackSauce.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-shack-shake-m3",
+        "name": "Mushroom Burger",
+        "description": "A crisp-fried portobello stuffed with melted muenster and cheddar, on a bun.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-shack-shake-m4",
+        "name": "Crispy Chicken Shack",
+        "description": "Hand-breaded all-natural chicken breast with lettuce, pickles, and buttermilk herb mayo.",
+        "price": 9.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-shack-shake-m5",
+        "name": "Flat-Top Dog",
+        "description": "A griddled all-beef hot dog split and caramelized on the flat-top.",
+        "price": 4.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-shack-shake-m6",
+        "name": "Cheese Fries",
+        "description": "Crinkle-cut fries smothered in cheddar and American cheese sauce.",
+        "price": 4.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-shack-shake-m7",
+        "name": "Crinkle Cut Fries",
+        "description": "Crispy crinkle-cut fries cooked to golden perfection.",
+        "price": 3.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-shack-shake-m8",
+        "name": "Chicken Bites",
+        "description": "Bite-size pieces of hand-breaded chicken with a dipping sauce.",
+        "price": 6.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-shack-shake-m9",
+        "name": "Concrete Vanilla Custard Shake",
+        "description": "Dense frozen vanilla custard blended with mix-ins into a thick concrete.",
+        "price": 6.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-shack-shake-m10",
+        "name": "Concrete Chocolate Custard Shake",
+        "description": "Rich chocolate custard blended into a thick, spoon-required concrete.",
+        "price": 6.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-shack-shake-m11",
+        "name": "Lemonade",
+        "description": "House-made fresh-squeezed lemonade served over ice.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-shack-shake-m12",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-shack-shake-m13",
+        "name": "Vanilla Custard Cup",
+        "description": "A cup of fresh-made frozen vanilla custard, cold and creamy.",
+        "price": 3.49,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-shack-shake-m14",
+        "name": "Chocolate Custard Cup",
+        "description": "Rich chocolate frozen custard made fresh daily.",
+        "price": 3.49,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-wing-republic",
+    "name": "Wing Republic",
+    "cuisine": "Wings",
+    "rating": 4.3,
+    "deliveryTime": "25-35 min",
+    "deliveryFee": 1.99,
+    "imageUrl": "https://picsum.photos/seed/wing-republic/400/200",
+    "menu": [
+      {
+        "id": "r-wing-republic-m1",
+        "name": "Classic Wings 8pc",
+        "description": "Eight bone-in wings tossed in your choice of signature sauce.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-wing-republic-m2",
+        "name": "Boneless Wings 8pc",
+        "description": "Eight juicy boneless wings hand-breaded and tossed in your pick of sauce.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-wing-republic-m3",
+        "name": "Wing Combo Platter 16pc",
+        "description": "Sixteen wings split across two signature sauces with a side of celery.",
+        "price": 21.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-wing-republic-m4",
+        "name": "Chicken Tenders 4pc",
+        "description": "Four crispy hand-breaded tenders with your choice of dipping sauce.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-wing-republic-m5",
+        "name": "Wing Street Tacos 3pc",
+        "description": "Three soft tortillas loaded with boneless wings, slaw, and ranch drizzle.",
+        "price": 8.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-wing-republic-m6",
+        "name": "Loaded Fries",
+        "description": "Fries topped with queso, bacon, scallions, and a drizzle of ranch.",
+        "price": 4.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-wing-republic-m7",
+        "name": "Fried Pickles",
+        "description": "Crispy battered pickle chips with a side of ranch dressing.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-wing-republic-m8",
+        "name": "Onion Rings",
+        "description": "Thick-cut sweet onion rings battered and fried to a golden crunch.",
+        "price": 3.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-wing-republic-m9",
+        "name": "Ranch Water",
+        "description": "Sparkling lime-forward ranch water served over ice.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-wing-republic-m10",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-wing-republic-m11",
+        "name": "Bottled Lemonade",
+        "description": "Chilled bottled lemonade, crisp and not too sweet.",
+        "price": 2.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-wing-republic-m12",
+        "name": "Churro Bites",
+        "description": "Warm cinnamon sugar churro bites with a chocolate dipping sauce.",
+        "price": 2.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-wing-republic-m13",
+        "name": "Brownie Bites",
+        "description": "Fudgy chocolate brownie bites served warm with a dusting of powdered sugar.",
+        "price": 3.49,
+        "category": "Desserts"
+      }
+    ]
   }
 ]

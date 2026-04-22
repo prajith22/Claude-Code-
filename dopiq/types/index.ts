@@ -22,7 +22,10 @@ export type Cuisine =
   | "Mexican"
   | "Burgers"
   | "Sushi"
-  | "Italian";
+  | "Italian"
+  | "Chicken"
+  | "Sandwiches"
+  | "Wings";
 
 export type OrderSize = "Just me" | "Me + 1" | "Group order";
 
