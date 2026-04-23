@@ -18,6 +18,7 @@ const SPORT_KEYS: Record<Sport, string> = {
 };
 
 const CACHE_TTL_MS = 3 * 60 * 60 * 1000; // 3 hours
+const LOG = "[odds]";
 
 type OddsApiOutcome = {
   name: string;
@@ -47,22 +48,94 @@ type OddsApiGame = {
   bookmakers: OddsApiBookmaker[];
 };
 
-export async function getOddsForSport(sport: Sport): Promise<Game[]> {
-  const cached = await readCache(sport);
+// Rich per-sport result: the parsed games, plus diagnostics that the
+// API route surfaces back to the client for the empty/error state.
+export type SportResult = {
+  sport: Sport;
+  games: Game[];
+  source: "cache-fresh" | "cache-stale-fallback" | "api" | "empty";
+  rawCount: number; // games returned by upstream before transform
+  transformedOut: number; // games dropped by the transform
+  error: string | null;
+  cacheAgeMs: number | null;
+};
 
-  if (cached && Date.now() - cached.fetchedAt.getTime() < CACHE_TTL_MS) {
-    return transformApiResponse(cached.data, sport);
+export async function getSportResult(
+  sport: Sport,
+  forceRefresh = false,
+): Promise<SportResult> {
+  const result: SportResult = {
+    sport,
+    games: [],
+    source: "empty",
+    rawCount: 0,
+    transformedOut: 0,
+    error: null,
+    cacheAgeMs: null,
+  };
+
+  const cached = forceRefresh ? null : await readCache(sport);
+  if (cached) {
+    const age = Date.now() - cached.fetchedAt.getTime();
+    result.cacheAgeMs = age;
+    if (age < CACHE_TTL_MS) {
+      const transformed = transformApiResponse(cached.data, sport);
+      result.games = transformed.games;
+      result.rawCount = cached.data.length;
+      result.transformedOut = transformed.dropped;
+      result.source = "cache-fresh";
+      console.log(
+        `${LOG} ${sport} cache-fresh age=${(age / 60000).toFixed(1)}m raw=${cached.data.length} kept=${result.games.length} dropped=${result.transformedOut}`,
+      );
+      return result;
+    }
+    console.log(
+      `${LOG} ${sport} cache-stale age=${(age / 60000).toFixed(1)}m; refetching`,
+    );
+  } else if (forceRefresh) {
+    console.log(`${LOG} ${sport} forceRefresh — bypassing cache`);
+  } else {
+    console.log(`${LOG} ${sport} cache-miss`);
   }
 
-  const fresh = await fetchFromApi(sport);
-  if (fresh) {
-    await writeCache(sport, fresh);
-    return transformApiResponse(fresh, sport);
+  const fetched = await fetchFromApi(sport);
+  if (fetched.ok) {
+    await writeCache(sport, fetched.data);
+    const transformed = transformApiResponse(fetched.data, sport);
+    result.games = transformed.games;
+    result.rawCount = fetched.data.length;
+    result.transformedOut = transformed.dropped;
+    result.source = "api";
+    console.log(
+      `${LOG} ${sport} api raw=${fetched.data.length} kept=${result.games.length} dropped=${result.transformedOut}`,
+    );
+    return result;
   }
 
-  // Fetch failed — fall back to stale cache if we have any
-  if (cached) return transformApiResponse(cached.data, sport);
-  return [];
+  // Fetch failed — fall back to stale cache if we have it
+  result.error = fetched.error;
+  if (cached) {
+    const transformed = transformApiResponse(cached.data, sport);
+    result.games = transformed.games;
+    result.rawCount = cached.data.length;
+    result.transformedOut = transformed.dropped;
+    result.source = "cache-stale-fallback";
+    console.log(
+      `${LOG} ${sport} fell back to stale cache (error: ${fetched.error})`,
+    );
+    return result;
+  }
+
+  console.log(`${LOG} ${sport} empty (error: ${fetched.error})`);
+  return result;
+}
+
+export async function getOddsForSport(
+  sport: Sport,
+  forceRefresh = false,
+): Promise<Game[]> {
+  const { games } = await getSportResult(sport, forceRefresh);
+  return games;
 }
 
 export type AllOdds = {
@@ -78,21 +151,61 @@ export type AllOdds = {
   golf: Game[];
 };
 
-export async function getAllOdds(): Promise<AllOdds> {
+export type AllSportResults = Record<keyof AllOdds, SportResult>;
+
+export async function getAllOdds(forceRefresh = false): Promise<AllOdds> {
+  const results = await getAllSportResults(forceRefresh);
+  return {
+    nfl: results.nfl.games,
+    nba: results.nba.games,
+    mlb: results.mlb.games,
+    nhl: results.nhl.games,
+    ncaaf: results.ncaaf.games,
+    ncaab: results.ncaab.games,
+    mls: results.mls.games,
+    boxing: results.boxing.games,
+    ufc: results.ufc.games,
+    golf: results.golf.games,
+  };
+}
+
+export async function getAllSportResults(
+  forceRefresh = false,
+): Promise<AllSportResults> {
   const [nfl, nba, mlb, nhl, ncaaf, ncaab, mls, boxing, ufc, golf] =
     await Promise.all([
-      getOddsForSport("NFL"),
-      getOddsForSport("NBA"),
-      getOddsForSport("MLB"),
-      getOddsForSport("NHL"),
-      getOddsForSport("NCAAF"),
-      getOddsForSport("NCAAB"),
-      getOddsForSport("MLS"),
-      getOddsForSport("Boxing"),
-      getOddsForSport("UFC"),
-      getOddsForSport("Golf"),
+      getSportResult("NFL", forceRefresh),
+      getSportResult("NBA", forceRefresh),
+      getSportResult("MLB", forceRefresh),
+      getSportResult("NHL", forceRefresh),
+      getSportResult("NCAAF", forceRefresh),
+      getSportResult("NCAAB", forceRefresh),
+      getSportResult("MLS", forceRefresh),
+      getSportResult("Boxing", forceRefresh),
+      getSportResult("UFC", forceRefresh),
+      getSportResult("Golf", forceRefresh),
     ]);
   return { nfl, nba, mlb, nhl, ncaaf, ncaab, mls, boxing, ufc, golf };
+}
+
+/** Delete the cache row for one sport. No-op if it doesn't exist. */
+export async function clearCache(sport: Sport): Promise<void> {
+  try {
+    await prisma.oddsCache.delete({ where: { sport } });
+    console.log(`${LOG} ${sport} cache cleared`);
+  } catch {
+    // row didn't exist — fine
+  }
+}
+
+/** Delete every cache row. */
+export async function clearAllCache(): Promise<void> {
+  try {
+    const { count } = await prisma.oddsCache.deleteMany({});
+    console.log(`${LOG} cleared all cache rows (${count})`);
+  } catch {
+    // table might not exist
+  }
 }
 
 async function readCache(
@@ -101,12 +214,18 @@ async function readCache(
   try {
     const row = await prisma.oddsCache.findUnique({ where: { sport } });
     if (!row) return null;
+    // Defensive: if someone wrote a non-array, treat as a miss.
+    const data = row.data as unknown;
+    if (!Array.isArray(data)) {
+      console.log(`${LOG} ${sport} cache row has non-array data; ignoring`);
+      return null;
+    }
     return {
-      data: row.data as unknown as OddsApiGame[],
+      data: data as OddsApiGame[],
       fetchedAt: row.fetchedAt,
     };
-  } catch {
-    // Table might not exist yet (pre-migration) — treat as miss.
+  } catch (e) {
+    console.log(`${LOG} ${sport} cache read error: ${errMsg(e)}`);
     return null;
   }
 }
@@ -125,14 +244,21 @@ async function writeCache(sport: Sport, data: OddsApiGame[]): Promise<void> {
         fetchedAt: new Date(),
       },
     });
-  } catch {
-    // Swallow — if the table isn't ready, we just re-fetch next call.
+  } catch (e) {
+    console.log(`${LOG} ${sport} cache write error: ${errMsg(e)}`);
   }
 }
 
-async function fetchFromApi(sport: Sport): Promise<OddsApiGame[] | null> {
+type FetchResult =
+  | { ok: true; data: OddsApiGame[] }
+  | { ok: false; error: string };
+
+async function fetchFromApi(sport: Sport): Promise<FetchResult> {
   const apiKey = process.env.ODDS_API_KEY;
-  if (!apiKey) return null;
+  console.log(`${LOG} ${sport} ODDS_API_KEY present: ${!!apiKey}`);
+  if (!apiKey) {
+    return { ok: false, error: "ODDS_API_KEY missing on the server" };
+  }
 
   const sportKey = SPORT_KEYS[sport];
   const url = new URL(
@@ -143,23 +269,49 @@ async function fetchFromApi(sport: Sport): Promise<OddsApiGame[] | null> {
   url.searchParams.set("markets", "h2h,spreads,totals");
   url.searchParams.set("oddsFormat", "american");
 
+  // Log the URL with the key redacted
+  const redacted = url.toString().replace(apiKey, "***");
+  console.log(`${LOG} ${sport} fetching ${redacted}`);
+
   try {
     const res = await fetch(url.toString(), { cache: "no-store" });
-    if (!res.ok) return null;
-    const data = (await res.json()) as OddsApiGame[];
-    return Array.isArray(data) ? data : null;
-  } catch {
-    return null;
+    console.log(`${LOG} ${sport} upstream status ${res.status}`);
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      console.log(
+        `${LOG} ${sport} upstream error body: ${body.slice(0, 400)}`,
+      );
+      return {
+        ok: false,
+        error: `Upstream ${res.status}: ${body.slice(0, 160) || res.statusText}`,
+      };
+    }
+    const data = (await res.json()) as unknown;
+    if (!Array.isArray(data)) {
+      console.log(
+        `${LOG} ${sport} upstream response not an array: ${JSON.stringify(data).slice(0, 200)}`,
+      );
+      return { ok: false, error: "Upstream returned a non-array payload" };
+    }
+    return { ok: true, data: data as OddsApiGame[] };
+  } catch (e) {
+    console.log(`${LOG} ${sport} fetch threw: ${errMsg(e)}`);
+    return { ok: false, error: `Network error: ${errMsg(e)}` };
   }
 }
 
-function transformApiResponse(data: OddsApiGame[], sport: Sport): Game[] {
+function transformApiResponse(
+  data: OddsApiGame[],
+  sport: Sport,
+): { games: Game[]; dropped: number } {
   const games: Game[] = [];
+  let dropped = 0;
   for (const g of data) {
     const transformed = pickBestBookmaker(g, sport);
     if (transformed) games.push(transformed);
+    else dropped++;
   }
-  return games;
+  return { games, dropped };
 }
 
 function pickBestBookmaker(g: OddsApiGame, sport: Sport): Game | null {
@@ -222,4 +374,8 @@ function pickBestBookmaker(g: OddsApiGame, sport: Sport): Game | null {
     startsAt: g.commence_time,
     odds,
   };
+}
+
+function errMsg(e: unknown): string {
+  return e instanceof Error ? e.message : String(e);
 }
