@@ -1,9 +1,7 @@
 import { notFound } from "next/navigation";
 import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
-import { prisma } from "@/lib/prisma";
 import { getAllOdds } from "@/lib/odds";
 import { BetSlip } from "@/components/BetSlip";
-import { formatUSD } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -12,13 +10,23 @@ export default async function GameDetailPage({
 }: {
   params: { id: string };
 }) {
-  const user = await requireOnboardedSubscribedUser();
-  const { nfl, nba } = await getAllOdds();
-  const g = [...nfl, ...nba].find((x) => x.id === params.id);
+  await requireOnboardedSubscribedUser();
+  const { nfl, nba, mlb, nhl, ncaaf, ncaab, mls, boxing, ufc, golf } =
+    await getAllOdds();
+  const all = [
+    ...nfl,
+    ...nba,
+    ...mlb,
+    ...nhl,
+    ...ncaaf,
+    ...ncaab,
+    ...mls,
+    ...boxing,
+    ...ufc,
+    ...golf,
+  ];
+  const g = all.find((x) => x.id === params.id);
   if (!g) notFound();
-  const wallet = await prisma.fakeWallet.findUnique({
-    where: { userId: user.id },
-  });
 
   return (
     <div className="space-y-5 pb-4">
@@ -64,15 +72,7 @@ export default async function GameDetailPage({
         </div>
       </div>
 
-      {/* Wallet balance */}
-      <div className="card flex items-center justify-between px-5 py-4">
-        <span className="text-[13px] font-semibold text-ink-muted">Fake wallet</span>
-        <span className="text-[20px] font-bold text-navy money">
-          {formatUSD(wallet?.balance ?? 0)}
-        </span>
-      </div>
-
-      <BetSlip game={g} walletBalance={wallet?.balance ?? 0} />
+      <BetSlip game={g} />
     </div>
   );
 }

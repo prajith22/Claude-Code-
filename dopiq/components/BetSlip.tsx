@@ -38,18 +38,11 @@ type ResolvedBet = {
   payout: number;
   stakeLost: number;
   label: string;
-  newBalance: number;
 };
 
 const SPORTS_WITH_PROPS = new Set<Game["sport"]>(["NFL", "NBA", "MLB", "NHL"]);
 
-export function BetSlip({
-  game,
-  walletBalance,
-}: {
-  game: Game;
-  walletBalance: number;
-}) {
+export function BetSlip({ game }: { game: Game }) {
   const router = useRouter();
   const [selection, setSelection] = useState<Selection | null>(null);
   const [amount, setAmount] = useState<string>("10");
@@ -86,8 +79,7 @@ export function BetSlip({
   const potential = selection ? americanOddsToPayout(stake, selection.odds) : 0;
   const totalReturn = stake + potential;
 
-  const canPlace =
-    !!selection && stake > 0 && stake <= walletBalance && !placing;
+  const canPlace = !!selection && stake > 0 && !placing;
 
   async function place() {
     if (!selection) return;
@@ -109,7 +101,6 @@ export function BetSlip({
         payout: data.payout ?? 0,
         stakeLost: data.stakeLost ?? 0,
         label: selection.label,
-        newBalance: data.newBalance ?? walletBalance,
       });
       router.refresh();
     } catch (e) {
@@ -291,11 +282,6 @@ export function BetSlip({
             {error && (
               <p className="mt-3 rounded-xl bg-red-900/40 px-4 py-2 text-sm text-red-300">
                 {error}
-              </p>
-            )}
-            {stake > walletBalance && (
-              <p className="mt-3 rounded-xl bg-red-900/40 px-4 py-2 text-sm text-red-300">
-                Not enough fake funds. Balance: {formatUSD(walletBalance)}
               </p>
             )}
 
@@ -550,17 +536,10 @@ function ResultView({
       </p>
       <p className="mt-2 text-[14px] text-white/70">{resolved.label}</p>
 
-      <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-[13px]">
-        <span className="text-white/50">New balance</span>
-        <span className="font-bold text-white money">
-          {formatUSD(resolved.newBalance)}
-        </span>
-      </div>
-
       <button
         type="button"
         onClick={onPlayAgain}
-        className="btn-primary mt-5 w-full"
+        className="btn-primary mt-6 w-full"
       >
         Place another bet
       </button>

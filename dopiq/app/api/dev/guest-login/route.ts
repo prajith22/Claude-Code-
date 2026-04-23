@@ -38,12 +38,6 @@ export async function GET(req: Request) {
       },
     });
 
-    await prisma.fakeWallet.upsert({
-      where: { userId: user.id },
-      update: {},
-      create: { userId: user.id, balance: 1000 },
-    });
-
     const sessionToken = randomUUID();
     const expires = new Date(Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000);
     await prisma.session.create({
