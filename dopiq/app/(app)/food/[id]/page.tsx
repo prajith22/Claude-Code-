@@ -4,7 +4,7 @@ import restaurants from "@/data/restaurants.json";
 import type { Restaurant } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import { AddMenuItemButton } from "@/components/AddMenuItemButton";
-import { CartButton } from "@/components/CartButton";
+import { RestaurantCheckoutBar } from "@/components/RestaurantCheckoutBar";
 
 export default function RestaurantPage({
   params,
@@ -23,7 +23,7 @@ export default function RestaurantPage({
   );
 
   return (
-    <div className="space-y-6 pb-4">
+    <div className="space-y-6 pb-28">
       {/* Hero banner */}
       <div className="relative -mx-4 h-52 overflow-hidden bg-surface-alt md:mx-0 md:rounded-card">
         <Image
@@ -44,12 +44,9 @@ export default function RestaurantPage({
         </div>
       </div>
 
-      {/* Cart button */}
-      <div className="flex items-center justify-between">
-        <div>
-          <span className="pill-navy">Open Now</span>
-        </div>
-        <CartButton kind="food" />
+      {/* Status badge */}
+      <div>
+        <span className="pill-navy">Open Now</span>
       </div>
 
       {/* Menu sections */}
@@ -81,6 +78,9 @@ export default function RestaurantPage({
           </ul>
         </section>
       ))}
+
+      {/* Sticky checkout bar — only visible when cart has items */}
+      <RestaurantCheckoutBar />
     </div>
   );
 }
