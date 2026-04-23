@@ -448,5 +448,105 @@
     "rating": 4.3,
     "reviewCount": 4567,
     "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-10",
+    "name": "Pleated Wide Leg Trousers",
+    "description": "High-waist pleated trousers in a flowy drapey fabric with deep side pockets and an elastic back waistband. Dresses up a tee, dresses down a blazer.",
+    "price": 62.99,
+    "category": "Clothes",
+    "rating": 4.5,
+    "reviewCount": 2876,
+    "imageUrl": "https://images.unsplash.com/photo-1624378702527-ad1f59b0b24f?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-11",
+    "name": "Cropped Puffer Vest",
+    "description": "A lightweight quilted puffer vest with a cropped silhouette, a two-way front zip, and two hand pockets. Core warmth without the sleeves, shoulder season MVP.",
+    "price": 54.99,
+    "category": "Clothes",
+    "rating": 4.4,
+    "reviewCount": 3123,
+    "imageUrl": "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-10",
+    "name": "Digital Drawing Tablet",
+    "description": "A pressure-sensitive drawing tablet with 8,192 levels, a battery-free stylus, and six replacement nibs. Works with Photoshop, Procreate, and pretty much everything.",
+    "price": 69.99,
+    "category": "Electronics",
+    "rating": 4.7,
+    "reviewCount": 5432,
+    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-11",
+    "name": "Portable Power Bank 20000mAh",
+    "description": "A slim 20,000mAh power bank with dual USB-A, USB-C fast charge, and a 4-dot LED battery indicator. Enough juice for a laptop top-up and about five phone charges.",
+    "price": 44.99,
+    "category": "Electronics",
+    "rating": 4.6,
+    "reviewCount": 14321,
+    "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-10",
+    "name": "Countertop Compost Bin",
+    "description": "A brushed stainless-steel countertop compost bin with a charcoal filter in the lid to trap odors. Holds about a week of scraps, looks intentional on the counter.",
+    "price": 27.99,
+    "category": "Home Goods",
+    "rating": 4.5,
+    "reviewCount": 3456,
+    "imageUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-11",
+    "name": "Himalayan Salt Lamp",
+    "description": "A natural pink Himalayan salt lamp on a solid wood base with a dimmer-switch cord. Puts out a warm amber glow that instantly makes a room feel like an evening.",
+    "price": 32.99,
+    "category": "Home Goods",
+    "rating": 4.6,
+    "reviewCount": 8234,
+    "imageUrl": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-10",
+    "name": "Peptide Eye Cream",
+    "description": "A firming eye cream with a tripeptide complex plus caffeine to reduce morning puffiness and visibly soften dark circles. Absorbs quickly, sits well under makeup.",
+    "price": 36.0,
+    "category": "Beauty",
+    "rating": 4.5,
+    "reviewCount": 4123,
+    "imageUrl": "https://images.unsplash.com/photo-1620916297397-a4a5e3b3e4c2?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-11",
+    "name": "Dry Shampoo Spray",
+    "description": "An invisible dry shampoo spray that absorbs oil at the roots and adds volume without leaving any white cast or powdery residue. Smells clean, not chemical.",
+    "price": 14.99,
+    "category": "Beauty",
+    "rating": 4.3,
+    "reviewCount": 9876,
+    "imageUrl": "https://images.unsplash.com/photo-1522337360826-9af7b5349e91?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-10",
+    "name": "Swim Goggles Pro",
+    "description": "Anti-fog, UV-protective swim goggles with an adjustable nose bridge, soft silicone seal, and a wide peripheral view. Stays on through flip turns without leaking.",
+    "price": 24.99,
+    "category": "Sports",
+    "rating": 4.6,
+    "reviewCount": 6234,
+    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-11",
+    "name": "Hiking Poles Collapsible",
+    "description": "A pair of lightweight aluminum trekking poles that collapse down to fit in a daypack, with natural cork grips and adjustable wrist straps. Saves your knees on the way down.",
+    "price": 49.99,
+    "category": "Sports",
+    "rating": 4.5,
+    "reviewCount": 3987,
+    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
   }
 ]
