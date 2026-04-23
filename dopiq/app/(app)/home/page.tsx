@@ -1,18 +1,26 @@
 import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
+import { recordLogin } from "@/lib/streak";
 import { DailySpinWheel } from "@/components/DailySpinWheel";
 import { SimCard } from "@/components/SimCard";
+import { StreakBadge } from "@/components/StreakBadge";
 
 export default async function HomePage() {
-  await requireOnboardedSubscribedUser();
+  const user = await requireOnboardedSubscribedUser();
+  // Idempotent streak update. Runs once per home render; same-day visits are
+  // free (no write). Source of truth for the initial badge paint.
+  const { currentStreak } = await recordLogin(user.id);
 
   return (
     <div className="space-y-8 pb-4 pt-4 md:space-y-10">
-      {/* Hero tagline */}
-      <h1 className="text-[44px] font-extrabold leading-[1.05] tracking-tight text-ink md:text-[64px]">
-        The urge is real.
-        <br />
-        The charge isn&rsquo;t.
-      </h1>
+      {/* Hero */}
+      <div className="flex items-start justify-between gap-4">
+        <h1 className="flex-1 text-[44px] font-extrabold leading-[1.05] tracking-tight text-ink md:text-[64px]">
+          The urge is real.
+          <br />
+          The charge isn&rsquo;t.
+        </h1>
+        <StreakBadge streak={currentStreak} />
+      </div>
 
       {/* Daily spin wheel */}
       <DailySpinWheel />
