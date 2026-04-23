@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import type { Product, ProductCategory } from "@/types";
 import { useCartStore } from "@/lib/cart-store";
 import { formatUSD, cn } from "@/lib/utils";
+import { cardHover, cardHoverTransition } from "@/lib/card-hover";
 
 const VIBE_LABELS: Record<ProductCategory, string> = {
   Clothes: "Fits dropping today",
@@ -208,7 +209,11 @@ function ProductCard({
   const saved = wishlist.includes(product.id);
 
   return (
-    <div className={cn("group card relative overflow-hidden", className)}>
+    <motion.div
+      className={cn("group card relative overflow-hidden", className)}
+      whileHover={cardHover}
+      transition={cardHoverTransition}
+    >
       <Link href={`/shop/${product.id}`} className="block">
         <div className="relative aspect-square overflow-hidden bg-surface-alt">
           <Image
@@ -249,7 +254,7 @@ function ProductCard({
           </p>
         </div>
       </Link>
-    </div>
+    </motion.div>
   );
 }
 

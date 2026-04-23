@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Product } from "@/types";
 import { formatUSD } from "@/lib/utils";
+import { cardHover } from "@/lib/card-hover";
 
 type Deal = {
   id: string;
@@ -142,6 +143,7 @@ function DealCard({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
+      whileHover={cardHover}
       transition={{ duration: 0.3 }}
       className="card relative overflow-hidden"
     >
