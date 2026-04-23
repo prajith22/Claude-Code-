@@ -20,6 +20,14 @@ type Option = {
   selection: Selection;
 };
 
+type ResolvedBet = {
+  result: "win" | "loss";
+  payout: number;
+  stakeLost: number;
+  label: string;
+  newBalance: number;
+};
+
 export function BetSlip({
   game,
   walletBalance,
@@ -32,6 +40,7 @@ export function BetSlip({
   const [amount, setAmount] = useState<string>("10");
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resolved, setResolved] = useState<ResolvedBet | null>(null);
 
   const stake = Number.parseFloat(amount || "0") || 0;
   const potential = selection ? americanOddsToPayout(stake, selection.odds) : 0;
@@ -45,26 +54,35 @@ export function BetSlip({
     setPlacing(true);
     setError(null);
     try {
-      const res = await fetch("/api/bets", {
+      const res = await fetch("/api/bet/simulate", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          gameId: game.id,
-          gameLabel: `${game.awayTeam} @ ${game.homeTeam}`,
-          betType: selection.type,
           amount: stake,
           odds: selection.odds,
-          selectionLabel: selection.label,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Couldn't place bet.");
-      router.push("/bet/history");
+      setResolved({
+        result: data.result,
+        payout: data.payout ?? 0,
+        stakeLost: data.stakeLost ?? 0,
+        label: selection.label,
+        newBalance: data.newBalance ?? walletBalance,
+      });
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
+    } finally {
       setPlacing(false);
     }
+  }
+
+  function reset() {
+    setResolved(null);
+    setSelection(null);
+    setError(null);
   }
 
   const moneyline: Option[] = [
@@ -133,6 +151,11 @@ export function BetSlip({
       },
     },
   ];
+
+  // Result view replaces the entire slip once the bet has resolved.
+  if (resolved) {
+    return <ResultView resolved={resolved} onPlayAgain={reset} />;
+  }
 
   return (
     <div className="space-y-5">
@@ -295,4 +318,49 @@ function MarketRow({
 
 function signed(n: number) {
   return n > 0 ? `+${n}` : `${n}`;
+}
+
+function ResultView({
+  resolved,
+  onPlayAgain,
+}: {
+  resolved: ResolvedBet;
+  onPlayAgain: () => void;
+}) {
+  const won = resolved.result === "win";
+  return (
+    <div className="card-navy p-6 text-center">
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40">
+        {won ? "Winner" : "Didn't hit"}
+      </p>
+      <p
+        className={cn(
+          "mt-3 text-[46px] font-extrabold tracking-tight money",
+          won ? "text-brand" : "text-red-400",
+        )}
+      >
+        {won ? "+" : "−"}
+        {formatUSD(won ? resolved.payout : resolved.stakeLost)}
+      </p>
+      <p className="mt-2 text-[14px] text-white/70">{resolved.label}</p>
+
+      <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-[13px]">
+        <span className="text-white/50">New balance</span>
+        <span className="font-bold text-white money">
+          {formatUSD(resolved.newBalance)}
+        </span>
+      </div>
+
+      <button
+        type="button"
+        onClick={onPlayAgain}
+        className="btn-primary mt-5 w-full"
+      >
+        Place another bet
+      </button>
+      <p className="mt-2 text-[11px] text-white/40">
+        Simulated · No real money at risk
+      </p>
+    </div>
+  );
 }
