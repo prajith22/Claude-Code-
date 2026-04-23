@@ -16,7 +16,7 @@ export function BottomNav() {
   const pathname = usePathname();
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-surface-border bg-white/95 backdrop-blur-sm md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 bg-[#FAFAF8]/95 backdrop-blur-sm md:hidden"
       aria-label="Primary"
     >
       <ul className="mx-auto flex max-w-lg items-stretch justify-between safe-bottom">
