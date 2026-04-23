@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import confetti from "canvas-confetti";
 import type { Game, PlayerProp } from "@/types";
 import { americanOddsToPayout, cn, formatOdds, formatUSD } from "@/lib/utils";
 
@@ -33,11 +35,10 @@ type Option = {
   selection: GameMarketSelection;
 };
 
-type ResolvedBet = {
-  result: "win" | "loss";
-  payout: number;
-  stakeLost: number;
+type PlacedBet = {
   label: string;
+  odds: number;
+  stake: number;
 };
 
 const SPORTS_WITH_PROPS = new Set<Game["sport"]>(["NFL", "NBA", "MLB", "NHL"]);
@@ -46,9 +47,7 @@ export function BetSlip({ game }: { game: Game }) {
   const router = useRouter();
   const [selection, setSelection] = useState<Selection | null>(null);
   const [amount, setAmount] = useState<string>("10");
-  const [placing, setPlacing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [resolved, setResolved] = useState<ResolvedBet | null>(null);
+  const [placed, setPlaced] = useState<PlacedBet | null>(null);
   const [props, setProps] = useState<PlayerProp[] | null>(null);
 
   const sportSupportsProps = SPORTS_WITH_PROPS.has(game.sport);
@@ -79,41 +78,15 @@ export function BetSlip({ game }: { game: Game }) {
   const potential = selection ? americanOddsToPayout(stake, selection.odds) : 0;
   const totalReturn = stake + potential;
 
-  const canPlace = !!selection && stake > 0 && !placing;
+  const canPlace = !!selection && stake > 0 && !placed;
 
-  async function place() {
-    if (!selection) return;
-    setPlacing(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/bet/simulate", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          amount: stake,
-          odds: selection.odds,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Couldn't place bet.");
-      setResolved({
-        result: data.result,
-        payout: data.payout ?? 0,
-        stakeLost: data.stakeLost ?? 0,
-        label: selection.label,
-      });
-      router.refresh();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong.");
-    } finally {
-      setPlacing(false);
-    }
-  }
-
-  function reset() {
-    setResolved(null);
-    setSelection(null);
-    setError(null);
+  function place() {
+    if (!selection || stake <= 0) return;
+    setPlaced({
+      label: selection.label,
+      odds: selection.odds,
+      stake,
+    });
   }
 
   const moneyline: Option[] = [
@@ -189,9 +162,14 @@ export function BetSlip({ game }: { game: Game }) {
     },
   ];
 
-  // Result view replaces the entire slip once the bet has resolved.
-  if (resolved) {
-    return <ResultView resolved={resolved} onPlayAgain={reset} />;
+  // Once a bet is placed, replace the entire slip with the confirmation.
+  if (placed) {
+    return (
+      <PlacedView
+        placed={placed}
+        onPlaceAnother={() => router.push("/bet")}
+      />
+    );
   }
 
   const propsLoading = sportSupportsProps && props === null;
@@ -279,19 +257,13 @@ export function BetSlip({ game }: { game: Game }) {
               </div>
             </div>
 
-            {error && (
-              <p className="mt-3 rounded-xl bg-red-900/40 px-4 py-2 text-sm text-red-300">
-                {error}
-              </p>
-            )}
-
             <button
               type="button"
               disabled={!canPlace}
               onClick={place}
               className="btn-primary mt-5 w-full"
             >
-              {placing ? "Placing bet…" : `Place bet · ${formatUSD(stake)}`}
+              {`Place bet · ${formatUSD(stake)}`}
             </button>
             <p className="mt-2 text-center text-[11px] text-white/40">
               Simulated · No real money at risk
@@ -512,40 +484,108 @@ function signed(n: number) {
   return n > 0 ? `+${n}` : `${n}`;
 }
 
-function ResultView({
-  resolved,
-  onPlayAgain,
+function PlacedView({
+  placed,
+  onPlaceAnother,
 }: {
-  resolved: ResolvedBet;
-  onPlayAgain: () => void;
+  placed: PlacedBet;
+  onPlaceAnother: () => void;
 }) {
-  const won = resolved.result === "win";
+  useEffect(() => {
+    const colors = ["#00C853", "#00E676", "#e6f9ee", "#ffffff"];
+    const duration = 1500;
+    const end = Date.now() + duration;
+    // Initial centered burst
+    confetti({
+      particleCount: 80,
+      spread: 90,
+      startVelocity: 45,
+      origin: { x: 0.5, y: 0.35 },
+      colors,
+    });
+    const frame = () => {
+      confetti({
+        particleCount: 6,
+        angle: 60,
+        spread: 80,
+        origin: { x: 0, y: 0.6 },
+        colors,
+      });
+      confetti({
+        particleCount: 6,
+        angle: 120,
+        spread: 80,
+        origin: { x: 1, y: 0.6 },
+        colors,
+      });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  }, []);
+
   return (
-    <div className="card-navy p-6 text-center">
-      <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40">
-        {won ? "Winner" : "Didn't hit"}
-      </p>
-      <p
-        className={cn(
-          "mt-3 text-[46px] font-extrabold tracking-tight money",
-          won ? "text-brand" : "text-red-400",
-        )}
+    <div className="card-navy p-8 text-center">
+      <motion.div
+        initial={{ scale: 0.4, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 180, damping: 14 }}
+        className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-brand text-navy shadow-lg"
       >
-        {won ? "+" : "−"}
-        {formatUSD(won ? resolved.payout : resolved.stakeLost)}
+        <motion.svg
+          viewBox="0 0 24 24"
+          className="h-10 w-10"
+          aria-hidden
+        >
+          <motion.path
+            d="M5 12.5 10 17.5 19 7.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.6}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ delay: 0.2, duration: 0.5, ease: "easeOut" }}
+          />
+        </motion.svg>
+      </motion.div>
+
+      <motion.h2
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25, duration: 0.4 }}
+        className="mt-6 text-[40px] font-extrabold leading-none tracking-tight text-white md:text-[48px]"
+      >
+        Bet Placed!
+      </motion.h2>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.4 }}
+        className="mx-auto mt-6 max-w-sm border-t border-white/10 pt-5 space-y-2"
+      >
+        <p className="text-[16px] font-bold text-white">{placed.label}</p>
+        <div className="flex items-center justify-center gap-3 text-[13px]">
+          <span className="text-white/60">Odds</span>
+          <span className="font-bold text-white money">{formatOdds(placed.odds)}</span>
+          <span className="text-white/30">·</span>
+          <span className="text-white/60">Stake</span>
+          <span className="font-bold text-white money">{formatUSD(placed.stake)}</span>
+        </div>
+      </motion.div>
+
+      <p className="mt-5 text-[11px] text-white/40">
+        Simulated · No real money at risk
       </p>
-      <p className="mt-2 text-[14px] text-white/70">{resolved.label}</p>
 
       <button
         type="button"
-        onClick={onPlayAgain}
+        onClick={onPlaceAnother}
         className="btn-primary mt-6 w-full"
       >
         Place another bet
       </button>
-      <p className="mt-2 text-[11px] text-white/40">
-        Simulated · No real money at risk
-      </p>
     </div>
   );
 }
