@@ -170,6 +170,12 @@ export async function getAllSportResults(
 export async function clearCache(_sport: Sport): Promise<void> {}
 export async function clearAllCache(): Promise<void> {}
 
+// Sync lookup for client components that need a single game by id.
+export function getGameById(id: string): Game | null {
+  const raw = ALL_RAW.find((g) => g.id === id);
+  return raw ? toGame(raw) : null;
+}
+
 // Re-exported for future installments that want the richer raw shape
 // (team colors, live state, peopleBetting).
 export function getRawGames(): RawGame[] {
