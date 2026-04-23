@@ -648,5 +648,105 @@
     "rating": 4.5,
     "reviewCount": 5678,
     "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-14",
+    "name": "Ribbed Tank Top 3 Pack",
+    "description": "A set of three fitted ribbed-cotton tank tops in black, white, and heather gray. Stretchy, breathable, and the kind of wardrobe staple you restock annually.",
+    "price": 32.99,
+    "category": "Clothes",
+    "rating": 4.6,
+    "reviewCount": 11234,
+    "imageUrl": "https://images.unsplash.com/photo-1583743814966-4d4a0bf8c0a7?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-15",
+    "name": "Trench Coat Classic",
+    "description": "A double-breasted mid-length trench in weatherproof cotton gabardine with a tie belt, shoulder storm flap, and deep hand pockets. The coat you own for a decade.",
+    "price": 129.99,
+    "category": "Clothes",
+    "rating": 4.7,
+    "reviewCount": 4567,
+    "imageUrl": "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-14",
+    "name": "Ring Light 12 inch",
+    "description": "A 12-inch LED ring light with a folding tripod stand, spring-loaded phone holder, and three color-temperature settings. The difference between a webcam call and a studio shot.",
+    "price": 34.99,
+    "category": "Electronics",
+    "rating": 4.5,
+    "reviewCount": 13456,
+    "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-15",
+    "name": "Surge Protector 8 Outlet",
+    "description": "An eight-outlet surge protector with four USB ports, a 6-foot braided cord, and 2,400 joules of spike protection. Turns one wall outlet into your entire battle station.",
+    "price": 24.99,
+    "category": "Electronics",
+    "rating": 4.7,
+    "reviewCount": 18765,
+    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-14",
+    "name": "French Press Coffee Maker",
+    "description": "A 34oz heat-resistant borosilicate-glass French press in a polished stainless-steel frame with a double-wall mesh filter. Richer cup than any drip, fewer moving parts than anything.",
+    "price": 36.99,
+    "category": "Home Goods",
+    "rating": 4.8,
+    "reviewCount": 9432,
+    "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-15",
+    "name": "Decorative Throw Pillow Set",
+    "description": "A curated set of four throw pillows in complementary textures — boucle, linen, velvet, woven cotton — with hidden zipper covers and plush inserts included.",
+    "price": 58.99,
+    "category": "Home Goods",
+    "rating": 4.5,
+    "reviewCount": 5234,
+    "imageUrl": "https://images.unsplash.com/photo-1555041469-db97920b7a35?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-14",
+    "name": "Niacinamide Pore Serum",
+    "description": "A 10% niacinamide + 1% zinc serum that visibly minimizes pores and keeps midday shine in check. Fragrance-free, plays well under any moisturizer.",
+    "price": 12.99,
+    "category": "Beauty",
+    "rating": 4.7,
+    "reviewCount": 22341,
+    "imageUrl": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-15",
+    "name": "Scalp Massager Shampoo Brush",
+    "description": "A soft silicone scalp massager that lifts product buildup, boosts circulation, and genuinely feels amazing in the shower. The sub-$10 upgrade that actually upgrades you.",
+    "price": 9.99,
+    "category": "Beauty",
+    "rating": 4.6,
+    "reviewCount": 31234,
+    "imageUrl": "https://images.unsplash.com/photo-1522337360826-9af7b5349e91?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-14",
+    "name": "Pull Up Bar Doorframe",
+    "description": "A no-screw doorframe pull-up bar that leverages instead of drills, with multiple grip positions and a 300lb load rating. Installs in a minute, comes down just as fast.",
+    "price": 32.99,
+    "category": "Sports",
+    "rating": 4.5,
+    "reviewCount": 7654,
+    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-15",
+    "name": "Compression Knee Sleeves",
+    "description": "A pair of 7mm compression knee sleeves that stabilize joints for running, heavy squats, and long hikes. Stays put without pinching behind the knee.",
+    "price": 22.99,
+    "category": "Sports",
+    "rating": 4.6,
+    "reviewCount": 9123,
+    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
   }
 ]
