@@ -26,7 +26,7 @@ export function TopNav() {
   const avatar = session?.user?.image;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-navy backdrop-blur-sm safe-top">
+    <header className="sticky top-0 z-40 bg-[#FAFAF8]/90 backdrop-blur-sm safe-top">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
 
         {/* Logo */}
@@ -54,17 +54,17 @@ export function TopNav() {
             />
           </svg>
           <div className="flex flex-col leading-none">
-            <span className="font-heading text-[28px] font-extrabold leading-none text-white">
+            <span className="font-heading text-[28px] font-extrabold leading-none text-ink">
               dopiq
             </span>
-            <span className="font-sans mt-[3px] text-[11px] font-medium text-[#6B7280]">
+            <span className="font-sans mt-[3px] text-[11px] font-medium text-ink-muted">
               spend smarter
             </span>
           </div>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
           {TABS.map((t) => {
             const active = pathname === t.href || pathname.startsWith(t.href + "/");
             return (
@@ -72,13 +72,19 @@ export function TopNav() {
                 key={t.href}
                 href={t.href}
                 className={cn(
-                  "rounded-pill px-4 py-1.5 text-[14px] font-semibold transition-all duration-150",
+                  "relative py-2 text-[14px] font-semibold transition-colors duration-150",
                   active
-                    ? "bg-white/15 text-white"
-                    : "text-white/60 hover:bg-white/10 hover:text-white",
+                    ? "text-ink"
+                    : "text-ink-muted hover:text-ink",
                 )}
               >
                 {t.label}
+                {active && (
+                  <span
+                    aria-hidden
+                    className="absolute -bottom-0.5 left-1/2 h-[3px] w-6 -translate-x-1/2 rounded-full bg-brand"
+                  />
+                )}
               </Link>
             );
           })}
@@ -89,7 +95,7 @@ export function TopNav() {
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
-            className="flex items-center gap-2.5 rounded-pill border border-white/20 bg-white/10 px-3 py-1.5 transition-all duration-150 hover:bg-white/15"
+            className="flex items-center gap-2.5 rounded-pill border border-surface-border bg-white px-3 py-1.5 transition-all duration-150 hover:bg-surface-alt"
           >
             {avatar ? (
               <Image
@@ -100,16 +106,16 @@ export function TopNav() {
                 className="rounded-full"
               />
             ) : (
-              <span className="inline-flex h-[26px] w-[26px] items-center justify-center rounded-full bg-white/20 text-[11px] font-bold text-white">
+              <span className="inline-flex h-[26px] w-[26px] items-center justify-center rounded-full bg-navy text-[11px] font-bold text-white">
                 {initials}
               </span>
             )}
-            <span className="hidden text-[13px] font-semibold text-white/80 sm:block">
+            <span className="hidden text-[13px] font-semibold text-ink sm:block">
               {name.split(" ")[0]}
             </span>
             <svg
               viewBox="0 0 16 16"
-              className="h-3 w-3 text-white/40"
+              className="h-3 w-3 text-ink-muted"
               fill="currentColor"
               aria-hidden
             >
