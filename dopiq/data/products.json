@@ -248,5 +248,105 @@
     "rating": 4.4,
     "reviewCount": 2987,
     "imageUrl": "https://images.unsplash.com/photo-1576289286069-c2e9e6a7e5d4?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-6",
+    "name": "Oversized Graphic Tee",
+    "description": "A relaxed-fit heavyweight cotton tee with a vintage-inspired faded graphic print. Dropped shoulders, boxy cut, the exact kind of shirt you reach for twice a week.",
+    "price": 28.99,
+    "category": "Clothes",
+    "rating": 4.5,
+    "reviewCount": 8432,
+    "imageUrl": "https://images.unsplash.com/photo-1583743814966-4d4a0bf8c0a7?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-7",
+    "name": "High Waist Yoga Leggings",
+    "description": "Buttery 4-way-stretch high-waist leggings with a hidden waistband pocket and fully squat-proof knit. Compression where you want it, soft everywhere else.",
+    "price": 48.99,
+    "category": "Clothes",
+    "rating": 4.7,
+    "reviewCount": 12341,
+    "imageUrl": "https://images.unsplash.com/photo-1506629082846-8cd90e6c9c7a?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-6",
+    "name": "Portable Bluetooth Speaker",
+    "description": "A compact waterproof speaker with 360° sound, 12 hours of battery, and a carabiner clip. Loud enough for a kitchen, a backyard, or a pickup soccer game.",
+    "price": 49.99,
+    "category": "Electronics",
+    "rating": 4.6,
+    "reviewCount": 8765,
+    "imageUrl": "https://images.unsplash.com/photo-1608043152269-b3c4e1c7b5e2?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-7",
+    "name": "USB-C Hub 7-in-1",
+    "description": "A brushed-aluminum 7-in-1 hub with 4K HDMI, two USB-A, SD and microSD card readers, and 100W power-delivery pass-through. One cable, the whole desk.",
+    "price": 39.99,
+    "category": "Electronics",
+    "rating": 4.5,
+    "reviewCount": 6543,
+    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-6",
+    "name": "Bamboo Cutting Board Set",
+    "description": "A trio of organic bamboo cutting boards in graduated sizes with deep juice grooves and built-in handles. Knife-friendly, dishwasher-safe, perfectly stackable.",
+    "price": 32.99,
+    "category": "Home Goods",
+    "rating": 4.7,
+    "reviewCount": 4321,
+    "imageUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-7",
+    "name": "Weighted Blanket",
+    "description": "A 15lb premium weighted blanket with evenly distributed glass-bead filling and a removable machine-washable minky cover. The calm hits in about a minute.",
+    "price": 89.99,
+    "category": "Home Goods",
+    "rating": 4.8,
+    "reviewCount": 7654,
+    "imageUrl": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-6",
+    "name": "SPF 50 Tinted Moisturizer",
+    "description": "A lightweight tinted moisturizer with broad-spectrum SPF 50, hyaluronic acid, and antioxidants. Evens tone, hydrates, and protects without the white cast.",
+    "price": 32.0,
+    "category": "Beauty",
+    "rating": 4.6,
+    "reviewCount": 5432,
+    "imageUrl": "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-7",
+    "name": "Exfoliating Sugar Scrub",
+    "description": "A brown sugar + coconut oil body scrub with vitamin E that polishes skin soft without stripping it. Smells like a bakery, rinses off clean.",
+    "price": 18.99,
+    "category": "Beauty",
+    "rating": 4.4,
+    "reviewCount": 3219,
+    "imageUrl": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-6",
+    "name": "Yoga Mat with Carrying Strap",
+    "description": "A 6mm extra-grippy non-slip yoga mat with printed alignment lines and an included woven carrying strap. Cushions knees on poses, doesn't slide on hardwood.",
+    "price": 38.99,
+    "category": "Sports",
+    "rating": 4.6,
+    "reviewCount": 9123,
+    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-7",
+    "name": "Jump Rope with Counter",
+    "description": "A speed jump rope with a built-in digital rep counter, an adjustable steel cable, and foam-grip handles on ball bearings. Turns any driveway into a cardio session.",
+    "price": 19.99,
+    "category": "Sports",
+    "rating": 4.5,
+    "reviewCount": 5678,
+    "imageUrl": "https://images.unsplash.com/photo-1598289442845-a3e8e2f8b3c1?w=400&h=400&fit=crop&auto=format"
   }
 ]
