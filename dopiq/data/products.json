@@ -48,5 +48,105 @@
     "rating": 4.7,
     "reviewCount": 3489,
     "imageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-2",
+    "name": "Relaxed Fit Cargo Pants",
+    "description": "Wide-leg cargo pants with six roomy pockets, an adjustable drawcord waistband, and a streetwear-inspired drape. Heavy-duty cotton twill that softens with every wash.",
+    "price": 54.99,
+    "category": "Clothes",
+    "rating": 4.5,
+    "reviewCount": 3241,
+    "imageUrl": "https://images.unsplash.com/photo-1624378702527-ad1f59b0b24f?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-3",
+    "name": "Ribbed Turtleneck Sweater",
+    "description": "A chunky ribbed-knit turtleneck in a neutral oat colorway. Oversized fit, dropped shoulders, and long enough to layer over anything — jeans, midi skirts, sweats.",
+    "price": 42.99,
+    "category": "Clothes",
+    "rating": 4.6,
+    "reviewCount": 2187,
+    "imageUrl": "https://images.unsplash.com/photo-1631541911232-b5b2d93e7b44?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-2",
+    "name": "Portable Mechanical Keyboard",
+    "description": "A compact 65% wireless mechanical keyboard with tactile switches, per-key RGB, and up to 40 hours on a charge. Satisfying thock, zero wrist strain, fits in a backpack pocket.",
+    "price": 89.99,
+    "category": "Electronics",
+    "rating": 4.7,
+    "reviewCount": 5432,
+    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-3",
+    "name": "Smart LED Desk Lamp",
+    "description": "Touch-controlled LED desk lamp with stepless dimming, adjustable color temperature from warm to daylight, and a built-in USB charging port. Eye-friendly glow for late sessions.",
+    "price": 34.99,
+    "category": "Electronics",
+    "rating": 4.4,
+    "reviewCount": 1876,
+    "imageUrl": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-2",
+    "name": "Ceramic Pour Over Coffee Set",
+    "description": "A minimalist matte ceramic pour-over dripper with a matching 12oz mug and a bamboo serving tray. The kind of slow coffee ritual that turns a Tuesday into a moment.",
+    "price": 48.0,
+    "category": "Home Goods",
+    "rating": 4.8,
+    "reviewCount": 2954,
+    "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-3",
+    "name": "Linen Duvet Cover Set",
+    "description": "Breathable stonewashed French linen duvet cover with two matching pillowcases in warm earthy tones. Gets softer every wash, looks like you styled it without trying.",
+    "price": 119.0,
+    "category": "Home Goods",
+    "rating": 4.7,
+    "reviewCount": 3102,
+    "imageUrl": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-2",
+    "name": "Vitamin C Brightening Moisturizer",
+    "description": "A lightweight daily moisturizer with 15% stabilized vitamin C, niacinamide, and hyaluronic acid. Evens tone, hydrates, and gives skin a visible glow in about two weeks.",
+    "price": 38.0,
+    "category": "Beauty",
+    "rating": 4.6,
+    "reviewCount": 4217,
+    "imageUrl": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-3",
+    "name": "Bamboo Charcoal Face Mask Set",
+    "description": "A pack of 10 biodegradable sheet masks infused with bamboo charcoal, green tea extract, and hyaluronic acid. Detoxifying, hydrating, and genuinely fun to do on a Sunday.",
+    "price": 22.99,
+    "category": "Beauty",
+    "rating": 4.3,
+    "reviewCount": 6891,
+    "imageUrl": "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-2",
+    "name": "Adjustable Resistance Band Set",
+    "description": "A set of 5 resistance bands ranging from 10 to 50 lbs, with a door anchor, ankle straps, and a mesh carry bag. A full gym's worth of workouts that fits in a drawer.",
+    "price": 28.99,
+    "category": "Sports",
+    "rating": 4.5,
+    "reviewCount": 8234,
+    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-3",
+    "name": "Insulated Stainless Steel Water Bottle",
+    "description": "A 32oz double-wall vacuum-insulated bottle that keeps drinks cold for 24 hours and hot for 12. Leak-proof lid, powder-coated grip finish, fits most car cup holders.",
+    "price": 32.99,
+    "category": "Sports",
+    "rating": 4.8,
+    "reviewCount": 11432,
+    "imageUrl": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&h=400&fit=crop&auto=format"
   }
 ]
