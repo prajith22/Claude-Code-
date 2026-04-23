@@ -3,8 +3,15 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { Game } from "@/types";
-import { cn, formatOdds } from "@/lib/utils";
+import { cn, formatOdds, signed } from "@/lib/utils";
 import { TeamLogo } from "@/components/TeamLogo";
+import {
+  buildSelection,
+  slipKey,
+  useBetSlipStore,
+  type BetSide,
+  type BetType,
+} from "@/lib/bet-slip-store";
 
 type SportKey =
   | "nfl"
@@ -231,18 +238,19 @@ function ErrorCard({ message }: { message: string }) {
 
 // --- Game card ---
 
-type CellSelection = {
-  col: "spread" | "total" | "moneyline";
-  side: "top" | "bottom";
-};
-
 function GameCard({ game: g }: { game: Game }) {
-  const [selected, setSelected] = useState<CellSelection | null>(null);
+  const toggle = useBetSlipStore((s) => s.toggle);
+  const selectionKeys = useBetSlipStore((s) =>
+    s.selections.map((x) => x.key),
+  );
+  const selectionSet = new Set(selectionKeys);
 
-  function toggle(col: CellSelection["col"], side: CellSelection["side"]) {
-    setSelected((prev) =>
-      prev && prev.col === col && prev.side === side ? null : { col, side },
-    );
+  function isActive(type: BetType, side: BetSide) {
+    return selectionSet.has(slipKey(g.id, type, side));
+  }
+
+  function pick(type: BetType, side: BetSide) {
+    toggle(buildSelection(g, type, side));
   }
 
   const trending = g.peopleBetting > 10000;
@@ -313,50 +321,38 @@ function GameCard({ game: g }: { game: Game }) {
             <OddsCell
               label={signed(g.odds.spreadAway)}
               odds={g.odds.spreadAwayOdds}
-              active={
-                selected?.col === "spread" && selected.side === "top"
-              }
-              onClick={() => toggle("spread", "top")}
+              active={isActive("spread", "away")}
+              onClick={() => pick("spread", "away")}
             />
             <OddsCell
               label={`O ${g.odds.total}`}
               odds={g.odds.overOdds}
-              active={
-                selected?.col === "total" && selected.side === "top"
-              }
-              onClick={() => toggle("total", "top")}
+              active={isActive("total", "over")}
+              onClick={() => pick("total", "over")}
             />
             <OddsCell
               odds={g.odds.moneylineAway}
-              active={
-                selected?.col === "moneyline" && selected.side === "top"
-              }
-              onClick={() => toggle("moneyline", "top")}
+              active={isActive("moneyline", "away")}
+              onClick={() => pick("moneyline", "away")}
             />
 
             {/* Home row */}
             <OddsCell
               label={signed(g.odds.spreadHome)}
               odds={g.odds.spreadHomeOdds}
-              active={
-                selected?.col === "spread" && selected.side === "bottom"
-              }
-              onClick={() => toggle("spread", "bottom")}
+              active={isActive("spread", "home")}
+              onClick={() => pick("spread", "home")}
             />
             <OddsCell
               label={`U ${g.odds.total}`}
               odds={g.odds.underOdds}
-              active={
-                selected?.col === "total" && selected.side === "bottom"
-              }
-              onClick={() => toggle("total", "bottom")}
+              active={isActive("total", "under")}
+              onClick={() => pick("total", "under")}
             />
             <OddsCell
               odds={g.odds.moneylineHome}
-              active={
-                selected?.col === "moneyline" && selected.side === "bottom"
-              }
-              onClick={() => toggle("moneyline", "bottom")}
+              active={isActive("moneyline", "home")}
+              onClick={() => pick("moneyline", "home")}
             />
           </div>
           {g.isLive && (
@@ -455,6 +451,3 @@ function OddsCell({
   );
 }
 
-function signed(n: number) {
-  return n > 0 ? `+${n}` : `${n}`;
-}
