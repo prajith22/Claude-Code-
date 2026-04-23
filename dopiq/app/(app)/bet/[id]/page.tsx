@@ -1,6 +1,7 @@
-import { notFound } from "next/navigation";
+import Link from "next/link";
 import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
 import { getAllOdds } from "@/lib/odds";
+import type { Game } from "@/types";
 import { BetSlip } from "@/components/BetSlip";
 
 export const dynamic = "force-dynamic";
@@ -11,22 +12,44 @@ export default async function GameDetailPage({
   params: { id: string };
 }) {
   await requireOnboardedSubscribedUser();
-  const { nfl, nba, mlb, nhl, ncaaf, ncaab, mls, boxing, ufc, golf } =
-    await getAllOdds();
-  const all = [
-    ...nfl,
-    ...nba,
-    ...mlb,
-    ...nhl,
-    ...ncaaf,
-    ...ncaab,
-    ...mls,
-    ...boxing,
-    ...ufc,
-    ...golf,
-  ];
-  const g = all.find((x) => x.id === params.id);
-  if (!g) notFound();
+
+  let g: Game | null = null;
+  try {
+    const odds = await getAllOdds();
+    const all = [
+      ...odds.nfl,
+      ...odds.nba,
+      ...odds.mlb,
+      ...odds.nhl,
+      ...odds.ncaaf,
+      ...odds.ncaab,
+      ...odds.mls,
+      ...odds.boxing,
+      ...odds.ufc,
+      ...odds.golf,
+    ];
+    g = all.find((x) => x.id === params.id) ?? null;
+  } catch {
+    g = null;
+  }
+
+  if (!g) {
+    return (
+      <div className="space-y-5 pb-4 pt-4">
+        <div className="card p-8 text-center">
+          <p className="text-[17px] font-bold text-ink">
+            Game not available right now
+          </p>
+          <p className="mt-2 text-[14px] text-ink-muted">
+            This game may have started, ended, or odds briefly failed to load.
+          </p>
+          <Link href="/bet" className="btn-primary mt-5 inline-flex">
+            Back to games
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5 pb-4">

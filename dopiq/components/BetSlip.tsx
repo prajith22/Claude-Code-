@@ -4,35 +4,22 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
-import type { Game, PlayerProp } from "@/types";
+import type { Game } from "@/types";
 import { americanOddsToPayout, cn, formatOdds, formatUSD } from "@/lib/utils";
 
 type BetMarket = "moneyline" | "spread" | "over_under";
 
-type GameMarketSelection = {
-  kind: "market";
+type Selection = {
   type: BetMarket;
   side: string;
   label: string;
   odds: number;
 };
 
-type PropSelection = {
-  kind: "prop";
-  marketKey: string;
-  playerName: string;
-  line: number;
-  side: "over" | "under";
-  label: string;
-  odds: number;
-};
-
-type Selection = GameMarketSelection | PropSelection;
-
 type Option = {
   primary: string;
   secondary: string;
-  selection: GameMarketSelection;
+  selection: Selection;
 };
 
 type PlacedBet = {
@@ -41,43 +28,15 @@ type PlacedBet = {
   stake: number;
 };
 
-const SPORTS_WITH_PROPS = new Set<Game["sport"]>(["NFL", "NBA", "MLB", "NHL"]);
-
 export function BetSlip({ game }: { game: Game }) {
   const router = useRouter();
   const [selection, setSelection] = useState<Selection | null>(null);
   const [amount, setAmount] = useState<string>("10");
   const [placed, setPlaced] = useState<PlacedBet | null>(null);
-  const [props, setProps] = useState<PlayerProp[] | null>(null);
-
-  const sportSupportsProps = SPORTS_WITH_PROPS.has(game.sport);
-
-  useEffect(() => {
-    if (!sportSupportsProps) {
-      setProps([]);
-      return;
-    }
-    let cancelled = false;
-    const url = `/api/odds/props?gameId=${encodeURIComponent(
-      game.id,
-    )}&sport=${encodeURIComponent(game.sport)}`;
-    fetch(url)
-      .then((r) => (r.ok ? r.json() : { props: [] }))
-      .then((data: { props?: PlayerProp[] }) => {
-        if (!cancelled) setProps(data.props ?? []);
-      })
-      .catch(() => {
-        if (!cancelled) setProps([]);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [game.id, game.sport, sportSupportsProps]);
 
   const stake = Number.parseFloat(amount || "0") || 0;
   const potential = selection ? americanOddsToPayout(stake, selection.odds) : 0;
   const totalReturn = stake + potential;
-
   const canPlace = !!selection && stake > 0 && !placed;
 
   function place() {
@@ -94,7 +53,6 @@ export function BetSlip({ game }: { game: Game }) {
       primary: game.awayTeam,
       secondary: formatOdds(game.odds.moneylineAway),
       selection: {
-        kind: "market",
         type: "moneyline",
         side: "away",
         label: `${game.awayTeam} ML`,
@@ -105,7 +63,6 @@ export function BetSlip({ game }: { game: Game }) {
       primary: game.homeTeam,
       secondary: formatOdds(game.odds.moneylineHome),
       selection: {
-        kind: "market",
         type: "moneyline",
         side: "home",
         label: `${game.homeTeam} ML`,
@@ -118,7 +75,6 @@ export function BetSlip({ game }: { game: Game }) {
       primary: `${game.awayTeam} ${signed(game.odds.spreadAway)}`,
       secondary: formatOdds(game.odds.spreadAwayOdds),
       selection: {
-        kind: "market",
         type: "spread",
         side: "away",
         label: `${game.awayTeam} ${signed(game.odds.spreadAway)}`,
@@ -129,7 +85,6 @@ export function BetSlip({ game }: { game: Game }) {
       primary: `${game.homeTeam} ${signed(game.odds.spreadHome)}`,
       secondary: formatOdds(game.odds.spreadHomeOdds),
       selection: {
-        kind: "market",
         type: "spread",
         side: "home",
         label: `${game.homeTeam} ${signed(game.odds.spreadHome)}`,
@@ -142,7 +97,6 @@ export function BetSlip({ game }: { game: Game }) {
       primary: `Over ${game.odds.total}`,
       secondary: formatOdds(game.odds.overOdds),
       selection: {
-        kind: "market",
         type: "over_under",
         side: "over",
         label: `Over ${game.odds.total}`,
@@ -153,7 +107,6 @@ export function BetSlip({ game }: { game: Game }) {
       primary: `Under ${game.odds.total}`,
       secondary: formatOdds(game.odds.underOdds),
       selection: {
-        kind: "market",
         type: "over_under",
         side: "under",
         label: `Under ${game.odds.total}`,
@@ -162,7 +115,6 @@ export function BetSlip({ game }: { game: Game }) {
     },
   ];
 
-  // Once a bet is placed, replace the entire slip with the confirmation.
   if (placed) {
     return (
       <PlacedView
@@ -171,9 +123,6 @@ export function BetSlip({ game }: { game: Game }) {
       />
     );
   }
-
-  const propsLoading = sportSupportsProps && props === null;
-  const showPropsSection = sportSupportsProps && (propsLoading || (props && props.length > 0));
 
   return (
     <div className="space-y-5">
@@ -196,15 +145,6 @@ export function BetSlip({ game }: { game: Game }) {
         onSelect={setSelection}
       />
 
-      {showPropsSection && (
-        <PlayerPropsSection
-          loading={propsLoading}
-          props={props ?? []}
-          selection={selection}
-          onSelect={setSelection}
-        />
-      )}
-
       {/* Bet slip card */}
       <div className="card-navy p-5">
         <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40">
@@ -212,12 +152,17 @@ export function BetSlip({ game }: { game: Game }) {
         </p>
         {selection ? (
           <>
-            <p className="mt-3 text-[17px] font-bold text-white">{selection.label}</p>
+            <p className="mt-3 text-[17px] font-bold text-white">
+              {selection.label}
+            </p>
             <p className="mt-0.5 text-[13px] text-white/60">
               Odds {formatOdds(selection.odds)}
             </p>
 
-            <label className="mt-5 block text-[12px] font-semibold uppercase tracking-widest text-white/40" htmlFor="stake">
+            <label
+              className="mt-5 block text-[12px] font-semibold uppercase tracking-widest text-white/40"
+              htmlFor="stake"
+            >
               Amount
             </label>
             <div className="mt-2 flex items-center gap-2">
@@ -249,11 +194,15 @@ export function BetSlip({ game }: { game: Game }) {
             <div className="mt-5 space-y-2 border-t border-white/10 pt-4">
               <div className="flex justify-between text-[15px]">
                 <span className="text-white/60">To win</span>
-                <span className="font-bold text-brand money">{formatUSD(potential)}</span>
+                <span className="font-bold text-brand money">
+                  {formatUSD(potential)}
+                </span>
               </div>
               <div className="flex justify-between text-[15px]">
                 <span className="text-white/60">Total return</span>
-                <span className="font-bold text-white money">{formatUSD(totalReturn)}</span>
+                <span className="font-bold text-white money">
+                  {formatUSD(totalReturn)}
+                </span>
               </div>
             </div>
 
@@ -299,7 +248,6 @@ function MarketRow({
         {options.map((o) => {
           const active =
             !!selection &&
-            selection.kind === "market" &&
             selection.type === o.selection.type &&
             selection.side === o.selection.side;
           return (
@@ -320,7 +268,11 @@ function MarketRow({
               <span
                 className={cn(
                   "mt-1 text-[17px] font-bold money",
-                  active ? "text-brand" : o.selection.odds > 0 ? "text-brand" : "text-navy",
+                  active
+                    ? "text-brand"
+                    : o.selection.odds > 0
+                      ? "text-brand"
+                      : "text-navy",
                 )}
               >
                 {o.secondary}
@@ -330,153 +282,6 @@ function MarketRow({
         })}
       </div>
     </section>
-  );
-}
-
-function PlayerPropsSection({
-  loading,
-  props,
-  selection,
-  onSelect,
-}: {
-  loading: boolean;
-  props: PlayerProp[];
-  selection: Selection | null;
-  onSelect: (s: Selection) => void;
-}) {
-  return (
-    <section>
-      <div className="mb-2 flex items-center gap-2">
-        <h3 className="text-[12px] font-semibold uppercase tracking-widest text-ink-muted">
-          Player Props
-        </h3>
-        {!loading && props.length > 0 && (
-          <span className="rounded-pill bg-brand-light px-2 py-0.5 text-[10px] font-bold text-brand">
-            {props.length}
-          </span>
-        )}
-      </div>
-      {loading ? (
-        <ul className="space-y-2">
-          {[0, 1, 2].map((i) => (
-            <li key={i} className="card h-[132px] animate-pulse bg-surface-alt" />
-          ))}
-        </ul>
-      ) : (
-        <ul className="space-y-2">
-          {props.map((p) => (
-            <PropCard
-              key={`${p.marketKey}-${p.playerName}-${p.line}`}
-              prop={p}
-              selection={selection}
-              onSelect={onSelect}
-            />
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}
-
-function PropCard({
-  prop,
-  selection,
-  onSelect,
-}: {
-  prop: PlayerProp;
-  selection: Selection | null;
-  onSelect: (s: Selection) => void;
-}) {
-  const matches = (side: "over" | "under") =>
-    !!selection &&
-    selection.kind === "prop" &&
-    selection.marketKey === prop.marketKey &&
-    selection.playerName === prop.playerName &&
-    selection.line === prop.line &&
-    selection.side === side;
-
-  const pickSide = (side: "over" | "under"): PropSelection => ({
-    kind: "prop",
-    marketKey: prop.marketKey,
-    playerName: prop.playerName,
-    line: prop.line,
-    side,
-    label: `${prop.playerName} · ${side === "over" ? "Over" : "Under"} ${prop.line} ${prop.marketLabel}`,
-    odds: side === "over" ? prop.overOdds : prop.underOdds,
-  });
-
-  return (
-    <li className="card p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <p className="font-heading text-[16px] font-bold leading-tight text-ink">
-            {prop.playerName}
-          </p>
-          <p className="mt-0.5 text-[12px] font-medium text-ink-muted">
-            {prop.marketLabel}
-          </p>
-        </div>
-        <p className="flex-none text-[28px] font-bold leading-none text-navy money">
-          {prop.line}
-        </p>
-      </div>
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <PropSideButton
-          label="Over"
-          odds={prop.overOdds}
-          active={matches("over")}
-          onClick={() => onSelect(pickSide("over"))}
-        />
-        <PropSideButton
-          label="Under"
-          odds={prop.underOdds}
-          active={matches("under")}
-          onClick={() => onSelect(pickSide("under"))}
-        />
-      </div>
-    </li>
-  );
-}
-
-function PropSideButton({
-  label,
-  odds,
-  active,
-  onClick,
-}: {
-  label: "Over" | "Under";
-  odds: number;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "flex items-center justify-between rounded-2xl border px-3.5 py-3 text-left transition-all duration-150",
-        active
-          ? "border-brand bg-brand-light shadow-sm"
-          : "border-surface-border bg-white hover:bg-surface-alt hover:shadow-card",
-      )}
-    >
-      <span
-        className={cn(
-          "text-[13px] font-semibold",
-          active ? "text-brand" : "text-ink-muted",
-        )}
-      >
-        {label}
-      </span>
-      <span
-        className={cn(
-          "text-[15px] font-bold money",
-          active ? "text-brand" : odds > 0 ? "text-brand" : "text-navy",
-        )}
-      >
-        {formatOdds(odds)}
-      </span>
-    </button>
   );
 }
 
@@ -495,7 +300,6 @@ function PlacedView({
     const colors = ["#00C853", "#00E676", "#e6f9ee", "#ffffff"];
     const duration = 1500;
     const end = Date.now() + duration;
-    // Initial centered burst
     confetti({
       particleCount: 80,
       spread: 90,
@@ -531,11 +335,7 @@ function PlacedView({
         transition={{ type: "spring", stiffness: 180, damping: 14 }}
         className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-brand text-navy shadow-lg"
       >
-        <motion.svg
-          viewBox="0 0 24 24"
-          className="h-10 w-10"
-          aria-hidden
-        >
+        <motion.svg viewBox="0 0 24 24" className="h-10 w-10" aria-hidden>
           <motion.path
             d="M5 12.5 10 17.5 19 7.5"
             fill="none"
@@ -563,15 +363,19 @@ function PlacedView({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.4 }}
-        className="mx-auto mt-6 max-w-sm border-t border-white/10 pt-5 space-y-2"
+        className="mx-auto mt-6 max-w-sm space-y-2 border-t border-white/10 pt-5"
       >
         <p className="text-[16px] font-bold text-white">{placed.label}</p>
         <div className="flex items-center justify-center gap-3 text-[13px]">
           <span className="text-white/60">Odds</span>
-          <span className="font-bold text-white money">{formatOdds(placed.odds)}</span>
+          <span className="font-bold text-white money">
+            {formatOdds(placed.odds)}
+          </span>
           <span className="text-white/30">·</span>
           <span className="text-white/60">Stake</span>
-          <span className="font-bold text-white money">{formatUSD(placed.stake)}</span>
+          <span className="font-bold text-white money">
+            {formatUSD(placed.stake)}
+          </span>
         </div>
       </motion.div>
 
