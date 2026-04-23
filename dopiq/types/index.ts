@@ -77,7 +77,15 @@ export type Game = {
   sport: Sport;
   homeTeam: string;
   awayTeam: string;
+  homeTeamAbbr: string;
+  awayTeamAbbr: string;
+  homeTeamColor: string;
+  awayTeamColor: string;
   startsAt: string;
+  peopleBetting: number;
+  isLive: boolean;
+  liveScore: string | null;
+  livePeriod: string | null;
   odds: GameOdds;
 };
 
