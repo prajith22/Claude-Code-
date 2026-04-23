@@ -1,63 +1,21 @@
 import { NextResponse } from "next/server";
-import {
-  clearAllCache,
-  clearCache,
-  getAllSportResults,
-  type AllSportResults,
-} from "@/lib/odds";
-import type { Sport } from "@/types";
+import { getAllSportResults, type AllSportResults } from "@/lib/odds";
 
 export const dynamic = "force-dynamic";
 
-const SPORTS: Sport[] = [
-  "NFL",
-  "NBA",
-  "MLB",
-  "NHL",
-  "NCAAF",
-  "NCAAB",
-  "MLS",
-  "Boxing",
-  "UFC",
-  "Golf",
-];
-
-// Accept ?refresh=all OR ?refresh=nba (case-insensitive) to bust the
-// cache before fetching. Handy for debugging stale / broken cache rows.
-// Example: /api/odds?refresh=nba
-export async function GET(req: Request) {
+// Fake-data mode. The betting simulator no longer hits The Odds API —
+// it reads from data/games.json via lib/odds.ts. Kept as an endpoint
+// so the client-side BetGamesList keeps working without UI changes.
+export async function GET() {
   try {
-    const apiKeyPresent = !!process.env.ODDS_API_KEY;
-    console.log(`[odds-route] ODDS_API_KEY present: ${apiKeyPresent}`);
-
-    const url = new URL(req.url);
-    const refresh = url.searchParams.get("refresh");
-    let forceRefresh = false;
-
-    if (refresh === "all") {
-      console.log("[odds-route] refresh=all — clearing every cache row");
-      await clearAllCache();
-      forceRefresh = true;
-    } else if (refresh) {
-      const want = refresh.toUpperCase();
-      const sport = SPORTS.find((s) => s.toUpperCase() === want);
-      if (sport) {
-        console.log(`[odds-route] refresh=${sport} — clearing cache row`);
-        await clearCache(sport);
-        forceRefresh = true;
-      } else {
-        console.log(
-          `[odds-route] refresh=${refresh} — unknown sport, ignoring`,
-        );
-      }
-    }
-
-    const results = await getAllSportResults(forceRefresh);
+    console.log("[odds-route] serving from fake data (data/games.json)");
+    const results = await getAllSportResults();
 
     const counts = Object.fromEntries(
-      (Object.entries(results) as [keyof AllSportResults, (typeof results)[keyof AllSportResults]][]).map(
-        ([k, v]) => [k, v.games.length],
-      ),
+      (Object.entries(results) as [
+        keyof AllSportResults,
+        AllSportResults[keyof AllSportResults],
+      ][]).map(([k, v]) => [k, v.games.length]),
     );
     console.log("[odds-route] per-sport game counts:", counts);
 
@@ -72,11 +30,11 @@ export async function GET(req: Request) {
       boxing: results.boxing.games,
       ufc: results.ufc.games,
       golf: results.golf.games,
-      _meta: buildMeta(apiKeyPresent, results),
+      _meta: buildMeta(results),
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    console.error("[odds-route] total collapse:", msg);
+    console.error("[odds-route] failed:", msg);
     return NextResponse.json(
       {
         nfl: [],
@@ -90,7 +48,7 @@ export async function GET(req: Request) {
         ufc: [],
         golf: [],
         _meta: {
-          apiKeyPresent: !!process.env.ODDS_API_KEY,
+          apiKeyPresent: true,
           sports: {},
           fatalError: msg,
         },
@@ -100,7 +58,7 @@ export async function GET(req: Request) {
   }
 }
 
-function buildMeta(apiKeyPresent: boolean, results: AllSportResults) {
+function buildMeta(results: AllSportResults) {
   const sports: Record<
     string,
     {
@@ -122,9 +80,10 @@ function buildMeta(apiKeyPresent: boolean, results: AllSportResults) {
       dropped: r.transformedOut,
       source: r.source,
       error: r.error,
-      cacheAgeMin:
-        r.cacheAgeMs != null ? Math.round(r.cacheAgeMs / 60000) : null,
+      cacheAgeMin: null,
     };
   }
-  return { apiKeyPresent, sports };
+  // Fake-data mode never has a missing key, but the UI reads this field
+  // to show a warning banner — keep it truthy.
+  return { apiKeyPresent: true, sports };
 }
