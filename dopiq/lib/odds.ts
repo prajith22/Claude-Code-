@@ -1,9 +1,20 @@
 import { prisma } from "@/lib/prisma";
 import type { Game, GameOdds, Sport } from "@/types";
 
+// Maps our internal Sport enum to The Odds API sport keys.
+// When adding a sport: add it to `Sport` in types/index.ts, add a
+// row here, and add it to the Promise.all in getAllOdds().
 const SPORT_KEYS: Record<Sport, string> = {
   NFL: "americanfootball_nfl",
   NBA: "basketball_nba",
+  MLB: "baseball_mlb",
+  NHL: "icehockey_nhl",
+  NCAAF: "americanfootball_ncaaf",
+  NCAAB: "basketball_ncaab",
+  MLS: "soccer_usa_mls",
+  Boxing: "boxing",
+  UFC: "mma_mixed_martial_arts",
+  Golf: "golf_pga_tour",
 };
 
 const CACHE_TTL_MS = 3 * 60 * 60 * 1000; // 3 hours
@@ -54,12 +65,34 @@ export async function getOddsForSport(sport: Sport): Promise<Game[]> {
   return [];
 }
 
-export async function getAllOdds(): Promise<{ nfl: Game[]; nba: Game[] }> {
-  const [nfl, nba] = await Promise.all([
-    getOddsForSport("NFL"),
-    getOddsForSport("NBA"),
-  ]);
-  return { nfl, nba };
+export type AllOdds = {
+  nfl: Game[];
+  nba: Game[];
+  mlb: Game[];
+  nhl: Game[];
+  ncaaf: Game[];
+  ncaab: Game[];
+  mls: Game[];
+  boxing: Game[];
+  ufc: Game[];
+  golf: Game[];
+};
+
+export async function getAllOdds(): Promise<AllOdds> {
+  const [nfl, nba, mlb, nhl, ncaaf, ncaab, mls, boxing, ufc, golf] =
+    await Promise.all([
+      getOddsForSport("NFL"),
+      getOddsForSport("NBA"),
+      getOddsForSport("MLB"),
+      getOddsForSport("NHL"),
+      getOddsForSport("NCAAF"),
+      getOddsForSport("NCAAB"),
+      getOddsForSport("MLS"),
+      getOddsForSport("Boxing"),
+      getOddsForSport("UFC"),
+      getOddsForSport("Golf"),
+    ]);
+  return { nfl, nba, mlb, nhl, ncaaf, ncaab, mls, boxing, ufc, golf };
 }
 
 async function readCache(
