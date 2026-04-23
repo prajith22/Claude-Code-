@@ -848,5 +848,155 @@
     "rating": 4.6,
     "reviewCount": 5678,
     "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-18",
+    "name": "Silk Pajama Set",
+    "description": "A lightweight silk-feel pajama set with a notch-collar button-front top and relaxed elastic-waist pants in a subtle tonal print. Hotel-quality without the laundry fear.",
+    "price": 64.99,
+    "category": "Clothes",
+    "rating": 4.7,
+    "reviewCount": 5432,
+    "imageUrl": "https://images.unsplash.com/photo-1595777457593-5b3a4a4c3a4b?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-19",
+    "name": "Relaxed Chino Pants",
+    "description": "Slim-tapered chino pants in a soft stretch cotton blend with clean side-seam pockets and no contrast stitching. The pair you can wear to dinner and back to the office.",
+    "price": 52.99,
+    "category": "Clothes",
+    "rating": 4.5,
+    "reviewCount": 4123,
+    "imageUrl": "https://images.unsplash.com/photo-1624378702527-ad1f59b0b24f?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-20",
+    "name": "Cropped Blazer",
+    "description": "A structured cropped blazer with notch lapels, a single-button closure, and flap front pockets. Sharpens jeans, sharpens sweats, sharpens literally anything.",
+    "price": 89.99,
+    "category": "Clothes",
+    "rating": 4.6,
+    "reviewCount": 3234,
+    "imageUrl": "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-18",
+    "name": "Smart Watch Fitness Tracker",
+    "description": "A fitness smartwatch with a continuous heart-rate monitor, sleep stages, built-in GPS, and a 7-day battery on a real-world week. Pairs with iOS and Android.",
+    "price": 89.99,
+    "category": "Electronics",
+    "rating": 4.6,
+    "reviewCount": 21345,
+    "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-19",
+    "name": "Portable SSD 1TB",
+    "description": "An ultra-compact 1TB portable SSD over USB-C with read speeds up to 1,050 MB/s and a shock-resistant aluminum body. Backs up a laptop in under two minutes.",
+    "price": 94.99,
+    "category": "Electronics",
+    "rating": 4.8,
+    "reviewCount": 8765,
+    "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-20",
+    "name": "LED Strip Lights 16ft",
+    "description": "A 16-foot app-controlled RGB LED strip with a built-in mic for music-sync mode and 3M adhesive backing. Cuttable to length, scenes on tap, vibe on demand.",
+    "price": 19.99,
+    "category": "Electronics",
+    "rating": 4.4,
+    "reviewCount": 28432,
+    "imageUrl": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-18",
+    "name": "Velvet Storage Ottoman",
+    "description": "A tufted velvet storage ottoman with a removable lid that pulls double duty as a coffee table, bench, and lid-closed laundry hamper. Tucks a throw and a stack of books cleanly.",
+    "price": 79.99,
+    "category": "Home Goods",
+    "rating": 4.6,
+    "reviewCount": 3876,
+    "imageUrl": "https://images.unsplash.com/photo-1555041469-db97920b7a35?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-19",
+    "name": "Ceramic Mixing Bowl Set",
+    "description": "Five nesting ceramic mixing bowls in graduated sizes with pour spouts and silicone handles. Oven-safe, dishwasher-safe, looks good enough to serve straight from.",
+    "price": 48.99,
+    "category": "Home Goods",
+    "rating": 4.7,
+    "reviewCount": 5234,
+    "imageUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-20",
+    "name": "Bedside Shelf Clip On",
+    "description": "A clip-on bedside shelf that hugs any mattress (up to 16\" thick) and holds a phone, book, water bottle, and a small lamp. No drilling, no assembly, just room.",
+    "price": 26.99,
+    "category": "Home Goods",
+    "rating": 4.5,
+    "reviewCount": 7654,
+    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-18",
+    "name": "AHA BHA Exfoliating Toner",
+    "description": "A gentle leave-on chemical exfoliating toner with 5% glycolic acid and 2% salicylic acid. Smooths texture, clears buildup, and brightens tone over a few weeks.",
+    "price": 28.0,
+    "category": "Beauty",
+    "rating": 4.6,
+    "reviewCount": 9432,
+    "imageUrl": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-19",
+    "name": "Rose Quartz Face Roller",
+    "description": "A cooling rose quartz facial roller that de-puffs mornings, soothes after a workout, and pushes serum deeper into skin. Kept in the fridge, hits even better.",
+    "price": 22.99,
+    "category": "Beauty",
+    "rating": 4.5,
+    "reviewCount": 7123,
+    "imageUrl": "https://images.unsplash.com/photo-1620916297397-a4a5e3b3e4c2?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-20",
+    "name": "Micellar Cleansing Water",
+    "description": "A gentle micellar water that lifts makeup, sunscreen, and sweat with no rinsing required. Fragrance-free, works on sensitive skin, ends the night in ten seconds.",
+    "price": 11.99,
+    "category": "Beauty",
+    "rating": 4.6,
+    "reviewCount": 15678,
+    "imageUrl": "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-18",
+    "name": "Resistance Loop Bands 5 Pack",
+    "description": "Five fabric-wrapped resistance loop bands in progressively heavier tensions for glute activation, hip thrusts, and lateral walks. Stays put above the knee, no rolling.",
+    "price": 16.99,
+    "category": "Sports",
+    "rating": 4.7,
+    "reviewCount": 18234,
+    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-19",
+    "name": "Grip Strengthener Set",
+    "description": "A set of three adjustable hand-grip strengtheners spanning 22 to 132 lbs of resistance for forearm, grip, and wrist training. Desk-friendly, small enough for a drawer.",
+    "price": 14.99,
+    "category": "Sports",
+    "rating": 4.5,
+    "reviewCount": 8765,
+    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-20",
+    "name": "Hydration Running Belt",
+    "description": "A lightweight running belt with two 10oz BPA-free bottles, a stretch phone pocket, and a fully adjustable waist strap. No-bounce fit from a 5K to a half.",
+    "price": 34.99,
+    "category": "Sports",
+    "rating": 4.6,
+    "reviewCount": 6432,
+    "imageUrl": "https://images.unsplash.com/photo-1576289286069-c2e9e6a7e5d4?w=400&h=400&fit=crop&auto=format"
   }
 ]
