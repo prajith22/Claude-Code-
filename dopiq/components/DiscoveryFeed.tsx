@@ -23,16 +23,28 @@ const SECTION_ORDER: ProductCategory[] = [
   "Sports",
 ];
 
+const CATEGORIES: ProductCategory[] = [
+  "Clothes",
+  "Electronics",
+  "Home Goods",
+  "Beauty",
+  "Sports",
+];
+
 export function DiscoveryFeed({
   products,
   todayLabel,
   filteredProducts,
   filterLabel,
+  activeCategory,
+  onSelectCategory,
 }: {
   products: Product[];
   todayLabel: string;
   filteredProducts: Product[] | null;
   filterLabel: string | null;
+  activeCategory: ProductCategory | null;
+  onSelectCategory: (cat: ProductCategory | null) => void;
 }) {
   return (
     <section className="space-y-6">
@@ -53,6 +65,27 @@ export function DiscoveryFeed({
           Hand-picked drops, refreshed daily.
         </p>
       </motion.div>
+
+      {/* Category filter pills — under the hero, for old-school browsing */}
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0">
+        <FilterPill
+          active={activeCategory === null && filteredProducts === null}
+          onClick={() => onSelectCategory(null)}
+        >
+          All
+        </FilterPill>
+        {CATEGORIES.map((cat) => (
+          <FilterPill
+            key={cat}
+            active={activeCategory === cat}
+            onClick={() =>
+              onSelectCategory(activeCategory === cat ? null : cat)
+            }
+          >
+            {cat}
+          </FilterPill>
+        ))}
+      </div>
 
       {filteredProducts ? (
         <FilteredGrid products={filteredProducts} label={filterLabel} />
@@ -217,6 +250,31 @@ function ProductCard({
         </div>
       </Link>
     </div>
+  );
+}
+
+function FilterPill({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "flex-none whitespace-nowrap rounded-pill px-4 py-2 text-[13px] font-semibold transition-all duration-150",
+        active
+          ? "bg-navy text-white shadow-navy"
+          : "border border-surface-border bg-white text-ink-muted hover:bg-surface-alt",
+      )}
+    >
+      {children}
+    </button>
   );
 }
 
