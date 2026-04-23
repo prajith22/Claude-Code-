@@ -748,5 +748,105 @@
     "rating": 4.6,
     "reviewCount": 9123,
     "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-16",
+    "name": "Oversized Denim Overalls",
+    "description": "Relaxed-fit denim overalls with adjustable metal-buckle straps, a roomy chest pocket, and a wide-leg silhouette. Goes with sneakers, boots, or bare feet in the garden.",
+    "price": 72.99,
+    "category": "Clothes",
+    "rating": 4.5,
+    "reviewCount": 3876,
+    "imageUrl": "https://images.unsplash.com/photo-1624378702527-ad1f59b0b24f?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-17",
+    "name": "Knit Beanie Cable Pattern",
+    "description": "A chunky cable-knit beanie in a soft acrylic-wool blend with a slouchy fit and a folded ribbed cuff. Comes in oat, rust, sage, and charcoal — one size stretches for most.",
+    "price": 18.99,
+    "category": "Clothes",
+    "rating": 4.6,
+    "reviewCount": 6543,
+    "imageUrl": "https://images.unsplash.com/photo-1620799139834-1c5a1a2d7a5f?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-16",
+    "name": "Laptop Stand Adjustable",
+    "description": "A brushed-aluminum laptop stand with six height settings and a hinged base that folds flat into a laptop bag. Lifts your screen to eye level, lets air flow underneath.",
+    "price": 32.99,
+    "category": "Electronics",
+    "rating": 4.7,
+    "reviewCount": 16234,
+    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-17",
+    "name": "True Wireless Earbuds",
+    "description": "True wireless earbuds with an 8-hour single-charge battery (32 with the case), touch controls, IPX5 sweat resistance, and low-latency pairing. Budget price, not-budget sound.",
+    "price": 59.99,
+    "category": "Electronics",
+    "rating": 4.5,
+    "reviewCount": 11876,
+    "imageUrl": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-16",
+    "name": "Acacia Wood Serving Board",
+    "description": "A large food-safe acacia wood serving and charcuterie board with a deep juice groove and cutout side handles. Grain pattern is beautiful; it's also a real cutting board.",
+    "price": 38.99,
+    "category": "Home Goods",
+    "rating": 4.8,
+    "reviewCount": 7234,
+    "imageUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-17",
+    "name": "Linen Storage Baskets Set",
+    "description": "A nesting set of three collapsible linen storage baskets with leather cutout handles and a sturdy wire frame. Hides the chaos in closets, shelves, and laundry rooms.",
+    "price": 42.99,
+    "category": "Home Goods",
+    "rating": 4.6,
+    "reviewCount": 4321,
+    "imageUrl": "https://images.unsplash.com/photo-1555041469-db97920b7a35?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-16",
+    "name": "Hyaluronic Acid Lip Plumper",
+    "description": "A clear, cinnamon-tingle lip plumper with hyaluronic acid and peptides that leaves lips visibly fuller and glossier. No needles, no stinging, wears smooth under lipstick.",
+    "price": 19.99,
+    "category": "Beauty",
+    "rating": 4.3,
+    "reviewCount": 8765,
+    "imageUrl": "https://images.unsplash.com/photo-1620916297397-a4a5e3b3e4c2?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-17",
+    "name": "Coffee Scrub Body Polish",
+    "description": "An energizing ground-coffee and coconut-oil body scrub that polishes skin, softens the look of cellulite, and wakes you up faster than your actual coffee.",
+    "price": 24.99,
+    "category": "Beauty",
+    "rating": 4.5,
+    "reviewCount": 6432,
+    "imageUrl": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-16",
+    "name": "Ab Wheel Roller",
+    "description": "A dual-wheel ab roller with non-slip textured handles and a thick foam knee pad. Humbling on day one, a core-building staple by day ten.",
+    "price": 18.99,
+    "category": "Sports",
+    "rating": 4.5,
+    "reviewCount": 12345,
+    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-17",
+    "name": "Pickleball Paddle Set",
+    "description": "A beginner-friendly pickleball kit with two graphite-face paddles, four outdoor balls, and a zippered carry bag. Everything two people need to get hooked in one afternoon.",
+    "price": 44.99,
+    "category": "Sports",
+    "rating": 4.6,
+    "reviewCount": 5678,
+    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
   }
 ]
