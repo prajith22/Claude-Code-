@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { Sport } from "@/types";
+import type { PlayerProp, Sport } from "@/types";
 
 // Only these four sports support player props. Everything else returns [].
 const SPORT_KEYS: Partial<Record<Sport, string>> = {
@@ -44,14 +44,7 @@ const MARKET_LABELS: Record<string, string> = {
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 const LOOKAHEAD_MS = 48 * 60 * 60 * 1000; // 48 hours
 
-export type PlayerProp = {
-  marketKey: string; // e.g. "player_pass_yds"
-  marketLabel: string; // e.g. "Passing Yards"
-  playerName: string;
-  line: number;
-  overOdds: number;
-  underOdds: number;
-};
+export type { PlayerProp };
 
 export function sportSupportsProps(sport: Sport): boolean {
   return !!PROP_MARKETS[sport];

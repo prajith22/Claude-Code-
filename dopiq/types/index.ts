@@ -104,3 +104,12 @@ export type SpendingEntry = {
   note: string | null;
   date: string;
 };
+
+export type PlayerProp = {
+  marketKey: string; // e.g. "player_pass_yds"
+  marketLabel: string; // e.g. "Passing Yards"
+  playerName: string;
+  line: number;
+  overOdds: number;
+  underOdds: number;
+};
