@@ -548,5 +548,105 @@
     "rating": 4.5,
     "reviewCount": 3987,
     "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-12",
+    "name": "Satin Slip Dress",
+    "description": "A midi-length satin slip dress with adjustable spaghetti straps, a cowl V-neck, and a subtle sheen. Throws on with sneakers, layers under a blazer, goes anywhere.",
+    "price": 52.99,
+    "category": "Clothes",
+    "rating": 4.6,
+    "reviewCount": 4321,
+    "imageUrl": "https://images.unsplash.com/photo-1595777457593-5b3a4a4c3a4b?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-13",
+    "name": "Sherpa Lined Flannel Shirt",
+    "description": "A heavyweight cotton flannel shirt lined with plush sherpa, button front, and dual chest pockets. Functions as both a shirt and a jacket on a 45° morning.",
+    "price": 68.99,
+    "category": "Clothes",
+    "rating": 4.7,
+    "reviewCount": 3654,
+    "imageUrl": "https://images.unsplash.com/photo-1620799139834-1c5a1a2d7a5f?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-12",
+    "name": "Mini Projector Portable",
+    "description": "A pocket-sized 1080p projector with a built-in speaker, HDMI and USB inputs, and a throw big enough for a 120-inch movie on any blank wall.",
+    "price": 129.99,
+    "category": "Electronics",
+    "rating": 4.5,
+    "reviewCount": 6234,
+    "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-13",
+    "name": "Cable Management Box",
+    "description": "A large cable-management box with a flip-top lid that hides power strips, router bricks, and octopus cords. Turns the corner behind your desk from ugly to invisible.",
+    "price": 22.99,
+    "category": "Electronics",
+    "rating": 4.6,
+    "reviewCount": 9876,
+    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-12",
+    "name": "Cast Iron Skillet 12 inch",
+    "description": "A 12-inch pre-seasoned cast iron skillet that works on gas, electric, induction, and open fire. Gets better with every sear — a genuinely lifetime pan.",
+    "price": 44.99,
+    "category": "Home Goods",
+    "rating": 4.9,
+    "reviewCount": 15432,
+    "imageUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-13",
+    "name": "Blackout Curtains Set",
+    "description": "A pair of thermal-insulated blackout curtains that block 99% of light, dampen outside noise, and take the edge off drafty windows in winter.",
+    "price": 54.99,
+    "category": "Home Goods",
+    "rating": 4.7,
+    "reviewCount": 8765,
+    "imageUrl": "https://images.unsplash.com/photo-1555041469-db97920b7a35?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-12",
+    "name": "Konjac Facial Sponge Set",
+    "description": "A set of four natural konjac sponges — pure, charcoal, green tea, and red clay — for a different gentle cleanse every day of the week.",
+    "price": 16.99,
+    "category": "Beauty",
+    "rating": 4.4,
+    "reviewCount": 6543,
+    "imageUrl": "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-13",
+    "name": "Tinted Lip Oil",
+    "description": "A nourishing sheer tinted lip oil with vitamin E and jojoba that leaves lips glossy, hydrated, and a pinch more flushed than they were.",
+    "price": 14.99,
+    "category": "Beauty",
+    "rating": 4.5,
+    "reviewCount": 7891,
+    "imageUrl": "https://images.unsplash.com/photo-1620916297397-a4a5e3b3e4c2?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-12",
+    "name": "Ankle Weights Set",
+    "description": "A pair of adjustable ankle weights, 1–5 lbs each, with soft neoprene sleeves and velcro straps. Tacks onto a walk or pilates class for a sneaky extra burn.",
+    "price": 26.99,
+    "category": "Sports",
+    "rating": 4.6,
+    "reviewCount": 8432,
+    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-13",
+    "name": "Sport Sunscreen SPF 70",
+    "description": "A water-resistant sport sunscreen in a non-greasy SPF 70 formula. Reef-safe, doesn't sting eyes when you sweat, rubs in without a ghost cast.",
+    "price": 18.99,
+    "category": "Sports",
+    "rating": 4.5,
+    "reviewCount": 5678,
+    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
   }
 ]
