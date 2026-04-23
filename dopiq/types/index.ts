@@ -44,7 +44,6 @@ export type Restaurant = {
   rating: number;
   deliveryTime: string;
   deliveryFee: number;
-  imageUrl: string;
   menu: MenuItem[];
 };
 

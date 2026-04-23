@@ -1,10 +1,10 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import restaurants from "@/data/restaurants.json";
 import type { Restaurant } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import { AddMenuItemButton } from "@/components/AddMenuItemButton";
 import { RestaurantCheckoutBar } from "@/components/RestaurantCheckoutBar";
+import { RestaurantLogo } from "@/components/RestaurantLogo";
 
 export default function RestaurantPage({
   params,
@@ -25,19 +25,16 @@ export default function RestaurantPage({
   return (
     <div className="space-y-6 pb-28">
       {/* Hero banner */}
-      <div className="relative -mx-4 h-52 overflow-hidden bg-surface-alt md:mx-0 md:rounded-card">
-        <Image
-          src={r.imageUrl}
-          alt={r.name}
-          fill
-          sizes="(max-width: 768px) 100vw, 48rem"
-          priority
-          className="object-cover"
+      <div className="relative -mx-4 h-[200px] overflow-hidden bg-surface-alt md:mx-0 md:rounded-card">
+        <RestaurantLogo
+          name={r.name}
+          variant="banner"
+          className="absolute inset-0 flex h-full w-full items-center justify-center"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent" />
         <div className="absolute bottom-4 left-4 right-4">
           <p className="text-[22px] font-bold text-white leading-tight">{r.name}</p>
-          <p className="mt-0.5 text-[13px] text-white/70">
+          <p className="mt-0.5 text-[13px] text-white/80">
             {r.cuisine} · ★ {r.rating.toFixed(1)} · {r.deliveryTime} ·{" "}
             {formatUSD(r.deliveryFee)} delivery
           </p>

@@ -6,7 +6,6 @@
     "rating": 4.7,
     "deliveryTime": "20-35 min",
     "deliveryFee": 1.99,
-    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=500&q=80&auto=format&fit=crop",
     "menu": [
       {
         "id": "r-pizza-1-m1",
@@ -19,7 +18,7 @@
         "id": "r-pizza-1-m2",
         "name": "Spicy Pepperoni",
         "description": "Cup-and-char pepperoni with hot honey drizzle on a crispy-bottom crust.",
-        "price": 19.0,
+        "price": 19,
         "category": "Pizzas"
       },
       {
@@ -38,7 +37,6 @@
     "rating": 4.3,
     "deliveryTime": "15-25 min",
     "deliveryFee": 1.99,
-    "imageUrl": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&h=500&q=80&auto=format&fit=crop",
     "menu": [
       {
         "id": "r-golden-arch-m1",
@@ -140,7 +138,6 @@
     "rating": 4.5,
     "deliveryTime": "20-30 min",
     "deliveryFee": 0.99,
-    "imageUrl": "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?w=800&h=500&q=80&auto=format&fit=crop",
     "menu": [
       {
         "id": "r-canyon-burrito-m1",
@@ -228,7 +225,6 @@
     "rating": 4.6,
     "deliveryTime": "20-35 min",
     "deliveryFee": 1.49,
-    "imageUrl": "https://images.unsplash.com/photo-1598514983318-2f5e4f06cf89?w=800&h=500&q=80&auto=format&fit=crop",
     "menu": [
       {
         "id": "r-southern-cluck-m1",
@@ -323,7 +319,6 @@
     "rating": 4.1,
     "deliveryTime": "15-25 min",
     "deliveryFee": 0.99,
-    "imageUrl": "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?w=800&h=500&q=80&auto=format&fit=crop",
     "menu": [
       {
         "id": "r-taco-mirage-m1",
@@ -408,10 +403,9 @@
     "id": "r-sub-station",
     "name": "The Sub Station",
     "cuisine": "Sandwiches",
-    "rating": 4.0,
+    "rating": 4,
     "deliveryTime": "15-25 min",
     "deliveryFee": 1.99,
-    "imageUrl": "https://images.unsplash.com/photo-1539252554453-80ab65ce3586?w=800&h=500&q=80&auto=format&fit=crop",
     "menu": [
       {
         "id": "r-sub-station-m1",
@@ -506,7 +500,6 @@
     "rating": 4.2,
     "deliveryTime": "25-40 min",
     "deliveryFee": 2.99,
-    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=500&q=80&auto=format&fit=crop",
     "menu": [
       {
         "id": "r-slice-district-m1",
@@ -601,7 +594,6 @@
     "rating": 4.4,
     "deliveryTime": "20-35 min",
     "deliveryFee": 1.49,
-    "imageUrl": "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800&h=500&q=80&auto=format&fit=crop",
     "menu": [
       {
         "id": "r-dragon-wok-m1",
@@ -703,7 +695,6 @@
     "rating": 4.7,
     "deliveryTime": "20-30 min",
     "deliveryFee": 1.99,
-    "imageUrl": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&h=500&q=80&auto=format&fit=crop",
     "menu": [
       {
         "id": "r-five-brothers-m1",
@@ -798,7 +789,6 @@
     "rating": 4.6,
     "deliveryTime": "20-30 min",
     "deliveryFee": 2.49,
-    "imageUrl": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&h=500&q=80&auto=format&fit=crop",
     "menu": [
       {
         "id": "r-shack-shake-m1",
@@ -907,7 +897,6 @@
     "rating": 4.3,
     "deliveryTime": "25-35 min",
     "deliveryFee": 1.99,
-    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=500&q=80&auto=format&fit=crop",
     "menu": [
       {
         "id": "r-wing-republic-m1",
