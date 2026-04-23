@@ -48,7 +48,17 @@ export type Restaurant = {
   menu: MenuItem[];
 };
 
-export type Sport = "NFL" | "NBA";
+export type Sport =
+  | "NFL"
+  | "NBA"
+  | "MLB"
+  | "NHL"
+  | "NCAAF"
+  | "NCAAB"
+  | "MLS"
+  | "Boxing"
+  | "UFC"
+  | "Golf";
 
 export type GameOdds = {
   moneylineHome: number;
