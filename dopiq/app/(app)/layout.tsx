@@ -10,7 +10,7 @@ export default async function AppLayout({
   await requireOnboardedSubscribedUser();
 
   return (
-    <div className="min-h-[100dvh] bg-white">
+    <div className="min-h-[100dvh]">
       <TopNav />
       <main className="mx-auto max-w-2xl px-4 pt-4 pb-28 md:max-w-4xl md:pb-10">
         {children}
