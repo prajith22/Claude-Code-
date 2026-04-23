@@ -1,38 +1,59 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, useAnimation } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
 
 type Sector = {
   key: "shop" | "food" | "bet";
   label: string;
+  emoji: string;
   href: string;
   fill: string;
   textColor: string;
-  centerDeg: number; // measured clockwise from top
+  centerDeg: number; // measured clockwise from the top
 };
 
 // Sectors rendered with centers at 0°, 120°, 240° from the top.
 // Colors match the home simulator cards.
 const SECTORS: Sector[] = [
-  { key: "shop", label: "Shop", href: "/shop", fill: "#E8E3FF", textColor: "#4C1D95", centerDeg: 0 },
-  { key: "food", label: "Food", href: "/food", fill: "#FFF3CD", textColor: "#78350F", centerDeg: 120 },
-  { key: "bet",  label: "Bet",  href: "/bet",  fill: "#DBEAFE", textColor: "#1E3A8A", centerDeg: 240 },
+  {
+    key: "shop",
+    label: "Shop",
+    emoji: "🛍️",
+    href: "/shop",
+    fill: "#E8E3FF",
+    textColor: "#4C1D95",
+    centerDeg: 0,
+  },
+  {
+    key: "food",
+    label: "Food",
+    emoji: "🍔",
+    href: "/food",
+    fill: "#FFF3CD",
+    textColor: "#78350F",
+    centerDeg: 120,
+  },
+  {
+    key: "bet",
+    label: "Bet",
+    emoji: "🎰",
+    href: "/bet",
+    fill: "#DBEAFE",
+    textColor: "#1E3A8A",
+    centerDeg: 240,
+  },
 ];
 
-const STORAGE_KEY = "dopiq-spin-date";
 const CX = 100;
 const CY = 100;
 const R = 92;
+const SPIN_MS = 2800;
+const TURNS = 6;
+const EASING = "cubic-bezier(0.17, 0.67, 0.15, 1)";
 
-function todayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-// Build an SVG path for a pie slice from start→end angles, measured in degrees
-// clockwise from the top (12 o'clock).
-function slicePath(startDeg: number, endDeg: number) {
+function slicePath(startDeg: number, endDeg: number): string {
   const toRad = (d: number) => ((d - 90) * Math.PI) / 180;
   const s = toRad(startDeg);
   const e = toRad(endDeg);
@@ -52,7 +73,6 @@ function playLandingSound() {
       (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!AudioCtx) return;
     const ctx = new AudioCtx();
-    // Two-tone bell: perfect fifth, quick decay
     [880, 1320].forEach((freq, i) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -67,177 +87,180 @@ function playLandingSound() {
       osc.stop(start + 0.5);
     });
   } catch {
-    // AudioContext blocked or unavailable — silently skip.
+    // AudioContext blocked / unavailable — silently skip
   }
 }
 
 export function DailySpinWheel() {
-  const router = useRouter();
-  const controls = useAnimation();
-  const [mounted, setMounted] = useState(false);
-  const [hasSpunToday, setHasSpunToday] = useState(false);
+  const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [landedIdx, setLandedIdx] = useState<number | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      setHasSpunToday(stored === todayKey());
-    } catch {
-      setHasSpunToday(false);
-    }
-    setMounted(true);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, []);
 
-  async function spin() {
-    if (spinning || hasSpunToday) return;
-    setSpinning(true);
+  function spin() {
+    if (spinning) return;
     setLandedIdx(null);
+    setSpinning(true);
 
     const idx = Math.floor(Math.random() * SECTORS.length);
-    const sector = SECTORS[idx];
+    const sectorCenter = SECTORS[idx].centerDeg;
 
-    // Aim the wheel so sector N's center lands at the top pointer.
-    // We want `(centerDeg + rotation) mod 360 === 0`, so rotate by -centerDeg.
-    // Add 5 full turns + a small jitter inside the wedge so it doesn't always
-    // land dead center.
-    const jitter = Math.random() * 70 - 35; // ±35° (wedge is 120° wide)
-    const finalRotation = 5 * 360 + ((360 - sector.centerDeg) % 360) + jitter;
+    // For sector N's center to land at the top (0°), total rotation modulo
+    // 360 must equal (360 - centerDeg) % 360. Compute how far to travel
+    // clockwise from the current visual position, add TURNS full turns.
+    const targetMod = (360 - sectorCenter) % 360;
+    const currentMod = ((rotation % 360) + 360) % 360;
+    let travel = targetMod - currentMod;
+    if (travel <= 0) travel += 360;
+    const next = rotation + TURNS * 360 + travel;
 
-    await controls.start({
-      rotate: finalRotation,
-      transition: { duration: 2.6, ease: [0.17, 0.67, 0.15, 1.0] },
-    });
+    setRotation(next);
 
-    playLandingSound();
-    setLandedIdx(idx);
-
-    try {
-      localStorage.setItem(STORAGE_KEY, todayKey());
-    } catch {
-      // ignore
-    }
-
-    setTimeout(() => {
-      router.push(sector.href);
-    }, 1000);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setSpinning(false);
+      setLandedIdx(idx);
+      playLandingSound();
+    }, SPIN_MS);
   }
 
-  const landedSector = landedIdx != null ? SECTORS[landedIdx] : null;
-
-  // Don't render until we know the localStorage state — avoids flicker.
-  if (!mounted) {
-    return <div className="h-[360px]" aria-hidden />;
-  }
+  const landed = landedIdx !== null ? SECTORS[landedIdx] : null;
 
   return (
     <div className="flex flex-col items-center gap-5">
-      <div className="relative">
-        {/* Pointer */}
+      {/* Wheel */}
+      <div className="relative h-[240px] w-[240px] md:h-[280px] md:w-[280px]">
+        {/* Fixed pointer */}
         <svg
-          width="28"
-          height="22"
-          viewBox="0 0 28 22"
-          className="absolute left-1/2 top-[-6px] z-10 -translate-x-1/2 drop-shadow-md"
+          width="32"
+          height="26"
+          viewBox="0 0 32 26"
+          className="absolute left-1/2 top-[-8px] z-10 -translate-x-1/2 drop-shadow-md"
           aria-hidden
         >
-          <path d="M14 22 L2 2 L26 2 Z" fill="#0A0F1E" />
+          <path d="M16 26 L2 2 L30 2 Z" fill="#0A0F1E" />
         </svg>
 
-        {/* Wheel */}
-        <svg
-          width="260"
-          height="260"
-          viewBox="0 0 200 200"
-          className="drop-shadow-[0_10px_32px_rgba(10,15,30,0.18)]"
-          role="img"
-          aria-label="Daily spin wheel"
+        {/* Rotating wheel — plain CSS transform + transition */}
+        <div
+          className="h-full w-full"
+          style={{
+            transform: `rotate(${rotation}deg)`,
+            transition: `transform ${SPIN_MS}ms ${EASING}`,
+            willChange: "transform",
+          }}
         >
-          {/* Outer ring */}
-          <circle cx={CX} cy={CY} r={R + 4} fill="#0A0F1E" />
-
-          <motion.g
-            animate={controls}
-            initial={{ rotate: 0 }}
-            style={{ transformBox: "fill-box", transformOrigin: "center" }}
+          <svg
+            viewBox="0 0 200 200"
+            className="h-full w-full drop-shadow-[0_10px_32px_rgba(10,15,30,0.18)]"
+            role="img"
+            aria-label="Spin wheel"
           >
+            {/* Outer dark ring */}
+            <circle cx={CX} cy={CY} r={R + 4} fill="#0A0F1E" />
+
             {SECTORS.map((sector, i) => {
               const start = sector.centerDeg - 60;
               const end = sector.centerDeg + 60;
               const isWinner = landedIdx === i;
-              // Place label at 60% of radius from center of the sector
               const labelAngle = ((sector.centerDeg - 90) * Math.PI) / 180;
-              const labelX = CX + R * 0.62 * Math.cos(labelAngle);
-              const labelY = CY + R * 0.62 * Math.sin(labelAngle);
+              const labelRadius = R * 0.58;
+              const labelX = CX + labelRadius * Math.cos(labelAngle);
+              const labelY = CY + labelRadius * Math.sin(labelAngle);
               return (
                 <g key={sector.key}>
-                  <motion.path
+                  <path
                     d={slicePath(start, end)}
                     fill={sector.fill}
                     stroke="#FFFFFF"
                     strokeWidth={2}
-                    animate={{
+                    style={{
                       filter: isWinner
-                        ? `drop-shadow(0 0 18px ${sector.fill})`
-                        : "drop-shadow(0 0 0px transparent)",
+                        ? `drop-shadow(0 0 12px ${sector.fill}) drop-shadow(0 0 22px ${sector.fill})`
+                        : "none",
+                      transition: "filter 0.35s ease",
                     }}
-                    transition={{ duration: 0.3 }}
                   />
-                  <text
-                    x={labelX}
-                    y={labelY}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    transform={`rotate(${sector.centerDeg} ${labelX} ${labelY})`}
-                    fontSize={18}
-                    fontWeight={800}
-                    fill={sector.textColor}
-                    style={{ fontFamily: "var(--font-sora)" }}
+                  <g
+                    transform={`translate(${labelX}, ${labelY}) rotate(${sector.centerDeg})`}
                   >
-                    {sector.label}
-                  </text>
+                    <text
+                      x={0}
+                      y={-8}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fontSize={22}
+                    >
+                      {sector.emoji}
+                    </text>
+                    <text
+                      x={0}
+                      y={14}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fontSize={14}
+                      fontWeight={800}
+                      fill={sector.textColor}
+                      style={{ fontFamily: "var(--font-sora)" }}
+                    >
+                      {sector.label}
+                    </text>
+                  </g>
                 </g>
               );
             })}
-          </motion.g>
 
-          {/* Center hub */}
-          <circle cx={CX} cy={CY} r={10} fill="#0A0F1E" />
-          <circle cx={CX} cy={CY} r={4} fill="#00C853" />
-        </svg>
+            {/* Center hub */}
+            <circle cx={CX} cy={CY} r={12} fill="#0A0F1E" />
+            <circle cx={CX} cy={CY} r={5} fill="#00C853" />
+          </svg>
+        </div>
       </div>
 
-      {/* Button */}
-      {hasSpunToday && landedIdx === null ? (
-        <div className="w-full max-w-xs rounded-pill border border-surface-border bg-white px-6 py-3.5 text-center text-[14px] font-semibold text-ink-muted">
-          Come back tomorrow for another spin
-        </div>
-      ) : (
-        <motion.button
-          type="button"
-          onClick={spin}
-          disabled={spinning || landedIdx !== null}
-          whileTap={landedIdx === null && !spinning ? { scale: 0.94 } : undefined}
-          whileHover={landedIdx === null && !spinning ? { scale: 1.03 } : undefined}
-          animate={
-            landedIdx === null && !spinning
-              ? { y: [0, -3, 0] }
-              : { y: 0 }
-          }
-          transition={
-            landedIdx === null && !spinning
-              ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
-              : { duration: 0.2 }
-          }
-          className="btn-primary w-full max-w-xs disabled:opacity-100"
-        >
-          {landedSector
-            ? `Going to ${landedSector.label}…`
-            : spinning
-              ? "Spinning…"
-              : "Spin to simulate"}
-        </motion.button>
-      )}
+      {/* Spin button */}
+      <motion.button
+        type="button"
+        onClick={spin}
+        disabled={spinning}
+        whileTap={!spinning ? { scale: 0.94 } : undefined}
+        whileHover={!spinning ? { scale: 1.03 } : undefined}
+        animate={!spinning && !landed ? { y: [0, -3, 0] } : { y: 0 }}
+        transition={
+          !spinning && !landed
+            ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
+            : { duration: 0.2 }
+        }
+        className="btn-primary w-full max-w-xs disabled:opacity-100"
+      >
+        {spinning ? "Spinning…" : landed ? "Spin again" : "Spin to simulate"}
+      </motion.button>
+
+      {/* Result card */}
+      <AnimatePresence>
+        {landed && !spinning && (
+          <motion.div
+            key="result"
+            initial={{ opacity: 0, y: 12, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            className="card w-full max-w-xs p-5 text-center"
+          >
+            <p className="text-[18px] font-bold text-ink">
+              You landed on {landed.label}! 🎉
+            </p>
+            <Link href={landed.href} className="btn-primary mt-4 w-full">
+              Let&rsquo;s go →
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
