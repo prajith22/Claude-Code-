@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
 import { DailySpinWheel } from "@/components/DailySpinWheel";
+import { SimCard } from "@/components/SimCard";
 
 export default async function HomePage() {
   await requireOnboardedSubscribedUser();
@@ -27,6 +27,7 @@ export default async function HomePage() {
           title="text-[#4C1D95]"
           sub="text-[#4C1D95]/70"
           icon={<BagIcon />}
+          delay={0}
         />
         <SimCard
           href="/food"
@@ -36,6 +37,7 @@ export default async function HomePage() {
           title="text-[#78350F]"
           sub="text-[#78350F]/70"
           icon={<ForkIcon />}
+          delay={0.15}
         />
         <SimCard
           href="/bet"
@@ -45,46 +47,10 @@ export default async function HomePage() {
           title="text-[#1E3A8A]"
           sub="text-[#1E3A8A]/70"
           icon={<TicketIcon />}
+          delay={0.3}
         />
       </div>
     </div>
-  );
-}
-
-function SimCard({
-  href,
-  label,
-  desc,
-  bg,
-  title,
-  sub,
-  icon,
-}: {
-  href: string;
-  label: string;
-  desc: string;
-  bg: string;
-  title: string;
-  sub: string;
-  icon: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className={`group flex min-h-[160px] flex-col justify-between rounded-card p-4 transition-all duration-150 hover:scale-[1.02] hover:shadow-cardHover md:p-5 ${bg}`}
-    >
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-navy text-white">
-        {icon}
-      </span>
-      <div>
-        <p className={`text-[20px] font-bold leading-tight md:text-[22px] ${title}`}>
-          {label}
-        </p>
-        <p className={`mt-1 text-[12px] leading-snug md:text-[13px] ${sub}`}>
-          {desc}
-        </p>
-      </div>
-    </Link>
   );
 }
 
