@@ -1,11 +1,11 @@
 import Link from "next/link";
-import Image from "next/image";
 import restaurants from "@/data/restaurants.json";
 import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
 import { formatUSD } from "@/lib/utils";
 import type { Restaurant, Cuisine, FoodPrefs } from "@/types";
 import { CartButton } from "@/components/CartButton";
 import { FoodPromoBanner } from "@/components/FoodPromoBanner";
+import { RestaurantLogo } from "@/components/RestaurantLogo";
 
 export default async function FoodPage() {
   const user = await requireOnboardedSubscribedUser();
@@ -92,14 +92,12 @@ export default async function FoodPage() {
               href={`/food/${r.id}`}
               className="group card overflow-hidden transition-all duration-150 hover:shadow-cardHover active:scale-[0.995]"
             >
-              {/* Large banner image */}
+              {/* Large banner logo */}
               <div className="relative h-44 w-full overflow-hidden bg-surface-alt md:h-52">
-                <Image
-                  src={r.imageUrl}
-                  alt={r.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 48rem"
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                <RestaurantLogo
+                  name={r.name}
+                  variant="banner"
+                  className="absolute inset-0 flex h-full w-full items-center justify-center transition-transform duration-300 group-hover:scale-105"
                 />
                 {/* Open Now badge */}
                 <span className="absolute left-3 top-3 flex items-center gap-1.5 rounded-pill bg-navy/80 px-3 py-1.5 backdrop-blur-sm">
