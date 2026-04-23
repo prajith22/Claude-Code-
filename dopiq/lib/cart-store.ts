@@ -15,10 +15,12 @@ export type CartLine = {
 };
 
 type CartState = Record<CartKind, CartLine[]> & {
+  wishlist: string[];
   add: (kind: CartKind, line: CartLine) => void;
   remove: (kind: CartKind, id: string) => void;
   setQty: (kind: CartKind, id: string, qty: number) => void;
   clear: (kind: CartKind) => void;
+  toggleWishlist: (id: string) => void;
 };
 
 export const useCartStore = create<CartState>()(
@@ -26,6 +28,7 @@ export const useCartStore = create<CartState>()(
     (set) => ({
       shop: [],
       food: [],
+      wishlist: [],
       add: (kind, line) =>
         set((state) => {
           const existing = state[kind].find((x) => x.id === line.id);
@@ -49,6 +52,13 @@ export const useCartStore = create<CartState>()(
             .filter((x) => x.qty > 0),
         })),
       clear: (kind) => set((state) => ({ ...state, [kind]: [] })),
+      toggleWishlist: (id) =>
+        set((state) => ({
+          ...state,
+          wishlist: state.wishlist.includes(id)
+            ? state.wishlist.filter((x) => x !== id)
+            : [...state.wishlist, id],
+        })),
     }),
     { name: "dopiq-cart-v1" },
   ),
