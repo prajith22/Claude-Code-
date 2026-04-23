@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
-import games from "@/data/games.json";
-import type { Game } from "@/types";
 import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
 import { prisma } from "@/lib/prisma";
+import { getAllOdds } from "@/lib/odds";
 import { BetSlip } from "@/components/BetSlip";
 import { formatUSD } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
 
 export default async function GameDetailPage({
   params,
@@ -12,7 +13,8 @@ export default async function GameDetailPage({
   params: { id: string };
 }) {
   const user = await requireOnboardedSubscribedUser();
-  const g = (games as Game[]).find((x) => x.id === params.id);
+  const { nfl, nba } = await getAllOdds();
+  const g = [...nfl, ...nba].find((x) => x.id === params.id);
   if (!g) notFound();
   const wallet = await prisma.fakeWallet.findUnique({
     where: { userId: user.id },

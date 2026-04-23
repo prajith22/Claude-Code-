@@ -102,3 +102,12 @@ model SpendingLog {
 
   @@index([userId, date])
 }
+
+// Caches The Odds API responses per sport so we don't burn API quota.
+// `sport` is "NFL" or "NBA". `data` stores the raw API JSON.
+// Refreshed every 3 hours by lib/odds.ts.
+model OddsCache {
+  sport     String   @id
+  data      Json
+  fetchedAt DateTime
+}
