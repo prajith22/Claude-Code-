@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FFFFFF",
+  themeColor: "#FAFAF8",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -44,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="bg-white text-ink antialiased">
+      <body className="text-ink antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>

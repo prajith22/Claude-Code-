@@ -73,7 +73,7 @@ export function OnboardingFlow() {
     step === 2;
 
   return (
-    <main className="mx-auto flex min-h-[100dvh] max-w-md flex-col bg-white px-6 pt-8 pb-6 safe-top">
+    <main className="mx-auto flex min-h-[100dvh] max-w-md flex-col px-6 pt-8 pb-6 safe-top">
       <StepDots count={3} current={step} />
       <div className="mt-6 flex-1">
         <AnimatePresence mode="wait">

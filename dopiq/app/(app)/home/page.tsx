@@ -1,93 +1,145 @@
 import Link from "next/link";
 import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
-import { trialDaysRemaining } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { formatUSD } from "@/lib/utils";
 
 export default async function HomePage() {
   const user = await requireOnboardedSubscribedUser();
-  const wallet = await prisma.fakeWallet.findUnique({ where: { userId: user.id } });
-  const trialLeft = trialDaysRemaining(user.trialStartDate);
-  const showTrial = user.subscriptionStatus === "trialing" && trialLeft > 0;
-  const firstName = user.name?.split(" ")[0] ?? "there";
+  const wallet = await prisma.fakeWallet.findUnique({
+    where: { userId: user.id },
+  });
 
   return (
-    <div className="space-y-5 pb-4">
-      {/* Hero card */}
-      <div className="card-navy px-6 py-8 md:px-8">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-[13px] font-medium text-brand uppercase tracking-widest">
-              Welcome back
-            </p>
-            <h1 className="mt-1 text-[30px] font-bold leading-tight tracking-tight text-white md:text-[36px]">
-              Hey, {firstName}.
-            </h1>
-            <p className="mt-1 text-[15px] text-white/60">
-              Spend it all. Keep it all.
-            </p>
-          </div>
-          {showTrial && (
-            <span className="flex-none rounded-pill bg-white/10 px-3 py-1.5 text-[12px] font-semibold text-white/80 whitespace-nowrap">
-              {trialLeft}d left
-            </span>
-          )}
-        </div>
+    <div className="space-y-6 pb-4">
+      {/* Hero tagline */}
+      <h1 className="text-[44px] font-extrabold leading-[1.05] tracking-tight text-ink md:text-[64px]">
+        The urge is real.
+        <br />
+        The charge isn&rsquo;t.
+      </h1>
 
-        <div className="mt-8 border-t border-white/10 pt-6">
-          <p className="text-[12px] font-semibold uppercase tracking-widest text-white/40">
-            Fake wallet
-          </p>
-          <p className="mt-1 text-[42px] font-bold tracking-tight text-brand money md:text-[52px]">
-            {formatUSD(wallet?.balance ?? 0)}
-          </p>
-          <p className="mt-1 text-[12px] text-white/40">Simulated balance · never real</p>
-        </div>
+      {/* Fake wallet card */}
+      <div className="card-navy px-8 py-10 md:px-10 md:py-12">
+        <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-brand">
+          Fake Wallet
+        </p>
+        <p className="mt-3 font-mono text-[56px] font-bold leading-none tracking-tight text-white md:text-[80px]">
+          {formatUSD(wallet?.balance ?? 0)}
+        </p>
+        <p className="mt-4 text-[13px] text-white/50">simulated · never real</p>
       </div>
 
-      {/* 2×2 simulator grid */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <SimCard href="/shop"    emoji="🛍️" label="Shop"    desc="Fake checkout" />
-        <SimCard href="/food"    emoji="🍔" label="Food"    desc="Order in" />
-        <SimCard href="/bet"     emoji="🎰" label="Bet"     desc="Fake money only" />
-        <SimCard href="/tracker" emoji="📊" label="Tracker" desc="Real spending" real />
+      {/* Three simulator cards */}
+      <div className="grid grid-cols-3 gap-3 md:gap-4">
+        <SimCard
+          href="/shop"
+          label="Shop"
+          desc="Fake checkout · Free dopamine"
+          bg="bg-[#E8E3FF]"
+          title="text-[#4C1D95]"
+          sub="text-[#4C1D95]/70"
+          icon={<BagIcon />}
+        />
+        <SimCard
+          href="/food"
+          label="Food"
+          desc="Order it, don't pay it"
+          bg="bg-[#FFF3CD]"
+          title="text-[#78350F]"
+          sub="text-[#78350F]/70"
+          icon={<ForkIcon />}
+        />
+        <SimCard
+          href="/bet"
+          label="Bet"
+          desc="Lose nothing. Win nothing."
+          bg="bg-[#DBEAFE]"
+          title="text-[#1E3A8A]"
+          sub="text-[#1E3A8A]/70"
+          icon={<TicketIcon />}
+        />
       </div>
     </div>
   );
 }
 
 function SimCard({
-  href, emoji, label, desc, real,
+  href,
+  label,
+  desc,
+  bg,
+  title,
+  sub,
+  icon,
 }: {
-  href: string; emoji: string; label: string; desc: string; real?: boolean;
+  href: string;
+  label: string;
+  desc: string;
+  bg: string;
+  title: string;
+  sub: string;
+  icon: React.ReactNode;
 }) {
   return (
     <Link
       href={href}
-      className="group card-navy flex flex-col gap-3 p-4 transition-all duration-150 hover:scale-[1.02] hover:shadow-navyHover md:p-5"
+      className={`group flex min-h-[160px] flex-col justify-between rounded-card p-4 transition-all duration-150 hover:scale-[1.02] hover:shadow-cardHover md:p-5 ${bg}`}
     >
-      <span className="text-[32px] leading-none">{emoji}</span>
-      <div>
-        <div className="flex items-center gap-2">
-          <p className="text-[16px] font-bold text-white">{label}</p>
-          {real && (
-            <span className="rounded-pill bg-brand px-2 py-0.5 text-[10px] font-bold text-navy">
-              REAL
-            </span>
-          )}
-        </div>
-        <p className="mt-0.5 text-[12px] text-white/50">{desc}</p>
-      </div>
-      <span className="mt-auto text-brand opacity-0 transition-opacity duration-150 group-hover:opacity-100 text-lg">
-        →
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-navy text-white">
+        {icon}
       </span>
+      <div>
+        <p className={`text-[20px] font-bold leading-tight md:text-[22px] ${title}`}>
+          {label}
+        </p>
+        <p className={`mt-1 text-[12px] leading-snug md:text-[13px] ${sub}`}>
+          {desc}
+        </p>
+      </div>
     </Link>
   );
 }
 
-/* inline tailwind arbitrary value shorthand */
-declare module "react" {
-  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
-    className?: string;
-  }
+function BagIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M5 8h14l-1 12H6L5 8Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9 8a3 3 0 1 1 6 0"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function ForkIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M8 3v7a3 3 0 0 0 3 3v8M14 3c2 0 3 2 3 5s-1 5-3 5v7"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function TicketIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
 }
