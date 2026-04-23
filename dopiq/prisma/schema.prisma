@@ -86,10 +86,21 @@ model SpendingLog {
 }
 
 // Caches The Odds API responses per sport so we don't burn API quota.
-// `sport` is "NFL" or "NBA". `data` stores the raw API JSON.
-// Refreshed every 3 hours by lib/odds.ts.
+// `sport` is the internal enum value (NFL, NBA, MLB, ...). `data`
+// stores the raw API JSON. Refreshed every 3 hours by lib/odds.ts.
 model OddsCache {
   sport     String   @id
+  data      Json
+  fetchedAt DateTime
+}
+
+// Caches player-props responses per game. Keyed by the upstream
+// event id. `sport` is the internal enum value (NFL/NBA/MLB/NHL —
+// other sports never get props). Refreshed every 1 hour by
+// lib/props.ts; only fetched for games within the next 48 hours.
+model PropsCache {
+  gameId    String   @id
+  sport     String
   data      Json
   fetchedAt DateTime
 }
