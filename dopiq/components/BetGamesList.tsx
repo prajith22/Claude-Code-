@@ -240,13 +240,16 @@ function ErrorCard({ message }: { message: string }) {
 
 function GameCard({ game: g }: { game: Game }) {
   const toggle = useBetSlipStore((s) => s.toggle);
-  const selectionKeys = useBetSlipStore((s) =>
-    s.selections.map((x) => x.key),
-  );
-  const selectionSet = new Set(selectionKeys);
+  // Read the whole selections array — Zustand keeps a stable ref between
+  // store updates, so useSyncExternalStore is happy. Deriving a new
+  // array or Set inside the selector would return a fresh reference on
+  // every read and trigger React's "Maximum update depth exceeded".
+  const selections = useBetSlipStore((s) => s.selections);
 
   function isActive(type: BetType, side: BetSide) {
-    return selectionSet.has(slipKey(g.id, type, side));
+    return selections.some(
+      (x) => x.gameId === g.id && x.type === type && x.side === side,
+    );
   }
 
   function pick(type: BetType, side: BetSide) {
