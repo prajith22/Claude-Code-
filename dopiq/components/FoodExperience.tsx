@@ -8,6 +8,7 @@ import type { Restaurant, Cuisine, FoodPrefs } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import { CartButton } from "@/components/CartButton";
 import { RestaurantLogo } from "@/components/RestaurantLogo";
+import { cardHover, cardHoverTransition } from "@/lib/card-hover";
 
 const STORAGE_KEY = "dopiq:food:favorites";
 const SAVED_FILTER = "__saved__";
@@ -397,10 +398,14 @@ function CompactCard({
   fullWidth?: boolean;
 }) {
   return (
-    <div className={`relative flex-none ${fullWidth ? "w-full" : "w-[220px]"}`}>
+    <motion.div
+      className={`relative flex-none ${fullWidth ? "w-full" : "w-[220px]"} card overflow-hidden`}
+      whileHover={cardHover}
+      transition={cardHoverTransition}
+    >
       <Link
         href={`/food/${r.id}`}
-        className="group card block overflow-hidden transition-all duration-150 hover:shadow-cardHover active:scale-[0.995]"
+        className="group block active:scale-[0.995]"
       >
         <div className="relative aspect-square w-full overflow-hidden bg-surface-alt">
           <RestaurantLogo name={r.name} className="h-full w-full" />
@@ -417,7 +422,7 @@ function CompactCard({
         </div>
       </Link>
       <HeartButton favorited={favorited} onClick={onToggleFavorite} />
-    </div>
+    </motion.div>
   );
 }
 
@@ -431,10 +436,14 @@ function RestaurantRow({
   onToggleFavorite: () => void;
 }) {
   return (
-    <div className="relative">
+    <motion.div
+      className="card relative overflow-hidden"
+      whileHover={cardHover}
+      transition={cardHoverTransition}
+    >
       <Link
         href={`/food/${r.id}`}
-        className="group card block overflow-hidden transition-all duration-150 hover:shadow-cardHover active:scale-[0.995]"
+        className="group block active:scale-[0.995]"
       >
         <div className="relative h-44 w-full overflow-hidden bg-surface-alt md:h-52">
           <RestaurantLogo
@@ -476,7 +485,7 @@ function RestaurantRow({
         </div>
       </Link>
       <HeartButton favorited={favorited} onClick={onToggleFavorite} />
-    </div>
+    </motion.div>
   );
 }
 

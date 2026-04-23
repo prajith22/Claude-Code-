@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import type { Product } from "@/types";
+import { cardHover, cardHoverTransition } from "@/lib/card-hover";
 
 export type CollectionId =
   | "summer-finds"
@@ -109,11 +110,13 @@ export function CollectionsGrid({
             .slice(0, 3);
           const isActive = active === c.id;
           return (
-            <button
+            <motion.button
               key={c.id}
               type="button"
               onClick={() => onSelect(isActive ? null : c.id)}
-              className={`group relative flex min-h-[140px] flex-col items-start justify-between overflow-hidden rounded-card p-4 text-left transition-all duration-150 hover:scale-[1.02] hover:shadow-cardHover ${c.bg} ${
+              whileHover={cardHover}
+              transition={cardHoverTransition}
+              className={`group relative flex min-h-[140px] flex-col items-start justify-between overflow-hidden rounded-card p-4 text-left ${c.bg} ${
                 isActive ? "ring-2 ring-navy ring-offset-2 ring-offset-[#FAFAF8]" : ""
               }`}
             >
@@ -140,7 +143,7 @@ export function CollectionsGrid({
                   </span>
                 ))}
               </div>
-            </button>
+            </motion.button>
           );
         })}
       </div>
