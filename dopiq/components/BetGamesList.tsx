@@ -1,15 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Game } from "@/types";
-import { formatOdds } from "@/lib/utils";
+import { cn, formatOdds } from "@/lib/utils";
 
-type OddsData = { nfl: Game[]; nba: Game[] };
+type SportKey =
+  | "nfl"
+  | "nba"
+  | "mlb"
+  | "nhl"
+  | "ncaaf"
+  | "ncaab"
+  | "mls"
+  | "boxing"
+  | "ufc"
+  | "golf";
+
+type OddsData = Record<SportKey, Game[]>;
+
+const SPORTS: { key: SportKey; label: string }[] = [
+  { key: "nfl", label: "NFL" },
+  { key: "nba", label: "NBA" },
+  { key: "mlb", label: "MLB" },
+  { key: "nhl", label: "NHL" },
+  { key: "ncaaf", label: "CFB" },
+  { key: "ncaab", label: "CBB" },
+  { key: "mls", label: "MLS" },
+  { key: "boxing", label: "Boxing" },
+  { key: "ufc", label: "UFC" },
+  { key: "golf", label: "Golf" },
+];
+
+const DEFAULT_SPORT: SportKey = "nfl";
 
 export function BetGamesList() {
   const [data, setData] = useState<OddsData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selected, setSelected] = useState<SportKey>(DEFAULT_SPORT);
+  const userPickedRef = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -22,85 +51,109 @@ export function BetGamesList() {
         if (!cancelled) setData(d);
       })
       .catch(() => {
-        if (!cancelled) setError("Couldn't load live odds. Try again in a moment.");
+        if (!cancelled)
+          setError("Couldn't load live odds. Try again in a moment.");
       });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  if (error) {
-    return (
-      <div className="card p-5 text-center">
-        <p className="text-[14px] text-red-700">{error}</p>
-      </div>
-    );
+  // Auto-switch default away from NFL if NFL has no games and user
+  // hasn't picked a tab yet. Falls back to the first sport with games.
+  useEffect(() => {
+    if (!data || userPickedRef.current) return;
+    if ((data[DEFAULT_SPORT]?.length ?? 0) > 0) return;
+    const firstNonEmpty = SPORTS.find((s) => (data[s.key]?.length ?? 0) > 0);
+    if (firstNonEmpty) setSelected(firstNonEmpty.key);
+  }, [data]);
+
+  function pick(key: SportKey) {
+    userPickedRef.current = true;
+    setSelected(key);
   }
 
-  if (!data) {
-    return (
-      <>
-        <SkeletonSection />
-        <SkeletonSection />
-      </>
-    );
-  }
+  const activeLabel = SPORTS.find((s) => s.key === selected)?.label ?? "";
+  const games = data?.[selected] ?? [];
 
-  return (
-    <>
-      <SportSection title="NFL" games={data.nfl} />
-      <SportSection title="NBA" games={data.nba} />
-    </>
-  );
-}
-
-function SkeletonSection() {
   return (
     <section>
-      <div className="mb-3 flex items-center gap-2">
-        <div className="h-5 w-12 animate-pulse rounded bg-surface-alt" />
-        <div className="h-2 w-2 rounded-full bg-surface-alt" />
-        <div className="h-3 w-8 animate-pulse rounded bg-surface-alt" />
-      </div>
-      <ul className="space-y-3">
-        {[0, 1, 2].map((i) => (
-          <li
-            key={i}
-            className="card h-[132px] animate-pulse bg-surface-alt"
+      {/* Sport selector */}
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0">
+        {SPORTS.map((s) => (
+          <SportTab
+            key={s.key}
+            label={s.label}
+            active={selected === s.key}
+            onClick={() => pick(s.key)}
           />
         ))}
-      </ul>
+      </div>
+
+      {/* Games area */}
+      <div className="mt-5">
+        {error ? (
+          <div className="card p-5 text-center">
+            <p className="text-[14px] text-red-700">{error}</p>
+          </div>
+        ) : !data ? (
+          <LoadingSkeleton />
+        ) : games.length === 0 ? (
+          <EmptyState label={activeLabel} />
+        ) : (
+          <ul className="space-y-3">
+            {games.map((g) => (
+              <GameCard key={g.id} game={g} />
+            ))}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }
 
-function SportSection({ title, games }: { title: string; games: Game[] }) {
+function SportTab({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
   return (
-    <section>
-      <div className="mb-3 flex items-center gap-2">
-        <h2 className="text-[17px] font-bold tracking-tight">{title}</h2>
-        <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-brand" />
-        </span>
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-brand">
-          Live
-        </span>
-      </div>
-      {games.length === 0 ? (
-        <div className="card p-6 text-center">
-          <p className="text-[14px] text-ink-muted">
-            No {title} games scheduled right now — check back soon.
-          </p>
-        </div>
-      ) : (
-        <ul className="space-y-3">
-          {games.map((g) => (
-            <GameCard key={g.id} game={g} />
-          ))}
-        </ul>
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "flex-none whitespace-nowrap rounded-pill px-4 py-2 text-[13px] font-semibold transition-all duration-150",
+        active
+          ? "bg-navy text-white shadow-navy"
+          : "border border-surface-border bg-white text-ink-muted hover:bg-surface-alt",
       )}
-    </section>
+    >
+      {label}
+    </button>
+  );
+}
+
+function EmptyState({ label }: { label: string }) {
+  return (
+    <div className="card p-8 text-center">
+      <p className="text-[14px] text-ink-muted">
+        No {label} games scheduled right now — check back soon.
+      </p>
+    </div>
+  );
+}
+
+function LoadingSkeleton() {
+  return (
+    <ul className="space-y-3">
+      {[0, 1, 2].map((i) => (
+        <li key={i} className="card h-[132px] animate-pulse bg-surface-alt" />
+      ))}
+    </ul>
   );
 }
 
