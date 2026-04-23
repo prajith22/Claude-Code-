@@ -65,32 +65,6 @@ function slicePath(startDeg: number, endDeg: number): string {
   return `M${CX},${CY} L${x1},${y1} A${R},${R} 0 ${largeArc} 1 ${x2},${y2} Z`;
 }
 
-function playLandingSound() {
-  try {
-    const AudioCtx =
-      (window as unknown as { AudioContext: typeof AudioContext; webkitAudioContext?: typeof AudioContext })
-        .AudioContext ||
-      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    [880, 1320].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "sine";
-      osc.frequency.value = freq;
-      const start = ctx.currentTime + i * 0.04;
-      gain.gain.setValueAtTime(0.0001, start);
-      gain.gain.exponentialRampToValueAtTime(0.35, start + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.5);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(start);
-      osc.stop(start + 0.5);
-    });
-  } catch {
-    // AudioContext blocked / unavailable — silently skip
-  }
-}
-
 export function DailySpinWheel() {
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
@@ -126,7 +100,6 @@ export function DailySpinWheel() {
     timerRef.current = setTimeout(() => {
       setSpinning(false);
       setLandedIdx(idx);
-      playLandingSound();
     }, SPIN_MS);
   }
 
