@@ -22,6 +22,8 @@ model User {
   shoppingPrefs        String[] @default([])
   foodPrefs            Json?
   createdAt            DateTime @default(now())
+  lastLoginDate        DateTime?
+  currentStreak        Int      @default(0)
 
   accounts     Account[]
   sessions     Session[]
