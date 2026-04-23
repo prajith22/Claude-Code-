@@ -148,5 +148,105 @@
     "rating": 4.8,
     "reviewCount": 11432,
     "imageUrl": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-4",
+    "name": "Wide Brim Bucket Hat",
+    "description": "An unstructured wide-brim bucket hat in washed cotton canvas. Packable, lightweight, and shades your whole face without flattening your hair.",
+    "price": 24.99,
+    "category": "Clothes",
+    "rating": 4.4,
+    "reviewCount": 1876,
+    "imageUrl": "https://images.unsplash.com/photo-1521369747768-cd2c2a1e9a86?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-5",
+    "name": "Vintage Wash Denim Jacket",
+    "description": "A classic trucker-style denim jacket with a faded vintage wash, antique brass buttons, and a slightly boxy fit. Goes with literally everything you own.",
+    "price": 79.99,
+    "category": "Clothes",
+    "rating": 4.6,
+    "reviewCount": 3541,
+    "imageUrl": "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-4",
+    "name": "Wireless Charging Pad",
+    "description": "A slim 15W fast-charging Qi pad that works with any compatible phone or earbud case. Soft-touch surface, non-slip base, charges through most thin cases.",
+    "price": 27.99,
+    "category": "Electronics",
+    "rating": 4.3,
+    "reviewCount": 7123,
+    "imageUrl": "https://images.unsplash.com/photo-1600080972548-d7f0cb4e8a87?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-5",
+    "name": "Noise Cancelling Headphones",
+    "description": "Over-ear wireless headphones with active noise cancellation, a 30-hour battery, memory-foam ear cushions, and a foldable design that fits in a backpack.",
+    "price": 149.99,
+    "category": "Electronics",
+    "rating": 4.7,
+    "reviewCount": 9876,
+    "imageUrl": "https://images.unsplash.com/photo-1505740420-182d6f02a8e2?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-4",
+    "name": "Scented Soy Candle Set",
+    "description": "Three hand-poured soy-wax candles in amber jars — cedar, vanilla, and fresh linen. Long, clean burn and a scent that doesn't scream 'gift shop'.",
+    "price": 36.0,
+    "category": "Home Goods",
+    "rating": 4.8,
+    "reviewCount": 5432,
+    "imageUrl": "https://images.unsplash.com/photo-1602928298561-b8f4b3a0e8b4?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-5",
+    "name": "Floating Wall Shelf Set",
+    "description": "A set of three minimalist solid-wood floating shelves with hidden metal brackets. Installs in minutes, holds books, plants, and the occasional candle.",
+    "price": 44.99,
+    "category": "Home Goods",
+    "rating": 4.5,
+    "reviewCount": 2341,
+    "imageUrl": "https://images.unsplash.com/photo-1555041469-db97920b7a35?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-4",
+    "name": "Retinol Night Repair Serum",
+    "description": "A 0.5% encapsulated retinol serum buffered with peptides and ceramides. Smooths fine lines and wakes up tired skin overnight without redness or flaking.",
+    "price": 44.0,
+    "category": "Beauty",
+    "rating": 4.5,
+    "reviewCount": 3876,
+    "imageUrl": "https://images.unsplash.com/photo-1620916297397-a4a5e3b3e4c2?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-5",
+    "name": "Volumizing Hair Mousse",
+    "description": "A lightweight styling mousse that lifts roots for natural-looking volume and a soft flexible hold. No crunch, no white flakes, no helmet hair.",
+    "price": 16.99,
+    "category": "Beauty",
+    "rating": 4.2,
+    "reviewCount": 4123,
+    "imageUrl": "https://images.unsplash.com/photo-1522337360826-9af7b5349e91?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-4",
+    "name": "Foam Roller Recovery Set",
+    "description": "A high-density EVA foam roller bundled with a trigger-point massage ball and an illustrated stretching guide. Chases out soreness after leg day in minutes.",
+    "price": 34.99,
+    "category": "Sports",
+    "rating": 4.6,
+    "reviewCount": 6234,
+    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-5",
+    "name": "Lightweight Running Cap",
+    "description": "A moisture-wicking running cap with a pre-curved brim, reflective accents on the back, and an adjustable strap. Stays put through an 8-mile tempo.",
+    "price": 22.99,
+    "category": "Sports",
+    "rating": 4.4,
+    "reviewCount": 2987,
+    "imageUrl": "https://images.unsplash.com/photo-1576289286069-c2e9e6a7e5d4?w=400&h=400&fit=crop&auto=format"
   }
 ]
