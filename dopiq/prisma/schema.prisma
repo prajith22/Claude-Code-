@@ -85,14 +85,3 @@ model OddsCache {
   data      Json
   fetchedAt DateTime
 }
-
-// Caches player-props responses per game. Keyed by the upstream
-// event id. `sport` is the internal enum value (NFL/NBA/MLB/NHL —
-// other sports never get props). Refreshed every 1 hour by
-// lib/props.ts; only fetched for games within the next 48 hours.
-model PropsCache {
-  gameId    String   @id
-  sport     String
-  data      Json
-  fetchedAt DateTime
-}
