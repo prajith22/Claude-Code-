@@ -14,9 +14,6 @@ export default async function HomePage() {
         The charge isn&rsquo;t.
       </h1>
 
-      {/* Daily spin wheel */}
-      <DailySpinWheel />
-
       {/* Three simulator cards */}
       <div className="grid grid-cols-3 gap-3 md:gap-4">
         <SimCard
@@ -50,6 +47,9 @@ export default async function HomePage() {
           delay={0.3}
         />
       </div>
+
+      {/* Daily spin wheel */}
+      <DailySpinWheel />
     </div>
   );
 }
