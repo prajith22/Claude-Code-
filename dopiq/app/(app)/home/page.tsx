@@ -1,33 +1,17 @@
 import Link from "next/link";
 import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
-import { prisma } from "@/lib/prisma";
-import { formatUSD } from "@/lib/utils";
 
 export default async function HomePage() {
-  const user = await requireOnboardedSubscribedUser();
-  const wallet = await prisma.fakeWallet.findUnique({
-    where: { userId: user.id },
-  });
+  await requireOnboardedSubscribedUser();
 
   return (
-    <div className="space-y-6 pb-4">
+    <div className="space-y-8 pb-4 pt-4 md:space-y-10">
       {/* Hero tagline */}
       <h1 className="text-[44px] font-extrabold leading-[1.05] tracking-tight text-ink md:text-[64px]">
         The urge is real.
         <br />
         The charge isn&rsquo;t.
       </h1>
-
-      {/* Fake wallet card */}
-      <div className="card-navy px-8 py-10 md:px-10 md:py-12">
-        <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-brand">
-          Fake Wallet
-        </p>
-        <p className="mt-3 font-mono text-[56px] font-bold leading-none tracking-tight text-white md:text-[80px]">
-          {formatUSD(wallet?.balance ?? 0)}
-        </p>
-        <p className="mt-4 text-[13px] text-white/50">simulated · never real</p>
-      </div>
 
       {/* Three simulator cards */}
       <div className="grid grid-cols-3 gap-3 md:gap-4">

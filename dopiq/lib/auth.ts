@@ -41,11 +41,4 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  events: {
-    async createUser({ user }) {
-      await prisma.fakeWallet.create({
-        data: { userId: user.id, balance: 1000 },
-      });
-    },
-  },
 };
