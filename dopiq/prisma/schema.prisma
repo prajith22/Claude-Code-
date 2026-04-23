@@ -26,7 +26,6 @@ model User {
   accounts     Account[]
   sessions     Session[]
   wallet       FakeWallet?
-  bets         Bet[]
   spendingLog  SpendingLog[]
 }
 
@@ -70,23 +69,6 @@ model FakeWallet {
   userId  String @unique
   balance Float  @default(1000.00)
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Bet {
-  id              String   @id @default(cuid())
-  userId          String
-  game            String
-  betType         String
-  amount          Float
-  odds            Int
-  potentialPayout Float
-  status          String   @default("open")
-  result          String?
-  createdAt       DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
 }
 
 model SpendingLog {

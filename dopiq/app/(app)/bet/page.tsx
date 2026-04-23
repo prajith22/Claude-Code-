@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
 import { prisma } from "@/lib/prisma";
 import { formatUSD } from "@/lib/utils";
@@ -12,29 +11,21 @@ export default async function BetPage() {
 
   return (
     <div className="space-y-6 pb-4">
-      <header className="flex items-center justify-between pt-2">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-[26px] font-bold tracking-tight">Bet</h1>
-            {/* Live odds indicator */}
-            <span className="inline-flex items-center gap-1.5 rounded-pill bg-brand-light px-2.5 py-1">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-brand" />
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-wide text-brand">
-                Live odds
-              </span>
+      <header className="pt-2">
+        <div className="flex items-center gap-2">
+          <h1 className="text-[26px] font-bold tracking-tight">Bet</h1>
+          {/* Live odds indicator */}
+          <span className="inline-flex items-center gap-1.5 rounded-pill bg-brand-light px-2.5 py-1">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-brand" />
             </span>
-          </div>
-          <p className="mt-0.5 text-sm text-ink-muted">Fake money only. Never real.</p>
+            <span className="text-[10px] font-bold uppercase tracking-wide text-brand">
+              Live odds
+            </span>
+          </span>
         </div>
-        <Link
-          href="/bet/history"
-          className="rounded-pill border border-surface-border bg-white px-4 py-2 text-[13px] font-semibold text-ink-muted transition hover:bg-surface-alt"
-        >
-          History
-        </Link>
+        <p className="mt-0.5 text-sm text-ink-muted">Fake money only. Never real.</p>
       </header>
 
       {/* Dark navy wallet card */}
