@@ -5,6 +5,7 @@ import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
 import { formatUSD } from "@/lib/utils";
 import type { Restaurant, Cuisine, FoodPrefs } from "@/types";
 import { CartButton } from "@/components/CartButton";
+import { FoodPromoBanner } from "@/components/FoodPromoBanner";
 
 export default async function FoodPage() {
   const user = await requireOnboardedSubscribedUser();
@@ -32,6 +33,57 @@ export default async function FoodPage() {
         </div>
         <CartButton kind="food" />
       </header>
+
+      {/* Address bar */}
+      <div className="flex items-center gap-3 rounded-pill border border-surface-border bg-white px-4 py-2.5">
+        <span
+          aria-hidden
+          className="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-brand-light text-brand"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden
+          >
+            <path
+              d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinejoin="round"
+            />
+            <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.8" />
+          </svg>
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-muted">
+            Deliver to
+          </p>
+          <p className="truncate text-[13px] font-bold text-ink">
+            Home · 1 Dopamine Way
+          </p>
+        </div>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          aria-hidden
+          className="flex-none text-ink-muted"
+        >
+          <path
+            d="M4 6l4 4 4-4"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+
+      {/* Promo banner (dismissable) */}
+      <FoodPromoBanner />
 
       <ul className="space-y-4">
         {ordered.map((r) => (
