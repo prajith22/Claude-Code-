@@ -348,5 +348,105 @@
     "rating": 4.5,
     "reviewCount": 5678,
     "imageUrl": "https://images.unsplash.com/photo-1598289442845-a3e8e2f8b3c1?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-8",
+    "name": "Linen Button Down Shirt",
+    "description": "A relaxed-fit summer linen shirt with a subtle slub texture, a single chest pocket, and roll-up sleeves with button tabs. Breezes through August with its shoulders back.",
+    "price": 44.99,
+    "category": "Clothes",
+    "rating": 4.5,
+    "reviewCount": 3217,
+    "imageUrl": "https://images.unsplash.com/photo-1602810178996-faade851bb4a?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-clothes-9",
+    "name": "Fleece Zip Up Hoodie",
+    "description": "A midweight fleece zip-up with a kangaroo pocket, elastic ribbed cuffs, and a cozy brushed interior. The going-to-the-coffee-shop hoodie that actually survives winter.",
+    "price": 58.99,
+    "category": "Clothes",
+    "rating": 4.6,
+    "reviewCount": 4892,
+    "imageUrl": "https://images.unsplash.com/photo-1620799139834-1c5a1a2d7a5f?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-8",
+    "name": "Smart Plug 4 Pack",
+    "description": "A four-pack of Wi-Fi smart plugs compatible with Alexa and Google Home. Schedule lights, monitor energy use from your phone, and finally automate the coffee maker.",
+    "price": 29.99,
+    "category": "Electronics",
+    "rating": 4.4,
+    "reviewCount": 11234,
+    "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-electronics-9",
+    "name": "Webcam 1080p HD",
+    "description": "A plug-and-play 1080p webcam with a built-in stereo microphone, auto light correction, and a privacy shutter. Makes any call look meeting-ready in three seconds.",
+    "price": 54.99,
+    "category": "Electronics",
+    "rating": 4.5,
+    "reviewCount": 7432,
+    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-8",
+    "name": "Macrame Wall Hanging",
+    "description": "A handwoven bohemian macrame wall hanging in natural cotton rope with a 24\" wooden dowel. Instant warmth on any empty wall, packs flat, ships knotted.",
+    "price": 38.0,
+    "category": "Home Goods",
+    "rating": 4.6,
+    "reviewCount": 2341,
+    "imageUrl": "https://images.unsplash.com/photo-1555041469-db97920b7a35?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-home-9",
+    "name": "Aroma Diffuser",
+    "description": "An ultrasonic essential-oil diffuser with a 7-color LED mood light, auto shut-off when dry, and whisper-quiet operation. Runs for 10 hours on a single fill.",
+    "price": 29.99,
+    "category": "Home Goods",
+    "rating": 4.7,
+    "reviewCount": 6543,
+    "imageUrl": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-8",
+    "name": "Jade Roller and Gua Sha Set",
+    "description": "An authentic jade facial roller and gua sha stone set for morning lymphatic drainage and de-puffing. Ten minutes a day makes your face look like you slept for nine hours.",
+    "price": 24.99,
+    "category": "Beauty",
+    "rating": 4.5,
+    "reviewCount": 8765,
+    "imageUrl": "https://images.unsplash.com/photo-1620916297397-a4a5e3b3e4c2?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-beauty-9",
+    "name": "Curl Defining Cream",
+    "description": "A frizz-control curl cream with shea butter and argan oil that shapes defined, bouncy curls without any crunch. Works on 2A through 4C, no flakes.",
+    "price": 21.99,
+    "category": "Beauty",
+    "rating": 4.4,
+    "reviewCount": 5321,
+    "imageUrl": "https://images.unsplash.com/photo-1522337360826-9af7b5349e91?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-8",
+    "name": "Gym Duffel Bag",
+    "description": "A water-resistant gym duffel with a ventilated wet-dry compartment, a dedicated shoe pocket, and an adjustable padded shoulder strap. Fits everything for a full week.",
+    "price": 42.99,
+    "category": "Sports",
+    "rating": 4.6,
+    "reviewCount": 7234,
+    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
+  },
+  {
+    "id": "p-sports-9",
+    "name": "Cooling Towel 3 Pack",
+    "description": "Three instant-cooling microfiber towels that activate with water and stay cold for hours. Machine-washable and reusable forever — trail runs, hot yoga, sidelines.",
+    "price": 17.99,
+    "category": "Sports",
+    "rating": 4.3,
+    "reviewCount": 4567,
+    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
   }
 ]
