@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
+import { DailySpinWheel } from "@/components/DailySpinWheel";
 
 export default async function HomePage() {
   await requireOnboardedSubscribedUser();
@@ -12,6 +13,9 @@ export default async function HomePage() {
         <br />
         The charge isn&rsquo;t.
       </h1>
+
+      {/* Daily spin wheel */}
+      <DailySpinWheel />
 
       {/* Three simulator cards */}
       <div className="grid grid-cols-3 gap-3 md:gap-4">
