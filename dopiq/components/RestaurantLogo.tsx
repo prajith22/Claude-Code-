@@ -143,7 +143,6 @@ const wingIcon = () => (
 );
 
 const logos: Record<string, LogoConfig> = {
-  "Slice Society": { bg: "#E63946", abbr: "SS", icon: pizzaIcon },
   "Golden Arch Burgers": { bg: "#FFB703", abbr: "GA", icon: burgerIcon },
   "Canyon Burrito Co.": { bg: "#FB8500", abbr: "CB", icon: burritoIcon },
   "Southern Cluck": { bg: "#9D0208", abbr: "SC", icon: drumstickIcon },
