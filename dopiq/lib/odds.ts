@@ -87,7 +87,15 @@ function toGame(raw: RawGame): Game {
     sport: raw.sport as Sport,
     homeTeam: raw.homeTeam,
     awayTeam: raw.awayTeam,
+    homeTeamAbbr: raw.homeTeamAbbr,
+    awayTeamAbbr: raw.awayTeamAbbr,
+    homeTeamColor: raw.homeTeamColor,
+    awayTeamColor: raw.awayTeamColor,
     startsAt: raw.gameTime,
+    peopleBetting: raw.peopleBetting,
+    isLive: raw.isLive,
+    liveScore: raw.liveScore,
+    livePeriod: raw.livePeriod,
     odds,
   };
 }
