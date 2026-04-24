@@ -1,17 +1,16 @@
-import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
+import { requireSubscribedUser } from "@/lib/session-guards";
 import { DailySpinWheel } from "@/components/DailySpinWheel";
 import { SimCard } from "@/components/SimCard";
 
 export default async function HomePage() {
-  await requireOnboardedSubscribedUser();
+  const user = await requireSubscribedUser();
+  const firstName = user.name?.trim().split(/\s+/)[0] || "there";
 
   return (
     <div className="space-y-8 pb-4 pt-4 md:space-y-10">
-      {/* Hero tagline */}
+      {/* Personalized greeting — first name from the NextAuth session */}
       <h1 className="text-[44px] font-extrabold leading-[1.05] tracking-tight text-ink md:text-[64px]">
-        The urge is real.
-        <br />
-        The charge isn&rsquo;t.
+        Hey, {firstName}.
       </h1>
 
       {/* Three simulator cards */}

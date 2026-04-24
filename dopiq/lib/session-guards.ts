@@ -12,9 +12,8 @@ export async function requireUser() {
   return user;
 }
 
-export async function requireOnboardedSubscribedUser() {
+export async function requireSubscribedUser() {
   const user = await requireUser();
-  if (!user.onboardingCompleted) redirect("/onboarding");
   const state = computeAccessState({
     subscriptionStatus: user.subscriptionStatus,
     trialStartDate: user.trialStartDate,

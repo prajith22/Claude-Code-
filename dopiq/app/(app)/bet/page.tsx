@@ -1,10 +1,10 @@
-import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
+import { requireSubscribedUser } from "@/lib/session-guards";
 import { BetGamesList } from "@/components/BetGamesList";
 import { BetSlipPanel } from "@/components/BetSlipPanel";
 import { FeaturedParlays } from "@/components/FeaturedParlays";
 
 export default async function BetPage() {
-  await requireOnboardedSubscribedUser();
+  await requireSubscribedUser();
 
   return (
     <div className="space-y-6 pb-28 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10 lg:space-y-0 lg:pb-10">
