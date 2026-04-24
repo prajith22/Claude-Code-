@@ -77,12 +77,12 @@ export default function ProductDetailPage({
       </section>
 
       {/* Bottom-of-page CTAs — easier than scrolling back up to find them */}
-      <section className="flex flex-col gap-3 pt-2 sm:flex-row">
-        <Link href="/shop/cart" className="btn-primary flex-1">
-          Go to Checkout
-        </Link>
+      <section className="flex flex-col-reverse gap-3 pt-2 sm:flex-row">
         <Link href="/shop" className="btn-secondary flex-1">
           ← Shop more?
+        </Link>
+        <Link href="/shop/cart" className="btn-primary flex-1">
+          Go to Checkout
         </Link>
       </section>
     </div>
