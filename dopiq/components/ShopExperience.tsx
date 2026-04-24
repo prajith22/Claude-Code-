@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { Product, ProductCategory } from "@/types";
 import { FlashDeals } from "@/components/FlashDeals";
+import { ExploreSection } from "@/components/ExploreSection";
 import {
   CollectionsGrid,
   buildCollections,
@@ -59,6 +60,9 @@ export function ShopExperience({
     <div className="space-y-8">
       {/* Flash Deals */}
       <FlashDeals products={products} />
+
+      {/* Explore — random shuffled carousel */}
+      <ExploreSection products={products} />
 
       {/* Collections */}
       <CollectionsGrid
