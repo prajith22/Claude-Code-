@@ -16,13 +16,13 @@ export default function ProductDetailPage({
 
   return (
     <div className="space-y-6 pb-4">
-      {/* Hero image — no Next/Image since Unsplash redirects */}
-      <div className="relative -mx-4 aspect-square overflow-hidden bg-surface-alt md:mx-0 md:rounded-card">
+      {/* Hero image — capped at 600px, centered, never upscaled past natural size */}
+      <div className="mx-auto w-full max-w-[600px] overflow-hidden rounded-card bg-surface-alt">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={product.imageUrl}
           alt={product.name}
-          className="h-full w-full object-cover"
+          className="mx-auto block h-auto w-auto max-w-full"
         />
       </div>
 
