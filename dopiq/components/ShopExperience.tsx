@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { Product, ProductCategory } from "@/types";
 import { FlashDeals } from "@/components/FlashDeals";
 import {
@@ -9,6 +9,7 @@ import {
   type CollectionId,
 } from "@/components/CollectionsGrid";
 import { DiscoveryFeed } from "@/components/DiscoveryFeed";
+import { ExploreSection } from "@/components/ExploreSection";
 import { useExploreProducts } from "@/hooks/useExploreProducts";
 
 type Filter =
@@ -26,13 +27,6 @@ export function ShopExperience({
   const [filter, setFilter] = useState<Filter>({ kind: "none" });
 
   const explore = useExploreProducts(products);
-
-  useEffect(() => {
-    if (explore.shuffled.length > 0) {
-      // eslint-disable-next-line no-console
-      console.log("[Explore] First 3 shuffled products:", explore.shuffled.slice(0, 3));
-    }
-  }, [explore.shuffled]);
 
   const collections = useMemo(() => buildCollections(products), [products]);
 
@@ -69,6 +63,18 @@ export function ShopExperience({
     <div className="space-y-8">
       {/* Flash Deals */}
       <FlashDeals products={products} />
+
+      {/* Explore — card stack between Flash Deals and Collections */}
+      <ExploreSection
+        current={explore.current}
+        canGoPrev={explore.index > 0}
+        canGoNext={
+          explore.shuffled.length > 0 &&
+          explore.index < explore.shuffled.length - 1
+        }
+        onPrev={explore.goPrev}
+        onNext={explore.goNext}
+      />
 
       {/* Collections */}
       <CollectionsGrid
