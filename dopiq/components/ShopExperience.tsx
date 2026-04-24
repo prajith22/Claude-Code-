@@ -10,7 +10,6 @@ import {
   type CollectionId,
 } from "@/components/CollectionsGrid";
 import { DiscoveryFeed } from "@/components/DiscoveryFeed";
-import { useExploreProducts } from "@/hooks/useExploreProducts";
 
 type Filter =
   | { kind: "none" }
@@ -25,11 +24,6 @@ export function ShopExperience({
   todayLabel: string;
 }) {
   const [filter, setFilter] = useState<Filter>({ kind: "none" });
-
-  // Installment 1: wire up the Explore hook so it shuffles on every page
-  // load. UI still uses the existing ExploreSection — next installment
-  // will consume this and unwire the duplicate shuffle.
-  useExploreProducts(products);
 
   const collections = useMemo(() => buildCollections(products), [products]);
 
