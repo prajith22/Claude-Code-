@@ -399,7 +399,7 @@ function CompactCard({
 }) {
   return (
     <motion.div
-      className={`relative flex-none ${fullWidth ? "w-full" : "w-[220px]"} card overflow-hidden`}
+      className={`relative flex-none ${fullWidth ? "w-full" : "w-[220px]"} card`}
       whileHover={cardHover}
       transition={cardHoverTransition}
     >
@@ -407,7 +407,7 @@ function CompactCard({
         href={`/food/${r.id}`}
         className="group block active:scale-[0.995]"
       >
-        <div className="relative aspect-square w-full overflow-hidden bg-surface-alt">
+        <div className="relative aspect-square w-full overflow-hidden rounded-t-card bg-surface-alt">
           <RestaurantLogo name={r.name} className="h-full w-full" />
         </div>
         <div className="p-3">
@@ -437,7 +437,7 @@ function RestaurantRow({
 }) {
   return (
     <motion.div
-      className="card relative overflow-hidden"
+      className="card relative"
       whileHover={cardHover}
       transition={cardHoverTransition}
     >
@@ -445,7 +445,7 @@ function RestaurantRow({
         href={`/food/${r.id}`}
         className="group block active:scale-[0.995]"
       >
-        <div className="relative h-44 w-full overflow-hidden bg-surface-alt md:h-52">
+        <div className="relative h-44 w-full overflow-hidden rounded-t-card bg-surface-alt md:h-52">
           <RestaurantLogo
             name={r.name}
             variant="banner"
