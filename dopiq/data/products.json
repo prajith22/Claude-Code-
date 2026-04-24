@@ -7,17 +7,17 @@
     "category": "Clothes",
     "rating": 4.7,
     "reviewCount": 2841,
-    "imageUrl": "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/OversizedEverydayHoodie.webp"
   },
   {
     "id": "p-electronics-1",
     "name": "AeroBuds Pro Wireless Earbuds",
     "description": "Active noise cancellation, 30-hour battery with the charging case, transparency mode, and USB-C fast charging. Pair in two seconds and forget they're in your ears — the kind of audio upgrade you notice on day one.",
-    "price": 129.0,
+    "price": 129,
     "category": "Electronics",
     "rating": 4.6,
     "reviewCount": 10423,
-    "imageUrl": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/AeroBudsProWirelessEarbuds.webp"
   },
   {
     "id": "p-home-1",
@@ -27,27 +27,27 @@
     "category": "Home Goods",
     "rating": 4.8,
     "reviewCount": 1912,
-    "imageUrl": "/products/blanket.webp"
+    "imageUrl": "/products/StonewashedLinenThrowBlanket.webp"
   },
   {
     "id": "p-beauty-1",
     "name": "Glow Routine Hydrating Serum",
     "description": "A lightweight hyaluronic acid + niacinamide serum that plumps, hydrates, and gives skin that 'did you just get back from vacation?' glow. Fragrance-free, non-comedogenic, layers under anything.",
-    "price": 28.0,
+    "price": 28,
     "category": "Beauty",
     "rating": 4.5,
     "reviewCount": 6077,
-    "imageUrl": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/GlowRoutineHydratingSerum.webp"
   },
   {
     "id": "p-sports-1",
     "name": "Trailrunner Performance Sneakers",
     "description": "A breathable mesh upper with a responsive cushioned midsole and all-terrain outsole. Light enough for a morning run, stable enough for a weekend hike. Breaks in on day one.",
-    "price": 112.0,
+    "price": 112,
     "category": "Sports",
     "rating": 4.7,
     "reviewCount": 3489,
-    "imageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/TrailrunnerPerformanceSneakers.webp"
   },
   {
     "id": "p-clothes-2",
@@ -57,7 +57,7 @@
     "category": "Clothes",
     "rating": 4.5,
     "reviewCount": 3241,
-    "imageUrl": "https://images.unsplash.com/photo-1624378702527-ad1f59b0b24f?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/RelaxedFitCargoPants.webp"
   },
   {
     "id": "p-clothes-3",
@@ -67,7 +67,7 @@
     "category": "Clothes",
     "rating": 4.6,
     "reviewCount": 2187,
-    "imageUrl": "https://images.unsplash.com/photo-1631541911232-b5b2d93e7b44?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/RibbedTurtleneckSweater.webp"
   },
   {
     "id": "p-electronics-2",
@@ -77,7 +77,7 @@
     "category": "Electronics",
     "rating": 4.7,
     "reviewCount": 5432,
-    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/PortableMechanicalKeyboard.webp"
   },
   {
     "id": "p-electronics-3",
@@ -87,37 +87,37 @@
     "category": "Electronics",
     "rating": 4.4,
     "reviewCount": 1876,
-    "imageUrl": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/SmartLEDDeskLamp.webp"
   },
   {
     "id": "p-home-2",
     "name": "Ceramic Pour Over Coffee Set",
     "description": "A minimalist matte ceramic pour-over dripper with a matching 12oz mug and a bamboo serving tray. The kind of slow coffee ritual that turns a Tuesday into a moment.",
-    "price": 48.0,
+    "price": 48,
     "category": "Home Goods",
     "rating": 4.8,
     "reviewCount": 2954,
-    "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/CeramicPourOverCoffeeSet.webp"
   },
   {
     "id": "p-home-3",
     "name": "Linen Duvet Cover Set",
     "description": "Breathable stonewashed French linen duvet cover with two matching pillowcases in warm earthy tones. Gets softer every wash, looks like you styled it without trying.",
-    "price": 119.0,
+    "price": 119,
     "category": "Home Goods",
     "rating": 4.7,
     "reviewCount": 3102,
-    "imageUrl": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/LinenDuvetCoverSet.webp"
   },
   {
     "id": "p-beauty-2",
     "name": "Vitamin C Brightening Moisturizer",
     "description": "A lightweight daily moisturizer with 15% stabilized vitamin C, niacinamide, and hyaluronic acid. Evens tone, hydrates, and gives skin a visible glow in about two weeks.",
-    "price": 38.0,
+    "price": 38,
     "category": "Beauty",
     "rating": 4.6,
     "reviewCount": 4217,
-    "imageUrl": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/VitaminCBrighteningMoisturizer.webp"
   },
   {
     "id": "p-beauty-3",
@@ -127,7 +127,7 @@
     "category": "Beauty",
     "rating": 4.3,
     "reviewCount": 6891,
-    "imageUrl": "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/BambooCharcoalFaceMaskSet.webp"
   },
   {
     "id": "p-sports-2",
@@ -137,7 +137,7 @@
     "category": "Sports",
     "rating": 4.5,
     "reviewCount": 8234,
-    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/AdjustableResistanceBandSet.webp"
   },
   {
     "id": "p-sports-3",
@@ -147,7 +147,7 @@
     "category": "Sports",
     "rating": 4.8,
     "reviewCount": 11432,
-    "imageUrl": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/InsulatedStainlessSteelWaterBottle.webp"
   },
   {
     "id": "p-clothes-4",
@@ -157,7 +157,7 @@
     "category": "Clothes",
     "rating": 4.4,
     "reviewCount": 1876,
-    "imageUrl": "https://images.unsplash.com/photo-1521369747768-cd2c2a1e9a86?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/WideBrimBucketHat.webp"
   },
   {
     "id": "p-clothes-5",
@@ -167,7 +167,7 @@
     "category": "Clothes",
     "rating": 4.6,
     "reviewCount": 3541,
-    "imageUrl": "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/VintageWashDenimJacket.webp"
   },
   {
     "id": "p-electronics-4",
@@ -177,7 +177,7 @@
     "category": "Electronics",
     "rating": 4.3,
     "reviewCount": 7123,
-    "imageUrl": "https://images.unsplash.com/photo-1600080972548-d7f0cb4e8a87?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/WirelessChargingPad.webp"
   },
   {
     "id": "p-electronics-5",
@@ -187,17 +187,17 @@
     "category": "Electronics",
     "rating": 4.7,
     "reviewCount": 9876,
-    "imageUrl": "https://images.unsplash.com/photo-1505740420-182d6f02a8e2?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/NoiseCancellingHeadphones.webp"
   },
   {
     "id": "p-home-4",
     "name": "Scented Soy Candle Set",
     "description": "Three hand-poured soy-wax candles in amber jars — cedar, vanilla, and fresh linen. Long, clean burn and a scent that doesn't scream 'gift shop'.",
-    "price": 36.0,
+    "price": 36,
     "category": "Home Goods",
     "rating": 4.8,
     "reviewCount": 5432,
-    "imageUrl": "https://images.unsplash.com/photo-1602928298561-b8f4b3a0e8b4?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/ScentedSoyCandleSet.webp"
   },
   {
     "id": "p-home-5",
@@ -207,17 +207,17 @@
     "category": "Home Goods",
     "rating": 4.5,
     "reviewCount": 2341,
-    "imageUrl": "https://images.unsplash.com/photo-1555041469-db97920b7a35?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/FloatingWallShelfSet.webp"
   },
   {
     "id": "p-beauty-4",
     "name": "Retinol Night Repair Serum",
     "description": "A 0.5% encapsulated retinol serum buffered with peptides and ceramides. Smooths fine lines and wakes up tired skin overnight without redness or flaking.",
-    "price": 44.0,
+    "price": 44,
     "category": "Beauty",
     "rating": 4.5,
     "reviewCount": 3876,
-    "imageUrl": "https://images.unsplash.com/photo-1620916297397-a4a5e3b3e4c2?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/RetinolNightRepairSerum.webp"
   },
   {
     "id": "p-beauty-5",
@@ -227,7 +227,7 @@
     "category": "Beauty",
     "rating": 4.2,
     "reviewCount": 4123,
-    "imageUrl": "https://images.unsplash.com/photo-1522337360826-9af7b5349e91?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/VolumizingHairMousse.webp"
   },
   {
     "id": "p-sports-4",
@@ -237,7 +237,7 @@
     "category": "Sports",
     "rating": 4.6,
     "reviewCount": 6234,
-    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/FoamRollerRecoverySet.webp"
   },
   {
     "id": "p-sports-5",
@@ -247,7 +247,7 @@
     "category": "Sports",
     "rating": 4.4,
     "reviewCount": 2987,
-    "imageUrl": "https://images.unsplash.com/photo-1576289286069-c2e9e6a7e5d4?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/LightweightRunningCap.webp"
   },
   {
     "id": "p-clothes-6",
@@ -257,7 +257,7 @@
     "category": "Clothes",
     "rating": 4.5,
     "reviewCount": 8432,
-    "imageUrl": "https://images.unsplash.com/photo-1583743814966-4d4a0bf8c0a7?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/OversizedGraphicTee.webp"
   },
   {
     "id": "p-clothes-7",
@@ -267,7 +267,7 @@
     "category": "Clothes",
     "rating": 4.7,
     "reviewCount": 12341,
-    "imageUrl": "https://images.unsplash.com/photo-1506629082846-8cd90e6c9c7a?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/HighWaistYogaLeggings.webp"
   },
   {
     "id": "p-electronics-6",
@@ -277,7 +277,7 @@
     "category": "Electronics",
     "rating": 4.6,
     "reviewCount": 8765,
-    "imageUrl": "https://images.unsplash.com/photo-1608043152269-b3c4e1c7b5e2?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/PortableBluetoothSpeaker.webp"
   },
   {
     "id": "p-electronics-7",
@@ -287,7 +287,7 @@
     "category": "Electronics",
     "rating": 4.5,
     "reviewCount": 6543,
-    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/USB-CHub7-in-1.webp"
   },
   {
     "id": "p-home-6",
@@ -297,7 +297,7 @@
     "category": "Home Goods",
     "rating": 4.7,
     "reviewCount": 4321,
-    "imageUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/BambooCuttingBoardSet.webp"
   },
   {
     "id": "p-home-7",
@@ -307,17 +307,17 @@
     "category": "Home Goods",
     "rating": 4.8,
     "reviewCount": 7654,
-    "imageUrl": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/WeightedBlanket.webp"
   },
   {
     "id": "p-beauty-6",
     "name": "SPF 50 Tinted Moisturizer",
     "description": "A lightweight tinted moisturizer with broad-spectrum SPF 50, hyaluronic acid, and antioxidants. Evens tone, hydrates, and protects without the white cast.",
-    "price": 32.0,
+    "price": 32,
     "category": "Beauty",
     "rating": 4.6,
     "reviewCount": 5432,
-    "imageUrl": "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/SPF50TintedMoisturizer.webp"
   },
   {
     "id": "p-beauty-7",
@@ -327,7 +327,7 @@
     "category": "Beauty",
     "rating": 4.4,
     "reviewCount": 3219,
-    "imageUrl": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/ExfoliatingSugarScrub.webp"
   },
   {
     "id": "p-sports-6",
@@ -337,7 +337,7 @@
     "category": "Sports",
     "rating": 4.6,
     "reviewCount": 9123,
-    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/YogaMatwithCarryingStrap.webp"
   },
   {
     "id": "p-sports-7",
@@ -347,7 +347,7 @@
     "category": "Sports",
     "rating": 4.5,
     "reviewCount": 5678,
-    "imageUrl": "https://images.unsplash.com/photo-1598289442845-a3e8e2f8b3c1?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/JumpRopewithCounter.webp"
   },
   {
     "id": "p-clothes-8",
@@ -357,7 +357,7 @@
     "category": "Clothes",
     "rating": 4.5,
     "reviewCount": 3217,
-    "imageUrl": "https://images.unsplash.com/photo-1602810178996-faade851bb4a?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/LinenButtonDownShirt.webp"
   },
   {
     "id": "p-clothes-9",
@@ -367,7 +367,7 @@
     "category": "Clothes",
     "rating": 4.6,
     "reviewCount": 4892,
-    "imageUrl": "https://images.unsplash.com/photo-1620799139834-1c5a1a2d7a5f?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/FleeceZipUpHoodie.webp"
   },
   {
     "id": "p-electronics-8",
@@ -377,7 +377,7 @@
     "category": "Electronics",
     "rating": 4.4,
     "reviewCount": 11234,
-    "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/SmartPlug4Pack.webp"
   },
   {
     "id": "p-electronics-9",
@@ -387,17 +387,17 @@
     "category": "Electronics",
     "rating": 4.5,
     "reviewCount": 7432,
-    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/Webcam1080pHD.webp"
   },
   {
     "id": "p-home-8",
     "name": "Macrame Wall Hanging",
     "description": "A handwoven bohemian macrame wall hanging in natural cotton rope with a 24\" wooden dowel. Instant warmth on any empty wall, packs flat, ships knotted.",
-    "price": 38.0,
+    "price": 38,
     "category": "Home Goods",
     "rating": 4.6,
     "reviewCount": 2341,
-    "imageUrl": "https://images.unsplash.com/photo-1555041469-db97920b7a35?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/MacrameWallHanging.webp"
   },
   {
     "id": "p-home-9",
@@ -407,7 +407,7 @@
     "category": "Home Goods",
     "rating": 4.7,
     "reviewCount": 6543,
-    "imageUrl": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/AromaDiffuser.webp"
   },
   {
     "id": "p-beauty-8",
@@ -417,7 +417,7 @@
     "category": "Beauty",
     "rating": 4.5,
     "reviewCount": 8765,
-    "imageUrl": "https://images.unsplash.com/photo-1620916297397-a4a5e3b3e4c2?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/JadeRollerandGuaShaSet.webp"
   },
   {
     "id": "p-beauty-9",
@@ -427,7 +427,7 @@
     "category": "Beauty",
     "rating": 4.4,
     "reviewCount": 5321,
-    "imageUrl": "https://images.unsplash.com/photo-1522337360826-9af7b5349e91?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/CurlDefiningCream.webp"
   },
   {
     "id": "p-sports-8",
@@ -437,7 +437,7 @@
     "category": "Sports",
     "rating": 4.6,
     "reviewCount": 7234,
-    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/GymDuffelBag.webp"
   },
   {
     "id": "p-sports-9",
@@ -447,7 +447,7 @@
     "category": "Sports",
     "rating": 4.3,
     "reviewCount": 4567,
-    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/CoolingTowel3Pack.webp"
   },
   {
     "id": "p-clothes-10",
@@ -457,7 +457,7 @@
     "category": "Clothes",
     "rating": 4.5,
     "reviewCount": 2876,
-    "imageUrl": "https://images.unsplash.com/photo-1624378702527-ad1f59b0b24f?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/PleatedWideLegTrousers.webp"
   },
   {
     "id": "p-clothes-11",
@@ -467,7 +467,7 @@
     "category": "Clothes",
     "rating": 4.4,
     "reviewCount": 3123,
-    "imageUrl": "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/CroppedPufferVest.webp"
   },
   {
     "id": "p-electronics-10",
@@ -477,7 +477,7 @@
     "category": "Electronics",
     "rating": 4.7,
     "reviewCount": 5432,
-    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/DigitalDrawingTablet.webp"
   },
   {
     "id": "p-electronics-11",
@@ -487,7 +487,7 @@
     "category": "Electronics",
     "rating": 4.6,
     "reviewCount": 14321,
-    "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/PortablePowerBank20000mAh.webp"
   },
   {
     "id": "p-home-10",
@@ -497,7 +497,7 @@
     "category": "Home Goods",
     "rating": 4.5,
     "reviewCount": 3456,
-    "imageUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/CountertopCompostBin.webp"
   },
   {
     "id": "p-home-11",
@@ -507,17 +507,17 @@
     "category": "Home Goods",
     "rating": 4.6,
     "reviewCount": 8234,
-    "imageUrl": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/HimalayanSaltLamp.webp"
   },
   {
     "id": "p-beauty-10",
     "name": "Peptide Eye Cream",
     "description": "A firming eye cream with a tripeptide complex plus caffeine to reduce morning puffiness and visibly soften dark circles. Absorbs quickly, sits well under makeup.",
-    "price": 36.0,
+    "price": 36,
     "category": "Beauty",
     "rating": 4.5,
     "reviewCount": 4123,
-    "imageUrl": "https://images.unsplash.com/photo-1620916297397-a4a5e3b3e4c2?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/PeptideEyeCream.webp"
   },
   {
     "id": "p-beauty-11",
@@ -527,7 +527,7 @@
     "category": "Beauty",
     "rating": 4.3,
     "reviewCount": 9876,
-    "imageUrl": "https://images.unsplash.com/photo-1522337360826-9af7b5349e91?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/DryShampooSpray.webp"
   },
   {
     "id": "p-sports-10",
@@ -537,7 +537,7 @@
     "category": "Sports",
     "rating": 4.6,
     "reviewCount": 6234,
-    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/SwimGogglesPro.webp"
   },
   {
     "id": "p-sports-11",
@@ -547,7 +547,7 @@
     "category": "Sports",
     "rating": 4.5,
     "reviewCount": 3987,
-    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/HikingPolesCollapsible.webp"
   },
   {
     "id": "p-clothes-12",
@@ -557,7 +557,7 @@
     "category": "Clothes",
     "rating": 4.6,
     "reviewCount": 4321,
-    "imageUrl": "https://images.unsplash.com/photo-1595777457593-5b3a4a4c3a4b?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/SatinSlipDress.webp"
   },
   {
     "id": "p-clothes-13",
@@ -567,7 +567,7 @@
     "category": "Clothes",
     "rating": 4.7,
     "reviewCount": 3654,
-    "imageUrl": "https://images.unsplash.com/photo-1620799139834-1c5a1a2d7a5f?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/SherpaLinedFlannelShirt.webp"
   },
   {
     "id": "p-electronics-12",
@@ -577,7 +577,7 @@
     "category": "Electronics",
     "rating": 4.5,
     "reviewCount": 6234,
-    "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/MiniProjectorPortable.webp"
   },
   {
     "id": "p-electronics-13",
@@ -587,7 +587,7 @@
     "category": "Electronics",
     "rating": 4.6,
     "reviewCount": 9876,
-    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/CableManagementBox.webp"
   },
   {
     "id": "p-home-12",
@@ -597,7 +597,7 @@
     "category": "Home Goods",
     "rating": 4.9,
     "reviewCount": 15432,
-    "imageUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/CastIronSkillet12inch.webp"
   },
   {
     "id": "p-home-13",
@@ -607,7 +607,7 @@
     "category": "Home Goods",
     "rating": 4.7,
     "reviewCount": 8765,
-    "imageUrl": "https://images.unsplash.com/photo-1555041469-db97920b7a35?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/BlackoutCurtainsSet.webp"
   },
   {
     "id": "p-beauty-12",
@@ -617,7 +617,7 @@
     "category": "Beauty",
     "rating": 4.4,
     "reviewCount": 6543,
-    "imageUrl": "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/KonjacFacialSpongeSet.webp"
   },
   {
     "id": "p-beauty-13",
@@ -627,7 +627,7 @@
     "category": "Beauty",
     "rating": 4.5,
     "reviewCount": 7891,
-    "imageUrl": "https://images.unsplash.com/photo-1620916297397-a4a5e3b3e4c2?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/TintedLipOil.webp"
   },
   {
     "id": "p-sports-12",
@@ -637,7 +637,7 @@
     "category": "Sports",
     "rating": 4.6,
     "reviewCount": 8432,
-    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/AnkleWeightsSet.webp"
   },
   {
     "id": "p-sports-13",
@@ -647,7 +647,7 @@
     "category": "Sports",
     "rating": 4.5,
     "reviewCount": 5678,
-    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/SportSunscreenSPF70.webp"
   },
   {
     "id": "p-clothes-14",
@@ -657,7 +657,7 @@
     "category": "Clothes",
     "rating": 4.6,
     "reviewCount": 11234,
-    "imageUrl": "https://images.unsplash.com/photo-1583743814966-4d4a0bf8c0a7?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/RibbedTankTop3Pack.webp"
   },
   {
     "id": "p-clothes-15",
@@ -667,7 +667,7 @@
     "category": "Clothes",
     "rating": 4.7,
     "reviewCount": 4567,
-    "imageUrl": "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/TrenchCoatClassic.webp"
   },
   {
     "id": "p-electronics-14",
@@ -677,7 +677,7 @@
     "category": "Electronics",
     "rating": 4.5,
     "reviewCount": 13456,
-    "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/RingLight12inch.webp"
   },
   {
     "id": "p-electronics-15",
@@ -687,7 +687,7 @@
     "category": "Electronics",
     "rating": 4.7,
     "reviewCount": 18765,
-    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/SurgeProtector8Outlet.webp"
   },
   {
     "id": "p-home-14",
@@ -697,7 +697,7 @@
     "category": "Home Goods",
     "rating": 4.8,
     "reviewCount": 9432,
-    "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/FrenchPressCoffeeMaker.webp"
   },
   {
     "id": "p-home-15",
@@ -707,7 +707,7 @@
     "category": "Home Goods",
     "rating": 4.5,
     "reviewCount": 5234,
-    "imageUrl": "https://images.unsplash.com/photo-1555041469-db97920b7a35?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/DecorativeThrowPillowSet.webp"
   },
   {
     "id": "p-beauty-14",
@@ -717,7 +717,7 @@
     "category": "Beauty",
     "rating": 4.7,
     "reviewCount": 22341,
-    "imageUrl": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/NiacinamidePoreSerum.webp"
   },
   {
     "id": "p-beauty-15",
@@ -727,7 +727,7 @@
     "category": "Beauty",
     "rating": 4.6,
     "reviewCount": 31234,
-    "imageUrl": "https://images.unsplash.com/photo-1522337360826-9af7b5349e91?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/ScalpMassagerShampooBrush.webp"
   },
   {
     "id": "p-sports-14",
@@ -737,7 +737,7 @@
     "category": "Sports",
     "rating": 4.5,
     "reviewCount": 7654,
-    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/PullUpBarDoorframe.webp"
   },
   {
     "id": "p-sports-15",
@@ -747,7 +747,7 @@
     "category": "Sports",
     "rating": 4.6,
     "reviewCount": 9123,
-    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/CompressionKneeSleeves.webp"
   },
   {
     "id": "p-clothes-16",
@@ -757,7 +757,7 @@
     "category": "Clothes",
     "rating": 4.5,
     "reviewCount": 3876,
-    "imageUrl": "https://images.unsplash.com/photo-1624378702527-ad1f59b0b24f?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/OversizedDenimOveralls.webp"
   },
   {
     "id": "p-clothes-17",
@@ -767,7 +767,7 @@
     "category": "Clothes",
     "rating": 4.6,
     "reviewCount": 6543,
-    "imageUrl": "https://images.unsplash.com/photo-1620799139834-1c5a1a2d7a5f?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/KnitBeanieCablePattern.webp"
   },
   {
     "id": "p-electronics-16",
@@ -777,7 +777,7 @@
     "category": "Electronics",
     "rating": 4.7,
     "reviewCount": 16234,
-    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/LaptopStandAdjustable.webp"
   },
   {
     "id": "p-electronics-17",
@@ -787,7 +787,7 @@
     "category": "Electronics",
     "rating": 4.5,
     "reviewCount": 11876,
-    "imageUrl": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/TrueWirelessEarbuds.webp"
   },
   {
     "id": "p-home-16",
@@ -797,7 +797,7 @@
     "category": "Home Goods",
     "rating": 4.8,
     "reviewCount": 7234,
-    "imageUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/AcaciaWoodServingBoard.webp"
   },
   {
     "id": "p-home-17",
@@ -807,7 +807,7 @@
     "category": "Home Goods",
     "rating": 4.6,
     "reviewCount": 4321,
-    "imageUrl": "https://images.unsplash.com/photo-1555041469-db97920b7a35?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/LinenStorageBasketsSet.webp"
   },
   {
     "id": "p-beauty-16",
@@ -817,7 +817,7 @@
     "category": "Beauty",
     "rating": 4.3,
     "reviewCount": 8765,
-    "imageUrl": "https://images.unsplash.com/photo-1620916297397-a4a5e3b3e4c2?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/HyaluronicAcidLipPlumper.webp"
   },
   {
     "id": "p-beauty-17",
@@ -827,7 +827,7 @@
     "category": "Beauty",
     "rating": 4.5,
     "reviewCount": 6432,
-    "imageUrl": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/CoffeeScrubBodyPolish.webp"
   },
   {
     "id": "p-sports-16",
@@ -837,7 +837,7 @@
     "category": "Sports",
     "rating": 4.5,
     "reviewCount": 12345,
-    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/AbWheelRoller.webp"
   },
   {
     "id": "p-sports-17",
@@ -847,7 +847,7 @@
     "category": "Sports",
     "rating": 4.6,
     "reviewCount": 5678,
-    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/PickleballPaddleSet.webp"
   },
   {
     "id": "p-clothes-18",
@@ -857,7 +857,7 @@
     "category": "Clothes",
     "rating": 4.7,
     "reviewCount": 5432,
-    "imageUrl": "https://images.unsplash.com/photo-1595777457593-5b3a4a4c3a4b?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/SilkPajamaSet.webp"
   },
   {
     "id": "p-clothes-19",
@@ -867,7 +867,7 @@
     "category": "Clothes",
     "rating": 4.5,
     "reviewCount": 4123,
-    "imageUrl": "https://images.unsplash.com/photo-1624378702527-ad1f59b0b24f?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/RelaxedChinoPants.webp"
   },
   {
     "id": "p-clothes-20",
@@ -877,7 +877,7 @@
     "category": "Clothes",
     "rating": 4.6,
     "reviewCount": 3234,
-    "imageUrl": "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/CroppedBlazer.webp"
   },
   {
     "id": "p-electronics-18",
@@ -887,7 +887,7 @@
     "category": "Electronics",
     "rating": 4.6,
     "reviewCount": 21345,
-    "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/SmartWatchFitnessTracker.webp"
   },
   {
     "id": "p-electronics-19",
@@ -897,7 +897,7 @@
     "category": "Electronics",
     "rating": 4.8,
     "reviewCount": 8765,
-    "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/PortableSSD1TB.webp"
   },
   {
     "id": "p-electronics-20",
@@ -907,7 +907,7 @@
     "category": "Electronics",
     "rating": 4.4,
     "reviewCount": 28432,
-    "imageUrl": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/LEDStripLights16ft.webp"
   },
   {
     "id": "p-home-18",
@@ -917,7 +917,7 @@
     "category": "Home Goods",
     "rating": 4.6,
     "reviewCount": 3876,
-    "imageUrl": "https://images.unsplash.com/photo-1555041469-db97920b7a35?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/VelvetStorageOttoman.webp"
   },
   {
     "id": "p-home-19",
@@ -927,7 +927,7 @@
     "category": "Home Goods",
     "rating": 4.7,
     "reviewCount": 5234,
-    "imageUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/CeramicMixingBowlSet.webp"
   },
   {
     "id": "p-home-20",
@@ -937,17 +937,17 @@
     "category": "Home Goods",
     "rating": 4.5,
     "reviewCount": 7654,
-    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/BedsideShelfClipOn.webp"
   },
   {
     "id": "p-beauty-18",
     "name": "AHA BHA Exfoliating Toner",
     "description": "A gentle leave-on chemical exfoliating toner with 5% glycolic acid and 2% salicylic acid. Smooths texture, clears buildup, and brightens tone over a few weeks.",
-    "price": 28.0,
+    "price": 28,
     "category": "Beauty",
     "rating": 4.6,
     "reviewCount": 9432,
-    "imageUrl": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/AHABHAExfoliatingToner.webp"
   },
   {
     "id": "p-beauty-19",
@@ -957,7 +957,7 @@
     "category": "Beauty",
     "rating": 4.5,
     "reviewCount": 7123,
-    "imageUrl": "https://images.unsplash.com/photo-1620916297397-a4a5e3b3e4c2?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/RoseQuartzFaceRoller.webp"
   },
   {
     "id": "p-beauty-20",
@@ -967,7 +967,7 @@
     "category": "Beauty",
     "rating": 4.6,
     "reviewCount": 15678,
-    "imageUrl": "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/MicellarCleansingWater.webp"
   },
   {
     "id": "p-sports-18",
@@ -977,7 +977,7 @@
     "category": "Sports",
     "rating": 4.7,
     "reviewCount": 18234,
-    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/ResistanceLoopBands5Pack.webp"
   },
   {
     "id": "p-sports-19",
@@ -987,7 +987,7 @@
     "category": "Sports",
     "rating": 4.5,
     "reviewCount": 8765,
-    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/GripStrengthenerSet.webp"
   },
   {
     "id": "p-sports-20",
@@ -997,6 +997,6 @@
     "category": "Sports",
     "rating": 4.6,
     "reviewCount": 6432,
-    "imageUrl": "https://images.unsplash.com/photo-1576289286069-c2e9e6a7e5d4?w=400&h=400&fit=crop&auto=format"
+    "imageUrl": "/products/HydrationRunningBelt.webp"
   }
 ]
