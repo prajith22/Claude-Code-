@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Product, ProductCategory } from "@/types";
 import { FlashDeals } from "@/components/FlashDeals";
 import {
@@ -9,6 +9,7 @@ import {
   type CollectionId,
 } from "@/components/CollectionsGrid";
 import { DiscoveryFeed } from "@/components/DiscoveryFeed";
+import { useExploreProducts } from "@/hooks/useExploreProducts";
 
 type Filter =
   | { kind: "none" }
@@ -23,6 +24,15 @@ export function ShopExperience({
   todayLabel: string;
 }) {
   const [filter, setFilter] = useState<Filter>({ kind: "none" });
+
+  const explore = useExploreProducts(products);
+
+  useEffect(() => {
+    if (explore.shuffled.length > 0) {
+      // eslint-disable-next-line no-console
+      console.log("[Explore] First 3 shuffled products:", explore.shuffled.slice(0, 3));
+    }
+  }, [explore.shuffled]);
 
   const collections = useMemo(() => buildCollections(products), [products]);
 
