@@ -959,5 +959,973 @@
         "category": "Desserts"
       }
     ]
+  },
+  {
+    "id": "r-sakura",
+    "name": "Sakura Roll House",
+    "cuisine": "Sushi",
+    "rating": 4.8,
+    "deliveryTime": "25-40 min",
+    "deliveryFee": 2.99,
+    "menu": [
+      {
+        "id": "r-sakura-m1",
+        "name": "Dragon Roll",
+        "description": "Shrimp tempura, avocado and cucumber topped with tuna and tobiko.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sakura-m2",
+        "name": "Rainbow Roll",
+        "description": "California roll topped with assorted sashimi.",
+        "price": 16.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sakura-m3",
+        "name": "Spicy Tuna Roll",
+        "description": "Fresh tuna, sriracha, cucumber and sesame.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sakura-m4",
+        "name": "Salmon Sashimi 6pc",
+        "description": "Fresh Atlantic salmon sliced thin.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sakura-m5",
+        "name": "Chirashi Bowl",
+        "description": "Assorted sashimi over seasoned sushi rice.",
+        "price": 18.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sakura-m6",
+        "name": "Miso Soup",
+        "description": "Traditional dashi broth with tofu and wakame.",
+        "price": 2.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sakura-m7",
+        "name": "Edamame",
+        "description": "Salted steamed soybeans.",
+        "price": 4.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sakura-m8",
+        "name": "Gyoza 6pc",
+        "description": "Pan-fried pork and cabbage dumplings.",
+        "price": 6.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sakura-m9",
+        "name": "Ramune Soda",
+        "description": "Japanese marble soda in assorted flavors.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sakura-m10",
+        "name": "Green Tea",
+        "description": "Hot or iced.",
+        "price": 2.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sakura-m11",
+        "name": "Yuzu Lemonade",
+        "description": "Citrusy yuzu lemonade over ice.",
+        "price": 3.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sakura-m12",
+        "name": "Mochi Ice Cream 3pc",
+        "description": "Chewy mochi wrapped around ice cream, assorted flavors.",
+        "price": 5.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-sakura-m13",
+        "name": "Matcha Cheesecake",
+        "description": "Creamy cheesecake infused with stone-ground matcha.",
+        "price": 6.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-bombay-bites",
+    "name": "Bombay Bites",
+    "cuisine": "Indian",
+    "rating": 4.6,
+    "deliveryTime": "30-45 min",
+    "deliveryFee": 1.99,
+    "menu": [
+      {
+        "id": "r-bombay-bites-m1",
+        "name": "Butter Chicken",
+        "description": "Tender chicken in a rich tomato cream sauce.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-bombay-bites-m2",
+        "name": "Chicken Tikka Masala",
+        "description": "Grilled chicken in spiced masala gravy.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-bombay-bites-m3",
+        "name": "Lamb Biryani",
+        "description": "Fragrant basmati rice with slow-cooked lamb and whole spices.",
+        "price": 16.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-bombay-bites-m4",
+        "name": "Paneer Makhani",
+        "description": "Cottage cheese cubes in buttery tomato sauce. Vegetarian.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-bombay-bites-m5",
+        "name": "Garlic Naan",
+        "description": "Soft leavened bread baked in the tandoor oven.",
+        "price": 3.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-bombay-bites-m6",
+        "name": "Samosa 2pc",
+        "description": "Crispy pastry filled with spiced potatoes and peas.",
+        "price": 4.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-bombay-bites-m7",
+        "name": "Onion Bhaji",
+        "description": "Crispy fried onion fritters with mint chutney.",
+        "price": 5.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-bombay-bites-m8",
+        "name": "Mango Lassi",
+        "description": "Sweet yogurt drink blended with fresh mango.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-bombay-bites-m9",
+        "name": "Chai Tea",
+        "description": "Spiced black tea with milk.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-bombay-bites-m10",
+        "name": "Rose Sharbat",
+        "description": "Chilled rose syrup drink.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-bombay-bites-m11",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-bombay-bites-m12",
+        "name": "Gulab Jamun",
+        "description": "Soft milk dumplings in rose sugar syrup.",
+        "price": 4.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-bombay-bites-m13",
+        "name": "Kheer",
+        "description": "Creamy rice pudding with cardamom and pistachios.",
+        "price": 3.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-olive-feta",
+    "name": "Olive & Feta",
+    "cuisine": "Mediterranean",
+    "rating": 4.7,
+    "deliveryTime": "20-35 min",
+    "deliveryFee": 1.49,
+    "menu": [
+      {
+        "id": "r-olive-feta-m1",
+        "name": "Chicken Shawarma Wrap",
+        "description": "Marinated chicken, garlic sauce and pickles in warm flatbread.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-olive-feta-m2",
+        "name": "Lamb Gyro Plate",
+        "description": "Slow-roasted lamb over rice with tzatziki and pita.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-olive-feta-m3",
+        "name": "Falafel Bowl",
+        "description": "Crispy falafel over hummus with tabbouleh and pita. Vegan.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-olive-feta-m4",
+        "name": "Greek Salad",
+        "description": "Romaine, cucumber, tomato, olives, feta and red onion.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-olive-feta-m5",
+        "name": "Grilled Salmon Plate",
+        "description": "Herb-marinated salmon with roasted vegetables and lemon rice.",
+        "price": 16.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-olive-feta-m6",
+        "name": "Hummus & Pita",
+        "description": "Creamy house hummus with warm pita bread.",
+        "price": 5.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-olive-feta-m7",
+        "name": "Spanakopita",
+        "description": "Flaky phyllo pastry filled with spinach and feta.",
+        "price": 6.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-olive-feta-m8",
+        "name": "Ayran",
+        "description": "Cold salted yogurt drink.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-olive-feta-m9",
+        "name": "Mint Lemonade",
+        "description": "Fresh lemonade with crushed mint.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-olive-feta-m10",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-olive-feta-m11",
+        "name": "Baklava",
+        "description": "Layers of phyllo, walnuts and honey syrup.",
+        "price": 4.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-olive-feta-m12",
+        "name": "Turkish Delight",
+        "description": "Rosewater-scented confection dusted with powdered sugar.",
+        "price": 3.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-seoul-fire",
+    "name": "Seoul Fire BBQ",
+    "cuisine": "Korean",
+    "rating": 4.8,
+    "deliveryTime": "25-40 min",
+    "deliveryFee": 2.49,
+    "menu": [
+      {
+        "id": "r-seoul-fire-m1",
+        "name": "Bulgogi Bowl",
+        "description": "Sweet soy-marinated beef over steamed rice with banchan.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-seoul-fire-m2",
+        "name": "Spicy Pork Belly Bowl",
+        "description": "Gochujang-marinated pork belly over rice with kimchi.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-seoul-fire-m3",
+        "name": "Bibimbap",
+        "description": "Mixed rice bowl with vegetables, egg and gochujang sauce.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-seoul-fire-m4",
+        "name": "Korean Fried Chicken 8pc",
+        "description": "Double-fried crispy chicken in sweet and spicy glaze.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-seoul-fire-m5",
+        "name": "Japchae",
+        "description": "Stir-fried glass noodles with vegetables and beef.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-seoul-fire-m6",
+        "name": "Kimchi",
+        "description": "House-fermented napa cabbage.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-seoul-fire-m7",
+        "name": "Mandu 6pc",
+        "description": "Pan-fried Korean dumplings with dipping sauce.",
+        "price": 7.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-seoul-fire-m8",
+        "name": "Corn Cheese",
+        "description": "Sweet corn baked with melted mozzarella.",
+        "price": 5.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-seoul-fire-m9",
+        "name": "Banana Milk",
+        "description": "Sweet chilled banana-flavored milk.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-seoul-fire-m10",
+        "name": "Barley Tea",
+        "description": "Toasty roasted barley tea, served cold.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-seoul-fire-m11",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-seoul-fire-m12",
+        "name": "Hotteok",
+        "description": "Sweet pancake filled with cinnamon, brown sugar and walnuts.",
+        "price": 3.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-seoul-fire-m13",
+        "name": "Bingsu",
+        "description": "Shaved ice with sweet red beans and condensed milk.",
+        "price": 6.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-thai-orchid",
+    "name": "Thai Orchid Express",
+    "cuisine": "Thai",
+    "rating": 4.5,
+    "deliveryTime": "25-35 min",
+    "deliveryFee": 1.99,
+    "menu": [
+      {
+        "id": "r-thai-orchid-m1",
+        "name": "Pad Thai",
+        "description": "Stir-fried rice noodles with shrimp, egg, bean sprouts and peanuts.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-thai-orchid-m2",
+        "name": "Green Curry",
+        "description": "Coconut milk green curry with chicken, bamboo shoots and Thai basil.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-thai-orchid-m3",
+        "name": "Massaman Curry",
+        "description": "Slow-cooked beef in a rich peanut and potato curry.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-thai-orchid-m4",
+        "name": "Tom Yum Soup",
+        "description": "Spicy and sour lemongrass soup with shrimp and mushrooms.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-thai-orchid-m5",
+        "name": "Mango Sticky Rice",
+        "description": "Sweet glutinous rice with fresh mango and coconut cream.",
+        "price": 7.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-thai-orchid-m6",
+        "name": "Spring Rolls 4pc",
+        "description": "Crispy vegetable rolls with sweet chili sauce.",
+        "price": 5.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-thai-orchid-m7",
+        "name": "Thai Fish Cakes",
+        "description": "Spiced fish patties with cucumber relish.",
+        "price": 7.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-thai-orchid-m8",
+        "name": "Thai Iced Tea",
+        "description": "Sweet black tea with condensed milk over ice.",
+        "price": 3.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-thai-orchid-m9",
+        "name": "Coconut Water",
+        "description": "Chilled fresh coconut water.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-thai-orchid-m10",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-thai-orchid-m11",
+        "name": "Mango Sticky Rice Dessert",
+        "description": "The classic finisher — sweet rice with mango and coconut cream.",
+        "price": 7.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-thai-orchid-m12",
+        "name": "Coconut Ice Cream",
+        "description": "Creamy coconut ice cream topped with toasted peanuts.",
+        "price": 4.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-morning-glory",
+    "name": "Morning Glory Brunch",
+    "cuisine": "Breakfast",
+    "rating": 4.7,
+    "deliveryTime": "20-30 min",
+    "deliveryFee": 1.99,
+    "menu": [
+      {
+        "id": "r-morning-glory-m1",
+        "name": "Eggs Benedict",
+        "description": "Poached eggs on an English muffin with Canadian bacon and hollandaise.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-morning-glory-m2",
+        "name": "Avocado Toast",
+        "description": "Sourdough with smashed avocado, everything bagel seasoning and a poached egg.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-morning-glory-m3",
+        "name": "Buttermilk Pancake Stack",
+        "description": "Three fluffy pancakes with maple syrup and whipped butter.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-morning-glory-m4",
+        "name": "Breakfast Burrito",
+        "description": "Scrambled eggs, bacon, cheddar and salsa in a flour tortilla.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-morning-glory-m5",
+        "name": "Acai Bowl",
+        "description": "Blended acai with granola, fresh fruit and honey.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-morning-glory-m6",
+        "name": "Fruit Salad",
+        "description": "Seasonal fresh fruit with mint and honey.",
+        "price": 5.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-morning-glory-m7",
+        "name": "Hash Browns",
+        "description": "Crispy golden shredded potatoes.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-morning-glory-m8",
+        "name": "Cold Brew Coffee",
+        "description": "Slow-steeped cold brew served over ice.",
+        "price": 4.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-morning-glory-m9",
+        "name": "Fresh Orange Juice",
+        "description": "Hand-squeezed orange juice.",
+        "price": 4.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-morning-glory-m10",
+        "name": "Matcha Latte",
+        "description": "Ceremonial-grade matcha with steamed milk.",
+        "price": 5.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-morning-glory-m11",
+        "name": "Cinnamon Roll",
+        "description": "Warm gooey cinnamon roll with cream cheese frosting.",
+        "price": 4.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-morning-glory-m12",
+        "name": "Blueberry Muffin",
+        "description": "Tender muffin bursting with wild blueberries.",
+        "price": 2.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-green-root",
+    "name": "Green Root Kitchen",
+    "cuisine": "Healthy",
+    "rating": 4.6,
+    "deliveryTime": "15-25 min",
+    "deliveryFee": 1.49,
+    "menu": [
+      {
+        "id": "r-green-root-m1",
+        "name": "Harvest Grain Bowl",
+        "description": "Quinoa, roasted sweet potato, kale, chickpeas and tahini dressing. Vegan.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-green-root-m2",
+        "name": "Grilled Chicken Power Bowl",
+        "description": "Brown rice, grilled chicken, roasted broccoli, edamame and ginger-soy.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-green-root-m3",
+        "name": "Superfood Salad",
+        "description": "Mixed greens, blueberries, walnuts, goat cheese and balsamic glaze.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-green-root-m4",
+        "name": "Turkey Lettuce Wraps",
+        "description": "Ground turkey with water chestnuts and hoisin in butter lettuce cups.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-green-root-m5",
+        "name": "Salmon Poke Bowl",
+        "description": "Sushi rice, fresh salmon, edamame, cucumber and sriracha mayo.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-green-root-m6",
+        "name": "Kale Chips",
+        "description": "Crispy baked kale with sea salt and nutritional yeast.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-green-root-m7",
+        "name": "Hummus Veggie Plate",
+        "description": "House hummus with rainbow vegetables.",
+        "price": 6.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-green-root-m8",
+        "name": "Green Detox Smoothie",
+        "description": "Spinach, apple, ginger, lemon and cucumber, blended smooth.",
+        "price": 6.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-green-root-m9",
+        "name": "Coconut Water",
+        "description": "Chilled fresh coconut water.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-green-root-m10",
+        "name": "Kombucha",
+        "description": "Fermented tea in a rotating seasonal flavor.",
+        "price": 4.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-green-root-m11",
+        "name": "Chia Pudding",
+        "description": "Coconut milk chia pudding with fresh berries.",
+        "price": 4.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-green-root-m12",
+        "name": "Protein Energy Balls",
+        "description": "Oat, peanut butter and dark chocolate bites.",
+        "price": 3.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-trattoria-napoli",
+    "name": "Trattoria Napoli",
+    "cuisine": "Italian",
+    "rating": 4.7,
+    "deliveryTime": "30-45 min",
+    "deliveryFee": 2.49,
+    "menu": [
+      {
+        "id": "r-trattoria-napoli-m1",
+        "name": "Spaghetti Carbonara",
+        "description": "Al dente pasta with pancetta, egg, pecorino and black pepper.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-trattoria-napoli-m2",
+        "name": "Penne Arrabbiata",
+        "description": "Penne in spicy tomato sauce with garlic and fresh basil. Vegan.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-trattoria-napoli-m3",
+        "name": "Chicken Parmigiana",
+        "description": "Breaded chicken breast with marinara and melted mozzarella over pasta.",
+        "price": 15.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-trattoria-napoli-m4",
+        "name": "Lasagna al Forno",
+        "description": "Layered pasta with beef bolognese, bechamel and parmesan.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-trattoria-napoli-m5",
+        "name": "Risotto ai Funghi",
+        "description": "Creamy arborio rice with wild mushrooms, parmesan and truffle oil.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-trattoria-napoli-m6",
+        "name": "Bruschetta",
+        "description": "Grilled bread with fresh tomato, basil and olive oil.",
+        "price": 6.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-trattoria-napoli-m7",
+        "name": "Arancini 3pc",
+        "description": "Crispy fried risotto balls with a mozzarella center.",
+        "price": 7.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-trattoria-napoli-m8",
+        "name": "Minestrone Soup",
+        "description": "Classic vegetable and bean soup with a parmesan rind.",
+        "price": 5.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-trattoria-napoli-m9",
+        "name": "San Pellegrino",
+        "description": "Italian sparkling mineral water.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-trattoria-napoli-m10",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-trattoria-napoli-m11",
+        "name": "Sparkling Lemonade",
+        "description": "Bubbly lemonade with a twist of lemon peel.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-trattoria-napoli-m12",
+        "name": "Tiramisu",
+        "description": "Espresso-soaked ladyfingers with mascarpone cream.",
+        "price": 6.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-trattoria-napoli-m13",
+        "name": "Panna Cotta",
+        "description": "Vanilla cream with a bright berry compote.",
+        "price": 5.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-anchor-seafood",
+    "name": "The Anchor Seafood",
+    "cuisine": "Seafood",
+    "rating": 4.6,
+    "deliveryTime": "25-40 min",
+    "deliveryFee": 2.99,
+    "menu": [
+      {
+        "id": "r-anchor-seafood-m1",
+        "name": "Shrimp Po'Boy",
+        "description": "Crispy fried shrimp on a toasted hoagie with remoulade and slaw.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-anchor-seafood-m2",
+        "name": "Fish and Chips",
+        "description": "Beer-battered cod with thick-cut fries and tartar sauce.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-anchor-seafood-m3",
+        "name": "Lobster Roll",
+        "description": "Chilled lobster with light mayo on a buttered brioche bun.",
+        "price": 19.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-anchor-seafood-m4",
+        "name": "Grilled Mahi Mahi",
+        "description": "Fresh mahi with mango salsa and coconut rice.",
+        "price": 16.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-anchor-seafood-m5",
+        "name": "Clam Chowder Bowl",
+        "description": "Creamy New England chowder in a sourdough bread bowl.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-anchor-seafood-m6",
+        "name": "Calamari",
+        "description": "Lightly breaded fried squid with marinara and lemon.",
+        "price": 8.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-anchor-seafood-m7",
+        "name": "Crab Cakes 2pc",
+        "description": "Pan-seared jumbo lump crab cakes with remoulade.",
+        "price": 11.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-anchor-seafood-m8",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-anchor-seafood-m9",
+        "name": "Lemonade",
+        "description": "Classic fresh-squeezed lemonade.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-anchor-seafood-m10",
+        "name": "Bottled Water",
+        "description": "Refreshing bottled spring water.",
+        "price": 1.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-anchor-seafood-m11",
+        "name": "Key Lime Pie",
+        "description": "Tangy key lime custard in a graham cracker crust.",
+        "price": 5.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-anchor-seafood-m12",
+        "name": "Bread Pudding",
+        "description": "Warm bread pudding with vanilla bourbon sauce.",
+        "price": 4.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-boba-bites",
+    "name": "Boba & Bites",
+    "cuisine": "Desserts",
+    "rating": 4.8,
+    "deliveryTime": "15-25 min",
+    "deliveryFee": 0.99,
+    "menu": [
+      {
+        "id": "r-boba-bites-m1",
+        "name": "Classic Milk Tea",
+        "description": "Black tea with creamy milk and tapioca pearls. Choose your sweetness.",
+        "price": 6.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-boba-bites-m2",
+        "name": "Taro Milk Tea",
+        "description": "Purple taro with milk and tapioca pearls.",
+        "price": 6.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-boba-bites-m3",
+        "name": "Matcha Latte Boba",
+        "description": "Ceremonial matcha with oat milk and tapioca pearls.",
+        "price": 6.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-boba-bites-m4",
+        "name": "Brown Sugar Tiger Milk Tea",
+        "description": "Brown sugar syrup with fresh milk and tiger pearls.",
+        "price": 7.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-boba-bites-m5",
+        "name": "Strawberry Fruit Tea",
+        "description": "Fresh strawberry tea with popping boba.",
+        "price": 5.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-boba-bites-m6",
+        "name": "Takoyaki 6pc",
+        "description": "Japanese octopus balls with bonito flakes and mayo.",
+        "price": 6.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-boba-bites-m7",
+        "name": "Cheese Tteokbokki",
+        "description": "Spicy rice cakes topped with melted cheese.",
+        "price": 7.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-boba-bites-m8",
+        "name": "Sparkling Fruit Soda",
+        "description": "Fizzy soda in rotating seasonal fruit flavors.",
+        "price": 4.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-boba-bites-m9",
+        "name": "Fresh Lemonade",
+        "description": "House-made lemonade over crushed ice.",
+        "price": 3.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-boba-bites-m10",
+        "name": "Mango Crepe Cake",
+        "description": "Layers of crepe with mango cream.",
+        "price": 6.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-boba-bites-m11",
+        "name": "Churro Bites with Dipping Sauce",
+        "description": "Crispy churros with chocolate and caramel dips.",
+        "price": 4.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-boba-bites-m12",
+        "name": "Strawberry Mochi",
+        "description": "Soft mochi filled with fresh strawberry and cream.",
+        "price": 5.99,
+        "category": "Desserts"
+      }
+    ]
   }
 ]
