@@ -7,8 +7,6 @@ import { signOut, useSession } from "next-auth/react";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
-const isDev = process.env.NODE_ENV === "development";
-
 const TABS = [
   { href: "/home", label: "Home" },
   { href: "/shop", label: "Shop" },
@@ -134,34 +132,13 @@ export function TopNav() {
           {open && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-              <div className="absolute right-0 top-full z-50 mt-2 w-52 rounded-2xl border border-surface-border bg-white py-1 shadow-cardHover">
+              <div className="absolute right-0 top-full z-50 mt-2 w-44 rounded-2xl border border-surface-border bg-white py-1 shadow-cardHover">
                 <div className="border-b border-surface-border px-4 py-2.5">
                   <p className="text-[13px] font-semibold text-ink">{name}</p>
                   <p className="text-[11px] text-ink-muted">
                     {session?.user?.email ?? "Guest"}
                   </p>
                 </div>
-                {isDev && (
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      try {
-                        await fetch("/api/dev/reset-onboarding", { method: "POST" });
-                      } finally {
-                        setOpen(false);
-                        // Full reload so the server guard re-reads the user
-                        // and routes us to /onboarding.
-                        window.location.href = "/onboarding";
-                      }
-                    }}
-                    className="w-full border-b border-surface-border px-4 py-2.5 text-left text-[13px] font-medium text-ink-muted transition hover:bg-surface-alt hover:text-ink"
-                  >
-                    Reset onboarding
-                    <span className="ml-2 text-[10px] font-semibold uppercase tracking-wide text-ink-faint">
-                      Dev
-                    </span>
-                  </button>
-                )}
                 <button
                   type="button"
                   onClick={() => signOut({ callbackUrl: "/signin" })}

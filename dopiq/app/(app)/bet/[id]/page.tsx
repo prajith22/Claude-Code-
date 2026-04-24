@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
+import { requireSubscribedUser } from "@/lib/session-guards";
 import { getAllOdds } from "@/lib/odds";
 import type { Game } from "@/types";
 import { BetSlip } from "@/components/BetSlip";
@@ -11,7 +11,7 @@ export default async function GameDetailPage({
 }: {
   params: { id: string };
 }) {
-  await requireOnboardedSubscribedUser();
+  await requireSubscribedUser();
 
   let g: Game | null = null;
   try {

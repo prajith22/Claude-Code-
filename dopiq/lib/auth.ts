@@ -28,13 +28,11 @@ export const authOptions: NextAuthOptions = {
           where: { id: user.id },
           select: {
             id: true,
-            onboardingCompleted: true,
             subscriptionStatus: true,
             trialStartDate: true,
           },
         });
         session.user.id = user.id;
-        session.user.onboardingCompleted = u?.onboardingCompleted ?? false;
         session.user.subscriptionStatus = u?.subscriptionStatus ?? "trialing";
         session.user.trialStartDate = u?.trialStartDate ?? null;
       }
