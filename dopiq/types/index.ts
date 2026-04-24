@@ -25,7 +25,15 @@ export type Cuisine =
   | "Italian"
   | "Chicken"
   | "Sandwiches"
-  | "Wings";
+  | "Wings"
+  | "Indian"
+  | "Mediterranean"
+  | "Korean"
+  | "Thai"
+  | "Breakfast"
+  | "Healthy"
+  | "Seafood"
+  | "Desserts";
 
 export type OrderSize = "Just me" | "Me + 1" | "Group order";
 
