@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import restaurants from "@/data/restaurants.json";
 import type { Restaurant, Cuisine, FoodPrefs } from "@/types";
@@ -10,13 +10,9 @@ import { CartButton } from "@/components/CartButton";
 import { RestaurantLogo } from "@/components/RestaurantLogo";
 import { cardHover, cardHoverTransition } from "@/lib/card-hover";
 
-const STORAGE_KEY = "dopiq:food:favorites";
-const SAVED_FILTER = "__saved__";
-
 type Pill = { key: string; emoji: string; label: string };
 
 const PILLS: Pill[] = [
-  { key: SAVED_FILTER, emoji: "❤️", label: "Saved" },
   { key: "Pizza", emoji: "🍕", label: "Pizza" },
   { key: "Burgers", emoji: "🍔", label: "Burgers" },
   { key: "Chicken", emoji: "🍗", label: "Chicken" },
@@ -38,39 +34,11 @@ const deliveryUpperMinutes = (t: string) => {
 export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
   const [search, setSearch] = useState("");
   const [activePill, setActivePill] = useState<string | null>(null);
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [hydrated, setHydrated] = useState(false);
   const [expanded, setExpanded] = useState<{
     popular: boolean;
     fastest: boolean;
     topRated: boolean;
   }>({ popular: false, fastest: false, topRated: false });
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) setFavorites(parsed);
-      }
-    } catch {
-      // ignore
-    }
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
-    } catch {
-      // ignore
-    }
-  }, [favorites, hydrated]);
-
-  const toggleFavorite = (id: string) => {
-    setFavorites((f) => (f.includes(id) ? f.filter((x) => x !== id) : [...f, id]));
-  };
 
   const all = restaurants as Restaurant[];
 
@@ -86,18 +54,14 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return baseOrdered.filter((r) => {
-      if (activePill === SAVED_FILTER) {
-        if (!favorites.includes(r.id)) return false;
-      } else if (activePill) {
-        if (r.cuisine !== activePill) return false;
-      }
+      if (activePill && r.cuisine !== activePill) return false;
       if (!q) return true;
       return (
         r.name.toLowerCase().includes(q) ||
         r.cuisine.toLowerCase().includes(q)
       );
     });
-  }, [baseOrdered, search, activePill, favorites]);
+  }, [baseOrdered, search, activePill]);
 
   const mostPopularAll = useMemo(
     () => [...filtered].sort((a, b) => b.rating - a.rating),
@@ -120,11 +84,7 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
 
   const hasResults = filtered.length > 0;
   const searchTerm = search.trim();
-  const activeLabel =
-    activePill === SAVED_FILTER
-      ? "Saved"
-      : activePill ?? "";
-  const emptyLabel = searchTerm || activeLabel;
+  const emptyLabel = searchTerm || activePill || "";
 
   return (
     <div className="space-y-5 pb-4">
@@ -267,8 +227,6 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
             onToggle={() =>
               setExpanded((e) => ({ ...e, popular: !e.popular }))
             }
-            favorites={favorites}
-            onToggleFavorite={toggleFavorite}
           />
           <CategorySection
             title="⚡ Fastest Delivery"
@@ -278,8 +236,6 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
             onToggle={() =>
               setExpanded((e) => ({ ...e, fastest: !e.fastest }))
             }
-            favorites={favorites}
-            onToggleFavorite={toggleFavorite}
           />
           {topRatedAll.length > 0 && (
             <CategorySection
@@ -290,8 +246,6 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
               onToggle={() =>
                 setExpanded((e) => ({ ...e, topRated: !e.topRated }))
               }
-              favorites={favorites}
-              onToggleFavorite={toggleFavorite}
             />
           )}
 
@@ -302,11 +256,7 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
             <ul className="space-y-4">
               {filtered.map((r) => (
                 <li key={r.id}>
-                  <RestaurantRow
-                    r={r}
-                    favorited={favorites.includes(r.id)}
-                    onToggleFavorite={() => toggleFavorite(r.id)}
-                  />
+                  <RestaurantRow r={r} />
                 </li>
               ))}
             </ul>
@@ -323,16 +273,12 @@ function CategorySection({
   allItems,
   expanded,
   onToggle,
-  favorites,
-  onToggleFavorite,
 }: {
   title: string;
   items: Restaurant[];
   allItems: Restaurant[];
   expanded: boolean;
   onToggle: () => void;
-  favorites: string[];
-  onToggleFavorite: (id: string) => void;
 }) {
   if (allItems.length === 0) return null;
   const display = expanded ? allItems : items;
@@ -356,13 +302,7 @@ function CategorySection({
       {expanded ? (
         <div className="grid grid-cols-2 gap-3">
           {display.map((r) => (
-            <CompactCard
-              key={r.id}
-              r={r}
-              favorited={favorites.includes(r.id)}
-              onToggleFavorite={() => onToggleFavorite(r.id)}
-              fullWidth
-            />
+            <CompactCard key={r.id} r={r} fullWidth />
           ))}
         </div>
       ) : (
@@ -372,12 +312,7 @@ function CategorySection({
         >
           <div className="flex gap-3 px-4 pb-4 pt-3">
             {display.map((r) => (
-              <CompactCard
-                key={r.id}
-                r={r}
-                favorited={favorites.includes(r.id)}
-                onToggleFavorite={() => onToggleFavorite(r.id)}
-              />
+              <CompactCard key={r.id} r={r} />
             ))}
           </div>
         </div>
@@ -388,13 +323,9 @@ function CategorySection({
 
 function CompactCard({
   r,
-  favorited,
-  onToggleFavorite,
   fullWidth = false,
 }: {
   r: Restaurant;
-  favorited: boolean;
-  onToggleFavorite: () => void;
   fullWidth?: boolean;
 }) {
   return (
@@ -421,20 +352,11 @@ function CompactCard({
           </div>
         </div>
       </Link>
-      <HeartButton favorited={favorited} onClick={onToggleFavorite} />
     </motion.div>
   );
 }
 
-function RestaurantRow({
-  r,
-  favorited,
-  onToggleFavorite,
-}: {
-  r: Restaurant;
-  favorited: boolean;
-  onToggleFavorite: () => void;
-}) {
+function RestaurantRow({ r }: { r: Restaurant }) {
   return (
     <motion.div
       className="card relative"
@@ -484,48 +406,6 @@ function RestaurantRow({
           </div>
         </div>
       </Link>
-      <HeartButton favorited={favorited} onClick={onToggleFavorite} />
     </motion.div>
-  );
-}
-
-function HeartButton({
-  favorited,
-  onClick,
-}: {
-  favorited: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <motion.button
-      type="button"
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        onClick();
-      }}
-      whileTap={{ scale: 0.82 }}
-      whileHover={{ scale: 1.08 }}
-      animate={favorited ? { scale: [1, 1.35, 1] } : { scale: 1 }}
-      transition={{ duration: 0.28, ease: "easeOut" }}
-      aria-label={favorited ? "Remove from saved" : "Save restaurant"}
-      aria-pressed={favorited}
-      className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-card"
-    >
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill={favorited ? "#E63946" : "none"}
-        aria-hidden
-      >
-        <path
-          d="M12 21s-7-4.5-7-11a4.5 4.5 0 0 1 8.15-2.65A4.5 4.5 0 0 1 19 10c0 6.5-7 11-7 11Z"
-          stroke={favorited ? "#E63946" : "#0A0F1E"}
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </motion.button>
   );
 }
