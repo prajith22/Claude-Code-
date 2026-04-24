@@ -38,6 +38,7 @@ export default function ShopCartPage() {
                       src={l.imageUrl}
                       alt={l.name}
                       className="h-full w-full object-cover"
+                      style={{ filter: "blur(0.8px)" }}
                     />
                   </div>
                 )}

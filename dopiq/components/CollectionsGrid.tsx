@@ -139,6 +139,7 @@ export function CollectionsGrid({
                       fill
                       sizes="48px"
                       className="object-cover"
+                      style={{ filter: "blur(0.8px)" }}
                     />
                   </span>
                 ))}

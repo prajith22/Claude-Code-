@@ -24,6 +24,7 @@ export default function ProductDetailPage({
           src={product.imageUrl}
           alt={product.name}
           className="mx-auto block h-auto w-auto max-w-full"
+          style={{ filter: "blur(0.8px)" }}
         />
       </div>
 
