@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import type { Product, ProductCategory } from "@/types";
 import { useCartStore } from "@/lib/cart-store";
@@ -215,13 +214,14 @@ function ProductCard({
       transition={cardHoverTransition}
     >
       <Link href={`/shop/${product.id}`} className="block">
-        <div className="relative h-[240px] overflow-hidden bg-surface-alt">
-          <Image
+        <div className="relative h-[480px] overflow-hidden bg-surface-alt">
+          {/* Raw <img> to match the detail page — keeps local /products/*.jpg
+              paths out of the Next image optimizer. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={product.imageUrl}
             alt={product.name}
-            fill
-            sizes="(max-width: 640px) 50vw, 220px"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
       </Link>
