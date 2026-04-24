@@ -29,13 +29,8 @@ export function useExploreProducts(products: Product[]): ExploreProducts {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const s = fisherYates(products);
-    setShuffled(s);
+    setShuffled(fisherYates(products));
     setIndex(0);
-    // Verification log for installment 1 — remove once UI consumes the hook.
-    if (s.length > 0) {
-      console.log("[useExploreProducts] shuffled top 3:", s.slice(0, 3));
-    }
   }, [products]);
 
   const len = shuffled.length;
