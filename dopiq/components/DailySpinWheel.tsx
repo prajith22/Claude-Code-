@@ -107,8 +107,17 @@ export function DailySpinWheel() {
 
   return (
     <div className="flex flex-col items-center gap-5">
-      {/* Wheel */}
-      <div className="relative h-[240px] w-[240px] md:h-[280px] md:w-[280px]">
+      {/* Wheel — tap to spin */}
+      <motion.button
+        type="button"
+        onClick={spin}
+        disabled={spinning}
+        aria-label={spinning ? "Spinning" : "Tap to spin"}
+        whileHover={!spinning ? { scale: 1.03 } : undefined}
+        whileTap={!spinning ? { scale: 0.97 } : undefined}
+        transition={{ duration: 0.15, ease: "easeOut" }}
+        className="relative h-[240px] w-[240px] cursor-pointer rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-[#F4A98F]/50 disabled:cursor-default md:h-[280px] md:w-[280px]"
+      >
         {/* Fixed pointer */}
         <svg
           width="32"
@@ -194,7 +203,7 @@ export function DailySpinWheel() {
             <circle cx={CX} cy={CY} r={5} fill="#00C853" />
           </svg>
         </div>
-      </div>
+      </motion.button>
 
       {/* Spin button */}
       <motion.button
