@@ -26,7 +26,7 @@ export function TopNav() {
   const avatar = session?.user?.image;
 
   return (
-    <header className="sticky top-0 z-40 bg-[#FAFAF8]/90 backdrop-blur-sm safe-top">
+    <header className="sticky top-0 z-40 bg-[#F5EFE4]/90 backdrop-blur-sm safe-top">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
 
         {/* Logo */}

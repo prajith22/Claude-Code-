@@ -117,7 +117,7 @@ export function CollectionsGrid({
               whileHover={cardHover}
               transition={cardHoverTransition}
               className={`group relative flex min-h-[140px] flex-col items-start justify-between overflow-hidden rounded-card p-4 text-left ${c.bg} ${
-                isActive ? "ring-2 ring-navy ring-offset-2 ring-offset-[#FAFAF8]" : ""
+                isActive ? "ring-2 ring-navy ring-offset-2 ring-offset-[#F5EFE4]" : ""
               }`}
             >
               <div>
