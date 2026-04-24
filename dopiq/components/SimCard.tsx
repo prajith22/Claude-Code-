@@ -52,7 +52,7 @@ export function SimCard({
       whileHover={{
         scale: 1.04,
         boxShadow:
-          "0 0 0 2px rgba(0, 200, 83, 0.45), 0 12px 28px rgba(0, 200, 83, 0.18)",
+          "0 0 0 2px rgba(244, 169, 143, 0.55), 0 12px 28px rgba(244, 169, 143, 0.22)",
         transition: { duration: 0.2 },
       }}
       whileTap={{ scale: 0.97, transition: { duration: 0.08 } }}
