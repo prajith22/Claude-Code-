@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import products from "@/data/products.json";
 import type { Product } from "@/types";
 import { formatUSD } from "@/lib/utils";
@@ -15,7 +16,7 @@ export default function ProductDetailPage({
   const reviews = buildFakeReviews(product);
 
   return (
-    <div className="space-y-6 pb-4">
+    <div className="space-y-6 pb-36 md:pb-4">
       {/* Hero image — capped at 600px, centered, never upscaled past natural size */}
       <div className="mx-auto w-full max-w-[600px] overflow-hidden rounded-card bg-surface-alt">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -73,6 +74,16 @@ export default function ProductDetailPage({
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* Bottom-of-page CTAs — easier than scrolling back up to find them */}
+      <section className="flex flex-col gap-3 pt-2 sm:flex-row">
+        <Link href="/shop/cart" className="btn-primary flex-1">
+          Go to Checkout
+        </Link>
+        <Link href="/shop" className="btn-secondary flex-1">
+          ← Shop more?
+        </Link>
       </section>
     </div>
   );
