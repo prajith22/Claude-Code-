@@ -66,7 +66,9 @@ export function ShopExperience({
 
       {/* Explore — card stack between Flash Deals and Collections */}
       <ExploreSection
+        previous={explore.previous}
         current={explore.current}
+        next={explore.next}
         canGoPrev={explore.index > 0}
         canGoNext={
           explore.shuffled.length > 0 &&

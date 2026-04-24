@@ -4,13 +4,17 @@ import type { Product } from "@/types";
 import { ExploreCard } from "@/components/ExploreCard";
 
 export function ExploreSection({
+  previous,
   current,
+  next,
   canGoPrev,
   canGoNext,
   onPrev,
   onNext,
 }: {
+  previous: Product | undefined;
   current: Product | undefined;
+  next: Product | undefined;
   canGoPrev: boolean;
   canGoNext: boolean;
   onPrev: () => void;
@@ -25,8 +29,42 @@ export function ExploreSection({
         <p className="text-[13px] text-ink-muted">Discover something new</p>
       </div>
 
-      <div className="mx-auto w-full max-w-[600px]">
-        <ExploreCard product={current} />
+      {/* Clip horizontal overflow so peek cards never cause page-level scroll */}
+      <div className="overflow-x-clip">
+        <div className="relative mx-auto w-full max-w-[600px]">
+          {/* Previous card — peeks 50px on the left */}
+          {previous && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-10 opacity-50"
+              style={{
+                transform: "translateX(calc(-100% + 50px)) scale(0.92)",
+                transformOrigin: "right center",
+              }}
+            >
+              <ExploreCard product={previous} />
+            </div>
+          )}
+
+          {/* Current card — in flow so it sets the container's height */}
+          <div className="relative z-20 rounded-card shadow-2xl">
+            <ExploreCard product={current} />
+          </div>
+
+          {/* Next card — peeks 50px on the right */}
+          {next && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-10 opacity-50"
+              style={{
+                transform: "translateX(calc(100% - 50px)) scale(0.92)",
+                transformOrigin: "left center",
+              }}
+            >
+              <ExploreCard product={next} />
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="mt-4 flex items-center justify-center gap-4">
