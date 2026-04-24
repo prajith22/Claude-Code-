@@ -215,7 +215,7 @@ function ProductCard({
       transition={cardHoverTransition}
     >
       <Link href={`/shop/${product.id}`} className="block">
-        <div className="relative aspect-square overflow-hidden bg-surface-alt">
+        <div className="relative h-[240px] overflow-hidden bg-surface-alt">
           <Image
             src={product.imageUrl}
             alt={product.name}

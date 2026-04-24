@@ -148,7 +148,7 @@ function DealCard({
       className="card relative overflow-hidden"
     >
       <Link href={`/shop/${deal.product.id}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-surface-alt">
+        <div className="relative h-[200px] overflow-hidden bg-surface-alt">
           <Image
             src={deal.product.imageUrl}
             alt={deal.product.name}
