@@ -370,7 +370,7 @@ function CategorySection({
           className="-mx-4 overflow-x-auto [&::-webkit-scrollbar]:hidden"
           style={{ scrollbarWidth: "none" }}
         >
-          <div className="flex gap-3 px-4 pb-1">
+          <div className="flex gap-3 px-4 pb-4 pt-3">
             {display.map((r) => (
               <CompactCard
                 key={r.id}
