@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Product } from "@/types";
@@ -149,12 +148,13 @@ function DealCard({
     >
       <Link href={`/shop/${deal.product.id}`} className="block">
         <div className="relative h-[200px] overflow-hidden bg-surface-alt">
-          <Image
+          {/* Raw <img> to match the grid and detail page — keeps local
+              /products/*.webp paths out of the Next image optimizer. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={deal.product.imageUrl}
             alt={deal.product.name}
-            fill
-            sizes="(max-width: 640px) 100vw, 33vw"
-            className="object-cover"
+            className="h-full w-full object-cover"
           />
           <span className="absolute left-3 top-3 rounded-pill bg-red-600 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">
             Flash Deal
