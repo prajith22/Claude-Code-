@@ -11,6 +11,17 @@
   --surface: #ffffff;
   --surface-alt: #F7F8FA;
   --border: #E5E7EB;
+  /* Reserved height for the mobile bottom tab bar — h-14 (56px) plus
+     the iPhone home-indicator safe area. Pages and sticky action bars
+     read off this so a single value drives every offset. */
+  --bottom-nav-h: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 768px) {
+  :root {
+    /* Bottom tab bar is hidden on md+ — collapse the offset. */
+    --bottom-nav-h: 0px;
+  }
 }
 
 html, body {
@@ -66,4 +77,17 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .safe-top { padding-top: env(safe-area-inset-top, 0px); }
   /* JetBrains Mono for all money, prices, odds, balances, and numerical data */
   .money { @apply font-mono font-bold tabular-nums tracking-tight; }
+}
+
+@layer utilities {
+  /* Pad the bottom of a scrolling page so the last element clears the
+     mobile bottom tab bar (incl. iPhone home indicator safe area). */
+  .pb-nav { padding-bottom: calc(var(--bottom-nav-h) + 1.5rem); }
+  /* Same idea but reserves additional room for pages that also have a
+     sticky action bar (Add to Cart, Restaurant Checkout, etc.) sitting
+     just above the tab bar. */
+  .pb-nav-action { padding-bottom: calc(var(--bottom-nav-h) + 7rem); }
+  /* Anchor a sticky bottom bar so it sits ABOVE the mobile tab bar
+     instead of behind it. */
+  .bottom-nav { bottom: var(--bottom-nav-h); }
 }

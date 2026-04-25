@@ -51,8 +51,9 @@ export function AddToCartControls({ product }: { product: Product }) {
 
   return (
     <>
-      {/* Mobile: fixed bar above bottom nav */}
-      <div className="fixed inset-x-0 bottom-14 z-30 flex items-center gap-3 border-t border-surface-border bg-white/95 px-4 py-3 backdrop-blur-sm md:hidden">
+      {/* Mobile: fixed bar sits just above the bottom tab bar (which
+          itself respects the iPhone home-indicator safe area). */}
+      <div className="bottom-nav fixed inset-x-0 z-30 flex items-center gap-3 border-t border-surface-border bg-white/95 px-4 py-3 backdrop-blur-sm md:hidden">
         {QtyPicker}
         <button
           type="button"
