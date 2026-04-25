@@ -1,11 +1,11 @@
 import products from "@/data/products.json";
 import type { Product } from "@/types";
-import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
+import { requireSubscribedUser } from "@/lib/session-guards";
 import { CartButton } from "@/components/CartButton";
 import { ShopExperience } from "@/components/ShopExperience";
 
 export default async function ShopPage() {
-  await requireOnboardedSubscribedUser();
+  await requireSubscribedUser();
   const all = products as Product[];
 
   // Format date on server to avoid hydration mismatch

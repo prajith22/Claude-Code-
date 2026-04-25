@@ -1,11 +1,11 @@
-import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
+import { requireSubscribedUser } from "@/lib/session-guards";
 import { prisma } from "@/lib/prisma";
 import { SpendingLogger } from "@/components/SpendingLogger";
 import { WeeklySummary } from "@/components/WeeklySummary";
 import { SpendingHistory } from "@/components/SpendingHistory";
 
 export default async function TrackerPage() {
-  const user = await requireOnboardedSubscribedUser();
+  const user = await requireSubscribedUser();
   const entries = await prisma.spendingLog.findMany({
     where: { userId: user.id },
     orderBy: { date: "desc" },

@@ -19,8 +19,6 @@ export async function GET(req: Request) {
   const baseUrl = process.env.NEXTAUTH_URL ?? new URL(req.url).origin;
 
   try {
-    // Upsert so repeat clicks preserve existing state (onboarding
-    // progress, prefs, etc.) instead of resetting the user each visit.
     const user = await prisma.user.upsert({
       where: { email: GUEST_EMAIL },
       update: {
@@ -28,8 +26,7 @@ export async function GET(req: Request) {
       },
       create: {
         email: GUEST_EMAIL,
-        name: "Guest Tester",
-        onboardingCompleted: false,
+        name: "Guest",
         subscriptionStatus: "active",
         trialStartDate: new Date(),
       },
@@ -41,8 +38,7 @@ export async function GET(req: Request) {
       data: { sessionToken, userId: user.id, expires },
     });
 
-    const dest = user.onboardingCompleted ? "/home" : "/onboarding";
-    const res = NextResponse.redirect(`${baseUrl}${dest}`, { status: 302 });
+    const res = NextResponse.redirect(`${baseUrl}/home`, { status: 302 });
     res.cookies.set(SESSION_COOKIE, sessionToken, {
       httpOnly: true,
       sameSite: "lax",

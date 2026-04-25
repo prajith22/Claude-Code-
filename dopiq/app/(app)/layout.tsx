@@ -1,4 +1,4 @@
-import { requireOnboardedSubscribedUser } from "@/lib/session-guards";
+import { requireSubscribedUser } from "@/lib/session-guards";
 import { BottomNav } from "@/components/BottomNav";
 import { TopNav } from "@/components/TopNav";
 
@@ -7,7 +7,7 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await requireOnboardedSubscribedUser();
+  await requireSubscribedUser();
 
   return (
     <div className="min-h-[100dvh]">
