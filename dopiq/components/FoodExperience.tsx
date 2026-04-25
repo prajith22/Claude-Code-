@@ -339,7 +339,11 @@ function CompactCard({
         className="group block active:scale-[0.995]"
       >
         <div className="relative aspect-square w-full overflow-hidden rounded-t-card bg-surface-alt">
-          <RestaurantLogo name={r.name} className="h-full w-full" />
+          <RestaurantLogo
+            name={r.name}
+            imageUrl={r.imageUrl}
+            className="h-full w-full"
+          />
         </div>
         <div className="p-3">
           <p className="truncate text-[14px] font-bold text-ink">{r.name}</p>
@@ -370,6 +374,7 @@ function RestaurantRow({ r }: { r: Restaurant }) {
         <div className="relative h-44 w-full overflow-hidden rounded-t-card bg-surface-alt md:h-52">
           <RestaurantLogo
             name={r.name}
+            imageUrl={r.imageUrl}
             variant="banner"
             className="flex h-full w-full items-center justify-center"
           />

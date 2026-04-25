@@ -6,6 +6,7 @@
     "rating": 4.3,
     "deliveryTime": "15-25 min",
     "deliveryFee": 1.99,
+    "imageUrl": "/restaurants/GoldenArchBurgers.webp",
     "menu": [
       {
         "id": "r-golden-arch-m1",
@@ -107,6 +108,7 @@
     "rating": 4.5,
     "deliveryTime": "20-30 min",
     "deliveryFee": 0.99,
+    "imageUrl": "/restaurants/CanyonBurritoCo.webp",
     "menu": [
       {
         "id": "r-canyon-burrito-m1",
@@ -194,6 +196,7 @@
     "rating": 4.6,
     "deliveryTime": "20-35 min",
     "deliveryFee": 1.49,
+    "imageUrl": "/restaurants/SouthernCluck.webp",
     "menu": [
       {
         "id": "r-southern-cluck-m1",
@@ -288,6 +291,7 @@
     "rating": 4.1,
     "deliveryTime": "15-25 min",
     "deliveryFee": 0.99,
+    "imageUrl": "/restaurants/TacoMirage.webp",
     "menu": [
       {
         "id": "r-taco-mirage-m1",
@@ -375,6 +379,7 @@
     "rating": 4,
     "deliveryTime": "15-25 min",
     "deliveryFee": 1.99,
+    "imageUrl": "/restaurants/TheSubStation.webp",
     "menu": [
       {
         "id": "r-sub-station-m1",
@@ -563,6 +568,7 @@
     "rating": 4.4,
     "deliveryTime": "20-35 min",
     "deliveryFee": 1.49,
+    "imageUrl": "/restaurants/DragonWokExpress.webp",
     "menu": [
       {
         "id": "r-dragon-wok-m1",
@@ -664,6 +670,7 @@
     "rating": 4.7,
     "deliveryTime": "20-30 min",
     "deliveryFee": 1.99,
+    "imageUrl": "/restaurants/FiveBrothersBurgers.webp",
     "menu": [
       {
         "id": "r-five-brothers-m1",
@@ -758,6 +765,7 @@
     "rating": 4.6,
     "deliveryTime": "20-30 min",
     "deliveryFee": 2.49,
+    "imageUrl": "/restaurants/ShackAndShake.webp",
     "menu": [
       {
         "id": "r-shack-shake-m1",
@@ -866,6 +874,7 @@
     "rating": 4.3,
     "deliveryTime": "25-35 min",
     "deliveryFee": 1.99,
+    "imageUrl": "/restaurants/WingRepublic.webp",
     "menu": [
       {
         "id": "r-wing-republic-m1",
@@ -967,6 +976,7 @@
     "rating": 4.8,
     "deliveryTime": "25-40 min",
     "deliveryFee": 2.99,
+    "imageUrl": "/restaurants/SakuraRollHouse.webp",
     "menu": [
       {
         "id": "r-sakura-m1",
@@ -1068,6 +1078,7 @@
     "rating": 4.6,
     "deliveryTime": "30-45 min",
     "deliveryFee": 1.99,
+    "imageUrl": "/restaurants/BombayBites.webp",
     "menu": [
       {
         "id": "r-bombay-bites-m1",
@@ -1169,6 +1180,7 @@
     "rating": 4.7,
     "deliveryTime": "20-35 min",
     "deliveryFee": 1.49,
+    "imageUrl": "/restaurants/OliveAndFeta.webp",
     "menu": [
       {
         "id": "r-olive-feta-m1",
@@ -1263,6 +1275,7 @@
     "rating": 4.8,
     "deliveryTime": "25-40 min",
     "deliveryFee": 2.49,
+    "imageUrl": "/restaurants/SeoulFireBBQ.webp",
     "menu": [
       {
         "id": "r-seoul-fire-m1",
@@ -1364,6 +1377,7 @@
     "rating": 4.5,
     "deliveryTime": "25-35 min",
     "deliveryFee": 1.99,
+    "imageUrl": "/restaurants/ThaiOrchidExpress.webp",
     "menu": [
       {
         "id": "r-thai-orchid-m1",
@@ -1458,6 +1472,7 @@
     "rating": 4.7,
     "deliveryTime": "20-30 min",
     "deliveryFee": 1.99,
+    "imageUrl": "/restaurants/MorningGloryBrunch.webp",
     "menu": [
       {
         "id": "r-morning-glory-m1",
@@ -1552,6 +1567,7 @@
     "rating": 4.6,
     "deliveryTime": "15-25 min",
     "deliveryFee": 1.49,
+    "imageUrl": "/restaurants/GreenRootKitchen.webp",
     "menu": [
       {
         "id": "r-green-root-m1",
@@ -1646,6 +1662,7 @@
     "rating": 4.7,
     "deliveryTime": "30-45 min",
     "deliveryFee": 2.49,
+    "imageUrl": "/restaurants/TrattoiaNapoli.webp",
     "menu": [
       {
         "id": "r-trattoria-napoli-m1",
@@ -1747,6 +1764,7 @@
     "rating": 4.6,
     "deliveryTime": "25-40 min",
     "deliveryFee": 2.99,
+    "imageUrl": "/restaurants/TheAnchorSeafood.webp",
     "menu": [
       {
         "id": "r-anchor-seafood-m1",
@@ -1841,6 +1859,7 @@
     "rating": 4.8,
     "deliveryTime": "15-25 min",
     "deliveryFee": 0.99,
+    "imageUrl": "/restaurants/BobaAndBites.webp",
     "menu": [
       {
         "id": "r-boba-bites-m1",
