@@ -110,13 +110,3 @@ export type FoodPrefs = {
 };
 
 export type ShoppingPrefs = ProductCategory[];
-
-export type SpendingCategory = "Shopping" | "Food" | "Gambling" | "Other";
-
-export type SpendingEntry = {
-  id: string;
-  amount: number;
-  category: string;
-  note: string | null;
-  date: string;
-};

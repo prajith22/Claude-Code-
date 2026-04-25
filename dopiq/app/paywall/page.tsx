@@ -39,7 +39,6 @@ export default async function PaywallPage() {
           <ul className="mt-5 space-y-3 text-[15px] text-ink">
             <Bullet>Unlimited fake shopping, food, and betting sims</Bullet>
             <Bullet>Live NFL, NBA, MLB &amp; NHL odds and player props</Bullet>
-            <Bullet>Real spending tracker with weekly trends</Bullet>
             <Bullet>Cancel in two taps, keep your data</Bullet>
           </ul>
         </div>

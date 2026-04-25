@@ -9,7 +9,6 @@ const TABS = [
   { href: "/shop",    label: "Shop",    icon: BagIcon },
   { href: "/food",    label: "Food",    icon: ForkIcon },
   { href: "/bet",     label: "Bet",     icon: TicketIcon },
-  { href: "/tracker", label: "Tracker", icon: ChartIcon },
 ] as const;
 
 export function BottomNav() {
@@ -74,14 +73,6 @@ function TicketIcon({ active }: IconProps) {
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8Z"
         stroke="currentColor" strokeWidth={active ? 2.5 : 1.8} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.12 : 0} />
-    </svg>
-  );
-}
-function ChartIcon({ active }: IconProps) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M4 20V10M10 20V4M16 20v-6M22 20H2"
-        stroke="currentColor" strokeWidth={active ? 2.5 : 1.8} strokeLinecap="round" />
     </svg>
   );
 }

@@ -23,9 +23,8 @@ model User {
   foodPrefs            Json?
   createdAt            DateTime @default(now())
 
-  accounts     Account[]
-  sessions     Session[]
-  spendingLog  SpendingLog[]
+  accounts Account[]
+  sessions Session[]
 }
 
 model Account {
@@ -61,20 +60,6 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-}
-
-model SpendingLog {
-  id        String   @id @default(cuid())
-  userId    String
-  amount    Float
-  category  String
-  note      String?
-  date      DateTime
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, date])
 }
 
 // Caches The Odds API responses per sport so we don't burn API quota.
