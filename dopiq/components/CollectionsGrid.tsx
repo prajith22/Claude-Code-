@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import type { Product } from "@/types";
 import { cardHover, cardHoverTransition } from "@/lib/card-hover";
@@ -81,7 +80,6 @@ export function CollectionsGrid({
   onSelect: (id: CollectionId | null) => void;
 }) {
   const collections = buildCollections(products);
-  const byId = Object.fromEntries(products.map((p) => [p.id, p]));
 
   return (
     <motion.section
@@ -104,10 +102,6 @@ export function CollectionsGrid({
       </div>
       <div className="grid grid-cols-2 gap-3">
         {collections.map((c) => {
-          const thumbs = c.productIds
-            .map((id) => byId[id])
-            .filter(Boolean)
-            .slice(0, 3);
           const isActive = active === c.id;
           return (
             <motion.button
@@ -125,24 +119,6 @@ export function CollectionsGrid({
                   {c.title}
                 </p>
                 <p className={`mt-1 text-[12px] ${c.sub_color}`}>{c.subtitle}</p>
-              </div>
-              <div className="relative ml-auto h-12 w-[88px]">
-                {thumbs.map((p, i) => (
-                  <span
-                    key={p.id}
-                    className="absolute top-0 h-12 w-12 overflow-hidden rounded-xl border-2 border-white shadow-sm"
-                    style={{ right: `${i * 22}px`, zIndex: 10 - i }}
-                  >
-                    <Image
-                      src={p.imageUrl}
-                      alt=""
-                      fill
-                      sizes="48px"
-                      className="object-cover"
-                      style={{ filter: "blur(0.8px)" }}
-                    />
-                  </span>
-                ))}
               </div>
             </motion.button>
           );
