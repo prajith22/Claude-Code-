@@ -108,7 +108,7 @@
     "rating": 4.5,
     "deliveryTime": "20-30 min",
     "deliveryFee": 0.99,
-    "imageUrl": "/restaurants/CanyonBurritoCo.webp",
+    "imageUrl": "/restaurants/CanyonBurritoCo..webp",
     "menu": [
       {
         "id": "r-canyon-burrito-m1",
@@ -474,6 +474,7 @@
     "rating": 4.2,
     "deliveryTime": "25-40 min",
     "deliveryFee": 2.99,
+    "imageUrl": "/restaurants/SliceDistrict.webp",
     "menu": [
       {
         "id": "r-slice-district-m1",
@@ -765,7 +766,7 @@
     "rating": 4.6,
     "deliveryTime": "20-30 min",
     "deliveryFee": 2.49,
-    "imageUrl": "/restaurants/ShackAndShake.webp",
+    "imageUrl": "/restaurants/Shack&Shake.webp",
     "menu": [
       {
         "id": "r-shack-shake-m1",
@@ -874,7 +875,7 @@
     "rating": 4.3,
     "deliveryTime": "25-35 min",
     "deliveryFee": 1.99,
-    "imageUrl": "/restaurants/WingRepublic.webp",
+    "imageUrl": "/restaurants/WingsRepublic.webp",
     "menu": [
       {
         "id": "r-wing-republic-m1",
@@ -1180,7 +1181,7 @@
     "rating": 4.7,
     "deliveryTime": "20-35 min",
     "deliveryFee": 1.49,
-    "imageUrl": "/restaurants/OliveAndFeta.webp",
+    "imageUrl": "/restaurants/Olive&Feta.webp",
     "menu": [
       {
         "id": "r-olive-feta-m1",
@@ -1662,7 +1663,7 @@
     "rating": 4.7,
     "deliveryTime": "30-45 min",
     "deliveryFee": 2.49,
-    "imageUrl": "/restaurants/TrattoiaNapoli.webp",
+    "imageUrl": "/restaurants/TrattoriaNapoli.webp",
     "menu": [
       {
         "id": "r-trattoria-napoli-m1",
@@ -1859,7 +1860,7 @@
     "rating": 4.8,
     "deliveryTime": "15-25 min",
     "deliveryFee": 0.99,
-    "imageUrl": "/restaurants/BobaAndBites.webp",
+    "imageUrl": "/restaurants/Boba&Bites.webp",
     "menu": [
       {
         "id": "r-boba-bites-m1",
