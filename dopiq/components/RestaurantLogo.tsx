@@ -384,13 +384,31 @@ const fallback: LogoConfig = {
 
 export function RestaurantLogo({
   name,
+  imageUrl,
   variant = "icon",
   className,
 }: {
   name: string;
+  imageUrl?: string | null;
   variant?: "icon" | "banner";
   className?: string;
 }) {
+  // Real photo wins when supplied — full-bleed object-cover with the
+  // same 0.8px blur we apply to product photos. Both card thumbnail and
+  // detail-page banner share this code path; the parent container
+  // controls aspect ratio and clipping.
+  if (imageUrl) {
+    return (
+      /* eslint-disable-next-line @next/next/no-img-element */
+      <img
+        src={imageUrl}
+        alt={`${name} restaurant photo`}
+        className={`h-full w-full object-cover ${className ?? ""}`}
+        style={{ filter: "blur(0.8px)" }}
+      />
+    );
+  }
+
   const config = logos[name] ?? fallback;
 
   if (variant === "banner") {

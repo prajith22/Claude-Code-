@@ -28,6 +28,7 @@ export default function RestaurantPage({
       <div className="relative -mx-4 h-[200px] overflow-hidden bg-surface-alt md:mx-0 md:rounded-card">
         <RestaurantLogo
           name={r.name}
+          imageUrl={r.imageUrl}
           variant="banner"
           className="absolute inset-0 flex h-full w-full items-center justify-center"
         />
