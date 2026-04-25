@@ -1,20 +1,31 @@
 "use client";
 
 import { useState } from "react";
+import type { PlanId } from "@/lib/stripe";
 
-export function PaywallCTA() {
+export function PlanCheckoutButton({
+  plan,
+  label,
+  variant = "primary",
+}: {
+  plan: PlanId;
+  label: string;
+  variant?: "primary" | "navy" | "secondary";
+}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function subscribe() {
+  async function start() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/stripe/checkout", { method: "POST" });
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
       const data = (await res.json()) as { url?: string; error?: string };
-      if (!res.ok || !data.url) {
-        throw new Error(data.error ?? "Couldn't start checkout.");
-      }
+      if (!res.ok || !data.url) throw new Error(data.error ?? "Checkout failed.");
       window.location.href = data.url;
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
@@ -22,24 +33,26 @@ export function PaywallCTA() {
     }
   }
 
+  const buttonClass =
+    variant === "navy"
+      ? "btn-navy"
+      : variant === "secondary"
+      ? "btn-secondary"
+      : "btn-primary";
+
   return (
-    <div className="pt-6">
-      {error && (
-        <p className="mb-3 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </p>
-      )}
+    <div className="w-full">
       <button
         type="button"
-        onClick={subscribe}
+        onClick={start}
         disabled={loading}
-        className="btn-primary w-full"
+        className={`${buttonClass} w-full`}
       >
-        {loading ? "Opening Stripe…" : "Subscribe Now"}
+        {loading ? "Opening Stripe…" : label}
       </button>
-      <p className="mt-3 text-center text-xs text-ink-muted">
-        Secure checkout by Stripe. Cancel anytime from your account.
-      </p>
+      {error && (
+        <p className="mt-2 text-center text-[11px] text-red-700">{error}</p>
+      )}
     </div>
   );
 }

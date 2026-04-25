@@ -2,12 +2,28 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { stripe, SUBSCRIPTION_PRICE_ID } from "@/lib/stripe";
+import { PLANS, TRIAL_DAYS, stripe, type PlanId } from "@/lib/stripe";
 
-export async function POST() {
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || !session.user.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const body = (await req.json().catch(() => null)) as { plan?: PlanId } | null;
+  const planId = body?.plan;
+  if (!planId || !(planId in PLANS)) {
+    return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
+  }
+  const plan = PLANS[planId];
+  if (!plan.priceId) {
+    return NextResponse.json(
+      { error: `Stripe price ID for ${plan.name} is not configured.` },
+      { status: 500 },
+    );
   }
 
   const user = await prisma.user.findUnique({ where: { id: session.user.id } });
@@ -36,9 +52,10 @@ export async function POST() {
     customer: customerId,
     mode: "subscription",
     payment_method_types: ["card"],
-    line_items: [{ price: SUBSCRIPTION_PRICE_ID, quantity: 1 }],
+    line_items: [{ price: plan.priceId, quantity: 1 }],
     subscription_data: {
-      metadata: { userId: user.id },
+      trial_period_days: TRIAL_DAYS,
+      metadata: { userId: user.id, plan: plan.id },
     },
     success_url: `${origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/paywall`,

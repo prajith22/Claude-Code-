@@ -13,6 +13,7 @@ import {
   formatOdds,
   formatUSD,
 } from "@/lib/utils";
+import { useSimulationGuard } from "@/lib/use-simulation-guard";
 
 const QUICK_AMOUNTS = [10, 25, 50, 100];
 
@@ -23,28 +24,31 @@ export function BetSlipPanel() {
   const clear = useBetSlipStore((s) => s.clear);
   const remove = useBetSlipStore((s) => s.remove);
   const router = useRouter();
+  const { tryRun, modal } = useSimulationGuard();
 
-  function placeBet() {
+  async function placeBet() {
     if (selections.length === 0 || stake <= 0) return;
-    const combinedOdds = combineAmericanOdds(selections.map((s) => s.odds));
-    const decimal = combinedDecimal(selections.map((s) => s.odds));
-    const potentialReturn = stake * decimal;
-    try {
-      sessionStorage.setItem(
-        "dopiq-last-placed-bet",
-        JSON.stringify({
-          selections,
-          stake,
-          combinedOdds,
-          potentialReturn,
-          placedAt: new Date().toISOString(),
-        }),
-      );
-    } catch {
-      // sessionStorage blocked — confirmation page will show a fallback
-    }
-    clear();
-    router.push("/bet/confirmed");
+    await tryRun(() => {
+      const combinedOdds = combineAmericanOdds(selections.map((s) => s.odds));
+      const decimal = combinedDecimal(selections.map((s) => s.odds));
+      const potentialReturn = stake * decimal;
+      try {
+        sessionStorage.setItem(
+          "dopiq-last-placed-bet",
+          JSON.stringify({
+            selections,
+            stake,
+            combinedOdds,
+            potentialReturn,
+            placedAt: new Date().toISOString(),
+          }),
+        );
+      } catch {
+        // sessionStorage blocked — confirmation page will show a fallback
+      }
+      clear();
+      router.push("/bet/confirmed");
+    });
   }
 
   return (
@@ -87,6 +91,8 @@ export function BetSlipPanel() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {modal}
     </>
   );
 }

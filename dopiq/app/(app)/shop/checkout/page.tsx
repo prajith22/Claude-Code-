@@ -4,12 +4,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCartStore, cartSubtotal } from "@/lib/cart-store";
 import { formatUSD } from "@/lib/utils";
+import { useSimulationGuard } from "@/lib/use-simulation-guard";
 
 export default function ShopCheckoutPage() {
   const router = useRouter();
   const lines = useCartStore((s) => s.shop);
   const clear = useCartStore((s) => s.clear);
   const [placing, setPlacing] = useState(false);
+  const { tryRun, modal } = useSimulationGuard();
 
   useEffect(() => {
     if (lines.length === 0 && !placing) {
@@ -21,13 +23,16 @@ export default function ShopCheckoutPage() {
 
   async function placeOrder() {
     setPlacing(true);
-    const orderNumber = `DPQ-${Math.floor(Math.random() * 9_000_000 + 1_000_000)}`;
-    sessionStorage.setItem(
-      "dopiq-last-shop-order",
-      JSON.stringify({ orderNumber, total: subtotal, count: lines.length }),
-    );
-    clear("shop");
-    router.push("/shop/confirmed");
+    const allowed = await tryRun(() => {
+      const orderNumber = `DPQ-${Math.floor(Math.random() * 9_000_000 + 1_000_000)}`;
+      sessionStorage.setItem(
+        "dopiq-last-shop-order",
+        JSON.stringify({ orderNumber, total: subtotal, count: lines.length }),
+      );
+      clear("shop");
+      router.push("/shop/confirmed");
+    });
+    if (!allowed) setPlacing(false);
   }
 
   return (
@@ -63,6 +68,8 @@ export default function ShopCheckoutPage() {
       <p className="pb-2 text-center text-xs text-ink-muted">
         Simulated checkout. No real money will be charged.
       </p>
+
+      {modal}
     </div>
   );
 }
