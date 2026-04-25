@@ -20,7 +20,7 @@ export function RestaurantCheckoutBar() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 80, opacity: 0 }}
           transition={{ type: "spring", stiffness: 320, damping: 30 }}
-          className="fixed inset-x-0 bottom-14 z-30 border-t border-surface-border bg-white/95 px-4 py-3 backdrop-blur-sm md:bottom-0"
+          className="bottom-nav fixed inset-x-0 z-30 border-t border-surface-border bg-white/95 px-4 py-3 backdrop-blur-sm"
         >
           <div className="mx-auto flex max-w-2xl items-center justify-between gap-3 md:max-w-4xl">
             <div className="min-w-0">

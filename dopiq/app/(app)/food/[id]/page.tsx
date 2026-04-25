@@ -23,7 +23,7 @@ export default function RestaurantPage({
   );
 
   return (
-    <div className="space-y-6 pb-28">
+    <div className="pb-nav-action space-y-6">
       {/* Hero banner */}
       <div className="relative -mx-4 h-[200px] overflow-hidden bg-surface-alt md:mx-0 md:rounded-card">
         <RestaurantLogo

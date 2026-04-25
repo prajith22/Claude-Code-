@@ -77,7 +77,7 @@ export function BetSlipPanel() {
             animate={{ y: 0 }}
             exit={{ y: "105%" }}
             transition={{ type: "spring", stiffness: 280, damping: 28 }}
-            className="fixed inset-x-0 bottom-0 z-40 lg:hidden"
+            className="bottom-nav fixed inset-x-0 z-40 lg:hidden"
           >
             <SlipCard
               selections={selections}

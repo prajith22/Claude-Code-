@@ -12,7 +12,7 @@ export default async function AppLayout({
   return (
     <div className="min-h-[100dvh]">
       <TopNav />
-      <main className="mx-auto max-w-2xl px-4 pt-4 pb-28 md:max-w-4xl md:pb-10 lg:max-w-6xl">
+      <main className="pb-nav mx-auto max-w-2xl px-4 pt-4 md:max-w-4xl lg:max-w-6xl">
         {children}
       </main>
       <BottomNav />

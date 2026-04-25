@@ -7,7 +7,7 @@ export default async function BetPage() {
   await requireSubscribedUser();
 
   return (
-    <div className="space-y-6 pb-28 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10 lg:space-y-0 lg:pb-10">
+    <div className="pb-nav-action space-y-6 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10 lg:space-y-0 lg:pb-10">
       {/* Main column */}
       <div className="space-y-6">
         <header className="pt-2">

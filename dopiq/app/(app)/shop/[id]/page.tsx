@@ -16,7 +16,7 @@ export default function ProductDetailPage({
   const reviews = buildFakeReviews(product);
 
   return (
-    <div className="space-y-6 pb-36 md:pb-4">
+    <div className="pb-nav-action space-y-6 md:pb-4">
       {/* Hero image — capped at 600px, centered, never upscaled past natural size */}
       <div className="mx-auto w-full max-w-[600px] overflow-hidden rounded-card bg-surface-alt">
         {/* eslint-disable-next-line @next/next/no-img-element */}
