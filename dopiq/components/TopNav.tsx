@@ -12,7 +12,6 @@ const TABS = [
   { href: "/shop", label: "Shop" },
   { href: "/food", label: "Food" },
   { href: "/bet", label: "Bet" },
-  { href: "/tracker", label: "Tracker" },
 ];
 
 export function TopNav() {

@@ -1,8 +1,7 @@
 # Dopiq
 
 Dopamine without the damage. A Next.js 14 app that simulates shopping, food
-delivery, and sports betting with fake money — plus a separate tracker for
-real-world spending.
+delivery, and sports betting with fake money.
 
 ## Stack
 
@@ -34,15 +33,14 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 
 ```
 app/             Next.js App Router pages (+ API routes)
-  (app)/         Gated main shell: /home, /shop, /food, /bet, /tracker
-  onboarding/    First-login multi-step flow
+  (app)/         Gated main shell: /home, /shop, /food, /bet
   paywall/       Trial-expired paywall
   signin/        Google-only sign-in
-  api/           NextAuth, Stripe, onboarding, bets, spending
+  api/           NextAuth, Stripe, bets
 components/      Shared UI (nav, cards, forms, animations)
 data/            Hardcoded products, restaurants, games
 lib/             prisma, auth, stripe, utils, guards, cart store
-prisma/          schema.prisma (User, FakeWallet, Bet, SpendingLog)
+prisma/          schema.prisma (User, Account, Session, OddsCache)
 types/           Shared TS types + next-auth module augmentation
 ```
 
@@ -50,5 +48,3 @@ types/           Shared TS types + next-auth module augmentation
 
 - Everything in Shop / Food / Bet is simulated — no real money, no real
   brands. The only real-money touchpoint is the $3.99/mo subscription.
-- Tracker is the only feature that represents real spending and never
-  overlaps with the fake wallet.
