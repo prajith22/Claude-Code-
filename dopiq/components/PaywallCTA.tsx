@@ -24,6 +24,12 @@ export function PlanCheckoutButton({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ plan }),
       });
+      // Anonymous viewers can browse the paywall — when they click a plan
+      // we bounce them through sign-in and back to /paywall to retry.
+      if (res.status === 401) {
+        window.location.href = "/signin?callbackUrl=/paywall";
+        return;
+      }
       const data = (await res.json()) as { url?: string; error?: string };
       if (!res.ok || !data.url) throw new Error(data.error ?? "Checkout failed.");
       window.location.href = data.url;

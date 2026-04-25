@@ -43,10 +43,13 @@ export async function POST(req: Request) {
     });
   }
 
+  // Prefer the configured canonical URL — falling back to the request's
+  // own origin keeps preview deploys / non-default ports working without
+  // hardcoding localhost.
   const origin =
     process.env.NEXTAUTH_URL ??
     process.env.NEXT_PUBLIC_APP_URL ??
-    "http://localhost:3000";
+    new URL(req.url).origin;
 
   const checkout = await stripe.checkout.sessions.create({
     customer: customerId,
