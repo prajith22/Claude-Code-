@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 const PUBLIC_PATHS = ["/", "/signin", "/paywall"];
 const ALWAYS_ALLOW_PREFIXES = [
   "/api/auth",
-  "/api/stripe/webhook",
+  "/api/webhooks/",
   "/api/dev/",
   "/_next",
   "/favicon.ico",

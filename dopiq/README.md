@@ -26,7 +26,7 @@ npm run dev
 Stripe webhook (local):
 
 ```bash
-stripe listen --forward-to localhost:3000/api/stripe/webhook
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
 ```
 
 ## Structure
