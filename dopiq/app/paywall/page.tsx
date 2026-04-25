@@ -1,19 +1,31 @@
 import Link from "next/link";
-import { requireUser } from "@/lib/session-guards";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { computeAccessState, isTrialActive, trialDaysRemaining } from "@/lib/access";
 import { PLANS, type Plan } from "@/lib/stripe";
 import { PlanCheckoutButton } from "@/components/PaywallCTA";
 
 export default async function PaywallPage() {
-  const user = await requireUser();
-  const state = computeAccessState(user);
-  const trialing = state === "trial" && isTrialActive(user);
-  const daysLeft = trialDaysRemaining(user);
+  const session = await getServerSession(authOptions);
+  const user = session?.user?.id
+    ? await prisma.user.findUnique({ where: { id: session.user.id } })
+    : null;
 
-  const headline = trialing ? "Start your free month" : "Your free trial has ended";
-  const subhead = trialing
-    ? "No charge for 30 days. Cancel anytime."
-    : "Choose a plan to keep simulating.";
+  // Active subscribers don't need this page — bounce them home.
+  if (user && computeAccessState(user) === "active") {
+    redirect("/home");
+  }
+
+  const trialing = user ? isTrialActive(user) : false;
+  const expired = user ? !trialing && computeAccessState(user) === "paywalled" : false;
+  const daysLeft = user ? trialDaysRemaining(user) : 0;
+
+  const headline = expired ? "Your free trial has ended" : "Start your free month";
+  const subhead = expired
+    ? "Choose a plan to keep simulating."
+    : "No charge for 30 days. Cancel anytime.";
 
   const order: Plan[] = [PLANS.lite, PLANS.plus, PLANS.pro];
 
