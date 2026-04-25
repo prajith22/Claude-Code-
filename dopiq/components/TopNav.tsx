@@ -131,12 +131,15 @@ export function TopNav() {
           {open && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-              <div className="absolute right-0 top-full z-50 mt-2 w-44 rounded-2xl border border-surface-border bg-white py-1 shadow-cardHover">
+              <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-2xl border border-surface-border bg-white py-1 shadow-cardHover">
                 <div className="border-b border-surface-border px-4 py-2.5">
                   <p className="text-[13px] font-semibold text-ink">{name}</p>
                   <p className="text-[11px] text-ink-muted">
                     {session?.user?.email ?? "Guest"}
                   </p>
+                </div>
+                <div className="border-b border-surface-border px-4 py-2.5">
+                  <UsageLine />
                 </div>
                 <button
                   type="button"
@@ -151,5 +154,45 @@ export function TopNav() {
         </div>
       </div>
     </header>
+  );
+}
+
+function UsageLine() {
+  const { data: session } = useSession();
+  const u = session?.user;
+  const plan = u?.plan ?? "trial";
+  const used = u?.simulationsUsed ?? 0;
+  const limit = u?.simulationsLimit ?? 0;
+  const trialEnd = u?.trialEndDate ? new Date(u.trialEndDate) : null;
+
+  if (plan === "trial") {
+    const daysLeft = trialEnd
+      ? Math.max(0, Math.ceil((trialEnd.getTime() - Date.now()) / 86_400_000))
+      : 0;
+    return (
+      <p className="text-[11px] font-semibold text-ink">
+        Free trial ·{" "}
+        <span className="font-mono tabular-nums text-brand">
+          {daysLeft}
+        </span>{" "}
+        days remaining
+      </p>
+    );
+  }
+
+  if (limit >= 999_999) {
+    return (
+      <p className="text-[11px] font-semibold text-brand">
+        Unlimited simulations
+      </p>
+    );
+  }
+
+  const remaining = Math.max(0, limit - used);
+  return (
+    <p className="text-[11px] font-semibold text-ink">
+      <span className="font-mono tabular-nums">{remaining}</span>{" "}
+      <span className="text-ink-muted">simulations remaining this month</span>
+    </p>
   );
 }

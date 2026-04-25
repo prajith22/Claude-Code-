@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCartStore, cartSubtotal } from "@/lib/cart-store";
 import { formatUSD } from "@/lib/utils";
+import { useSimulationGuard } from "@/lib/use-simulation-guard";
 
 const DELIVERY_FEE = 1.99;
 const SERVICE_FEE = 2.49;
@@ -13,6 +14,7 @@ export default function FoodCheckoutPage() {
   const lines = useCartStore((s) => s.food);
   const clear = useCartStore((s) => s.clear);
   const [placing, setPlacing] = useState(false);
+  const { tryRun, modal } = useSimulationGuard();
 
   useEffect(() => {
     if (lines.length === 0 && !placing) router.replace("/food/cart");
@@ -21,16 +23,19 @@ export default function FoodCheckoutPage() {
   const subtotal = cartSubtotal(lines);
   const total = subtotal + DELIVERY_FEE + SERVICE_FEE;
 
-  function place() {
+  async function place() {
     setPlacing(true);
-    const orderNumber = `DPQ-F-${Math.floor(Math.random() * 900_000 + 100_000)}`;
-    const restaurant = lines[0]?.meta ?? "your spot";
-    sessionStorage.setItem(
-      "dopiq-last-food-order",
-      JSON.stringify({ orderNumber, total, restaurant, itemCount: lines.length }),
-    );
-    clear("food");
-    router.push("/food/tracking");
+    const allowed = await tryRun(() => {
+      const orderNumber = `DPQ-F-${Math.floor(Math.random() * 900_000 + 100_000)}`;
+      const restaurant = lines[0]?.meta ?? "your spot";
+      sessionStorage.setItem(
+        "dopiq-last-food-order",
+        JSON.stringify({ orderNumber, total, restaurant, itemCount: lines.length }),
+      );
+      clear("food");
+      router.push("/food/tracking");
+    });
+    if (!allowed) setPlacing(false);
   }
 
   return (
@@ -76,6 +81,8 @@ export default function FoodCheckoutPage() {
       <p className="pb-2 text-center text-xs text-ink-muted">
         Simulated order. No real food, no real charge.
       </p>
+
+      {modal}
     </div>
   );
 }

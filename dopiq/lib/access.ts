@@ -1,25 +1,45 @@
-import { TRIAL_DAYS } from "./stripe";
+import { TRIAL_DAYS, UNLIMITED_LIMIT } from "./stripe";
 
-export type AccessState = "trialing" | "active" | "paywalled";
+export type AccessState = "trial" | "active" | "paywalled";
 
-export function computeAccessState(params: {
+type UserLike = {
+  plan?: string | null;
   subscriptionStatus?: string | null;
   trialStartDate?: Date | string | null;
-}): AccessState {
-  const status = params.subscriptionStatus ?? "trialing";
-  if (status === "active" || status === "trialing_paid") return "active";
+  trialEndDate?: Date | string | null;
+};
 
-  const start = params.trialStartDate ? new Date(params.trialStartDate) : new Date();
-  const msInDay = 1000 * 60 * 60 * 24;
-  const elapsed = (Date.now() - start.getTime()) / msInDay;
-  if (elapsed < TRIAL_DAYS) return "trialing";
+function computeTrialEnd(start?: Date | string | null): Date {
+  const startDate = start ? new Date(start) : new Date();
+  return new Date(startDate.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000);
+}
+
+export function isTrialActive(user: UserLike): boolean {
+  const end = user.trialEndDate
+    ? new Date(user.trialEndDate)
+    : computeTrialEnd(user.trialStartDate);
+  return end.getTime() > Date.now();
+}
+
+export function trialDaysRemaining(user: UserLike): number {
+  const end = user.trialEndDate
+    ? new Date(user.trialEndDate)
+    : computeTrialEnd(user.trialStartDate);
+  const ms = end.getTime() - Date.now();
+  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
+}
+
+export function computeAccessState(user: UserLike): AccessState {
+  const status = user.subscriptionStatus ?? "trial";
+  if (status === "active" || status === "trialing_paid") return "active";
+  if (isTrialActive(user)) return "trial";
   return "paywalled";
 }
 
-export function trialDaysRemaining(trialStartDate?: Date | string | null): number {
-  if (!trialStartDate) return TRIAL_DAYS;
-  const start = new Date(trialStartDate);
-  const msInDay = 1000 * 60 * 60 * 24;
-  const elapsed = (Date.now() - start.getTime()) / msInDay;
-  return Math.max(0, Math.ceil(TRIAL_DAYS - elapsed));
+export function simulationsRemaining(
+  used: number,
+  limit: number,
+): number | "unlimited" {
+  if (limit >= UNLIMITED_LIMIT) return "unlimited";
+  return Math.max(0, limit - used);
 }

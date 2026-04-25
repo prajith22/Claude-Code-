@@ -19,16 +19,26 @@ export async function GET(req: Request) {
   const baseUrl = process.env.NEXTAUTH_URL ?? new URL(req.url).origin;
 
   try {
+    // Guest sessions get unlimited usage so the dev flow never bumps into
+    // the simulation cap. Real users land on the trial via NextAuth events.
+    const now = new Date();
+    const trialEnd = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
     const user = await prisma.user.upsert({
       where: { email: GUEST_EMAIL },
       update: {
         subscriptionStatus: "active",
+        plan: "pro",
+        simulationsLimit: 999_999,
       },
       create: {
         email: GUEST_EMAIL,
         name: "Guest",
+        plan: "pro",
         subscriptionStatus: "active",
-        trialStartDate: new Date(),
+        trialStartDate: now,
+        trialEndDate: trialEnd,
+        billingCycleStart: now,
+        simulationsLimit: 999_999,
       },
     });
 

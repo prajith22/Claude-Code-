@@ -14,10 +14,7 @@ export async function requireUser() {
 
 export async function requireSubscribedUser() {
   const user = await requireUser();
-  const state = computeAccessState({
-    subscriptionStatus: user.subscriptionStatus,
-    trialStartDate: user.trialStartDate,
-  });
+  const state = computeAccessState(user);
   if (state === "paywalled") redirect("/paywall");
   return user;
 }
