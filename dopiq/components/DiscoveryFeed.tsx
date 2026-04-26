@@ -197,7 +197,7 @@ function FilteredGrid({
   );
 }
 
-function ProductCard({
+export function ProductCard({
   product,
   className,
 }: {
