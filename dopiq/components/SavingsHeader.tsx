@@ -77,12 +77,9 @@ export function SavingsHeader() {
     <Link
       href="/home"
       aria-label={`Saved today: ${formatMoney(saved)}. ${streak} day streak.`}
-      className="inline-flex items-center gap-2 rounded-pill border border-surface-border bg-white px-3 py-1.5 text-[12px] font-bold shadow-sm transition hover:bg-surface-alt"
+      className="inline-flex items-center gap-2 text-[12px] font-bold"
     >
       <SavingsTicker amount={saved} />
-      <span aria-hidden className="text-ink-faint">
-        ·
-      </span>
       <StreakChip streak={streak} atRisk={atRisk} />
     </Link>
   );
@@ -90,8 +87,8 @@ export function SavingsHeader() {
 
 function SavingsTicker({ amount }: { amount: number }) {
   return (
-    <span className="flex items-center gap-1.5">
-      <Coin size={13} className="text-brand" />
+    <span className="inline-flex items-center gap-1.5 rounded-pill bg-[#E8F5E9] px-3 py-1.5">
+      <Coin size={13} className="text-[#2E7D32]" />
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
           key={amount}
@@ -99,12 +96,12 @@ function SavingsTicker({ amount }: { amount: number }) {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 8, opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className="font-mono tabular-nums text-brand"
+          className="font-mono tabular-nums text-[#2E7D32]"
         >
           {formatMoney(amount)}
         </motion.span>
       </AnimatePresence>
-      <span className="hidden text-[10px] font-semibold uppercase tracking-wider text-ink-muted sm:inline">
+      <span className="hidden text-[10px] font-semibold uppercase tracking-wider text-[#2E7D32]/70 sm:inline">
         today
       </span>
     </span>
@@ -113,21 +110,19 @@ function SavingsTicker({ amount }: { amount: number }) {
 
 function StreakChip({ streak, atRisk }: { streak: number; atRisk: boolean }) {
   return (
-    <span
-      className={`flex items-center gap-1.5 ${atRisk ? "text-ink" : "text-ink"}`}
-    >
+    <span className="inline-flex items-center gap-1.5 rounded-pill bg-[#FFF3E0] px-3 py-1.5">
       <Flame
         size={13}
         className={
-          streak > 0
-            ? atRisk
-              ? "text-ink-muted"
-              : "text-ink"
-            : "text-ink-faint"
+          streak === 0
+            ? "text-[#E65100]/40"
+            : atRisk
+              ? "text-[#E65100]/70"
+              : "text-[#E65100]"
         }
       />
-      <span className="font-mono tabular-nums">{streak}</span>
-      <span className="hidden text-[10px] font-semibold uppercase tracking-wider text-ink-muted sm:inline">
+      <span className="font-mono tabular-nums text-[#E65100]">{streak}</span>
+      <span className="hidden text-[10px] font-semibold uppercase tracking-wider text-[#E65100]/70 sm:inline">
         day{streak === 1 ? "" : "s"}
       </span>
     </span>
