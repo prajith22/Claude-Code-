@@ -29,7 +29,7 @@ export default async function LandingPage() {
             Continue with Google
           </Link>
           <p className="text-center text-xs text-ink-muted">
-            Free for 30 days, then $3.99/month. Cancel anytime.
+            Free for 7 days, then $3.99/month. Cancel anytime.
           </p>
         </div>
       </div>
