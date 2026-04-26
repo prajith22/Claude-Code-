@@ -60,7 +60,7 @@ export async function POST(req: Request) {
       trial_period_days: TRIAL_DAYS,
       metadata: { userId: user.id, plan: plan.id },
     },
-    success_url: `${origin}/home`,
+    success_url: `${origin}/api/stripe/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/paywall`,
     allow_promotion_codes: true,
   });
