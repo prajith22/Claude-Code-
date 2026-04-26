@@ -1,39 +1,24 @@
-import { TRIAL_DAYS, UNLIMITED_LIMIT } from "./stripe";
+import { UNLIMITED_LIMIT } from "./stripe";
 
-export type AccessState = "trial" | "active" | "paywalled";
+export type AccessState = "active" | "paywalled";
 
 type UserLike = {
-  plan?: string | null;
   subscriptionStatus?: string | null;
-  trialStartDate?: Date | string | null;
-  trialEndDate?: Date | string | null;
 };
 
-function computeTrialEnd(start?: Date | string | null): Date {
-  const startDate = start ? new Date(start) : new Date();
-  return new Date(startDate.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000);
-}
-
-export function isTrialActive(user: UserLike): boolean {
-  const end = user.trialEndDate
-    ? new Date(user.trialEndDate)
-    : computeTrialEnd(user.trialStartDate);
-  return end.getTime() > Date.now();
-}
-
-export function trialDaysRemaining(user: UserLike): number {
-  const end = user.trialEndDate
-    ? new Date(user.trialEndDate)
-    : computeTrialEnd(user.trialStartDate);
-  const ms = end.getTime() - Date.now();
-  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
-}
-
 export function computeAccessState(user: UserLike): AccessState {
-  const status = user.subscriptionStatus ?? "trial";
-  if (status === "active" || status === "trialing_paid") return "active";
-  if (isTrialActive(user)) return "trial";
+  const status = user.subscriptionStatus;
+  if (status === "trialing" || status === "active") return "active";
   return "paywalled";
+}
+
+export function paywallReason(
+  user: UserLike,
+): "payment_failed" | "canceled" | "none" {
+  const status = user.subscriptionStatus;
+  if (status === "past_due" || status === "unpaid") return "payment_failed";
+  if (status === "canceled" || status === "incomplete_expired") return "canceled";
+  return "none";
 }
 
 export function simulationsRemaining(

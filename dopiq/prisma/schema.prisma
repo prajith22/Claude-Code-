@@ -15,13 +15,11 @@ model User {
   name                 String?
   image                String?
   googleId             String?   @unique
-  plan                 String   @default("trial")
+  plan                 String?
   simulationsUsed      Int      @default(0)
-  simulationsLimit     Int      @default(999999)
-  subscriptionStatus   String   @default("trial")
-  trialStartDate       DateTime @default(now())
-  trialEndDate         DateTime?
-  billingCycleStart    DateTime @default(now())
+  simulationsLimit     Int      @default(0)
+  subscriptionStatus   String?
+  billingCycleStart    DateTime?
   stripeCustomerId     String?  @unique
   stripeSubscriptionId String?  @unique
   onboardingCompleted  Boolean  @default(false)
