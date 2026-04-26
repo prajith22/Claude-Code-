@@ -2,18 +2,19 @@ import { requireSubscribedUser } from "@/lib/session-guards";
 import { DailySpinWheel } from "@/components/DailySpinWheel";
 import { SimCard } from "@/components/SimCard";
 import { HomeStreakHero } from "@/components/HomeStreakHero";
-import { centsToDollars } from "@/lib/savings";
 import { streakStatus } from "@/lib/streaks";
 
 export default async function HomePage() {
   const user = await requireSubscribedUser();
   const firstName = user.name?.trim().split(/\s+/)[0] || "there";
 
-  // Server-render the initial values so the hero is correct on first paint;
-  // the client component then keeps them live.
+  // Initial paint: streak fields render correctly off the User row, but
+  // the daily-saved counter needs the user's local midnight which the
+  // server doesn't know — start at 0 and let the client fetch the
+  // real value (matches /api/savings/me using ?since=local-midnight).
   const status = streakStatus(user.lastStreakDate, "");
   const initialSummary = {
-    totalSaved: centsToDollars(user.totalSavedCents),
+    todaySaved: 0,
     currentStreak: status.state === "broken" ? 0 : user.currentStreak,
     longestStreak: user.longestStreak,
     streakStatus: status.state,
