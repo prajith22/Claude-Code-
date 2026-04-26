@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useSavingsStore } from "@/lib/savings-store";
+import { Flame } from "@/components/icons";
 
 type Summary = {
   totalSaved: number;
@@ -69,21 +70,28 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
           <p className="text-[11px] font-bold uppercase tracking-widest text-white/50">
             Streak
           </p>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-[36px] leading-none">
-              {streak > 0 ? "🔥" : "⚪"}
-            </span>
+          <div className="mt-2 flex items-center gap-3">
+            <Flame
+              size={28}
+              className={
+                streak === 0
+                  ? "text-white/30"
+                  : atRisk
+                    ? "text-white/60"
+                    : "text-brand"
+              }
+            />
             <span className="font-mono text-[40px] font-extrabold leading-none text-white tabular-nums">
               {streak}
             </span>
           </div>
           <p
-            className={`mt-1 text-[12px] font-semibold ${atRisk ? "text-orange-400" : "text-white/60"}`}
+            className={`mt-1 text-[12px] font-semibold ${atRisk ? "text-white" : "text-white/60"}`}
           >
             {streak === 0
-              ? "Start your streak today"
+              ? "Start your streak today."
               : atRisk
-                ? "At risk — log anything to keep it"
+                ? "At risk. Log anything to keep it."
                 : streak === 1
                   ? "day clean"
                   : `days clean · best ${longest}`}

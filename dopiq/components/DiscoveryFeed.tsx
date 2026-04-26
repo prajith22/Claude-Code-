@@ -6,6 +6,7 @@ import type { Product, ProductCategory } from "@/types";
 import { useCartStore } from "@/lib/cart-store";
 import { formatUSD, cn } from "@/lib/utils";
 import { cardHover, cardHoverTransition } from "@/lib/card-hover";
+import { Heart, HeartFilled, StarFilled } from "@/components/icons";
 
 const VIBE_LABELS: Record<ProductCategory, string> = {
   Clothes: "Fits dropping today",
@@ -237,7 +238,7 @@ function ProductCard({
         }}
         className={cn(
           "absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full border border-surface-border bg-white/90 backdrop-blur-sm transition-all duration-150 hover:scale-110 active:scale-95",
-          saved && "border-red-200 bg-white",
+          saved && "border-ink bg-white",
         )}
       >
         <HeartIcon filled={saved} />
@@ -250,8 +251,9 @@ function ProductCard({
           <p className="font-mono text-[15px] font-bold text-navy">
             {formatUSD(product.price)}
           </p>
-          <p className="text-[11px] font-semibold text-brand">
-            ★ {product.rating.toFixed(1)}
+          <p className="flex items-center gap-1 text-[11px] font-semibold text-ink">
+            <StarFilled size={10} />
+            {product.rating.toFixed(1)}
           </p>
         </div>
       </Link>
@@ -285,19 +287,12 @@ function FilterPill({
 }
 
 function HeartIcon({ filled }: { filled: boolean }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="18"
-      height="18"
-      fill={filled ? "#EF4444" : "none"}
-      stroke={filled ? "#EF4444" : "#0A0F1E"}
-      strokeWidth={1.8}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-    </svg>
+  // Saved-state heart: filled in ink (not red — keep the palette quiet),
+  // outline otherwise. Color discipline: brand-green is reserved for
+  // money-saved + bet-won, never decoration.
+  return filled ? (
+    <HeartFilled size={18} className="text-ink" />
+  ) : (
+    <Heart size={18} className="text-ink" />
   );
 }

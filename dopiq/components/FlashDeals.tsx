@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { Product } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import { cardHover } from "@/lib/card-hover";
+import { Clock } from "@/components/icons";
 
 type Deal = {
   id: string;
@@ -129,7 +130,7 @@ function DealCard({
         transition={{ duration: 0.25 }}
         className="card flex min-h-[220px] flex-col items-center justify-center gap-2 p-5 text-center"
       >
-        <span className="text-3xl">⏱️</span>
+        <Clock size={28} className="text-ink-faint" />
         <p className="text-[15px] font-bold text-ink">Deal Expired</p>
         <p className="text-[12px] text-ink-muted">A new drop is loading…</p>
       </motion.div>

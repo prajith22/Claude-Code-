@@ -7,41 +7,37 @@ import { AnimatePresence, motion } from "framer-motion";
 type Sector = {
   key: "shop" | "food" | "bet";
   label: string;
-  emoji: string;
   href: string;
   fill: string;
   textColor: string;
   centerDeg: number; // measured clockwise from the top
 };
 
-// Sectors rendered with centers at 0°, 120°, 240° from the top.
-// Colors match the home simulator cards.
+// Three sectors at 0°, 120°, 240° from the top. Palette is restricted
+// to cream + navy — sectors differentiate by tonal value, not by hue.
 const SECTORS: Sector[] = [
   {
     key: "shop",
     label: "Shop",
-    emoji: "🛍️",
     href: "/shop",
-    fill: "#E8E3FF",
-    textColor: "#4C1D95",
+    fill: "#FFFFFF",
+    textColor: "#0A0F1E",
     centerDeg: 0,
   },
   {
     key: "food",
     label: "Food",
-    emoji: "🍔",
     href: "/food",
-    fill: "#FFF3CD",
-    textColor: "#78350F",
+    fill: "#0A0F1E",
+    textColor: "#FFFFFF",
     centerDeg: 120,
   },
   {
     key: "bet",
     label: "Bet",
-    emoji: "🎰",
     href: "/bet",
-    fill: "#DBEAFE",
-    textColor: "#1E3A8A",
+    fill: "#F7F8FA",
+    textColor: "#0A0F1E",
     centerDeg: 240,
   },
 ];
@@ -174,20 +170,12 @@ export function DailySpinWheel() {
                   >
                     <text
                       x={0}
-                      y={-8}
+                      y={4}
                       textAnchor="middle"
                       dominantBaseline="middle"
-                      fontSize={22}
-                    >
-                      {sector.emoji}
-                    </text>
-                    <text
-                      x={0}
-                      y={14}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      fontSize={14}
+                      fontSize={15}
                       fontWeight={800}
+                      letterSpacing={0.5}
                       fill={sector.textColor}
                       style={{ fontFamily: "var(--font-sora)" }}
                     >
@@ -235,7 +223,7 @@ export function DailySpinWheel() {
             className="card w-full max-w-xs p-5 text-center"
           >
             <p className="text-[18px] font-bold text-ink">
-              You landed on {landed.label}! 🎉
+              You landed on {landed.label}.
             </p>
             <Link href={landed.href} className="btn-primary mt-4 w-full">
               Let&rsquo;s go →

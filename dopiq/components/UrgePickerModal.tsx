@@ -2,35 +2,50 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Calm,
+  Eye,
+  Cloud,
+  Spark,
+  Bag,
+  Bowl,
+  Couch,
+  Users,
+  TV,
+  Flame,
+  Wallet,
+  Heart,
+} from "@/components/icons";
+import type { ComponentType, SVGProps } from "react";
 
 type Section = "shop" | "food" | "bet";
-
-type Reason = { key: string; emoji: string; label: string };
+type IconComponent = ComponentType<SVGProps<SVGSVGElement> & { size?: number }>;
+type Reason = { key: string; Icon: IconComponent; label: string };
 
 const REASONS_BY_SECTION: Record<Section, Reason[]> = {
   shop: [
-    { key: "bored", emoji: "😐", label: "Bored" },
-    { key: "fomo", emoji: "👀", label: "FOMO" },
-    { key: "stressed", emoji: "😩", label: "Stressed" },
-    { key: "sad", emoji: "😞", label: "Sad" },
-    { key: "reward", emoji: "🎉", label: "Treating myself" },
-    { key: "looking", emoji: "🛍️", label: "Just looking" },
+    { key: "bored", Icon: Calm, label: "Bored" },
+    { key: "fomo", Icon: Eye, label: "FOMO" },
+    { key: "stressed", Icon: Cloud, label: "Stressed" },
+    { key: "sad", Icon: Cloud, label: "Sad" },
+    { key: "reward", Icon: Spark, label: "Treating myself" },
+    { key: "looking", Icon: Bag, label: "Just looking" },
   ],
   food: [
-    { key: "hungry", emoji: "🍴", label: "Actually hungry" },
-    { key: "bored", emoji: "😐", label: "Bored" },
-    { key: "stressed", emoji: "😩", label: "Stressed" },
-    { key: "sad", emoji: "😞", label: "Sad" },
-    { key: "lazy", emoji: "🛋️", label: "Don't want to cook" },
-    { key: "social", emoji: "👯", label: "Friends are eating" },
+    { key: "hungry", Icon: Bowl, label: "Actually hungry" },
+    { key: "bored", Icon: Calm, label: "Bored" },
+    { key: "stressed", Icon: Cloud, label: "Stressed" },
+    { key: "sad", Icon: Cloud, label: "Sad" },
+    { key: "lazy", Icon: Couch, label: "Don't want to cook" },
+    { key: "social", Icon: Users, label: "Friends are eating" },
   ],
   bet: [
-    { key: "watching", emoji: "📺", label: "Watching the game" },
-    { key: "bored", emoji: "😐", label: "Bored" },
-    { key: "tip", emoji: "🔥", label: "Saw a hot tip" },
-    { key: "chasing", emoji: "💸", label: "Chasing losses" },
-    { key: "fomo", emoji: "👀", label: "Friend bet" },
-    { key: "team", emoji: "❤️", label: "I just like the team" },
+    { key: "watching", Icon: TV, label: "Watching the game" },
+    { key: "bored", Icon: Calm, label: "Bored" },
+    { key: "tip", Icon: Flame, label: "Saw a hot tip" },
+    { key: "chasing", Icon: Wallet, label: "Chasing losses" },
+    { key: "fomo", Icon: Eye, label: "Friend bet" },
+    { key: "team", Icon: Heart, label: "I just like the team" },
   ],
 };
 
@@ -135,20 +150,21 @@ export function UrgePickerModal({ section }: { section: Section }) {
             </p>
 
             <div className="mt-5 grid grid-cols-2 gap-2">
-              {reasons.map((r) => (
-                <button
-                  key={r.key}
-                  type="button"
-                  disabled={submitting}
-                  onClick={() => pick(r)}
-                  className="flex items-center gap-2 rounded-xl border border-surface-border bg-white px-3 py-3 text-left text-[14px] font-semibold text-ink transition hover:bg-surface-alt disabled:opacity-60"
-                >
-                  <span className="text-[18px]" aria-hidden>
-                    {r.emoji}
-                  </span>
-                  <span>{r.label}</span>
-                </button>
-              ))}
+              {reasons.map((r) => {
+                const Icon = r.Icon;
+                return (
+                  <button
+                    key={r.key}
+                    type="button"
+                    disabled={submitting}
+                    onClick={() => pick(r)}
+                    className="flex items-center gap-2.5 rounded-xl border border-surface-border bg-white px-3 py-3 text-left text-[14px] font-semibold text-ink transition hover:bg-surface-alt disabled:opacity-60"
+                  >
+                    <Icon size={16} className="text-ink-muted" />
+                    <span>{r.label}</span>
+                  </button>
+                );
+              })}
             </div>
 
             <button

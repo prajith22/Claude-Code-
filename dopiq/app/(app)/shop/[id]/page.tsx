@@ -4,6 +4,7 @@ import products from "@/data/products.json";
 import type { Product } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import { AddToCartControls } from "@/components/AddToCartControls";
+import { StarFilled } from "@/components/icons";
 
 export default function ProductDetailPage({
   params,
@@ -38,7 +39,10 @@ export default function ProductDetailPage({
           {product.name}
         </h1>
         <div className="mt-2 flex items-center gap-2 text-sm">
-          <span className="font-semibold text-brand">★ {product.rating.toFixed(1)}</span>
+          <span className="flex items-center gap-1 font-semibold text-ink">
+            <StarFilled size={12} />
+            {product.rating.toFixed(1)}
+          </span>
           <span className="text-ink-muted">·</span>
           <span className="text-ink-muted">
             {product.reviewCount.toLocaleString()} reviews
@@ -67,7 +71,10 @@ export default function ProductDetailPage({
             <li key={r.author} className="card p-4">
               <div className="flex items-center justify-between">
                 <span className="text-[14px] font-semibold text-ink">{r.author}</span>
-                <span className="text-[12px] font-semibold text-brand">★ {r.rating}</span>
+                <span className="flex items-center gap-1 text-[12px] font-semibold text-ink">
+                  <StarFilled size={11} />
+                  {r.rating}
+                </span>
               </div>
               <p className="mt-2 text-[14px] leading-relaxed text-ink">
                 {r.body}
