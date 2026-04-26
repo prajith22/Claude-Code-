@@ -13,31 +13,32 @@ type Sector = {
   centerDeg: number; // measured clockwise from the top
 };
 
-// Three sectors at 0°, 120°, 240° from the top. Palette is restricted
-// to cream + navy — sectors differentiate by tonal value, not by hue.
+// Three sectors at 0°, 120°, 240° from the top. Sector colours match
+// the home simulator cards so the wheel feels like a continuation of
+// the same surface.
 const SECTORS: Sector[] = [
   {
     key: "shop",
     label: "Shop",
     href: "/shop",
-    fill: "#FFFFFF",
-    textColor: "#0A0F1E",
+    fill: "#E8E3FF",
+    textColor: "#4C1D95",
     centerDeg: 0,
   },
   {
     key: "food",
     label: "Food",
     href: "/food",
-    fill: "#0A0F1E",
-    textColor: "#FFFFFF",
+    fill: "#FFF3CD",
+    textColor: "#78350F",
     centerDeg: 120,
   },
   {
     key: "bet",
     label: "Bet",
     href: "/bet",
-    fill: "#F7F8FA",
-    textColor: "#0A0F1E",
+    fill: "#DBEAFE",
+    textColor: "#1E3A8A",
     centerDeg: 240,
   },
 ];
