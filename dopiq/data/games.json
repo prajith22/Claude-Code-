@@ -1,7 +1,7 @@
 [
   {
     "id": "nfl-g1",
-    "sport": "NFL",
+    "sport": "Football",
     "homeTeam": "Minnesota Frost",
     "awayTeam": "Portland Timbers FC",
     "homeTeamAbbr": "MIN",
@@ -26,7 +26,7 @@
   },
   {
     "id": "nfl-g2",
-    "sport": "NFL",
+    "sport": "Football",
     "homeTeam": "Minnesota Frost",
     "awayTeam": "Los Angeles Surge",
     "homeTeamAbbr": "MIN",
@@ -51,7 +51,7 @@
   },
   {
     "id": "nfl-g3",
-    "sport": "NFL",
+    "sport": "Football",
     "homeTeam": "New Orleans Jazz Kings",
     "awayTeam": "Seattle Storm",
     "homeTeamAbbr": "NOJ",
@@ -76,7 +76,7 @@
   },
   {
     "id": "nfl-g4",
-    "sport": "NFL",
+    "sport": "Football",
     "homeTeam": "Miami Heat Wave",
     "awayTeam": "Indianapolis Colts FC",
     "homeTeamAbbr": "MIA",
@@ -101,7 +101,7 @@
   },
   {
     "id": "nfl-g5",
-    "sport": "NFL",
+    "sport": "Football",
     "homeTeam": "Cleveland Crushers",
     "awayTeam": "Indianapolis Colts FC",
     "homeTeamAbbr": "CLE",
@@ -126,7 +126,7 @@
   },
   {
     "id": "nfl-g6",
-    "sport": "NFL",
+    "sport": "Football",
     "homeTeam": "Denver Peaks",
     "awayTeam": "Houston Rockets FC",
     "homeTeamAbbr": "DEN",
@@ -151,7 +151,7 @@
   },
   {
     "id": "nba-g1",
-    "sport": "NBA",
+    "sport": "Basketball",
     "homeTeam": "New Orleans Jazz Kings",
     "awayTeam": "Boston Ravens",
     "homeTeamAbbr": "NOJ",
@@ -176,7 +176,7 @@
   },
   {
     "id": "nba-g2",
-    "sport": "NBA",
+    "sport": "Basketball",
     "homeTeam": "Boston Ravens",
     "awayTeam": "Atlanta Blaze",
     "homeTeamAbbr": "BOS",
@@ -201,7 +201,7 @@
   },
   {
     "id": "nba-g3",
-    "sport": "NBA",
+    "sport": "Basketball",
     "homeTeam": "Atlanta Blaze",
     "awayTeam": "Detroit Iron",
     "homeTeamAbbr": "ATL",
@@ -226,7 +226,7 @@
   },
   {
     "id": "nba-g4",
-    "sport": "NBA",
+    "sport": "Basketball",
     "homeTeam": "Tampa Bay Surge",
     "awayTeam": "Dallas Thunder",
     "homeTeamAbbr": "TBS",
@@ -251,7 +251,7 @@
   },
   {
     "id": "nba-g5",
-    "sport": "NBA",
+    "sport": "Basketball",
     "homeTeam": "Detroit Iron",
     "awayTeam": "Portland Timbers FC",
     "homeTeamAbbr": "DET",
@@ -276,7 +276,7 @@
   },
   {
     "id": "nba-g6",
-    "sport": "NBA",
+    "sport": "Basketball",
     "homeTeam": "Cleveland Crushers",
     "awayTeam": "New York Titans",
     "homeTeamAbbr": "CLE",
@@ -301,7 +301,7 @@
   },
   {
     "id": "mlb-g1",
-    "sport": "MLB",
+    "sport": "Baseball",
     "homeTeam": "Boston Ravens",
     "awayTeam": "Seattle Storm",
     "homeTeamAbbr": "BOS",
@@ -326,7 +326,7 @@
   },
   {
     "id": "mlb-g2",
-    "sport": "MLB",
+    "sport": "Baseball",
     "homeTeam": "Chicago Wolves",
     "awayTeam": "Denver Peaks",
     "homeTeamAbbr": "CHI",
@@ -351,7 +351,7 @@
   },
   {
     "id": "mlb-g3",
-    "sport": "MLB",
+    "sport": "Baseball",
     "homeTeam": "Phoenix Rising",
     "awayTeam": "Indianapolis Colts FC",
     "homeTeamAbbr": "PHX",
@@ -376,7 +376,7 @@
   },
   {
     "id": "mlb-g4",
-    "sport": "MLB",
+    "sport": "Baseball",
     "homeTeam": "Seattle Storm",
     "awayTeam": "Minnesota Frost",
     "homeTeamAbbr": "SEA",
@@ -401,7 +401,7 @@
   },
   {
     "id": "mlb-g5",
-    "sport": "MLB",
+    "sport": "Baseball",
     "homeTeam": "Los Angeles Surge",
     "awayTeam": "Minnesota Frost",
     "homeTeamAbbr": "LAS",
@@ -426,7 +426,7 @@
   },
   {
     "id": "mlb-g6",
-    "sport": "MLB",
+    "sport": "Baseball",
     "homeTeam": "Indianapolis Colts FC",
     "awayTeam": "Tampa Bay Surge",
     "homeTeamAbbr": "IND",
@@ -451,7 +451,7 @@
   },
   {
     "id": "nhl-g1",
-    "sport": "NHL",
+    "sport": "Hockey",
     "homeTeam": "Boston Ravens",
     "awayTeam": "Minnesota Frost",
     "homeTeamAbbr": "BOS",
@@ -476,7 +476,7 @@
   },
   {
     "id": "nhl-g2",
-    "sport": "NHL",
+    "sport": "Hockey",
     "homeTeam": "Phoenix Rising",
     "awayTeam": "Denver Peaks",
     "homeTeamAbbr": "PHX",
@@ -501,7 +501,7 @@
   },
   {
     "id": "nhl-g3",
-    "sport": "NHL",
+    "sport": "Hockey",
     "homeTeam": "Atlanta Blaze",
     "awayTeam": "Boston Ravens",
     "homeTeamAbbr": "ATL",
@@ -526,7 +526,7 @@
   },
   {
     "id": "nhl-g4",
-    "sport": "NHL",
+    "sport": "Hockey",
     "homeTeam": "Chicago Wolves",
     "awayTeam": "New York Titans",
     "homeTeamAbbr": "CHI",
@@ -551,7 +551,7 @@
   },
   {
     "id": "nhl-g5",
-    "sport": "NHL",
+    "sport": "Hockey",
     "homeTeam": "Chicago Wolves",
     "awayTeam": "Boston Ravens",
     "homeTeamAbbr": "CHI",
@@ -576,7 +576,7 @@
   },
   {
     "id": "nhl-g6",
-    "sport": "NHL",
+    "sport": "Hockey",
     "homeTeam": "Minnesota Frost",
     "awayTeam": "Chicago Wolves",
     "homeTeamAbbr": "MIN",
@@ -601,7 +601,7 @@
   },
   {
     "id": "ncaaf-g1",
-    "sport": "NCAAF",
+    "sport": "College Football",
     "homeTeam": "Indianapolis Colts FC",
     "awayTeam": "Minnesota Frost",
     "homeTeamAbbr": "IND",
@@ -626,7 +626,7 @@
   },
   {
     "id": "ncaaf-g2",
-    "sport": "NCAAF",
+    "sport": "College Football",
     "homeTeam": "Houston Rockets FC",
     "awayTeam": "Chicago Wolves",
     "homeTeamAbbr": "HOU",
@@ -651,7 +651,7 @@
   },
   {
     "id": "ncaaf-g3",
-    "sport": "NCAAF",
+    "sport": "College Football",
     "homeTeam": "Miami Heat Wave",
     "awayTeam": "Portland Timbers FC",
     "homeTeamAbbr": "MIA",
@@ -676,7 +676,7 @@
   },
   {
     "id": "ncaaf-g4",
-    "sport": "NCAAF",
+    "sport": "College Football",
     "homeTeam": "San Francisco Bay Sharks",
     "awayTeam": "Minnesota Frost",
     "homeTeamAbbr": "SFB",
@@ -701,7 +701,7 @@
   },
   {
     "id": "ncaaf-g5",
-    "sport": "NCAAF",
+    "sport": "College Football",
     "homeTeam": "Indianapolis Colts FC",
     "awayTeam": "Dallas Thunder",
     "homeTeamAbbr": "IND",
@@ -726,7 +726,7 @@
   },
   {
     "id": "ncaaf-g6",
-    "sport": "NCAAF",
+    "sport": "College Football",
     "homeTeam": "New Orleans Jazz Kings",
     "awayTeam": "Miami Heat Wave",
     "homeTeamAbbr": "NOJ",
@@ -751,7 +751,7 @@
   },
   {
     "id": "ncaab-g1",
-    "sport": "NCAAB",
+    "sport": "College Basketball",
     "homeTeam": "Houston Rockets FC",
     "awayTeam": "Cleveland Crushers",
     "homeTeamAbbr": "HOU",
@@ -776,7 +776,7 @@
   },
   {
     "id": "ncaab-g2",
-    "sport": "NCAAB",
+    "sport": "College Basketball",
     "homeTeam": "Seattle Storm",
     "awayTeam": "Phoenix Rising",
     "homeTeamAbbr": "SEA",
@@ -801,7 +801,7 @@
   },
   {
     "id": "ncaab-g3",
-    "sport": "NCAAB",
+    "sport": "College Basketball",
     "homeTeam": "Phoenix Rising",
     "awayTeam": "New Orleans Jazz Kings",
     "homeTeamAbbr": "PHX",
@@ -826,7 +826,7 @@
   },
   {
     "id": "ncaab-g4",
-    "sport": "NCAAB",
+    "sport": "College Basketball",
     "homeTeam": "New York Titans",
     "awayTeam": "Houston Rockets FC",
     "homeTeamAbbr": "NYT",
@@ -851,7 +851,7 @@
   },
   {
     "id": "ncaab-g5",
-    "sport": "NCAAB",
+    "sport": "College Basketball",
     "homeTeam": "Phoenix Rising",
     "awayTeam": "Denver Peaks",
     "homeTeamAbbr": "PHX",
@@ -876,7 +876,7 @@
   },
   {
     "id": "ncaab-g6",
-    "sport": "NCAAB",
+    "sport": "College Basketball",
     "homeTeam": "Detroit Iron",
     "awayTeam": "Chicago Wolves",
     "homeTeamAbbr": "DET",
@@ -901,7 +901,7 @@
   },
   {
     "id": "mls-g1",
-    "sport": "MLS",
+    "sport": "Soccer",
     "homeTeam": "Boston Ravens",
     "awayTeam": "Denver Peaks",
     "homeTeamAbbr": "BOS",
@@ -926,7 +926,7 @@
   },
   {
     "id": "mls-g2",
-    "sport": "MLS",
+    "sport": "Soccer",
     "homeTeam": "Los Angeles Surge",
     "awayTeam": "Indianapolis Colts FC",
     "homeTeamAbbr": "LAS",
@@ -951,7 +951,7 @@
   },
   {
     "id": "mls-g3",
-    "sport": "MLS",
+    "sport": "Soccer",
     "homeTeam": "Seattle Storm",
     "awayTeam": "Boston Ravens",
     "homeTeamAbbr": "SEA",
@@ -976,7 +976,7 @@
   },
   {
     "id": "mls-g4",
-    "sport": "MLS",
+    "sport": "Soccer",
     "homeTeam": "Indianapolis Colts FC",
     "awayTeam": "Minnesota Frost",
     "homeTeamAbbr": "IND",
@@ -1001,7 +1001,7 @@
   },
   {
     "id": "mls-g5",
-    "sport": "MLS",
+    "sport": "Soccer",
     "homeTeam": "Minnesota Frost",
     "awayTeam": "Cleveland Crushers",
     "homeTeamAbbr": "MIN",
@@ -1026,7 +1026,7 @@
   },
   {
     "id": "mls-g6",
-    "sport": "MLS",
+    "sport": "Soccer",
     "homeTeam": "San Francisco Bay Sharks",
     "awayTeam": "Golden State Vipers",
     "homeTeamAbbr": "SFB",
@@ -1201,7 +1201,7 @@
   },
   {
     "id": "ufc-g1",
-    "sport": "UFC",
+    "sport": "MMA",
     "homeTeam": "Kwame Osei",
     "awayTeam": "Carlos Vega",
     "homeTeamAbbr": "OSE",
@@ -1226,7 +1226,7 @@
   },
   {
     "id": "ufc-g2",
-    "sport": "UFC",
+    "sport": "MMA",
     "homeTeam": "Ahmed Hassan",
     "awayTeam": "Kwame Osei",
     "homeTeamAbbr": "HAS",
@@ -1251,7 +1251,7 @@
   },
   {
     "id": "ufc-g3",
-    "sport": "UFC",
+    "sport": "MMA",
     "homeTeam": "Ahmed Hassan",
     "awayTeam": "Jake Renton",
     "homeTeamAbbr": "HAS",
@@ -1276,7 +1276,7 @@
   },
   {
     "id": "ufc-g4",
-    "sport": "UFC",
+    "sport": "MMA",
     "homeTeam": "Jake Renton",
     "awayTeam": "Diego Montoya",
     "homeTeamAbbr": "REN",
@@ -1301,7 +1301,7 @@
   },
   {
     "id": "ufc-g5",
-    "sport": "UFC",
+    "sport": "MMA",
     "homeTeam": "Ahmed Hassan",
     "awayTeam": "Tyson Brewer",
     "homeTeamAbbr": "HAS",
@@ -1326,7 +1326,7 @@
   },
   {
     "id": "ufc-g6",
-    "sport": "UFC",
+    "sport": "MMA",
     "homeTeam": "Carlos Vega",
     "awayTeam": "Diego Montoya",
     "homeTeamAbbr": "VEG",

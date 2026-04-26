@@ -69,8 +69,8 @@ model VerificationToken {
 }
 
 // Caches The Odds API responses per sport so we don't burn API quota.
-// `sport` is the internal enum value (NFL, NBA, MLB, ...). `data`
-// stores the raw API JSON. Refreshed every 3 hours by lib/odds.ts.
+// `sport` is the internal enum value (Football, Basketball, Baseball, ...).
+// `data` stores the raw API JSON. Refreshed every 3 hours by lib/odds.ts.
 model OddsCache {
   sport     String   @id
   data      Json
