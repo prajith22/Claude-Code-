@@ -3,7 +3,6 @@ import { requireSubscribedUser } from "@/lib/session-guards";
 import { BetGamesList } from "@/components/BetGamesList";
 import { BetSlipPanel } from "@/components/BetSlipPanel";
 import { FeaturedParlays } from "@/components/FeaturedParlays";
-import { UrgePickerModal } from "@/components/UrgePickerModal";
 
 export default async function BetPage() {
   await requireSubscribedUser();
@@ -48,7 +47,6 @@ export default async function BetPage() {
 
       {/* Bet slip — desktop rail + mobile bottom sheet */}
       <BetSlipPanel />
-      <UrgePickerModal section="bet" />
     </div>
   );
 }
