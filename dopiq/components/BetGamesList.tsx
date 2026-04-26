@@ -43,15 +43,15 @@ type OddsResponse = Record<SportKey, Game[]> & {
 };
 
 const SPORTS: { key: SportKey; label: string; emoji: string }[] = [
-  { key: "nfl", label: "NFL", emoji: "🏈" },
-  { key: "nba", label: "NBA", emoji: "🏀" },
-  { key: "mlb", label: "MLB", emoji: "⚾" },
-  { key: "nhl", label: "NHL", emoji: "🏒" },
-  { key: "ncaaf", label: "CFB", emoji: "🏈" },
-  { key: "ncaab", label: "CBB", emoji: "🏀" },
-  { key: "mls", label: "MLS", emoji: "⚽" },
+  { key: "nfl", label: "Football", emoji: "🏈" },
+  { key: "nba", label: "Basketball", emoji: "🏀" },
+  { key: "mlb", label: "Baseball", emoji: "⚾" },
+  { key: "nhl", label: "Hockey", emoji: "🏒" },
+  { key: "ncaaf", label: "College Football", emoji: "🏈" },
+  { key: "ncaab", label: "College Basketball", emoji: "🏀" },
+  { key: "mls", label: "Soccer", emoji: "⚽" },
   { key: "boxing", label: "Boxing", emoji: "🥊" },
-  { key: "ufc", label: "UFC", emoji: "🥋" },
+  { key: "ufc", label: "MMA", emoji: "🥋" },
   { key: "golf", label: "Golf", emoji: "⛳" },
 ];
 
