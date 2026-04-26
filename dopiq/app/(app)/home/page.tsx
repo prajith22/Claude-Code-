@@ -35,9 +35,8 @@ export default async function HomePage() {
       />
 
       <div className="space-y-8 pb-4 pt-4 md:space-y-10">
-        {/* Personalized greeting — warm dark brown reads softer than
-            pure black against the cream backdrop. */}
-        <h1 className="text-[44px] font-extrabold leading-[1.05] tracking-tight text-[#2C1810] md:text-[64px]">
+        {/* Personalized greeting — confident dark navy. */}
+        <h1 className="text-[44px] font-extrabold leading-[1.05] tracking-tight text-[#0A0F1E] md:text-[64px]">
           Hey, {firstName}.
         </h1>
 

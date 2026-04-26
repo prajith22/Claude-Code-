@@ -113,16 +113,16 @@ export function DailySpinWheel() {
         whileHover={!spinning ? { scale: 1.03 } : undefined}
         whileTap={!spinning ? { scale: 0.97 } : undefined}
         transition={{ duration: 0.15, ease: "easeOut" }}
-        className="relative h-[240px] w-[240px] cursor-pointer rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-[#E65100]/30 disabled:cursor-default md:h-[280px] md:w-[280px]"
+        className="relative h-[240px] w-[240px] cursor-pointer rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-brand/30 disabled:cursor-default md:h-[280px] md:w-[280px]"
         style={{
-          // Warm glow appears only while spinning — fades out when settled.
+          // Brand-green glow appears only while spinning — fades out when settled.
           boxShadow: spinning
-            ? "0 0 60px rgba(230, 81, 0, 0.35), 0 0 24px rgba(230, 81, 0, 0.25)"
-            : "0 8px 28px rgba(44, 24, 16, 0.10)",
+            ? "0 0 60px rgba(0, 200, 83, 0.35), 0 0 24px rgba(0, 200, 83, 0.25)"
+            : "0 8px 28px rgba(10, 15, 30, 0.12)",
           transition: "box-shadow 0.4s ease",
         }}
       >
-        {/* Fixed pointer — warm dark brown */}
+        {/* Fixed pointer — dark navy */}
         <svg
           width="32"
           height="26"
@@ -130,7 +130,7 @@ export function DailySpinWheel() {
           className="absolute left-1/2 top-[-8px] z-10 -translate-x-1/2 drop-shadow-md"
           aria-hidden
         >
-          <path d="M16 26 L2 2 L30 2 Z" fill="#2C1810" />
+          <path d="M16 26 L2 2 L30 2 Z" fill="#0A0F1E" />
         </svg>
 
         {/* Rotating wheel — plain CSS transform + transition */}
@@ -148,8 +148,8 @@ export function DailySpinWheel() {
             role="img"
             aria-label="Spin wheel"
           >
-            {/* Outer warm-brown ring */}
-            <circle cx={CX} cy={CY} r={R + 4} fill="#2C1810" />
+            {/* Outer dark-navy ring */}
+            <circle cx={CX} cy={CY} r={R + 4} fill="#0A0F1E" />
 
             {SECTORS.map((sector, i) => {
               const start = sector.centerDeg - 60;
@@ -194,10 +194,9 @@ export function DailySpinWheel() {
               );
             })}
 
-            {/* Center hub — warm brown with amber dot to match the
-                streak card's accent. */}
-            <circle cx={CX} cy={CY} r={12} fill="#2C1810" />
-            <circle cx={CX} cy={CY} r={5} fill="#E65100" />
+            {/* Center hub — dark navy with brand-green accent dot. */}
+            <circle cx={CX} cy={CY} r={12} fill="#0A0F1E" />
+            <circle cx={CX} cy={CY} r={5} fill="#00C853" />
           </svg>
         </div>
       </motion.button>
