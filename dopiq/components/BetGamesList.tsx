@@ -12,6 +12,18 @@ import {
   type BetSide,
   type BetType,
 } from "@/lib/bet-slip-store";
+import {
+  Football,
+  Basketball,
+  Baseball,
+  Hockey,
+  Soccer,
+  Glove,
+  Cage,
+  Flag,
+  Flame,
+} from "@/components/icons";
+import type { ComponentType, SVGProps } from "react";
 
 type SportKey =
   | "nfl"
@@ -42,17 +54,19 @@ type OddsResponse = Record<SportKey, Game[]> & {
   };
 };
 
-const SPORTS: { key: SportKey; label: string; emoji: string }[] = [
-  { key: "nfl", label: "Football", emoji: "🏈" },
-  { key: "nba", label: "Basketball", emoji: "🏀" },
-  { key: "mlb", label: "Baseball", emoji: "⚾" },
-  { key: "nhl", label: "Hockey", emoji: "🏒" },
-  { key: "ncaaf", label: "College Football", emoji: "🏈" },
-  { key: "ncaab", label: "College Basketball", emoji: "🏀" },
-  { key: "mls", label: "Soccer", emoji: "⚽" },
-  { key: "boxing", label: "Boxing", emoji: "🥊" },
-  { key: "ufc", label: "MMA", emoji: "🥋" },
-  { key: "golf", label: "Golf", emoji: "⛳" },
+type IconComponent = ComponentType<SVGProps<SVGSVGElement> & { size?: number }>;
+
+const SPORTS: { key: SportKey; label: string; icon: IconComponent }[] = [
+  { key: "nfl", label: "Football", icon: Football },
+  { key: "nba", label: "Basketball", icon: Basketball },
+  { key: "mlb", label: "Baseball", icon: Baseball },
+  { key: "nhl", label: "Hockey", icon: Hockey },
+  { key: "ncaaf", label: "College Football", icon: Football },
+  { key: "ncaab", label: "College Basketball", icon: Basketball },
+  { key: "mls", label: "Soccer", icon: Soccer },
+  { key: "boxing", label: "Boxing", icon: Glove },
+  { key: "ufc", label: "MMA", icon: Cage },
+  { key: "golf", label: "Golf", icon: Flag },
 ];
 
 const DEFAULT_SPORT: SportKey = "nfl";
@@ -108,7 +122,7 @@ export function BetGamesList() {
         {SPORTS.map((s) => (
           <SportTab
             key={s.key}
-            emoji={s.emoji}
+            Icon={s.icon}
             label={s.label}
             active={selected === s.key}
             onClick={() => pick(s.key)}
@@ -162,12 +176,12 @@ export function BetGamesList() {
 }
 
 function SportTab({
-  emoji,
+  Icon,
   label,
   active,
   onClick,
 }: {
-  emoji: string;
+  Icon: IconComponent;
   label: string;
   active: boolean;
   onClick: () => void;
@@ -183,9 +197,7 @@ function SportTab({
           : "border border-surface-border bg-white text-ink-muted hover:bg-surface-alt",
       )}
     >
-      <span className="text-[14px] leading-none" aria-hidden>
-        {emoji}
-      </span>
+      <Icon size={14} />
       <span>{label}</span>
     </button>
   );
@@ -373,12 +385,14 @@ function GameCard({ game: g }: { game: Game }) {
         </span>
         <div className="flex items-center gap-2">
           {trending && (
-            <span className="rounded-pill bg-brand-light px-2 py-0.5 text-[10px] font-bold text-brand">
-              🔥 Trending
+            <span className="flex items-center gap-1 rounded-pill bg-ink px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white">
+              <Flame size={10} />
+              Trending
             </span>
           )}
-          <span className="text-[12px] text-ink-muted">
-            🔥 {g.peopleBetting.toLocaleString("en-US")} people placed this bet today
+          <span className="flex items-center gap-1 text-[12px] text-ink-muted">
+            <Flame size={11} />
+            {g.peopleBetting.toLocaleString("en-US")} placed today
           </span>
         </div>
       </div>

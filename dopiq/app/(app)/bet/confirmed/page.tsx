@@ -177,7 +177,7 @@ export default function BetConfirmedPage() {
             transition={{ delay: 0.6, duration: 0.4 }}
             className="mt-5 text-[12px] font-medium text-white/70"
           >
-            ⏱️ Resolves around {formatResolveTime(placed.resolveAt)} — check
+            Resolves around {formatResolveTime(placed.resolveAt)} — check
             your tickets later to see how it would have played out.
           </motion.p>
         )}

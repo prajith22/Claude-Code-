@@ -9,20 +9,21 @@ import { formatUSD } from "@/lib/utils";
 import { CartButton } from "@/components/CartButton";
 import { RestaurantLogo } from "@/components/RestaurantLogo";
 import { cardHover, cardHoverTransition } from "@/lib/card-hover";
+import { Plate, StarFilled } from "@/components/icons";
 
-type Pill = { key: string; emoji: string; label: string };
+type Pill = { key: string; label: string };
 
 const PILLS: Pill[] = [
-  { key: "Pizza", emoji: "🍕", label: "Pizza" },
-  { key: "Burgers", emoji: "🍔", label: "Burgers" },
-  { key: "Chicken", emoji: "🍗", label: "Chicken" },
-  { key: "Mexican", emoji: "🌮", label: "Mexican" },
-  { key: "Sushi", emoji: "🍣", label: "Sushi" },
-  { key: "Chinese", emoji: "🍜", label: "Chinese" },
-  { key: "Healthy", emoji: "🥗", label: "Healthy" },
-  { key: "Japanese", emoji: "🍱", label: "Japanese" },
-  { key: "Sandwiches", emoji: "🌯", label: "Sandwiches" },
-  { key: "Wings", emoji: "🍗", label: "Wings" },
+  { key: "Pizza", label: "Pizza" },
+  { key: "Burgers", label: "Burgers" },
+  { key: "Chicken", label: "Chicken" },
+  { key: "Mexican", label: "Mexican" },
+  { key: "Sushi", label: "Sushi" },
+  { key: "Chinese", label: "Chinese" },
+  { key: "Healthy", label: "Healthy" },
+  { key: "Japanese", label: "Japanese" },
+  { key: "Sandwiches", label: "Sandwiches" },
+  { key: "Wings", label: "Wings" },
 ];
 
 const deliveryUpperMinutes = (t: string) => {
@@ -189,16 +190,13 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
                 type="button"
                 onClick={() => setActivePill(selected ? null : p.key)}
                 aria-pressed={selected}
-                className={`flex flex-none items-center gap-1.5 rounded-pill border px-4 py-2 text-[13px] font-semibold shadow-sm transition ${
+                className={`flex flex-none items-center rounded-pill border px-4 py-2 text-[13px] font-semibold shadow-sm transition ${
                   selected
                     ? "border-navy bg-navy text-white"
                     : "border-surface-border bg-white text-ink hover:bg-surface-alt"
                 }`}
               >
-                <span aria-hidden className="text-[15px]">
-                  {p.emoji}
-                </span>
-                <span>{p.label}</span>
+                {p.label}
               </button>
             );
           })}
@@ -207,11 +205,9 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
 
       {!hasResults ? (
         <div className="card flex flex-col items-center gap-2 p-10 text-center">
-          <span className="text-4xl" aria-hidden>
-            🍽️
-          </span>
+          <Plate size={32} className="text-ink-faint" />
           <p className="text-[15px] font-semibold text-ink">
-            No restaurants found for &ldquo;{emptyLabel || "your search"}&rdquo;
+            No restaurants for &ldquo;{emptyLabel || "your search"}&rdquo;.
           </p>
           <p className="text-[13px] text-ink-muted">
             Try a different cuisine or clear your filters.
@@ -220,7 +216,7 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
       ) : (
         <>
           <CategorySection
-            title="🔥 Most Popular"
+            title="Most popular"
             items={mostPopularAll.slice(0, 4)}
             allItems={mostPopularAll}
             expanded={expanded.popular}
@@ -229,7 +225,7 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
             }
           />
           <CategorySection
-            title="⚡ Fastest Delivery"
+            title="Fastest delivery"
             items={fastestAll.slice(0, 4)}
             allItems={fastestAll}
             expanded={expanded.fastest}
@@ -239,7 +235,7 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
           />
           {topRatedAll.length > 0 && (
             <CategorySection
-              title="⭐ Top Rated"
+              title="Top rated"
               items={topRatedAll}
               allItems={topRatedAll}
               expanded={expanded.topRated}
@@ -348,8 +344,9 @@ function CompactCard({
         <div className="p-3">
           <p className="truncate text-[14px] font-bold text-ink">{r.name}</p>
           <div className="mt-1 flex items-center gap-2 text-[12px]">
-            <span className="flex items-center gap-0.5 font-semibold text-brand">
-              ★ {r.rating.toFixed(1)}
+            <span className="flex items-center gap-1 font-semibold text-ink">
+              <StarFilled size={11} />
+              {r.rating.toFixed(1)}
             </span>
             <span className="text-ink-muted">·</span>
             <span className="truncate text-ink-muted">{r.deliveryTime}</span>

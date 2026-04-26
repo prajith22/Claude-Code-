@@ -5,14 +5,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import type { Product } from "@/types";
 import { cn, formatUSD } from "@/lib/utils";
-
-const CATEGORY_EMOJI: Record<string, string> = {
-  Clothes: "👕",
-  Electronics: "🎧",
-  "Home Goods": "🏠",
-  Beauty: "💄",
-  Sports: "⚽",
-};
+import { Bag, StarFilled } from "@/components/icons";
 
 const MAX_DOTS = 5;
 const SWIPE_OFFSET = 60;
@@ -75,9 +68,9 @@ export function ExploreSection({ products }: { products: Product[] }) {
     <section className="space-y-4">
       <div>
         <h2 className="font-heading text-[20px] font-bold tracking-tight text-ink">
-          ✨ Explore
+          Explore
         </h2>
-        <p className="text-[13px] text-ink-muted">Discover something new</p>
+        <p className="text-[13px] text-ink-muted">Something new every refresh.</p>
       </div>
 
       <div className="relative mx-auto w-full max-w-[600px]">
@@ -121,8 +114,9 @@ export function ExploreSection({ products }: { products: Product[] }) {
                   <span className="money text-[22px] text-brand">
                     {formatUSD(current.price)}
                   </span>
-                  <span className="flex items-center gap-1 text-[13px] font-semibold text-brand">
-                    ★ {current.rating.toFixed(1)}
+                  <span className="flex items-center gap-1 text-[13px] font-semibold text-ink">
+                    <StarFilled size={12} />
+                    {current.rating.toFixed(1)}
                   </span>
                 </div>
                 <Link
@@ -166,10 +160,8 @@ function CardImage({ product }: { product: Product }) {
           style={{ filter: "blur(0.8px)" }}
         />
       ) : (
-        <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-ink-muted">
-          <span className="text-5xl" aria-hidden>
-            {CATEGORY_EMOJI[product.category] ?? "✨"}
-          </span>
+        <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-ink-faint">
+          <Bag size={40} />
           <span className="text-[13px] font-semibold">{product.category}</span>
         </div>
       )}

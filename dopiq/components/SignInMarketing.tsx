@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Bag, Bowl, Slot, Cloud, Calm, StarFilled } from "@/components/icons";
+import type { ComponentType, SVGProps } from "react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -12,10 +14,12 @@ const fadeLeft = {
   show: { opacity: 1, x: 0 },
 };
 
-const SIMS = [
-  { emoji: "🛍️", label: "Shop" },
-  { emoji: "🍔", label: "Food" },
-  { emoji: "🎰", label: "Bet" },
+type IconComponent = ComponentType<SVGProps<SVGSVGElement> & { size?: number }>;
+
+const SIMS: { Icon: IconComponent; label: string }[] = [
+  { Icon: Bag, label: "Shop" },
+  { Icon: Bowl, label: "Food" },
+  { Icon: Slot, label: "Bet" },
 ];
 
 export function SignInMarketing() {
@@ -86,22 +90,27 @@ export function SignInMarketing() {
           transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
           className="mt-8 grid grid-cols-3 gap-3"
         >
-          {SIMS.map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.4,
-                delay: 0.25 + i * 0.07,
-                ease: "easeOut",
-              }}
-              className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-navy-light px-3 py-4 text-center"
-            >
-              <span className="text-[28px] leading-none">{s.emoji}</span>
-              <span className="text-[13px] font-bold text-white">{s.label}</span>
-            </motion.div>
-          ))}
+          {SIMS.map((s, i) => {
+            const Icon = s.Icon;
+            return (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.4,
+                  delay: 0.25 + i * 0.07,
+                  ease: "easeOut",
+                }}
+                className="flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-navy-light px-3 py-5 text-center"
+              >
+                <Icon size={26} className="text-white" />
+                <span className="text-[13px] font-bold text-white">
+                  {s.label}
+                </span>
+              </motion.div>
+            );
+          })}
         </motion.div>
 
         <motion.p
@@ -114,7 +123,11 @@ export function SignInMarketing() {
           Simulate the rush. Skip the damage.
         </motion.p>
 
-        {/* Before / after comparison — desktop only */}
+        {/* Before / after comparison — desktop only.
+            This is the only place in the app where red appears; the
+            two-tone red/green carries the entire emotional arc of the
+            comparison. Don't reuse red elsewhere — it dilutes the
+            signal. */}
         <motion.div
           initial="hidden"
           animate="show"
@@ -123,20 +136,18 @@ export function SignInMarketing() {
           className="mt-10 hidden grid-cols-2 overflow-hidden rounded-2xl border border-white/10 bg-navy-light md:grid"
         >
           <div className="px-5 py-5">
-            <p className="text-[20px] leading-none">😰</p>
-            <p className="mt-3 text-[12px] font-semibold uppercase tracking-widest text-white/50">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40">
               Without Dopiq
             </p>
-            <p className="mt-1 text-[15px] font-bold text-red-400">
+            <p className="mt-2 text-[15px] font-bold text-red-400">
               $340 spent on impulse buys this week
             </p>
           </div>
           <div className="border-l border-white/10 px-5 py-5">
-            <p className="text-[20px] leading-none">😌</p>
-            <p className="mt-3 text-[12px] font-semibold uppercase tracking-widest text-white/50">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40">
               With Dopiq
             </p>
-            <p className="mt-1 text-[15px] font-bold text-brand-vivid">
+            <p className="mt-2 text-[15px] font-bold text-brand-vivid">
               $0 spent · 47 urges simulated
             </p>
           </div>
@@ -150,18 +161,9 @@ export function SignInMarketing() {
           transition={{ duration: 0.5, delay: 0.7, ease: "easeOut" }}
           className="mt-6 hidden rounded-2xl border border-white/10 bg-navy-muted px-5 py-5 md:block"
         >
-          <div className="flex gap-0.5" aria-label="5 out of 5 stars">
+          <div className="flex gap-1 text-white" aria-label="5 out of 5 stars">
             {[0, 1, 2, 3, 4].map((i) => (
-              <svg
-                key={i}
-                width="14"
-                height="14"
-                viewBox="0 0 20 20"
-                fill="#FACC15"
-                aria-hidden
-              >
-                <path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.78L10 14.77 4.8 17.5l.99-5.78L1.58 7.62l5.82-.85L10 1.5z" />
-              </svg>
+              <StarFilled key={i} size={12} />
             ))}
           </div>
           <blockquote className="mt-3 text-[15px] leading-relaxed text-white/85">
