@@ -9,7 +9,7 @@ delivery, and sports betting with fake money.
 - Tailwind CSS (light theme only)
 - Prisma + PostgreSQL (Supabase)
 - NextAuth.js (Google Gmail sign-in)
-- Stripe Checkout ($3.99/month, 30-day trial) + webhook
+- Stripe Checkout ($3.99/month, 7-day trial) + webhook
 - Framer Motion + canvas-confetti
 - Zustand for cart state
 

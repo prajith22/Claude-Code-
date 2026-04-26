@@ -22,10 +22,10 @@ export default async function PaywallPage() {
   const expired = user ? !trialing && computeAccessState(user) === "paywalled" : false;
   const daysLeft = user ? trialDaysRemaining(user) : 0;
 
-  const headline = expired ? "Your free trial has ended" : "Start your free month";
+  const headline = expired ? "Your free trial has ended" : "Start your free week";
   const subhead = expired
     ? "Choose a plan to keep simulating."
-    : "No charge for 30 days. Cancel anytime.";
+    : "No charge for 7 days. Cancel anytime.";
 
   const order: Plan[] = [PLANS.lite, PLANS.plus, PLANS.pro];
 
@@ -72,7 +72,7 @@ export default async function PaywallPage() {
           </Link>
         </p>
         <p className="mx-auto mt-3 max-w-md text-[12px] text-ink-faint">
-          All plans include a 30-day free trial. No credit card required to start.
+          All plans include a 7-day free trial. No credit card required to start.
         </p>
       </footer>
     </main>

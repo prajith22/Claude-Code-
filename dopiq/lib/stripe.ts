@@ -5,7 +5,7 @@ export const stripe = new Stripe(
   { typescript: true },
 );
 
-export const TRIAL_DAYS = 30;
+export const TRIAL_DAYS = 7;
 export const UNLIMITED_LIMIT = 999_999;
 export const BILLING_CYCLE_DAYS = 30;
 
