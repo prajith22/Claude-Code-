@@ -14,8 +14,14 @@ import {
   formatUSD,
 } from "@/lib/utils";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
+import { useSavingsStore } from "@/lib/savings-store";
 
 const QUICK_AMOUNTS = [10, 25, 50, 100];
+
+function todayDateStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 export function BetSlipPanel() {
   const selections = useBetSlipStore((s) => s.selections);
@@ -25,27 +31,59 @@ export function BetSlipPanel() {
   const remove = useBetSlipStore((s) => s.remove);
   const router = useRouter();
   const { tryRun, modal } = useSimulationGuard();
+  const bumpSavings = useSavingsStore((s) => s.bump);
 
   async function placeBet() {
     if (selections.length === 0 || stake <= 0) return;
-    await tryRun(() => {
+    await tryRun(async () => {
       const combinedOdds = combineAmericanOdds(selections.map((s) => s.odds));
       const decimal = combinedDecimal(selections.map((s) => s.odds));
       const potentialReturn = stake * decimal;
+      const placedAt = new Date().toISOString();
+
+      // Persist the ticket server-side so it can be resolved later in
+      // /bet/tickets. The confirmed page still reads sessionStorage for
+      // the immediate breakdown view; the ticket id is the durable handle.
+      let ticketId: string | null = null;
+      let resolveAt: string | null = null;
       try {
-        sessionStorage.setItem(
-          "dopiq-last-placed-bet",
-          JSON.stringify({
+        const res = await fetch("/api/bets/place", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
             selections,
             stake,
             combinedOdds,
             potentialReturn,
-            placedAt: new Date().toISOString(),
+            todayDateStr: todayDateStr(),
+          }),
+        });
+        if (res.ok) {
+          const data = (await res.json()) as { ticketId: string; resolveAt: string };
+          ticketId = data.ticketId;
+          resolveAt = data.resolveAt;
+          bumpSavings();
+        }
+      } catch {
+        // Network blocked — the confirmation page will still work but
+        // the ticket won't be resolvable. Fail soft.
+      }
+
+      try {
+        sessionStorage.setItem(
+          "dopiq-last-placed-bet",
+          JSON.stringify({
+            ticketId,
+            resolveAt,
+            selections,
+            stake,
+            combinedOdds,
+            potentialReturn,
+            placedAt,
           }),
         );
-      } catch {
-        // sessionStorage blocked — confirmation page will show a fallback
-      }
+      } catch {}
+
       clear();
       router.push("/bet/confirmed");
     });

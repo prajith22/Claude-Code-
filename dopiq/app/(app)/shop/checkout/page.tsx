@@ -5,6 +5,12 @@ import { useEffect, useState } from "react";
 import { useCartStore, cartSubtotal } from "@/lib/cart-store";
 import { formatUSD } from "@/lib/utils";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
+import { useSavingsStore } from "@/lib/savings-store";
+
+function todayDateStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 export default function ShopCheckoutPage() {
   const router = useRouter();
@@ -12,6 +18,7 @@ export default function ShopCheckoutPage() {
   const clear = useCartStore((s) => s.clear);
   const [placing, setPlacing] = useState(false);
   const { tryRun, modal } = useSimulationGuard();
+  const bumpSavings = useSavingsStore((s) => s.bump);
 
   useEffect(() => {
     if (lines.length === 0 && !placing) {
@@ -23,12 +30,27 @@ export default function ShopCheckoutPage() {
 
   async function placeOrder() {
     setPlacing(true);
-    const allowed = await tryRun(() => {
+    const allowed = await tryRun(async () => {
       const orderNumber = `DPQ-${Math.floor(Math.random() * 9_000_000 + 1_000_000)}`;
       sessionStorage.setItem(
         "dopiq-last-shop-order",
         JSON.stringify({ orderNumber, total: subtotal, count: lines.length }),
       );
+
+      // Credit savings + streak — fire and forget; don't block the
+      // confetti page on a network round-trip.
+      fetch("/api/savings/record", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          section: "shop",
+          amount: subtotal,
+          todayDateStr: todayDateStr(),
+        }),
+      })
+        .then(() => bumpSavings())
+        .catch(() => {});
+
       clear("shop");
       router.push("/shop/confirmed");
     });
