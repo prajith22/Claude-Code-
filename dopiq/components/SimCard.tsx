@@ -8,19 +8,15 @@ import { cn } from "@/lib/utils";
 export function SimCard({
   href,
   label,
-  desc,
   bg,
   title,
-  sub,
   icon,
   delay,
 }: {
   href: string;
   label: string;
-  desc: string;
   bg: string;
   title: string;
-  sub: string;
   icon: React.ReactNode;
   delay: number; // seconds
 }) {
@@ -64,19 +60,14 @@ export function SimCard({
         <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-navy text-white">
           {icon}
         </span>
-        <div>
-          <p
-            className={cn(
-              "text-[20px] font-bold leading-tight md:text-[22px]",
-              title,
-            )}
-          >
-            {label}
-          </p>
-          <p className={cn("mt-1 text-[12px] leading-snug md:text-[13px]", sub)}>
-            {desc}
-          </p>
-        </div>
+        <p
+          className={cn(
+            "text-[20px] font-bold leading-tight md:text-[22px]",
+            title,
+          )}
+        >
+          {label}
+        </p>
       </Link>
     </motion.div>
   );
