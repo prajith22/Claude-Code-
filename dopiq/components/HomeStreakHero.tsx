@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useSavingsStore } from "@/lib/savings-store";
-import { Flame } from "@/components/icons";
 
 type Summary = {
   todaySaved: number;
@@ -26,6 +25,15 @@ function localMidnightISO(): string {
 
 function formatMoney(n: number): string {
   return `$${Math.round(n).toLocaleString("en-US")}`;
+}
+
+function streakMessage(streak: number, atRisk: boolean, longest: number): string {
+  if (streak === 0) return "Start your streak today.";
+  if (atRisk) return "Don’t break it.";
+  if (streak === 1) return "Day one. Nice.";
+  if (streak < 7) return "Keep it up!";
+  if (streak < 14) return "You’re on fire!";
+  return `Best ever: ${longest}.`;
 }
 
 export function HomeStreakHero({ initial }: { initial: Summary | null }) {
@@ -57,59 +65,54 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
   const atRisk = summary?.streakStatus === "at_risk";
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="card-navy p-6"
-    >
-      <div className="grid gap-5 sm:grid-cols-[1fr_auto] sm:items-end">
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-widest text-white/50">
-            Saved today
-          </p>
-          <p className="money mt-2 text-[44px] leading-none text-brand md:text-[56px]">
+    <div className="grid gap-3 sm:grid-cols-[1.4fr_1fr] sm:gap-4">
+      {/* Saved today — warm green card */}
+      <motion.section
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="rounded-card bg-[#E8F5E9] p-6"
+      >
+        <p className="text-[11px] font-bold uppercase tracking-widest text-[#2E7D32]/70">
+          Saved today
+        </p>
+        <div className="mt-2 flex items-baseline gap-2">
+          <p className="font-heading text-[44px] font-extrabold leading-none text-[#2E7D32] md:text-[56px]">
             {formatMoney(saved)}
           </p>
-          <p className="mt-2 text-[13px] text-white/70">
-            {saved === 0
-              ? "Resets at midnight."
-              : "Resets at midnight. Streak keeps your work."}
-          </p>
+          <span aria-hidden className="text-[26px] md:text-[32px]">
+            {saved > 0 ? "🎉" : "✨"}
+          </span>
         </div>
+        <p className="mt-2 text-[13px] text-[#2E7D32]/80">
+          {saved === 0
+            ? "First simulation of the day starts the count."
+            : "That’s real money you didn’t spend on real impulses."}
+        </p>
+      </motion.section>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 sm:min-w-[160px]">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-white/50">
-            Streak
-          </p>
-          <div className="mt-2 flex items-center gap-3">
-            <Flame
-              size={28}
-              className={
-                streak === 0
-                  ? "text-white/30"
-                  : atRisk
-                    ? "text-white/60"
-                    : "text-brand"
-              }
-            />
-            <span className="font-mono text-[40px] font-extrabold leading-none text-white tabular-nums">
-              {streak}
-            </span>
-          </div>
-          <p
-            className={`mt-1 text-[12px] font-semibold ${atRisk ? "text-white" : "text-white/60"}`}
-          >
-            {streak === 0
-              ? "Start your streak today."
-              : atRisk
-                ? "At risk. Log anything to keep it."
-                : streak === 1
-                  ? "day clean"
-                  : `days clean · best ${longest}`}
-          </p>
+      {/* Streak — warm amber card */}
+      <motion.section
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.08, ease: "easeOut" }}
+        className="rounded-card bg-[#FFF3E0] p-6"
+      >
+        <p className="text-[11px] font-bold uppercase tracking-widest text-[#E65100]/70">
+          Streak
+        </p>
+        <div className="mt-2 flex items-center gap-3">
+          <span aria-hidden className="text-[40px] leading-none md:text-[48px]">
+            🔥
+          </span>
+          <span className="font-mono text-[44px] font-extrabold leading-none text-[#E65100] tabular-nums md:text-[56px]">
+            {streak}
+          </span>
         </div>
-      </div>
-    </motion.section>
+        <p className="mt-2 text-[13px] font-semibold text-[#E65100]/80">
+          {streakMessage(streak, atRisk, longest)}
+        </p>
+      </motion.section>
+    </div>
   );
 }

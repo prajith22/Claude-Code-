@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -16,15 +16,18 @@ export function SimCard({
   href: string;
   label: string;
   bg: string;
+  /** Tailwind text-color class — used for label, chevron, and pattern tint. */
   title: string;
   icon: React.ReactNode;
   delay: number; // seconds
 }) {
   const [entered, setEntered] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const patternId = `sim-dots-${useId()}`;
 
   return (
     <motion.div
-      className={cn("relative min-h-[160px] rounded-card", bg)}
+      className={cn("group relative min-h-[180px] overflow-hidden rounded-card", bg)}
       initial={{ opacity: 0, y: 24 }}
       animate={
         entered
@@ -45,6 +48,8 @@ export function SimCard({
       onAnimationComplete={() => {
         if (!entered) setEntered(true);
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       whileHover={{
         scale: 1.04,
         boxShadow:
@@ -53,16 +58,46 @@ export function SimCard({
       }}
       whileTap={{ scale: 0.97, transition: { duration: 0.08 } }}
     >
+      {/* Subtle dotted texture, tinted by the card's title color via
+          currentColor — keeps each card visually unique without hard-coding
+          three different patterns. */}
+      <DotTexture
+        patternId={patternId}
+        className={cn("pointer-events-none absolute inset-0 opacity-[0.07]", title)}
+      />
+
       <Link
         href={href}
-        className="flex h-full min-h-[160px] flex-col justify-between p-4 md:p-5"
+        className="relative flex h-full min-h-[180px] flex-col justify-between p-4 md:p-5"
       >
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-navy text-white">
+        {/* Hover chevron — confirms tappability */}
+        <motion.span
+          aria-hidden
+          className={cn(
+            "absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full bg-white/60 backdrop-blur-sm",
+            title,
+          )}
+          animate={hovered ? { x: 2, opacity: 1 } : { x: 0, opacity: 0.7 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M9 6l6 6-6 6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </motion.span>
+
+        <span aria-hidden className="text-[40px] leading-none md:text-[44px]">
           {icon}
         </span>
+
         <p
           className={cn(
-            "text-[20px] font-bold leading-tight md:text-[22px]",
+            "font-heading text-[22px] font-extrabold leading-tight md:text-[24px]",
             title,
           )}
         >
@@ -70,5 +105,37 @@ export function SimCard({
         </p>
       </Link>
     </motion.div>
+  );
+}
+
+function DotTexture({
+  patternId,
+  className,
+}: {
+  patternId: string;
+  className?: string;
+}) {
+  return (
+    <svg
+      className={className}
+      width="100%"
+      height="100%"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <defs>
+        <pattern
+          id={patternId}
+          x="0"
+          y="0"
+          width="14"
+          height="14"
+          patternUnits="userSpaceOnUse"
+        >
+          <circle cx="2" cy="2" r="1.4" fill="currentColor" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#${patternId})`} />
+    </svg>
   );
 }
