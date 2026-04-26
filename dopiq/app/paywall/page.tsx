@@ -3,35 +3,44 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { computeAccessState, isTrialActive, trialDaysRemaining } from "@/lib/access";
+import { computeAccessState } from "@/lib/access";
 import { PLANS, type Plan } from "@/lib/stripe";
 import { PlanCheckoutButton } from "@/components/PaywallCTA";
+import { UpdatePaymentButton } from "@/components/UpdatePaymentButton";
 
-export default async function PaywallPage() {
+type PaywallReason = "payment_failed" | "canceled";
+
+const REASON_MESSAGES: Record<PaywallReason, string> = {
+  payment_failed:
+    "Your payment failed. Please update your payment method to continue.",
+  canceled:
+    "Your subscription was canceled. Choose a plan to keep simulating.",
+};
+
+export default async function PaywallPage({
+  searchParams,
+}: {
+  searchParams?: { reason?: string };
+}) {
   const session = await getServerSession(authOptions);
   const user = session?.user?.id
     ? await prisma.user.findUnique({ where: { id: session.user.id } })
     : null;
 
-  // Active subscribers don't need this page — bounce them home.
   if (user && computeAccessState(user) === "active") {
     redirect("/home");
   }
 
-  const trialing = user ? isTrialActive(user) : false;
-  const expired = user ? !trialing && computeAccessState(user) === "paywalled" : false;
-  const daysLeft = user ? trialDaysRemaining(user) : 0;
-
-  const headline = expired ? "Your free trial has ended" : "Start your free week";
-  const subhead = expired
-    ? "Choose a plan to keep simulating."
-    : "No charge for 7 days. Cancel anytime.";
+  const reasonParam = searchParams?.reason;
+  const reason: PaywallReason | null =
+    reasonParam === "payment_failed" || reasonParam === "canceled"
+      ? reasonParam
+      : null;
 
   const order: Plan[] = [PLANS.lite, PLANS.plus, PLANS.pro];
 
   return (
     <main className="mx-auto flex min-h-[100dvh] max-w-5xl flex-col px-6 pt-10 pb-12 safe-top">
-      {/* Hero */}
       <header className="text-center">
         <Link href="/home" className="inline-flex items-center gap-3">
           <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden>
@@ -43,36 +52,35 @@ export default async function PaywallPage() {
             dopiq
           </span>
         </Link>
-        {trialing && daysLeft > 0 && (
-          <p className="mt-4">
-            <span className="pill">{daysLeft} days left in trial</span>
-          </p>
-        )}
         <h1 className="mt-5 font-heading text-[34px] font-bold leading-tight tracking-tight text-ink md:text-[42px]">
-          {headline}
+          Choose your plan to get started
         </h1>
         <p className="mx-auto mt-3 max-w-md text-[16px] text-ink-muted">
-          {subhead}
+          No charge for 7 days. Cancel anytime.
         </p>
+
+        {reason && (
+          <div className="mx-auto mt-5 max-w-md rounded-card border border-red-200 bg-red-50 px-4 py-3 text-center text-[14px] font-medium text-red-700">
+            <p>{REASON_MESSAGES[reason]}</p>
+            {reason === "payment_failed" && user?.stripeCustomerId && (
+              <UpdatePaymentButton />
+            )}
+          </div>
+        )}
       </header>
 
-      {/* Three pricing cards */}
       <section className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
         {order.map((plan) => (
           <PlanCard key={plan.id} plan={plan} />
         ))}
       </section>
 
-      {/* Footer */}
       <footer className="mt-10 text-center">
         <p className="text-[14px] text-ink-muted">
           Already have an account?{" "}
           <Link href="/signin" className="font-semibold text-ink underline">
             Sign in
           </Link>
-        </p>
-        <p className="mx-auto mt-3 max-w-md text-[12px] text-ink-faint">
-          All plans include a 7-day free trial. No credit card required to start.
         </p>
       </footer>
     </main>
@@ -132,6 +140,9 @@ function PlanCard({ plan }: { plan: Plan }) {
           label={plan.ctaLabel}
           variant={isHighlighted ? "primary" : "navy"}
         />
+        <p className="mt-2 text-center text-[12px] text-ink-muted">
+          7-day free trial — cancel anytime
+        </p>
       </div>
     </div>
   );

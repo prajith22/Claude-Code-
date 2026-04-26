@@ -35,9 +35,14 @@ export async function POST() {
   }
 
   // Roll the billing cycle forward whenever a full period has elapsed.
+  // billingCycleStart is null until the Stripe webhook sets it on first
+  // subscription event — treat null as "needs a fresh cycle".
   let used = user.simulationsUsed;
-  let cycleStart = user.billingCycleStart;
-  if (Date.now() - new Date(cycleStart).getTime() >= CYCLE_MS) {
+  let cycleStart: Date = user.billingCycleStart ?? new Date();
+  if (
+    !user.billingCycleStart ||
+    Date.now() - cycleStart.getTime() >= CYCLE_MS
+  ) {
     used = 0;
     cycleStart = new Date();
   }
