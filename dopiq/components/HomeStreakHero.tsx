@@ -7,7 +7,7 @@ import { useSavingsStore } from "@/lib/savings-store";
 import { Flame } from "@/components/icons";
 
 type Summary = {
-  totalSaved: number;
+  todaySaved: number;
   currentStreak: number;
   longestStreak: number;
   streakStatus: "active" | "at_risk" | "broken" | "none";
@@ -16,6 +16,12 @@ type Summary = {
 function todayDateStr(): string {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function localMidnightISO(): string {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d.toISOString();
 }
 
 function formatMoney(n: number): string {
@@ -30,7 +36,11 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
   useEffect(() => {
     if (status !== "authenticated") return;
     let cancelled = false;
-    fetch(`/api/savings/me?today=${encodeURIComponent(todayDateStr())}`)
+    const params = new URLSearchParams({
+      today: todayDateStr(),
+      since: localMidnightISO(),
+    });
+    fetch(`/api/savings/me?${params.toString()}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d: Summary | null) => {
         if (!cancelled && d) setSummary(d);
@@ -41,7 +51,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
     };
   }, [status, version]);
 
-  const saved = summary?.totalSaved ?? 0;
+  const saved = summary?.todaySaved ?? 0;
   const streak = summary?.currentStreak ?? 0;
   const longest = summary?.longestStreak ?? 0;
   const atRisk = summary?.streakStatus === "at_risk";
@@ -56,13 +66,15 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
       <div className="grid gap-5 sm:grid-cols-[1fr_auto] sm:items-end">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-widest text-white/50">
-            Money saved by simulating
+            Saved today
           </p>
           <p className="money mt-2 text-[44px] leading-none text-brand md:text-[56px]">
             {formatMoney(saved)}
           </p>
           <p className="mt-2 text-[13px] text-white/70">
-            That&rsquo;s real money you didn&rsquo;t spend on real impulses.
+            {saved === 0
+              ? "Resets at midnight."
+              : "Resets at midnight. Streak keeps your work."}
           </p>
         </div>
 
