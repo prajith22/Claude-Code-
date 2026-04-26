@@ -1,10 +1,23 @@
 import { requireSubscribedUser } from "@/lib/session-guards";
 import { DailySpinWheel } from "@/components/DailySpinWheel";
 import { SimCard } from "@/components/SimCard";
+import { HomeStreakHero } from "@/components/HomeStreakHero";
+import { centsToDollars } from "@/lib/savings";
+import { streakStatus } from "@/lib/streaks";
 
 export default async function HomePage() {
   const user = await requireSubscribedUser();
   const firstName = user.name?.trim().split(/\s+/)[0] || "there";
+
+  // Server-render the initial values so the hero is correct on first paint;
+  // the client component then keeps them live.
+  const status = streakStatus(user.lastStreakDate, "");
+  const initialSummary = {
+    totalSaved: centsToDollars(user.totalSavedCents),
+    currentStreak: status.state === "broken" ? 0 : user.currentStreak,
+    longestStreak: user.longestStreak,
+    streakStatus: status.state,
+  };
 
   return (
     <div className="space-y-8 pb-4 pt-4 md:space-y-10">
@@ -12,6 +25,9 @@ export default async function HomePage() {
       <h1 className="text-[44px] font-extrabold leading-[1.05] tracking-tight text-ink md:text-[64px]">
         Hey, {firstName}.
       </h1>
+
+      {/* Money saved + streak hero */}
+      <HomeStreakHero initial={initialSummary} />
 
       {/* Three simulator cards */}
       <div className="grid grid-cols-3 gap-3 md:gap-4">

@@ -3,6 +3,7 @@ import type { Product } from "@/types";
 import { requireSubscribedUser } from "@/lib/session-guards";
 import { CartButton } from "@/components/CartButton";
 import { ShopExperience } from "@/components/ShopExperience";
+import { UrgePickerModal } from "@/components/UrgePickerModal";
 
 export default async function ShopPage() {
   await requireSubscribedUser();
@@ -28,6 +29,7 @@ export default async function ShopPage() {
       </header>
 
       <ShopExperience products={all} todayLabel={todayLabel} />
+      <UrgePickerModal section="shop" />
     </div>
   );
 }

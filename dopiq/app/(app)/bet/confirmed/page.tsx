@@ -8,12 +8,25 @@ import { cn, formatOdds, formatUSD } from "@/lib/utils";
 import type { SlipSelection } from "@/lib/bet-slip-store";
 
 type PlacedBet = {
+  ticketId?: string | null;
+  resolveAt?: string | null;
   selections: SlipSelection[];
   stake: number;
   combinedOdds: number;
   potentialReturn: number;
   placedAt: string;
 };
+
+function formatResolveTime(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleString("en-US", {
+    weekday: "short",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
 
 export default function BetConfirmedPage() {
   const [placed, setPlaced] = useState<PlacedBet | null>(null);
@@ -157,13 +170,33 @@ export default function BetConfirmedPage() {
           </motion.div>
         )}
 
-        <p className="mt-5 text-[11px] text-white/40">
+        {placed?.resolveAt && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.4 }}
+            className="mt-5 text-[12px] font-medium text-white/70"
+          >
+            ⏱️ Resolves around {formatResolveTime(placed.resolveAt)} — check
+            your tickets later to see how it would have played out.
+          </motion.p>
+        )}
+
+        <p className="mt-2 text-[11px] text-white/40">
           Simulated · No real money at risk
         </p>
 
-        <Link href="/bet" className="btn-primary mt-6 inline-flex w-full">
-          Place another bet
-        </Link>
+        <div className="mt-6 flex flex-col gap-2">
+          <Link href="/bet/tickets" className="btn-primary inline-flex w-full">
+            View my tickets
+          </Link>
+          <Link
+            href="/bet"
+            className="inline-flex w-full items-center justify-center rounded-pill border border-white/20 px-4 py-3 text-[14px] font-bold text-white/80 transition hover:bg-white/5"
+          >
+            Place another bet
+          </Link>
+        </div>
       </div>
     </div>
   );
