@@ -87,8 +87,8 @@ export function SavingsHeader() {
 
 function SavingsTicker({ amount }: { amount: number }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-pill bg-[#E8F5E9] px-3 py-1.5">
-      <Coin size={13} className="text-[#2E7D32]" />
+    <span className="inline-flex items-center gap-1.5 rounded-pill border border-[#1B5E20]/20 bg-white px-3 py-1.5">
+      <Coin size={13} className="text-[#1B5E20]" />
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
           key={amount}
@@ -96,12 +96,12 @@ function SavingsTicker({ amount }: { amount: number }) {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 8, opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className="font-mono tabular-nums text-[#2E7D32]"
+          className="font-mono tabular-nums text-[#1B5E20]"
         >
           {formatMoney(amount)}
         </motion.span>
       </AnimatePresence>
-      <span className="hidden text-[10px] font-semibold uppercase tracking-wider text-[#2E7D32]/70 sm:inline">
+      <span className="hidden text-[10px] font-semibold uppercase tracking-wider text-[#1B5E20]/60 sm:inline">
         today
       </span>
     </span>
@@ -110,19 +110,19 @@ function SavingsTicker({ amount }: { amount: number }) {
 
 function StreakChip({ streak, atRisk }: { streak: number; atRisk: boolean }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-pill bg-[#FFF3E0] px-3 py-1.5">
+    <span className="inline-flex items-center gap-1.5 rounded-pill border border-[#E8E4E0] bg-white px-3 py-1.5">
       <Flame
         size={13}
         className={
           streak === 0
-            ? "text-[#E65100]/40"
+            ? "text-[#1A1A1A]/40"
             : atRisk
-              ? "text-[#E65100]/70"
-              : "text-[#E65100]"
+              ? "text-[#1A1A1A]/70"
+              : "text-[#1A1A1A]"
         }
       />
-      <span className="font-mono tabular-nums text-[#E65100]">{streak}</span>
-      <span className="hidden text-[10px] font-semibold uppercase tracking-wider text-[#E65100]/70 sm:inline">
+      <span className="font-mono tabular-nums text-[#1A1A1A]">{streak}</span>
+      <span className="hidden text-[10px] font-semibold uppercase tracking-wider text-[#1A1A1A]/60 sm:inline">
         day{streak === 1 ? "" : "s"}
       </span>
     </span>
