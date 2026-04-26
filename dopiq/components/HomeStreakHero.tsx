@@ -66,53 +66,72 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
 
   return (
     <div className="grid gap-3 sm:grid-cols-[1.4fr_1fr] sm:gap-4">
-      {/* Saved today — warm green card */}
+      {/* Saved today — clean white card with green accents */}
       <motion.section
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="rounded-card bg-[#E8F5E9] p-6"
+        className="rounded-card border border-[#E8E4E0] bg-white p-6"
       >
-        <p className="text-[11px] font-bold uppercase tracking-widest text-[#2E7D32]/70">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
           Saved today
         </p>
-        <div className="mt-2 flex items-baseline gap-2">
-          <p className="font-heading text-[44px] font-extrabold leading-none text-[#2E7D32] md:text-[56px]">
+        <div className="mt-2 flex items-baseline gap-2.5">
+          <p className="font-heading text-[44px] font-extrabold leading-none text-[#1B5E20] md:text-[56px]">
             {formatMoney(saved)}
           </p>
-          <span aria-hidden className="text-[26px] md:text-[32px]">
-            {saved > 0 ? "🎉" : "✨"}
-          </span>
+          <ArrowUp className="text-[#1B5E20]" />
         </div>
-        <p className="mt-2 text-[13px] text-[#2E7D32]/80">
+        <p className="mt-2 text-[13px] text-[#1A1A1A]/70">
           {saved === 0
             ? "First simulation of the day starts the count."
             : "That’s real money you didn’t spend on real impulses."}
         </p>
       </motion.section>
 
-      {/* Streak — warm amber card */}
+      {/* Streak — clean white card with charcoal accents */}
       <motion.section
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.08, ease: "easeOut" }}
-        className="rounded-card bg-[#FFF3E0] p-6"
+        className="rounded-card border border-[#E8E4E0] bg-white p-6"
       >
-        <p className="text-[11px] font-bold uppercase tracking-widest text-[#E65100]/70">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
           Streak
         </p>
         <div className="mt-2 flex items-center gap-3">
           <span aria-hidden className="text-[40px] leading-none md:text-[48px]">
             🔥
           </span>
-          <span className="font-mono text-[44px] font-extrabold leading-none text-[#E65100] tabular-nums md:text-[56px]">
+          <span className="font-mono text-[44px] font-extrabold leading-none text-[#1A1A1A] tabular-nums md:text-[56px]">
             {streak}
           </span>
         </div>
-        <p className="mt-2 text-[13px] font-semibold text-[#E65100]/80">
+        <p className="mt-2 text-[13px] font-semibold text-[#1A1A1A]/70">
           {streakMessage(streak, atRisk, longest)}
         </p>
       </motion.section>
     </div>
+  );
+}
+
+function ArrowUp({ className }: { className?: string }) {
+  // Inline SVG to avoid pulling in another icon dep — sized to sit on
+  // the baseline next to the dollar amount.
+  return (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      className={className}
+    >
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    </svg>
   );
 }
