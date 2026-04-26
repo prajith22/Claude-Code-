@@ -10,6 +10,28 @@ export function centsToDollars(cents: number): number {
 }
 
 /**
+ * Sum of every simulated checkout / bet stake the user has logged
+ * since `since`. Backed by the index on Urge(userId, createdAt) so
+ * the scan stays cheap even at scale. Used to drive the "saved
+ * today" counter — caller passes the user's local-midnight as
+ * `since` so the daily reset matches their wall clock.
+ */
+export async function sumUrgesSince(
+  userId: string,
+  since: Date,
+): Promise<number> {
+  const result = await prisma.urge.aggregate({
+    where: {
+      userId,
+      createdAt: { gte: since },
+      amountCents: { not: null },
+    },
+    _sum: { amountCents: true },
+  });
+  return result._sum.amountCents ?? 0;
+}
+
+/**
  * Atomically credits a user's saved-money counter and records the urge
  * that produced the simulation. Also touches their streak. Called at
  * checkout time for shop/food and at bet placement.
@@ -40,3 +62,4 @@ export async function recordSimulatedSpend(args: {
 
   await touchStreak(args.userId, args.todayDateStr);
 }
+
