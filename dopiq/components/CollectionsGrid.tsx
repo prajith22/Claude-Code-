@@ -30,41 +30,42 @@ export function buildCollections(products: Product[]): Collection[] {
     .slice(0, 3);
   const justDropped = products.slice(-3);
 
+  // All four cards now ride the disciplined palette: cream surface,
+  // ink text, navy on hover/active. Differentiation comes from the
+  // copy itself, not from a pastel rainbow that signals nothing.
+  const baseStyle = {
+    bg: "bg-white",
+    title_color: "text-ink",
+    sub_color: "text-ink-muted",
+  };
+
   return [
     {
       id: "summer-finds",
       title: "Summer Finds",
-      subtitle: "Hot weather, hot drops",
-      bg: "bg-[#FFE4DE]",
-      title_color: "text-[#9A1F1F]",
-      sub_color: "text-[#9A1F1F]/70",
+      subtitle: "Hot weather. Same simulator.",
+      ...baseStyle,
       productIds: summer.map((p) => p.id),
     },
     {
       id: "under-25",
       title: "Under $25",
-      subtitle: "Treat yourself for less",
-      bg: "bg-[#D8F2DC]",
-      title_color: "text-[#13693B]",
-      sub_color: "text-[#13693B]/70",
+      subtitle: "Cheap to almost-buy.",
+      ...baseStyle,
       productIds: under25.map((p) => p.id),
     },
     {
       id: "trending-now",
       title: "Trending Now",
-      subtitle: "What everyone's buying",
-      bg: "bg-[#E8E0FA]",
-      title_color: "text-[#4C1D95]",
-      sub_color: "text-[#4C1D95]/70",
+      subtitle: "What everyone almost bought.",
+      ...baseStyle,
       productIds: trending.map((p) => p.id),
     },
     {
       id: "just-dropped",
       title: "Just Dropped",
-      subtitle: "Fresh in this week",
-      bg: "bg-[#FFEBC2]",
-      title_color: "text-[#7A4A07]",
-      sub_color: "text-[#7A4A07]/70",
+      subtitle: "Fresh this week.",
+      ...baseStyle,
       productIds: justDropped.map((p) => p.id),
     },
   ];
@@ -110,8 +111,10 @@ export function CollectionsGrid({
               onClick={() => onSelect(isActive ? null : c.id)}
               whileHover={cardHover}
               transition={cardHoverTransition}
-              className={`group relative flex min-h-[140px] flex-col items-start justify-between overflow-hidden rounded-card p-4 text-left ${c.bg} ${
-                isActive ? "ring-2 ring-navy ring-offset-2 ring-offset-[#F5EFE4]" : ""
+              className={`group relative flex min-h-[140px] flex-col items-start justify-between overflow-hidden rounded-card border border-surface-border p-4 text-left transition-colors ${c.bg} ${
+                isActive
+                  ? "border-ink shadow-card"
+                  : "hover:bg-surface-alt"
               }`}
             >
               <div>

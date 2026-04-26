@@ -9,8 +9,7 @@ export function FoodPromoBanner() {
   return (
     <div className="flex items-center gap-3 rounded-card bg-brand px-4 py-3 shadow-sm">
       <p className="flex-1 text-[14px] font-semibold leading-snug text-white">
-        <span aria-hidden className="mr-1">🎉</span>
-        Free delivery on all orders today — simulated orders only
+        Free delivery on all orders today — simulated orders only.
       </p>
       <button
         type="button"

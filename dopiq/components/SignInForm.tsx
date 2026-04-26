@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Lock, Card, Bolt } from "@/components/icons";
 
 const fadeRight = {
   hidden: { opacity: 0, x: 24 },
@@ -61,10 +62,9 @@ export function SignInForm() {
       <motion.div
         variants={fadeUp}
         transition={{ duration: 0.4, delay: 0.22, ease: "easeOut" }}
-        className="mt-7 flex items-center justify-center gap-2 rounded-pill bg-brand px-4 py-2.5 text-[13px] font-bold text-white shadow-[0_2px_12px_rgba(0,200,83,0.3)]"
+        className="mt-7 rounded-pill bg-brand px-4 py-2.5 text-center text-[13px] font-bold text-white shadow-[0_2px_12px_rgba(0,200,83,0.3)]"
       >
-        <span aria-hidden>✨</span>
-        <span>7 days free — no charge until your trial ends</span>
+        7 days free — no charge until your trial ends
       </motion.div>
 
       {/* Google button */}
@@ -95,13 +95,22 @@ export function SignInForm() {
       <motion.div
         variants={fadeUp}
         transition={{ duration: 0.4, delay: 0.4, ease: "easeOut" }}
-        className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[12px] text-ink-muted"
+        className="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[12px] text-ink-muted"
       >
-        <span>🔒 No spam ever</span>
+        <span className="inline-flex items-center gap-1.5">
+          <Lock size={12} />
+          No spam ever
+        </span>
         <span aria-hidden className="text-ink-faint">·</span>
-        <span>💳 Cancel anytime</span>
+        <span className="inline-flex items-center gap-1.5">
+          <Card size={12} />
+          Cancel anytime
+        </span>
         <span aria-hidden className="text-ink-faint">·</span>
-        <span>⚡ Free for 7 days</span>
+        <span className="inline-flex items-center gap-1.5">
+          <Bolt size={12} />
+          Free for 7 days
+        </span>
       </motion.div>
 
       <motion.p
