@@ -1,12 +1,16 @@
 import { Suspense } from "react";
 import { SignInForm } from "@/components/SignInForm";
+import { SignInMarketing } from "@/components/SignInMarketing";
 
 export default function SignInPage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col px-6 pt-16 pb-10 safe-top">
-      <Suspense fallback={null}>
-        <SignInForm />
-      </Suspense>
+    <main className="min-h-[100dvh] bg-white md:grid md:grid-cols-2">
+      <SignInMarketing />
+      <section className="flex min-h-[100dvh] items-center justify-center px-6 py-10 md:py-12">
+        <Suspense fallback={null}>
+          <SignInForm />
+        </Suspense>
+      </section>
     </main>
   );
 }
