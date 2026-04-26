@@ -35,24 +35,24 @@ export default async function HomePage() {
         <SimCard
           href="/shop"
           label="Shop"
-          bg="bg-white border border-surface-border"
-          title="text-ink"
+          bg="bg-[#E8E3FF]"
+          title="text-[#4C1D95]"
           icon={<BagIcon />}
           delay={0}
         />
         <SimCard
           href="/food"
           label="Food"
-          bg="bg-white border border-surface-border"
-          title="text-ink"
+          bg="bg-[#FFF3CD]"
+          title="text-[#78350F]"
           icon={<ForkIcon />}
           delay={0.15}
         />
         <SimCard
           href="/bet"
           label="Bet"
-          bg="bg-white border border-surface-border"
-          title="text-ink"
+          bg="bg-[#DBEAFE]"
+          title="text-[#1E3A8A]"
           icon={<TicketIcon />}
           delay={0.3}
         />
