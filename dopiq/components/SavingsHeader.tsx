@@ -8,7 +8,7 @@ import { useSavingsStore } from "@/lib/savings-store";
 import { Coin, Flame } from "@/components/icons";
 
 type Summary = {
-  totalSaved: number;
+  todaySaved: number;
   currentStreak: number;
   longestStreak: number;
   streakStatus: "active" | "at_risk" | "broken" | "none";
@@ -20,6 +20,15 @@ function todayDateStr(): string {
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
+}
+
+function localMidnightISO(): string {
+  // The user's local-day cutoff, expressed as a UTC instant. Server
+  // sums Urge rows with createdAt >= this, giving a true daily reset
+  // that matches the user's wall clock.
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d.toISOString();
 }
 
 function formatMoney(n: number): string {
@@ -43,8 +52,11 @@ export function SavingsHeader() {
   useEffect(() => {
     if (status !== "authenticated") return;
     let cancelled = false;
-    const url = `/api/savings/me?today=${encodeURIComponent(todayDateStr())}`;
-    fetch(url)
+    const params = new URLSearchParams({
+      today: todayDateStr(),
+      since: localMidnightISO(),
+    });
+    fetch(`/api/savings/me?${params.toString()}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d: Summary | null) => {
         if (!cancelled && d) setSummary(d);
@@ -57,14 +69,14 @@ export function SavingsHeader() {
 
   if (status !== "authenticated") return null;
 
-  const saved = summary?.totalSaved ?? 0;
+  const saved = summary?.todaySaved ?? 0;
   const streak = summary?.currentStreak ?? 0;
   const atRisk = summary?.streakStatus === "at_risk";
 
   return (
     <Link
       href="/home"
-      aria-label={`You've saved ${formatMoney(saved)} · ${streak} day streak`}
+      aria-label={`Saved today: ${formatMoney(saved)}. ${streak} day streak.`}
       className="inline-flex items-center gap-2 rounded-pill border border-surface-border bg-white px-3 py-1.5 text-[12px] font-bold shadow-sm transition hover:bg-surface-alt"
     >
       <SavingsTicker amount={saved} />
@@ -93,7 +105,7 @@ function SavingsTicker({ amount }: { amount: number }) {
         </motion.span>
       </AnimatePresence>
       <span className="hidden text-[10px] font-semibold uppercase tracking-wider text-ink-muted sm:inline">
-        saved
+        today
       </span>
     </span>
   );
