@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useSavingsStore } from "@/lib/savings-store";
+import { Coin, Flame } from "@/components/icons";
 
 type Summary = {
   totalSaved: number;
@@ -77,8 +78,8 @@ export function SavingsHeader() {
 
 function SavingsTicker({ amount }: { amount: number }) {
   return (
-    <span className="flex items-baseline gap-1">
-      <span className="text-[13px] leading-none">💰</span>
+    <span className="flex items-center gap-1.5">
+      <Coin size={13} className="text-brand" />
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
           key={amount}
@@ -101,11 +102,18 @@ function SavingsTicker({ amount }: { amount: number }) {
 function StreakChip({ streak, atRisk }: { streak: number; atRisk: boolean }) {
   return (
     <span
-      className={`flex items-baseline gap-1 ${atRisk ? "text-orange-600" : "text-ink"}`}
+      className={`flex items-center gap-1.5 ${atRisk ? "text-ink" : "text-ink"}`}
     >
-      <span aria-hidden className="text-[13px] leading-none">
-        {streak > 0 ? "🔥" : "⚪"}
-      </span>
+      <Flame
+        size={13}
+        className={
+          streak > 0
+            ? atRisk
+              ? "text-ink-muted"
+              : "text-ink"
+            : "text-ink-faint"
+        }
+      />
       <span className="font-mono tabular-nums">{streak}</span>
       <span className="hidden text-[10px] font-semibold uppercase tracking-wider text-ink-muted sm:inline">
         day{streak === 1 ? "" : "s"}

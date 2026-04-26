@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import type { SlipSelection } from "@/lib/bet-slip-store";
 import { cn, formatOdds, formatUSD } from "@/lib/utils";
+import { Ticket as TicketIcon } from "@/components/icons";
 
 type LegOutcome = { key: string; result: "won" | "lost" };
 type Resolution = { status: "won" | "lost" | "push"; legs: LegOutcome[] };
@@ -141,12 +142,10 @@ export default function BetTicketsPage() {
 
       {data && data.tickets.length === 0 && (
         <div className="card flex flex-col items-center gap-3 px-6 py-14 text-center">
-          <span className="text-5xl" aria-hidden>
-            🎟️
-          </span>
-          <p className="text-[17px] font-bold">No tickets yet.</p>
+          <TicketIcon size={36} className="text-ink-faint" />
+          <p className="text-[17px] font-bold">Nothing to settle.</p>
           <p className="text-sm text-ink-muted">
-            Place a simulated bet to see how it would play out.
+            Place a simulated bet to see how it would have played out.
           </p>
           <Link href="/bet" className="btn-primary mt-2">
             Browse games

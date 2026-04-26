@@ -12,6 +12,7 @@ import {
 } from "@/lib/featured-parlays";
 import { getGameById } from "@/lib/odds";
 import { cn, combineAmericanOdds, formatOdds } from "@/lib/utils";
+import { Flame } from "@/components/icons";
 
 type ResolvedParlay = {
   parlay: FeaturedParlay;
@@ -51,10 +52,11 @@ export function FeaturedParlays() {
     <section>
       <div className="mb-3 flex items-center gap-2">
         <h2 className="font-heading text-[18px] font-extrabold tracking-tight text-ink">
-          Featured Parlays
+          Featured parlays
         </h2>
-        <span className="rounded-pill bg-brand-light px-2.5 py-0.5 text-[11px] font-bold text-brand">
-          🔥 Hot today
+        <span className="flex items-center gap-1 rounded-pill bg-ink px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-widest text-white">
+          <Flame size={10} />
+          Hot today
         </span>
       </div>
 
@@ -121,8 +123,9 @@ function ParlayCard({
             odds
           </span>
         </div>
-        <span className="text-[10px] text-white/60">
-          🔥 {parlay.peopleBetting.toLocaleString("en-US")}
+        <span className="flex items-center gap-1 text-[10px] text-white/60">
+          <Flame size={10} />
+          {parlay.peopleBetting.toLocaleString("en-US")}
         </span>
       </div>
 

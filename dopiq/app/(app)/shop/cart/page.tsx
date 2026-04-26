@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCartStore, cartSubtotal } from "@/lib/cart-store";
 import { formatUSD } from "@/lib/utils";
+import { Bag } from "@/components/icons";
 
 export default function ShopCartPage() {
   const lines = useCartStore((s) => s.shop);
@@ -17,13 +18,13 @@ export default function ShopCartPage() {
 
       {lines.length === 0 ? (
         <div className="card flex flex-col items-center gap-3 px-6 py-14 text-center">
-          <span className="text-5xl">🛍️</span>
-          <p className="text-[17px] font-bold">Your cart is empty.</p>
+          <Bag size={36} className="text-ink-faint" />
+          <p className="text-[17px] font-bold">Nothing in your cart. Cool.</p>
           <p className="text-sm text-ink-muted">
-            Go window-shop with zero consequences.
+            That&rsquo;s the whole idea.
           </p>
           <Link href="/shop" className="btn-primary mt-2">
-            Browse shop
+            Keep window-shopping
           </Link>
         </div>
       ) : (
