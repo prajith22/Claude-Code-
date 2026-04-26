@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { SavingsHeader } from "@/components/SavingsHeader";
 
 const TABS = [
   { href: "/home", label: "Home" },
@@ -88,6 +89,9 @@ export function TopNav() {
             );
           })}
         </nav>
+
+        {/* Savings + streak chip — visible on every gated page */}
+        <SavingsHeader />
 
         {/* User menu */}
         <div className="relative" ref={ref}>
