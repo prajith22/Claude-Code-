@@ -27,8 +27,59 @@ model User {
   foodPrefs            Json?
   createdAt            DateTime @default(now())
 
+  // Money-saved counter: cumulative dollar value of every simulated
+  // checkout / bet stake. Persists across plan changes.
+  totalSavedCents      Int      @default(0)
+
+  // Streak tracking. lastStreakDate is "YYYY-MM-DD" in the user's local
+  // timezone (the client sends it). UTC dates would tilt the streak
+  // window relative to where the user actually lives.
+  currentStreak        Int      @default(0)
+  longestStreak        Int      @default(0)
+  lastStreakDate       String?
+
   accounts Account[]
   sessions Session[]
+  urges    Urge[]
+  tickets  BetTicket[]
+}
+
+// Logged "why are you here" trigger captured before each simulation.
+// Powers the weekly digest and personalization later.
+model Urge {
+  id          String   @id @default(cuid())
+  userId      String
+  section     String   // "shop" | "food" | "bet"
+  reason      String   // e.g. "bored", "stressed", "fomo"
+  amountCents Int?     // money saved if this urge ended in a simulated checkout
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+// Persistent bet ticket replacing the old sessionStorage-only flow.
+// Resolution happens lazily when the user visits /bet/tickets and any
+// ticket whose resolveAt is past gets graded; per-leg outcomes are
+// generated once and stored in resolutionJson so the result is stable.
+model BetTicket {
+  id              String    @id @default(cuid())
+  userId          String
+  selectionsJson  Json
+  stakeCents      Int
+  combinedOdds    Int
+  potentialCents  Int
+  status          String    @default("pending") // pending | won | lost | push
+  placedAt        DateTime  @default(now())
+  resolveAt       DateTime
+  resolvedAt      DateTime?
+  resolutionJson  Json?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, placedAt])
+  @@index([status, resolveAt])
 }
 
 model Account {
