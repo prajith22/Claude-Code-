@@ -141,6 +141,13 @@ export function TopNav() {
                 <div className="border-b border-surface-border px-4 py-2.5">
                   <UsageLine />
                 </div>
+                <Link
+                  href="/settings"
+                  onClick={() => setOpen(false)}
+                  className="block w-full px-4 py-2.5 text-left text-[13px] font-medium text-ink transition hover:bg-surface-alt"
+                >
+                  Settings
+                </Link>
                 <button
                   type="button"
                   onClick={() => signOut({ callbackUrl: "/signin" })}
@@ -160,22 +167,14 @@ export function TopNav() {
 function UsageLine() {
   const { data: session } = useSession();
   const u = session?.user;
-  const plan = u?.plan ?? "trial";
   const used = u?.simulationsUsed ?? 0;
   const limit = u?.simulationsLimit ?? 0;
-  const trialEnd = u?.trialEndDate ? new Date(u.trialEndDate) : null;
+  const status = u?.subscriptionStatus ?? null;
 
-  if (plan === "trial") {
-    const daysLeft = trialEnd
-      ? Math.max(0, Math.ceil((trialEnd.getTime() - Date.now()) / 86_400_000))
-      : 0;
+  if (status === "trialing") {
     return (
-      <p className="text-[11px] font-semibold text-ink">
-        Free trial ·{" "}
-        <span className="font-mono tabular-nums text-brand">
-          {daysLeft}
-        </span>{" "}
-        days remaining
+      <p className="text-[11px] font-semibold text-brand">
+        Free trial · full access
       </p>
     );
   }

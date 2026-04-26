@@ -57,15 +57,15 @@ export type Restaurant = {
 };
 
 export type Sport =
-  | "NFL"
-  | "NBA"
-  | "MLB"
-  | "NHL"
-  | "NCAAF"
-  | "NCAAB"
-  | "MLS"
+  | "Football"
+  | "Basketball"
+  | "Baseball"
+  | "Hockey"
+  | "College Football"
+  | "College Basketball"
+  | "Soccer"
   | "Boxing"
-  | "UFC"
+  | "MMA"
   | "Golf";
 
 export type GameOdds = {

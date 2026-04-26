@@ -33,15 +33,15 @@ type RawGame = {
 const ALL_RAW: RawGame[] = gamesData as RawGame[];
 
 const SPORT_TO_KEY: Record<Sport, keyof AllOdds> = {
-  NFL: "nfl",
-  NBA: "nba",
-  MLB: "mlb",
-  NHL: "nhl",
-  NCAAF: "ncaaf",
-  NCAAB: "ncaab",
-  MLS: "mls",
+  Football: "nfl",
+  Basketball: "nba",
+  Baseball: "mlb",
+  Hockey: "nhl",
+  "College Football": "ncaaf",
+  "College Basketball": "ncaab",
+  Soccer: "mls",
   Boxing: "boxing",
-  UFC: "ufc",
+  MMA: "ufc",
   Golf: "golf",
 };
 
@@ -135,15 +135,15 @@ export async function getOddsForSport(
 
 export async function getAllOdds(_forceRefresh = false): Promise<AllOdds> {
   return {
-    nfl: filterBySport("NFL"),
-    nba: filterBySport("NBA"),
-    mlb: filterBySport("MLB"),
-    nhl: filterBySport("NHL"),
-    ncaaf: filterBySport("NCAAF"),
-    ncaab: filterBySport("NCAAB"),
-    mls: filterBySport("MLS"),
+    nfl: filterBySport("Football"),
+    nba: filterBySport("Basketball"),
+    mlb: filterBySport("Baseball"),
+    nhl: filterBySport("Hockey"),
+    ncaaf: filterBySport("College Football"),
+    ncaab: filterBySport("College Basketball"),
+    mls: filterBySport("Soccer"),
     boxing: filterBySport("Boxing"),
-    ufc: filterBySport("UFC"),
+    ufc: filterBySport("MMA"),
     golf: filterBySport("Golf"),
   };
 }
@@ -152,15 +152,15 @@ export async function getAllSportResults(
   _forceRefresh = false,
 ): Promise<AllSportResults> {
   return {
-    nfl: makeResult("NFL"),
-    nba: makeResult("NBA"),
-    mlb: makeResult("MLB"),
-    nhl: makeResult("NHL"),
-    ncaaf: makeResult("NCAAF"),
-    ncaab: makeResult("NCAAB"),
-    mls: makeResult("MLS"),
+    nfl: makeResult("Football"),
+    nba: makeResult("Basketball"),
+    mlb: makeResult("Baseball"),
+    nhl: makeResult("Hockey"),
+    ncaaf: makeResult("College Football"),
+    ncaab: makeResult("College Basketball"),
+    mls: makeResult("Soccer"),
     boxing: makeResult("Boxing"),
-    ufc: makeResult("UFC"),
+    ufc: makeResult("MMA"),
     golf: makeResult("Golf"),
   };
 }

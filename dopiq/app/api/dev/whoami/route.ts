@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 //   - which auth cookie names the browser sent
 //   - whether NEXTAUTH_URL matches the host
 //   - whether getServerSession returns a user
-//   - whether the DB has a matching row + which trial fields it carries
+//   - whether the DB has a matching row + the user's subscription fields
 // Returns 404 in production.
 export async function GET(req: Request) {
   if (process.env.NODE_ENV !== "development") {

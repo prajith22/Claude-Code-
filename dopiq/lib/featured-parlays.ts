@@ -20,7 +20,7 @@ export const FEATURED_PARLAYS: FeaturedParlay[] = [
   {
     id: "tuesday-night-fever",
     name: "Tuesday Night Fever",
-    subtitle: "NBA · Tonight's Slate",
+    subtitle: "Basketball · Tonight's Slate",
     watermark: "basketball",
     peopleBetting: 8432,
     legs: [
@@ -32,7 +32,7 @@ export const FEATURED_PARLAYS: FeaturedParlay[] = [
   {
     id: "the-sweep",
     name: "The Sweep",
-    subtitle: "NFL · Prime Time Picks",
+    subtitle: "Football · Prime Time Picks",
     watermark: "football",
     peopleBetting: 6211,
     legs: [
@@ -57,7 +57,7 @@ export const FEATURED_PARLAYS: FeaturedParlay[] = [
   {
     id: "underdog-rising",
     name: "Underdog Rising",
-    subtitle: "NBA · Long Shot",
+    subtitle: "Basketball · Long Shot",
     watermark: "basketball",
     peopleBetting: 3712,
     legs: [
