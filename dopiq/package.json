@@ -15,6 +15,7 @@
     "@auth/prisma-adapter": "^1.6.0",
     "@prisma/client": "^5.22.0",
     "@stripe/stripe-js": "^4.10.0",
+    "bcryptjs": "^2.4.3",
     "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.0",
@@ -27,6 +28,7 @@
     "zustand": "^5.0.1"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20.17.6",
     "@types/react": "^18.3.12",
