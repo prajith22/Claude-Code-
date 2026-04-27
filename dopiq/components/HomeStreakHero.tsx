@@ -1,7 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import {
+  animate,
+  motion,
+  useAnimationControls,
+  useMotionValue,
+} from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useSavingsStore } from "@/lib/savings-store";
 
@@ -23,8 +28,16 @@ function localMidnightISO(): string {
   return d.toISOString();
 }
 
-function formatMoney(n: number): string {
-  return `$${Math.round(n).toLocaleString("en-US")}`;
+function formatAnimatedMoney(v: number): string {
+  // Two decimals throughout — including during the count-up while v is
+  // negative (slot-machine effect). Sign sits before the dollar sign:
+  // "-$78.00" reads more naturally than "$-78.00".
+  const sign = v < 0 ? "-" : "";
+  const abs = Math.abs(v).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return `${sign}$${abs}`;
 }
 
 function streakMessage(streak: number, atRisk: boolean, longest: number): string {
@@ -77,9 +90,10 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
           Saved today
         </p>
         <div className="mt-2 flex items-baseline gap-2.5">
-          <p className="font-heading text-[44px] font-extrabold leading-none text-[#1B5E20] md:text-[56px]">
-            {formatMoney(saved)}
-          </p>
+          <AnimatedSavedAmount
+            value={saved}
+            className="font-heading text-[44px] font-extrabold leading-none text-[#1B5E20] md:text-[56px]"
+          />
           <ArrowUp className="text-[#1B5E20]" />
         </div>
         <p className="mt-2 text-[13px] text-[#1A1A1A]/70">
@@ -133,5 +147,87 @@ function ArrowUp({ className }: { className?: string }) {
     >
       <path d="M12 19V5M5 12l7-7 7 7" />
     </svg>
+  );
+}
+
+const COUNT_DURATION_S = 1.2;
+const COUNT_OFFSET = 100;
+
+/**
+ * Slot-machine count-up to the current saved-today value. Starts 100
+ * dollars below the target (so $22 lifts off from -$78), eases out
+ * cubically, then pops the number with a tiny scale pulse on landing.
+ *
+ * Implementation notes:
+ * - Framer's `animate(motionValue, target, ...)` drives the number; we
+ *   subscribe to its change events and write directly to a ref'd span
+ *   so React doesn't re-render once per frame (~70 renders avoided per
+ *   animation).
+ * - Re-runs whenever `value` changes (including the initial 0 → real
+ *   transition once /api/savings/me lands).
+ * - `value === 0` short-circuits to a static "$0.00" — no animation,
+ *   no pulse.
+ */
+function AnimatedSavedAmount({
+  value,
+  className,
+}: {
+  value: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const motionValue = useMotionValue(0);
+  const controls = useAnimationControls();
+
+  // Subscribe once: every motionValue change writes the formatted text
+  // straight to the DOM. Cleanup unsubscribes on unmount.
+  useEffect(() => {
+    return motionValue.on("change", (v) => {
+      if (ref.current) ref.current.textContent = formatAnimatedMoney(v);
+    });
+  }, [motionValue]);
+
+  useEffect(() => {
+    if (value === 0) {
+      motionValue.stop();
+      motionValue.set(0);
+      if (ref.current) ref.current.textContent = "$0.00";
+      return;
+    }
+
+    const start = value - COUNT_OFFSET;
+    motionValue.set(start);
+    // Write the start frame synchronously so the user doesn't see a
+    // flicker of the previous value while RAF spins up.
+    if (ref.current) ref.current.textContent = formatAnimatedMoney(start);
+
+    const animation = animate(motionValue, value, {
+      duration: COUNT_DURATION_S,
+      // Cubic ease-out — fast start, smooth deceleration into the
+      // final number. Same shape as a slot-wheel slowing down.
+      ease: [0, 0, 0.2, 1],
+      onComplete: () => {
+        // Snap the displayed value to exactly the target so any
+        // subpixel rounding from the easing curve disappears.
+        if (ref.current) ref.current.textContent = formatAnimatedMoney(value);
+        controls.start({
+          scale: [1, 1.05, 1],
+          transition: { type: "spring", stiffness: 300, damping: 15 },
+        });
+      },
+    });
+
+    return () => animation.stop();
+  }, [value, motionValue, controls]);
+
+  return (
+    <motion.span
+      ref={ref}
+      animate={controls}
+      className={className}
+      style={{ display: "inline-block", transformOrigin: "left center" }}
+    >
+      $0.00
+    </motion.span>
   );
 }
