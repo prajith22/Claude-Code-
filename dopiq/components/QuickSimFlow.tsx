@@ -651,31 +651,36 @@ function SummaryView({
         {location.name}
       </p>
 
-      {/* Items — receipt block. Quantity bubble, name, price, hairline
-          divider between rows, single white surface around the lot.
-          Index-suffixed key intentionally: "Browse again" reshuffles
-          from the same 10-item pool, so the same item can land in
-          selected twice across rounds. Keying by id alone would let
-          React dedupe and the row would silently disappear. */}
-      <section className="mt-4 overflow-hidden rounded-card border border-[#E8E4E0] bg-white shadow-card">
-        <div className="divide-y divide-[#F0EAE0]">
-          {selected.map((item, index) => (
-            <div
-              key={`${item.id}-${index}`}
-              className="flex items-center gap-3 px-4 py-3"
-            >
-              <span className="flex h-7 w-12 flex-none items-center justify-center rounded-full bg-surface-alt font-mono text-[12px] font-semibold text-ink-muted">
-                x1
-              </span>
-              <p className="flex-1 text-[15px] font-bold text-ink">
-                {item.name}
-              </p>
-              <p className="font-mono text-[15px] font-bold text-ink">
-                {formatUSD(item.priceCents / 100)}
-              </p>
-            </div>
-          ))}
-        </div>
+      {/* Items — receipt block. Stripped of any CSS that could hide
+          subsequent rows (overflow-hidden + divide-y with arbitrary
+          color). Each row is a self-contained block with explicit
+          inline border-bottom; the last row gets none. data-attr
+          surfaces the array length in DevTools so we can sanity
+          check selected against what's painted. */}
+      <section
+        data-item-count={selected.length}
+        className="mt-4 rounded-card border border-[#E8E4E0] bg-white shadow-card"
+      >
+        {selected.map((item, index) => (
+          <div
+            key={`${item.id}-${index}`}
+            className="flex items-center gap-3 px-4 py-3"
+            style={{
+              borderBottom:
+                index < selected.length - 1 ? "1px solid #F0EAE0" : "none",
+            }}
+          >
+            <span className="flex h-7 w-12 flex-none items-center justify-center rounded-full bg-surface-alt font-mono text-[12px] font-semibold text-ink-muted">
+              x1
+            </span>
+            <p className="flex-1 text-[15px] font-bold text-ink">
+              {item.name}
+            </p>
+            <p className="font-mono text-[15px] font-bold text-ink">
+              {formatUSD(item.priceCents / 100)}
+            </p>
+          </div>
+        ))}
       </section>
 
       {/* Payment method — the most "this feels real" element on the
