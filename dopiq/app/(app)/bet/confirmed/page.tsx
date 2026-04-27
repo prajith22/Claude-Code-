@@ -142,7 +142,7 @@ export default function BetConfirmedPage() {
                     <p className="truncate text-[13px] font-bold text-white">
                       {s.label}
                     </p>
-                    <p className="mt-0.5 text-[11px] text-white/60">
+                    <p className="mt-0.5 truncate text-[11px] text-white/60">
                       {s.sport} · {s.matchup}
                     </p>
                   </div>

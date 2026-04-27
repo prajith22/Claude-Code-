@@ -220,7 +220,7 @@ function TicketCard({ ticket }: { ticket: Ticket }) {
                   <p className="truncate text-[13px] font-bold text-ink">
                     {s.label}
                   </p>
-                  <p className="mt-0.5 text-[11px] text-ink-muted">
+                  <p className="mt-0.5 truncate text-[11px] text-ink-muted">
                     {s.sport} · {s.matchup}
                   </p>
                 </div>

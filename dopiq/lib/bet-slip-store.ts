@@ -1,20 +1,25 @@
 "use client";
 
 import { create } from "zustand";
-import type { Game, Sport } from "@/types";
+import type { Game } from "@/types";
 import { signed } from "@/lib/utils";
+import type { PredictionMarket } from "@/data/prediction-markets";
 
-export type BetType = "moneyline" | "spread" | "total";
-export type BetSide = "home" | "away" | "over" | "under";
+export type BetType = "moneyline" | "spread" | "total" | "prediction";
+export type BetSide = "home" | "away" | "over" | "under" | "yes" | "no";
 
 export type SlipSelection = {
   key: string; // `${gameId}:${type}:${side}`
   gameId: string;
-  sport: Sport;
-  matchup: string; // e.g. "LAS @ NYT"
+  // Free-form display label for the kind of bet — e.g. a sport name
+  // for game bets ("Basketball") or a prediction-market category for
+  // prediction bets ("Pop Culture"). Not constrained to the Sport
+  // union because predictions don't fit there.
+  sport: string;
+  matchup: string; // e.g. "LAS @ NYT" or the prediction question
   type: BetType;
   side: BetSide;
-  label: string; // e.g. "New York Titans -3.5" | "Over 215.5" | "Boston Ravens ML"
+  label: string; // e.g. "New York Titans -3.5" | "Over 215.5" | "Yes"
   odds: number;
 };
 
@@ -56,6 +61,27 @@ export function buildSelection(
   }
 
   return { gameId: game.id, sport: game.sport, matchup, type, side, label, odds };
+}
+
+/**
+ * Convert a (prediction market, side) into the slip shape. The
+ * category becomes the `sport` field (it's just a display label),
+ * the question becomes the matchup, and the side ("yes"/"no")
+ * carries its own odds.
+ */
+export function buildPredictionSelection(
+  market: PredictionMarket,
+  side: "yes" | "no",
+): Omit<SlipSelection, "key"> {
+  return {
+    gameId: market.id,
+    sport: market.category,
+    matchup: market.question,
+    type: "prediction",
+    side,
+    label: side === "yes" ? "Yes" : "No",
+    odds: side === "yes" ? market.yesOdds : market.noOdds,
+  };
 }
 
 type BetSlipState = {
