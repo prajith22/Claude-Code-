@@ -3,6 +3,7 @@ import { requireSubscribedUser } from "@/lib/session-guards";
 import { DailySpinWheel } from "@/components/DailySpinWheel";
 import { SimCard } from "@/components/SimCard";
 import { HomeStreakHero } from "@/components/HomeStreakHero";
+import { PlanUsageCard } from "@/components/PlanUsageCard";
 import { streakStatus } from "@/lib/streaks";
 
 export default async function HomePage() {
@@ -43,6 +44,19 @@ export default async function HomePage() {
 
         {/* Money saved + streak hero */}
         <HomeStreakHero initial={initialSummary} />
+
+        {/* Plan usage — server-renders the initial values straight off
+            the User row so the card paints with the right number on
+            first frame, then the client component keeps it live via
+            the same savings-store version bump that drives the other
+            stats. */}
+        <PlanUsageCard
+          initial={{
+            plan: user.plan ?? null,
+            simulationsUsed: user.simulationsUsed,
+            simulationsLimit: user.simulationsLimit,
+          }}
+        />
 
         {/* Quick Sim — sibling to the Shop / Food / Bet pastel cards.
             Coral-tinted so it's distinct from the other three but
