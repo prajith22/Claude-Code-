@@ -17,9 +17,19 @@ import {
   type QuickSimLocation,
 } from "@/data/quick-sim-items";
 import { QuickSimItemIcon } from "@/components/QuickSimItemIcons";
+import { Pin, Card as CardIcon } from "@/components/icons";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
 import { useSavingsStore } from "@/lib/savings-store";
 import { formatUSD } from "@/lib/utils";
+
+const STORE_ADDRESSES: Record<QuickSimLocation["key"], string> = {
+  gas: "2847 Highway Blvd, Austin TX 78701",
+  convenience: "123 Main St, Austin TX 78702",
+  grocery: "456 Oak Ave, Austin TX 78703",
+  coffee: "789 Congress Ave, Austin TX 78704",
+};
+
+const TAX_RATE = 0.0825;
 
 type Stage =
   | { kind: "location" }
@@ -114,15 +124,20 @@ export function QuickSimFlow() {
   }
 
   function commitFromSummary(selected: QuickSimItem[]) {
-    const totalCents = selected.reduce((n, i) => n + i.priceCents, 0);
-    if (totalCents === 0) {
+    const subtotalCents = selected.reduce((n, i) => n + i.priceCents, 0);
+    if (subtotalCents === 0) {
       // Empty cart — credit nothing, but still flash so the user gets
       // their micro-reward for completing the simulation.
       setStage({ kind: "flash", totalCents: 0 });
       window.setTimeout(() => router.push("/home"), 1500);
       return;
     }
-    void commitSimulation(totalCents);
+    // Grand total — matches the receipt the user just saw. Credit the
+    // savings counter and drive the green-flash amount off the same
+    // figure so "Saved $4.52" matches what the receipt's Total said.
+    const taxCents = Math.round(subtotalCents * TAX_RATE);
+    const grandTotalCents = subtotalCents + taxCents;
+    void commitSimulation(grandTotalCents);
   }
 
   function close() {
@@ -604,41 +619,99 @@ function SummaryView({
     );
   }
 
+  // Receipt math — subtotal + 8.25% tax, all rounded to cents so
+  // "Subtotal + Tax = Total" never drifts by a penny on display.
+  const subtotalCents = totalCents;
+  const taxCents = Math.round(subtotalCents * TAX_RATE);
+  const grandTotalCents = subtotalCents + taxCents;
+
   return (
-    <div className="flex flex-1 flex-col px-5 pb-6 pt-2">
-      <h1 className="font-heading text-[32px] font-extrabold leading-tight text-ink md:text-[40px]">
-        Your fake cart
+    <div className="flex flex-1 flex-col overflow-y-auto px-5 pt-2 safe-bottom">
+      {/* Store header — feels like the location you're physically
+          checking out at. */}
+      <section className="rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card">
+        <p className="font-heading text-[18px] font-bold leading-tight text-ink">
+          {location.name}
+        </p>
+        <p className="mt-1 flex items-center gap-1.5 text-[12px] text-ink-muted">
+          <Pin size={12} className="flex-none" />
+          {STORE_ADDRESSES[location.key]}
+        </p>
+      </section>
+
+      <h1 className="mt-5 font-heading text-[28px] font-extrabold leading-tight text-ink md:text-[34px]">
+        Ready to checkout?
       </h1>
-      <p className="mt-1 text-[14px] text-ink-muted">
-        {selected.length} item{selected.length === 1 ? "" : "s"} from{" "}
-        {location.name}.
+      <p className="mt-1 text-[13px] text-ink-muted">
+        {selected.length} item{selected.length === 1 ? "" : "s"} ·{" "}
+        {location.name}
       </p>
 
-      <ul className="mt-5 flex-1 space-y-2 overflow-y-auto">
-        {selected.map((item) => (
-          <li
-            key={item.id}
-            className="card flex items-center gap-3 px-4 py-3"
-          >
-            <span className="flex h-9 w-9 flex-none items-center justify-center rounded-xl bg-surface-alt text-[#0A0F1E]">
-              <QuickSimItemIcon kind={item.iconKey} size={20} />
-            </span>
-            <p className="flex-1 text-[15px] font-bold text-ink">{item.name}</p>
-            <p className="font-mono text-[15px] font-bold text-ink">
-              {formatUSD(item.priceCents / 100)}
-            </p>
-          </li>
-        ))}
-      </ul>
+      {/* Items — receipt block. Quantity bubble, name, price, hairline
+          divider between rows, single white surface around the lot. */}
+      <section className="mt-4 overflow-hidden rounded-card border border-[#E8E4E0] bg-white shadow-card">
+        <ul className="divide-y divide-[#F0EAE0]">
+          {selected.map((item) => (
+            <li key={item.id} className="flex items-center gap-3 px-4 py-3">
+              <span className="flex h-7 w-12 flex-none items-center justify-center rounded-full bg-surface-alt font-mono text-[12px] font-semibold text-ink-muted">
+                x1
+              </span>
+              <p className="flex-1 text-[15px] font-bold text-ink">
+                {item.name}
+              </p>
+              <p className="font-mono text-[15px] font-bold text-ink">
+                {formatUSD(item.priceCents / 100)}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-      <div className="mt-5 flex items-baseline justify-between border-t border-surface-border pt-4">
-        <span className="text-[13px] font-semibold uppercase tracking-widest text-ink-muted">
-          Total
-        </span>
-        <span className="font-mono text-[28px] font-extrabold text-brand">
-          {formatUSD(totalCents / 100)}
-        </span>
-      </div>
+      {/* Payment method — the most "this feels real" element on the
+          page. The Saved pill mirrors what every checkout shows when
+          a card is on file. */}
+      <section className="mt-3 rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-ink-muted">
+          Payment
+        </p>
+        <div className="mt-2 flex items-center gap-3">
+          <span className="flex h-9 w-12 flex-none items-center justify-center rounded-lg bg-surface-alt text-ink">
+            <CardIcon size={20} />
+          </span>
+          <p className="flex-1 text-[15px] font-bold text-ink">
+            Visa ending in 4242
+          </p>
+          <span className="rounded-full bg-brand-light px-2.5 py-0.5 text-[11px] font-bold text-brand">
+            Saved
+          </span>
+        </div>
+      </section>
+
+      {/* Receipt total breakdown — Subtotal / Tax / divider / Total
+          mirroring an actual paper receipt. */}
+      <section className="mt-4 rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card">
+        <div className="flex items-baseline justify-between text-[14px]">
+          <span className="text-ink-muted">Subtotal</span>
+          <span className="font-mono font-semibold text-ink">
+            {formatUSD(subtotalCents / 100)}
+          </span>
+        </div>
+        <div className="mt-2 flex items-baseline justify-between text-[14px]">
+          <span className="text-ink-muted">Tax (8.25%)</span>
+          <span className="font-mono font-semibold text-ink">
+            {formatUSD(taxCents / 100)}
+          </span>
+        </div>
+        <div className="my-3 h-px bg-[#F0EAE0]" />
+        <div className="flex items-baseline justify-between">
+          <span className="text-[13px] font-semibold uppercase tracking-widest text-ink-muted">
+            Total
+          </span>
+          <span className="font-mono text-[26px] font-extrabold text-brand">
+            {formatUSD(grandTotalCents / 100)}
+          </span>
+        </div>
+      </section>
 
       <motion.button
         type="button"
@@ -648,7 +721,7 @@ function SummaryView({
       >
         Sim It
       </motion.button>
-      <p className="mt-2 text-center text-[11px] text-ink-muted">
+      <p className="mt-2 pb-1 text-center text-[11px] text-ink-muted">
         Simulated checkout — no real money will be charged.
       </p>
     </div>
