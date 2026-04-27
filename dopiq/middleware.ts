@@ -21,10 +21,10 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // authOptions uses strategy:"database" — the cookie holds a plain session ID,
-  // not a JWT. getToken() only decodes JWTs so it always returns null here.
-  // We check cookie presence instead; the real auth validation (DB lookup) happens
-  // in getServerSession() inside each page's requireUser() server-side guard.
+  // We only check for cookie PRESENCE here — we don't decode the JWT
+  // in middleware. Real session validation (and the user lookup off
+  // the token id) happens in getServerSession() inside each page's
+  // requireUser() / requireSubscribedUser() guard.
   const sessionToken =
     req.cookies.get("next-auth.session-token")?.value ??
     req.cookies.get("__Secure-next-auth.session-token")?.value;
