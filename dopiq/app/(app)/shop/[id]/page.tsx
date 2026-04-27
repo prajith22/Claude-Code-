@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import products from "@/data/products.json";
 import type { Product } from "@/types";
 import { formatUSD } from "@/lib/utils";
@@ -18,13 +19,16 @@ export default function ProductDetailPage({
 
   return (
     <div className="pb-nav-action space-y-6 md:pb-4">
-      {/* Hero image — capped at 600px, centered, never upscaled past natural size */}
-      <div className="mx-auto w-full max-w-[600px] overflow-hidden rounded-card bg-surface-alt">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+      {/* Hero image — capped at 600px, square aspect ratio so the
+          Image optimizer can pick a sized variant without CLS. */}
+      <div className="relative mx-auto aspect-square w-full max-w-[600px] overflow-hidden rounded-card bg-surface-alt">
+        <Image
           src={product.imageUrl}
           alt={product.name}
-          className="mx-auto block h-auto w-auto max-w-full"
+          fill
+          priority
+          sizes="(max-width: 640px) 100vw, 600px"
+          className="object-cover"
           style={{ filter: "blur(0.8px)" }}
         />
       </div>

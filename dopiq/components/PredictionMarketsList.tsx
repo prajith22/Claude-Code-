@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { motion } from "framer-motion";
 import {
   PREDICTION_MARKETS,
@@ -37,7 +38,7 @@ export function PredictionMarketsList() {
   );
 }
 
-function PredictionCard({
+function PredictionCardImpl({
   market,
   index,
 }: {
@@ -45,13 +46,19 @@ function PredictionCard({
   index: number;
 }) {
   const toggle = useBetSlipStore((s) => s.toggle);
-  const selections = useBetSlipStore((s) => s.selections);
-
-  function isActive(side: "yes" | "no") {
-    return selections.some(
-      (sel) => sel.key === slipKey(market.id, "prediction", side),
-    );
-  }
+  // Subscribe to per-card booleans so a change to selections only
+  // re-renders the cards whose state actually flipped (instead of all
+  // 15 every time something is added or removed from the slip).
+  const yesActive = useBetSlipStore((s) =>
+    s.selections.some(
+      (sel) => sel.key === slipKey(market.id, "prediction", "yes"),
+    ),
+  );
+  const noActive = useBetSlipStore((s) =>
+    s.selections.some(
+      (sel) => sel.key === slipKey(market.id, "prediction", "no"),
+    ),
+  );
 
   function pick(side: "yes" | "no") {
     toggle(buildPredictionSelection(market, side));
@@ -89,13 +96,13 @@ function PredictionCard({
         <OutcomeButton
           label="Yes"
           odds={market.yesOdds}
-          active={isActive("yes")}
+          active={yesActive}
           onClick={() => pick("yes")}
         />
         <OutcomeButton
           label="No"
           odds={market.noOdds}
-          active={isActive("no")}
+          active={noActive}
           onClick={() => pick("no")}
         />
       </div>
@@ -107,6 +114,11 @@ function PredictionCard({
     </motion.article>
   );
 }
+
+// Memo'd alongside the per-card boolean subscriptions above — together
+// they cut a slip change from "re-render all 15 cards" to "re-render
+// only the card whose state actually flipped."
+const PredictionCard = memo(PredictionCardImpl);
 
 function OutcomeButton({
   label,

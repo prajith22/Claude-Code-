@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 
 type LogoConfig = {
   bg: string;
@@ -398,14 +399,25 @@ export function RestaurantLogo({
   // detail-page banner share this code path; the parent container
   // controls aspect ratio and clipping.
   if (imageUrl) {
+    // Wrap in a relative-positioned span so Image can use `fill` —
+    // the parent passes the actual sizing via className.
     return (
-      /* eslint-disable-next-line @next/next/no-img-element */
-      <img
-        src={imageUrl}
-        alt={`${name} restaurant photo`}
-        className={`h-full w-full object-cover ${className ?? ""}`}
-        style={{ filter: "blur(0.8px)" }}
-      />
+      <span
+        className={`relative block h-full w-full ${className ?? ""}`}
+      >
+        <Image
+          src={imageUrl}
+          alt={`${name} restaurant photo`}
+          fill
+          sizes={
+            variant === "banner"
+              ? "(max-width: 640px) 100vw, 800px"
+              : "(max-width: 640px) 50vw, 220px"
+          }
+          className="object-cover"
+          style={{ filter: "blur(0.8px)" }}
+        />
+      </span>
     );
   }
 

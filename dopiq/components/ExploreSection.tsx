@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import type { Product } from "@/types";
@@ -151,12 +152,13 @@ function CardImage({ product }: { product: Product }) {
   return (
     <div className="relative h-[300px] w-full overflow-hidden bg-surface-alt">
       {product.imageUrl ? (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
+        <Image
           src={product.imageUrl}
           alt={product.name}
+          fill
+          sizes="(max-width: 640px) 100vw, 600px"
           draggable={false}
-          className="h-full w-full select-none object-cover"
+          className="select-none object-cover"
           style={{ filter: "blur(0.8px)" }}
         />
       ) : (
