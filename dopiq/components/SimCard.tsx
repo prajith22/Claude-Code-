@@ -1,11 +1,11 @@
 "use client";
 
-import { useId, useState } from "react";
+import { memo, useId, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export function SimCard({
+function SimCardImpl({
   href,
   label,
   bg,
@@ -51,12 +51,19 @@ export function SimCard({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       whileHover={{
+        // Transform-only hover — boxShadow animation forces a paint
+        // every frame, which lags on lower-end mobile GPUs. The
+        // hover ring is now a static CSS class on the wrapper below.
         scale: 1.04,
-        boxShadow:
-          "0 0 0 2px rgba(244, 169, 143, 0.55), 0 12px 28px rgba(244, 169, 143, 0.22)",
         transition: { duration: 0.2 },
       }}
       whileTap={{ scale: 0.97, transition: { duration: 0.08 } }}
+      style={{
+        // Static shadow that swaps on hover via CSS — no per-frame
+        // paints. Uses the same brand-coral coloring the animated
+        // shadow had.
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.04)",
+      }}
     >
       {/* Subtle dotted texture, tinted by the card's title color via
           currentColor — keeps each card visually unique without hard-coding
@@ -107,6 +114,11 @@ export function SimCard({
     </motion.div>
   );
 }
+
+// Memoized — the home page passes stable string + ReactNode props,
+// so the only re-renders should be the entry/hover ones owned by
+// each card's own state.
+export const SimCard = memo(SimCardImpl);
 
 function DotTexture({
   patternId,
