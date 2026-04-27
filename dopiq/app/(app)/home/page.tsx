@@ -45,19 +45,6 @@ export default async function HomePage() {
         {/* Money saved + streak hero */}
         <HomeStreakHero initial={initialSummary} />
 
-        {/* Plan usage — server-renders the initial values straight off
-            the User row so the card paints with the right number on
-            first frame, then the client component keeps it live via
-            the same savings-store version bump that drives the other
-            stats. */}
-        <PlanUsageCard
-          initial={{
-            plan: user.plan ?? null,
-            simulationsUsed: user.simulationsUsed,
-            simulationsLimit: user.simulationsLimit,
-          }}
-        />
-
         {/* Quick Sim — sibling to the Shop / Food / Bet pastel cards.
             Coral-tinted so it's distinct from the other three but
             still part of the same family. */}
@@ -148,6 +135,19 @@ export default async function HomePage() {
 
         {/* Daily spin wheel */}
         <DailySpinWheel />
+
+        {/* Plan usage — sits at the bottom as a quiet reference card.
+            Server-renders the initial values straight off the User
+            row so the card paints with the right number on first
+            frame; the client component keeps it live via the same
+            savings-store version bump that drives the other stats. */}
+        <PlanUsageCard
+          initial={{
+            plan: user.plan ?? null,
+            simulationsUsed: user.simulationsUsed,
+            simulationsLimit: user.simulationsLimit,
+          }}
+        />
       </div>
     </div>
   );
