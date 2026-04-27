@@ -51,7 +51,13 @@ export function SignUpForm() {
         throw new Error(data.error ?? "Couldn’t create your account.");
       }
 
-      // Sign the new user in immediately so /paywall has a session.
+      // Sign the new user in immediately so the next page has a
+      // session, then bounce through /home — the session guard
+      // routes a never-onboarded user to /onboarding, and routes
+      // already-onboarded-but-not-subscribed users to /paywall.
+      // Avoids hardcoding the destination here so flow changes
+      // (extra steps, email verification, etc.) only need to
+      // touch the guard.
       const signInRes = await signIn("credentials", {
         email,
         password,
@@ -62,7 +68,7 @@ export function SignUpForm() {
           "Account created but sign-in failed. Try signing in manually.",
         );
       }
-      router.push("/paywall");
+      router.push("/home");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
       setSubmitting(false);
