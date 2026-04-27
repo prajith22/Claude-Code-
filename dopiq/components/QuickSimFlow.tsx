@@ -333,8 +333,10 @@ function ItemSelectionGrid({
       </div>
 
       {/* Slider sits at the bottom of the column via mt-auto. Always
-          visible, always tappable — even with zero items selected. */}
-      <div className="mt-auto pt-4">
+          visible, always tappable — even with zero items selected.
+          -mx-1 nudges the parent's px-5 (20px) down to a 16px gutter
+          to match spec. */}
+      <div className="mt-auto -mx-1 pt-4">
         <SwipeSlider onComplete={onCheckout} />
       </div>
     </div>
@@ -405,13 +407,23 @@ function SwipeSlider({ onComplete }: { onComplete: () => void }) {
   const x = useMotionValue(0);
   const [maxX, setMaxX] = useState(0);
   const [completing, setCompleting] = useState(false);
+  const [flashing, setFlashing] = useState(false);
 
-  // Fill width tracks the handle's left edge plus the handle itself,
-  // so the green wash always reaches the handle's right side.
+  // Live progress fill width — handle x plus the handle itself so
+  // the green always reaches the handle's right edge.
   const fillWidth = useTransform(
     x,
-    (v) => `${v + SLIDER_HANDLE_PX + SLIDER_PAD_PX}px`,
+    (v) => `${Math.max(v + SLIDER_HANDLE_PX + SLIDER_PAD_PX, 0)}px`,
   );
+
+  // Label fades out as the handle moves over it. Function-form
+  // useTransform reads maxX from closure, so the curve recalibrates
+  // automatically when the track resizes.
+  const labelOpacity = useTransform(x, (v) => {
+    const range = Math.max(maxX, 1);
+    const pct = Math.min(1, Math.max(0, v / range));
+    return 1 - pct;
+  });
 
   useEffect(() => {
     const recompute = () => {
@@ -428,21 +440,23 @@ function SwipeSlider({ onComplete }: { onComplete: () => void }) {
     if (completing || maxX <= 0) return;
     const current = x.get();
     if (current >= maxX * SLIDER_COMPLETE_RATIO) {
-      // Snap to fully right and trigger completion. The page-level
-      // GreenFlash takes over visually after this.
+      // Past the trigger threshold: snap the handle home, fade in
+      // the full-pill green flash, hold 300ms so the eye registers
+      // it, then hand off to the page-level GreenFlash overlay.
       setCompleting(true);
       animate(x, maxX, {
         type: "spring",
-        stiffness: 400,
-        damping: 30,
-        onComplete: () => onComplete(),
+        stiffness: 500,
+        damping: 35,
       });
+      setFlashing(true);
+      window.setTimeout(() => onComplete(), 300);
     } else {
-      // Snap back to start.
+      // Snap back to start with the same spring shape.
       animate(x, 0, {
         type: "spring",
-        stiffness: 400,
-        damping: 30,
+        stiffness: 500,
+        damping: 35,
       });
     }
   }
@@ -452,27 +466,37 @@ function SwipeSlider({ onComplete }: { onComplete: () => void }) {
       ref={trackRef}
       className="relative h-14 w-full overflow-hidden rounded-pill bg-[#0A0F1E] shadow-cardHover"
     >
-      {/* Green progress fill — width derived from the handle's x. */}
+      {/* Live progress fill — width tracks the handle in real time. */}
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 bg-brand"
+        className="pointer-events-none absolute inset-y-0 left-0 bg-[#00C853]"
         style={{ width: fillWidth }}
       />
 
-      {/* Center label — pointer-events-none so the drag handle
-          underneath stays the only thing the user interacts with. */}
-      <span className="pointer-events-none absolute inset-0 flex items-center justify-center font-sans text-[14px] font-semibold text-white/85">
+      {/* "Swipe to sim" label — fades out as the handle slides over
+          it. pointer-events-none so it never intercepts the drag. */}
+      <motion.span
+        className="pointer-events-none absolute inset-0 flex items-center justify-center font-sans text-[14px] font-medium text-white"
+        style={{ opacity: labelOpacity }}
+      >
         Swipe to sim
-      </span>
+      </motion.span>
 
-      {/* Drag handle — large 48px target for thumbs. */}
+      {/* Drag handle. Mount-time pulse: scale 1 → 1.08 → 1 over 1s
+          (one-shot, hint only). After it settles, scale stays at 1
+          until whileTap dips it briefly on press. */}
       <motion.div
         drag="x"
         dragConstraints={{ left: 0, right: maxX }}
         dragElastic={0}
         dragMomentum={false}
         onDragEnd={onDragEnd}
-        whileTap={{ scale: 0.97 }}
+        whileTap={completing ? undefined : { scale: 0.97 }}
+        initial={{ scale: 1 }}
+        animate={{ scale: [1, 1.08, 1] }}
+        transition={{
+          scale: { duration: 1, ease: "easeInOut", times: [0, 0.5, 1] },
+        }}
         style={{ x }}
         className="absolute left-1 top-1 flex h-12 w-12 cursor-grab items-center justify-center rounded-full bg-white text-[#0A0F1E] shadow-md active:cursor-grabbing"
       >
@@ -490,6 +514,23 @@ function SwipeSlider({ onComplete }: { onComplete: () => void }) {
           <path d="m9 6 6 6-6 6" />
         </svg>
       </motion.div>
+
+      {/* Completion flash. Layered ABOVE the handle so the entire
+          pill (including the white circle) reads as solid green for
+          a beat before the page-level GreenFlash takes over. */}
+      <AnimatePresence>
+        {flashing && (
+          <motion.div
+            key="flash"
+            aria-hidden
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="pointer-events-none absolute inset-0 bg-[#00C853]"
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
