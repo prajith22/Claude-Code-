@@ -332,12 +332,12 @@ function ItemSelectionGrid({
         ))}
       </div>
 
-      {/* Slider sits at the bottom of the column via mt-auto. Always
-          visible, always tappable — even with zero items selected.
-          -mx-1 nudges the parent's px-5 (20px) down to a 16px gutter
-          to match spec. */}
-      <div className="mt-auto -mx-1 pt-4">
-        <SwipeSlider onComplete={onCheckout} />
+      {/* Hold-to-confirm button — centered at the bottom of the
+          column via mt-auto + flex justify-center. Always visible,
+          always pressable — empty cart still triggers the flash
+          with $0.00 (just won't credit savings). */}
+      <div className="mt-auto flex justify-center pt-6">
+        <HoldToConfirm onComplete={onCheckout} />
       </div>
     </div>
   );
@@ -396,141 +396,164 @@ function ItemSelectCard({
   );
 }
 
-// ---------- Step 3: swipe-to-sim slider ----------
+// ---------- Step 3: hold-to-confirm button ----------
 
-const SLIDER_HANDLE_PX = 48;
-const SLIDER_PAD_PX = 4;
-const SLIDER_COMPLETE_RATIO = 0.9;
+const HOLD_DURATION_MS = 1500;
+const HOLD_RELEASE_MS = 300;
+const RING_R = 43;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_R;
 
-function SwipeSlider({ onComplete }: { onComplete: () => void }) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const [maxX, setMaxX] = useState(0);
-  const [completing, setCompleting] = useState(false);
-  const [flashing, setFlashing] = useState(false);
-
-  // Live progress fill width — handle x plus the handle itself so
-  // the green always reaches the handle's right edge.
-  const fillWidth = useTransform(
-    x,
-    (v) => `${Math.max(v + SLIDER_HANDLE_PX + SLIDER_PAD_PX, 0)}px`,
-  );
-
-  // Label fades out as the handle moves over it. Function-form
-  // useTransform reads maxX from closure, so the curve recalibrates
-  // automatically when the track resizes.
-  const labelOpacity = useTransform(x, (v) => {
-    const range = Math.max(maxX, 1);
-    const pct = Math.min(1, Math.max(0, v / range));
-    return 1 - pct;
+function HoldToConfirm({ onComplete }: { onComplete: () => void }) {
+  const [holding, setHolding] = useState(false);
+  const [completed, setCompleted] = useState(false);
+  const progress = useMotionValue(0);
+  // Stroke-dashoffset goes from CIRCUMFERENCE (no fill) → 0 (full
+  // ring). Clamp progress in case the underlying animation
+  // overshoots — strokes don't render correctly for negative offsets.
+  const ringOffset = useTransform(progress, (p) => {
+    const clamped = Math.min(1, Math.max(0, p));
+    return RING_CIRCUMFERENCE - clamped * RING_CIRCUMFERENCE;
   });
+  const animationRef = useRef<{ stop: () => void } | null>(null);
 
   useEffect(() => {
-    const recompute = () => {
-      const el = trackRef.current;
-      if (!el) return;
-      setMaxX(el.offsetWidth - SLIDER_HANDLE_PX - SLIDER_PAD_PX * 2);
+    return () => {
+      animationRef.current?.stop();
     };
-    recompute();
-    window.addEventListener("resize", recompute);
-    return () => window.removeEventListener("resize", recompute);
   }, []);
 
-  function onDragEnd(_: unknown, _info: PanInfo) {
-    if (completing || maxX <= 0) return;
-    const current = x.get();
-    if (current >= maxX * SLIDER_COMPLETE_RATIO) {
-      // Past the trigger threshold: snap the handle home, fade in
-      // the full-pill green flash, hold 300ms so the eye registers
-      // it, then hand off to the page-level GreenFlash overlay.
-      setCompleting(true);
-      animate(x, maxX, {
-        type: "spring",
-        stiffness: 500,
-        damping: 35,
-      });
-      setFlashing(true);
-      window.setTimeout(() => onComplete(), 300);
-    } else {
-      // Snap back to start with the same spring shape.
-      animate(x, 0, {
-        type: "spring",
-        stiffness: 500,
-        damping: 35,
-      });
-    }
+  function startHold() {
+    if (completed) return;
+    setHolding(true);
+    animationRef.current = animate(progress, 1, {
+      duration: HOLD_DURATION_MS / 1000,
+      ease: "linear",
+      onComplete: () => {
+        setHolding(false);
+        setCompleted(true);
+        // Hold the green-flash + checkmark moment for 300ms before
+        // handing off to the page-level GreenFlash overlay.
+        window.setTimeout(() => onComplete(), 300);
+      },
+    });
+  }
+
+  function endHold() {
+    if (completed) return;
+    setHolding(false);
+    animationRef.current?.stop();
+    animate(progress, 0, {
+      type: "spring",
+      stiffness: 400,
+      damping: 30,
+      duration: HOLD_RELEASE_MS / 1000,
+    });
   }
 
   return (
-    <div
-      ref={trackRef}
-      className="relative h-14 w-full overflow-hidden rounded-pill bg-[#0A0F1E] shadow-cardHover"
-    >
-      {/* Live progress fill — width tracks the handle in real time. */}
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 bg-[#00C853]"
-        style={{ width: fillWidth }}
-      />
-
-      {/* "Swipe to sim" label — fades out as the handle slides over
-          it. pointer-events-none so it never intercepts the drag. */}
-      <motion.span
-        className="pointer-events-none absolute inset-0 flex items-center justify-center font-sans text-[14px] font-medium text-white"
-        style={{ opacity: labelOpacity }}
-      >
-        Swipe to sim
-      </motion.span>
-
-      {/* Drag handle. Mount-time pulse: scale 1 → 1.08 → 1 over 1s
-          (one-shot, hint only). After it settles, scale stays at 1
-          until whileTap dips it briefly on press. */}
-      <motion.div
-        drag="x"
-        dragConstraints={{ left: 0, right: maxX }}
-        dragElastic={0}
-        dragMomentum={false}
-        onDragEnd={onDragEnd}
-        whileTap={completing ? undefined : { scale: 0.97 }}
-        initial={{ scale: 1 }}
-        animate={{ scale: [1, 1.08, 1] }}
-        transition={{
-          scale: { duration: 1, ease: "easeInOut", times: [0, 0.5, 1] },
+    <div className="flex flex-col items-center gap-3">
+      <motion.button
+        type="button"
+        onTapStart={startHold}
+        onTap={endHold}
+        onTapCancel={endHold}
+        animate={{
+          scale: holding ? 1.05 : 1,
+          backgroundColor: completed ? "#00C853" : "#0A0F1E",
         }}
-        style={{ x }}
-        className="absolute left-1 top-1 flex h-12 w-12 cursor-grab items-center justify-center rounded-full bg-white text-[#0A0F1E] shadow-md active:cursor-grabbing"
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        // Fixed 92x92 footprint = 80px navy circle + 6px ring on each
+        // side. Touch target is the full button (the ring is a child
+        // SVG that doesn't intercept pointer events).
+        className="relative flex h-[92px] w-[92px] items-center justify-center rounded-full"
       >
+        {/* Progress ring around the perimeter — light gray track,
+            green fill that grows clockwise from 12 o'clock as the
+            user holds. */}
         <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          viewBox="0 0 92 92"
           aria-hidden
         >
-          <path d="m9 6 6 6-6 6" />
-        </svg>
-      </motion.div>
-
-      {/* Completion flash. Layered ABOVE the handle so the entire
-          pill (including the white circle) reads as solid green for
-          a beat before the page-level GreenFlash takes over. */}
-      <AnimatePresence>
-        {flashing && (
-          <motion.div
-            key="flash"
-            aria-hidden
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            className="pointer-events-none absolute inset-0 bg-[#00C853]"
+          <circle
+            cx="46"
+            cy="46"
+            r={RING_R}
+            stroke="#E5E7EB"
+            strokeWidth="6"
+            fill="none"
           />
-        )}
-      </AnimatePresence>
+          <motion.circle
+            cx="46"
+            cy="46"
+            r={RING_R}
+            stroke="#00C853"
+            strokeWidth="6"
+            fill="none"
+            strokeLinecap="round"
+            strokeDasharray={RING_CIRCUMFERENCE}
+            style={{ strokeDashoffset: ringOffset }}
+            transform="rotate(-90 46 46)"
+          />
+        </svg>
+
+        {/* Center label — three states swap via AnimatePresence so
+            each transition is its own quick fade. */}
+        <span className="pointer-events-none relative">
+          <AnimatePresence mode="wait" initial={false}>
+            {completed ? (
+              <motion.span
+                key="done"
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ type: "spring", stiffness: 240, damping: 16 }}
+                className="block"
+              >
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="m5 12.5 5 5 9-10" />
+                </svg>
+              </motion.span>
+            ) : holding ? (
+              <motion.span
+                key="holding"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="block font-sans text-[12px] font-semibold text-white"
+              >
+                Holding…
+              </motion.span>
+            ) : (
+              <motion.span
+                key="hold"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="block font-heading text-[16px] font-bold text-white"
+              >
+                Hold
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </span>
+      </motion.button>
+
+      <p className="font-sans text-[12px] text-ink-muted">
+        Hold to confirm your sim
+      </p>
     </div>
   );
 }
