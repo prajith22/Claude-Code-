@@ -4,9 +4,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
-import type { Product } from "@/types";
+import type { Product, ProductCategory } from "@/types";
 import { cn, formatUSD } from "@/lib/utils";
 import { Bag, StarFilled } from "@/components/icons";
+
+type CategoryKey = "all" | ProductCategory;
+
+const CATEGORIES: Array<{ key: CategoryKey; label: string }> = [
+  { key: "all", label: "All" },
+  { key: "Clothes", label: "Clothes" },
+  { key: "Electronics", label: "Electronics" },
+  { key: "Home Goods", label: "Home Goods" },
+  { key: "Beauty", label: "Beauty" },
+  { key: "Sports", label: "Sports" },
+];
 
 const MAX_DOTS = 5;
 const SWIPE_OFFSET = 60;
@@ -28,25 +39,34 @@ const variants = {
 };
 
 export function ExploreSection({ products }: { products: Product[] }) {
+  const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("all");
   const [shuffled, setShuffled] = useState<Product[]>(products);
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
 
-  // SSR-safe: start with the given order, reshuffle once on mount so every
-  // page load produces a fresh random order that stays stable in the session.
+  // Re-filter + re-shuffle every time the products prop or the
+  // selected category changes. SSR-safe: first render uses the
+  // unsorted products, the effect rolls a fresh random order on
+  // mount (and on every category tap thereafter).
   useEffect(() => {
-    setShuffled(fisherYates(products));
+    const pool =
+      selectedCategory === "all"
+        ? products
+        : products.filter((p) => p.category === selectedCategory);
+    setShuffled(fisherYates(pool));
     setIndex(0);
-  }, [products]);
+  }, [products, selectedCategory]);
 
-  if (shuffled.length === 0) return null;
-  const current = shuffled[index];
+  const hasProducts = shuffled.length > 0;
+  const current = hasProducts ? shuffled[index] : null;
 
   const goNext = () => {
+    if (!hasProducts) return;
     setDirection(1);
     setIndex((i) => (i + 1) % shuffled.length);
   };
   const goPrev = () => {
+    if (!hasProducts) return;
     setDirection(-1);
     setIndex((i) => (i - 1 + shuffled.length) % shuffled.length);
   };
@@ -74,6 +94,46 @@ export function ExploreSection({ products }: { products: Product[] }) {
         <p className="text-[13px] text-ink-muted">Something new every refresh.</p>
       </div>
 
+      {/* Category filter pills — horizontal scroll on mobile, no
+          scrollbar. Right-edge cream fade hints at scrollable
+          overflow. Visually identical to the Food page's cuisine
+          filter pills so the two surfaces feel like one family. */}
+      <div className="relative">
+        <div
+          className="-mx-4 overflow-x-auto [&::-webkit-scrollbar]:hidden"
+          style={{ scrollbarWidth: "none" }}
+        >
+          <div className="flex gap-2 px-4">
+            {CATEGORIES.map((c) => {
+              const active = selectedCategory === c.key;
+              return (
+                <button
+                  key={c.key}
+                  type="button"
+                  onClick={() => setSelectedCategory(c.key)}
+                  aria-pressed={active}
+                  className={`flex flex-none items-center rounded-pill border px-4 py-2 text-[13px] font-semibold shadow-sm transition ${
+                    active
+                      ? "border-navy bg-navy text-white"
+                      : "border-surface-border bg-white text-ink hover:bg-surface-alt"
+                  }`}
+                >
+                  {c.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute right-0 top-0 h-full w-10 md:hidden"
+          style={{
+            background:
+              "linear-gradient(to left, #F5EFE4 0%, rgba(245,239,228,0) 100%)",
+          }}
+        />
+      </div>
+
       <div className="relative mx-auto w-full max-w-[600px]">
         <ArrowButton
           dir="left"
@@ -87,63 +147,80 @@ export function ExploreSection({ products }: { products: Product[] }) {
         />
 
         <div className="overflow-hidden rounded-card">
-          <AnimatePresence mode="wait" initial={false} custom={direction}>
-            <motion.div
-              key={current.id}
-              custom={direction}
-              variants={variants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ type: "spring", stiffness: 260, damping: 26, mass: 0.8 }}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.2}
-              whileDrag={{ scale: 0.97 }}
-              onDragEnd={handleDragEnd}
-              className="card cursor-grab touch-pan-y overflow-hidden active:cursor-grabbing"
-            >
-              <CardImage product={current} />
-              <div className="space-y-1.5 p-5">
-                <p className="font-heading text-[20px] font-bold leading-tight text-ink">
-                  {current.name}
-                </p>
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-muted">
-                  {current.category}
-                </p>
-                <div className="flex items-center justify-between pt-2">
-                  <span className="money text-[22px] text-brand">
-                    {formatUSD(current.price)}
-                  </span>
-                  <span className="flex items-center gap-1 text-[13px] font-semibold text-ink">
-                    <StarFilled size={12} />
-                    {current.rating.toFixed(1)}
-                  </span>
+          {!current ? (
+            <EmptyCategoryCard />
+          ) : (
+            <AnimatePresence mode="wait" initial={false} custom={direction}>
+              <motion.div
+                key={current.id}
+                custom={direction}
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ type: "spring", stiffness: 260, damping: 26, mass: 0.8 }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                whileDrag={{ scale: 0.97 }}
+                onDragEnd={handleDragEnd}
+                className="card cursor-grab touch-pan-y overflow-hidden active:cursor-grabbing"
+              >
+                <CardImage product={current} />
+                <div className="space-y-1.5 p-5">
+                  <p className="font-heading text-[20px] font-bold leading-tight text-ink">
+                    {current.name}
+                  </p>
+                  <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-muted">
+                    {current.category}
+                  </p>
+                  <div className="flex items-center justify-between pt-2">
+                    <span className="money text-[22px] text-brand">
+                      {formatUSD(current.price)}
+                    </span>
+                    <span className="flex items-center gap-1 text-[13px] font-semibold text-ink">
+                      <StarFilled size={12} />
+                      {current.rating.toFixed(1)}
+                    </span>
+                  </div>
+                  <Link
+                    href={`/shop/${current.id}`}
+                    className="btn-navy mt-3 w-full"
+                  >
+                    View Product
+                  </Link>
                 </div>
-                <Link
-                  href={`/shop/${current.id}`}
-                  className="btn-navy mt-3 w-full"
-                >
-                  View Product
-                </Link>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+              </motion.div>
+            </AnimatePresence>
+          )}
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-1.5 pt-1">
-        {Array.from({ length: dotCount }).map((_, i) => (
-          <span
-            key={i}
-            className={cn(
-              "h-1.5 rounded-full transition-all duration-200",
-              i === activeDot ? "w-5 bg-brand" : "w-1.5 bg-surface-border",
-            )}
-          />
-        ))}
-      </div>
+      {hasProducts && (
+        <div className="flex items-center justify-center gap-1.5 pt-1">
+          {Array.from({ length: dotCount }).map((_, i) => (
+            <span
+              key={i}
+              className={cn(
+                "h-1.5 rounded-full transition-all duration-200",
+                i === activeDot ? "w-5 bg-brand" : "w-1.5 bg-surface-border",
+              )}
+            />
+          ))}
+        </div>
+      )}
     </section>
+  );
+}
+
+function EmptyCategoryCard() {
+  return (
+    <div className="card flex min-h-[420px] flex-col items-center justify-center gap-3 p-10 text-center">
+      <Bag size={36} className="text-ink-faint" />
+      <p className="text-[15px] font-semibold text-ink">
+        No products in this category yet — check back soon.
+      </p>
+    </div>
   );
 }
 
