@@ -6,7 +6,6 @@ import {
   animate,
   AnimatePresence,
   motion,
-  type PanInfo,
   useMotionValue,
   useTransform,
 } from "framer-motion";
@@ -332,12 +331,12 @@ function ItemSelectionGrid({
         ))}
       </div>
 
-      {/* Hold-to-confirm button — centered at the bottom of the
-          column via mt-auto + flex justify-center. Always visible,
-          always pressable — empty cart still triggers the flash
-          with $0.00 (just won't credit savings). */}
+      {/* Slide-up-to-sim — sits at the bottom of the column via
+          mt-auto. Always visible, always pressable — empty cart
+          still triggers the flash with $0.00 (just won't credit
+          savings). */}
       <div className="mt-auto flex justify-center pt-6">
-        <HoldToConfirm onComplete={onCheckout} />
+        <SlideUpToSim onComplete={onCheckout} />
       </div>
     </div>
   );
@@ -396,112 +395,114 @@ function ItemSelectCard({
   );
 }
 
-// ---------- Step 3: hold-to-confirm button ----------
+// ---------- Step 3: slide-up-to-sim gesture ----------
 
-const HOLD_DURATION_MS = 800;
-const HOLD_RELEASE_MS = 300;
-const RING_R = 43;
-const RING_CIRCUMFERENCE = 2 * Math.PI * RING_R;
+const SLIDE_TRIGGER_PX = 150;
+const SLIDE_OVERDRAG_PX = 60;
 
-function HoldToConfirm({ onComplete }: { onComplete: () => void }) {
-  const [holding, setHolding] = useState(false);
-  const [completed, setCompleted] = useState(false);
-  const progress = useMotionValue(0);
-  // Stroke-dashoffset goes from CIRCUMFERENCE (no fill) → 0 (full
-  // ring). Clamp progress in case the underlying animation
-  // overshoots — strokes don't render correctly for negative offsets.
-  const ringOffset = useTransform(progress, (p) => {
-    const clamped = Math.min(1, Math.max(0, p));
-    return RING_CIRCUMFERENCE - clamped * RING_CIRCUMFERENCE;
-  });
-  const animationRef = useRef<{ stop: () => void } | null>(null);
+function SlideUpToSim({ onComplete }: { onComplete: () => void }) {
+  const y = useMotionValue(0);
+  const [completing, setCompleting] = useState(false);
 
-  useEffect(() => {
-    return () => {
-      animationRef.current?.stop();
-    };
-  }, []);
+  // Drag progress 0 → 1 as the user pulls upward toward 150px.
+  const progress = useTransform(y, (v) =>
+    Math.min(1, Math.max(0, -v / SLIDE_TRIGGER_PX)),
+  );
+  // Subtle full-screen green wash that grows with the drag.
+  const tintOpacity = useTransform(progress, [0, 1], [0, 0.08]);
+  // Arrow + label fade out by ~40% drag — the green pill takes over.
+  const promptOpacity = useTransform(progress, [0, 0.4], [1, 0]);
+  // Pill grows upward from the indicator's bottom edge.
+  const pillHeight = useTransform(progress, [0, 1], [0, 72]);
+  const pillOpacity = useTransform(progress, [0, 0.05, 1], [0, 1, 1]);
 
-  function startHold() {
-    if (completed) return;
-    setHolding(true);
-    animationRef.current = animate(progress, 1, {
-      duration: HOLD_DURATION_MS / 1000,
-      ease: "linear",
-      onComplete: () => {
-        setHolding(false);
-        setCompleted(true);
-        // Hold the green-flash + checkmark moment for 300ms before
-        // handing off to the page-level GreenFlash overlay.
-        window.setTimeout(() => onComplete(), 300);
-      },
-    });
-  }
-
-  function endHold() {
-    if (completed) return;
-    setHolding(false);
-    animationRef.current?.stop();
-    animate(progress, 0, {
-      type: "spring",
-      stiffness: 400,
-      damping: 30,
-      duration: HOLD_RELEASE_MS / 1000,
-    });
+  function handleDragEnd() {
+    if (completing) return;
+    if (-y.get() >= SLIDE_TRIGGER_PX) {
+      // Trigger completion — exit the indicator upward off-screen,
+      // then hand off to the page-level GreenFlash overlay.
+      setCompleting(true);
+      animate(y, -window.innerHeight, {
+        duration: 0.3,
+        ease: [0.4, 0, 0.2, 1],
+        onComplete: () => onComplete(),
+      });
+    } else {
+      // Snap back to start with a satisfying spring.
+      animate(y, 0, { type: "spring", stiffness: 400, damping: 30 });
+    }
   }
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <p className="font-heading text-[16px] font-bold text-[#0A0F1E]">
-        Hold to confirm your sim
-      </p>
+    <>
+      {/* Full-screen green tint — fixed-position overlay whose
+          opacity follows the drag. pointer-events-none so it never
+          intercepts the gesture. */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-[5] bg-[#00C853]"
+        style={{ opacity: tintOpacity }}
+      />
 
-      <motion.button
-        type="button"
-        onTapStart={startHold}
-        onTap={endHold}
-        onTapCancel={endHold}
-        animate={{
-          scale: holding ? 1.05 : 1,
-          backgroundColor: completed ? "#00C853" : "#0A0F1E",
+      {/* Draggable indicator — vertical-only drag, no horizontal
+          movement. Min-height 88 so the touch target is comfortable
+          for thumbs even without dragging into the prompt itself. */}
+      <motion.div
+        drag="y"
+        dragConstraints={{
+          top: -(SLIDE_TRIGGER_PX + SLIDE_OVERDRAG_PX),
+          bottom: 0,
         }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
-        // Fixed 92x92 footprint = 80px navy circle + 6px ring on each
-        // side. Touch target is the full button (the ring is a child
-        // SVG that doesn't intercept pointer events).
-        className="relative flex h-[92px] w-[92px] items-center justify-center rounded-full"
+        dragElastic={0}
+        dragMomentum={false}
+        onDragEnd={handleDragEnd}
+        style={{ y, touchAction: "none" }}
+        className="relative z-10 flex min-h-[88px] w-40 cursor-grab flex-col items-center justify-end pb-2 active:cursor-grabbing"
       >
-        {/* Progress ring around the perimeter — light gray track,
-            green fill that grows clockwise from 12 o'clock as the
-            user holds. */}
-        <svg
-          className="pointer-events-none absolute inset-0 h-full w-full"
-          viewBox="0 0 92 92"
+        {/* Layer 1 — green pill that grows upward as drag progresses,
+            anchored to the indicator's bottom edge. */}
+        <motion.div
           aria-hidden
+          className="absolute bottom-2 left-1/2 w-16 -translate-x-1/2 rounded-pill bg-brand"
+          style={{ height: pillHeight, opacity: pillOpacity }}
+        />
+
+        {/* Layer 2 — label + bouncing arrow. Fades out as the pill
+            takes over. relative + z-10 so it sits above the pill at
+            rest. */}
+        <motion.div
+          style={{ opacity: promptOpacity }}
+          className="relative z-10 flex flex-col items-center gap-1.5"
         >
-          <circle
-            cx="46"
-            cy="46"
-            r={RING_R}
-            stroke="#E5E7EB"
-            strokeWidth="6"
-            fill="none"
-          />
-          <motion.circle
-            cx="46"
-            cy="46"
-            r={RING_R}
-            stroke="#00C853"
-            strokeWidth="6"
-            fill="none"
-            strokeLinecap="round"
-            strokeDasharray={RING_CIRCUMFERENCE}
-            style={{ strokeDashoffset: ringOffset }}
-            transform="rotate(-90 46 46)"
-          />
-        </svg>
-      </motion.button>
-    </div>
+          <p className="font-heading text-[16px] font-bold text-[#0A0F1E]">
+            Slide up to sim
+          </p>
+          <motion.span
+            aria-hidden
+            animate={{ y: [0, -6, 0] }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="text-brand"
+          >
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 19V5M5 12l7-7 7 7" />
+            </svg>
+          </motion.span>
+        </motion.div>
+      </motion.div>
+    </>
   );
 }
 
