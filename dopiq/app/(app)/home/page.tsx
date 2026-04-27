@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireSubscribedUser } from "@/lib/session-guards";
 import { DailySpinWheel } from "@/components/DailySpinWheel";
 import { SimCard } from "@/components/SimCard";
@@ -42,6 +43,43 @@ export default async function HomePage() {
 
         {/* Money saved + streak hero */}
         <HomeStreakHero initial={initialSummary} />
+
+        {/* Quick Sim — fast urge-buster for the in-store moment.
+            Deliberately the only dark surface on the home page; meant
+            to feel urgent and tappable, not blend in. */}
+        <Link
+          href="/quick-sim"
+          className="group relative flex items-center gap-4 overflow-hidden rounded-card bg-[#0A0F1E] p-5 ring-1 ring-brand/40 transition active:scale-[0.99]"
+        >
+          <span
+            aria-hidden
+            className="flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-white/10 text-[28px] leading-none"
+          >
+            ⚡
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="font-heading text-[18px] font-extrabold leading-tight text-white">
+              Quick Sim
+            </p>
+            <p className="mt-0.5 text-[12px] text-white/60">
+              Impulse hitting? Sim it in seconds.
+            </p>
+          </div>
+          <span
+            aria-hidden
+            className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white/10 text-white transition group-hover:bg-brand group-hover:text-navy"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M9 6l6 6-6 6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+        </Link>
 
         {/* Three simulator cards */}
         <div className="grid grid-cols-3 gap-3 md:gap-4">
