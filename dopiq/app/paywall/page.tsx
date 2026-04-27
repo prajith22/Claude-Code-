@@ -31,6 +31,14 @@ export default async function PaywallPage({
     redirect("/home");
   }
 
+  // Defense in depth: a logged-in but not-yet-onboarded user should
+  // never see the paywall before the welcome flow. Any code path
+  // that drops them here gets caught and redirected. Anonymous
+  // visitors fall through and see the full pricing page as before.
+  if (user && !user.onboardingCompleted) {
+    redirect("/onboarding");
+  }
+
   const reasonParam = searchParams?.reason;
   const reason: PaywallReason | null =
     reasonParam === "payment_failed" || reasonParam === "canceled"
