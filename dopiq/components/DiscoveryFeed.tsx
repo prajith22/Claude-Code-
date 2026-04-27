@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { memo } from "react";
 import { motion } from "framer-motion";
 import type { Product, ProductCategory } from "@/types";
 import { useCartStore } from "@/lib/cart-store";
@@ -197,7 +199,7 @@ function FilteredGrid({
   );
 }
 
-export function ProductCard({
+function ProductCardImpl({
   product,
   className,
 }: {
@@ -216,13 +218,14 @@ export function ProductCard({
     >
       <Link href={`/shop/${product.id}`} className="block">
         <div className="relative h-[480px] overflow-hidden bg-surface-alt">
-          {/* Raw <img> to match the detail page — keeps local /products/*.jpg
-              paths out of the Next image optimizer. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          {/* Next/Image lazy-loads by default + serves the right size
+              for the device — big bandwidth + LCP win over raw <img>. */}
+          <Image
             src={product.imageUrl}
             alt={product.name}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             style={{ filter: "blur(0.8px)" }}
           />
         </div>
@@ -260,6 +263,11 @@ export function ProductCard({
     </motion.div>
   );
 }
+
+// Memoized so re-renders of the parent (filter changes, scroll-driven
+// motion) don't ripple through every grid card. Each product object
+// is stable across renders so referential equality is sufficient.
+export const ProductCard = memo(ProductCardImpl);
 
 function FilterPill({
   active,

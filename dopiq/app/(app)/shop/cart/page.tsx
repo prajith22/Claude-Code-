@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useCartStore, cartSubtotal } from "@/lib/cart-store";
 import { formatUSD } from "@/lib/utils";
 import { Bag } from "@/components/icons";
@@ -34,11 +35,12 @@ export default function ShopCartPage() {
               <li key={l.id} className="card flex gap-4 p-4">
                 {l.imageUrl && (
                   <div className="relative h-20 w-20 flex-none overflow-hidden rounded-xl bg-surface-alt">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={l.imageUrl}
                       alt={l.name}
-                      className="h-full w-full object-cover"
+                      fill
+                      sizes="80px"
+                      className="object-cover"
                       style={{ filter: "blur(0.8px)" }}
                     />
                   </div>
