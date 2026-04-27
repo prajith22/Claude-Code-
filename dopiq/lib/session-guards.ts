@@ -16,6 +16,14 @@ export async function requireSubscribedUser() {
   const user = await requireUser();
   if (computeAccessState(user) === "active") return user;
 
+  // Brand-new accounts haven't seen the 3-screen welcome yet — show
+  // it once before sending them to the paywall. Once
+  // onboardingCompleted flips true the user falls through to the
+  // normal paywall flow on subsequent visits.
+  if (!user.onboardingCompleted) {
+    redirect("/onboarding");
+  }
+
   const reason = paywallReason(user);
   redirect(reason === "none" ? "/paywall" : `/paywall?reason=${reason}`);
 }
