@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  animate,
   AnimatePresence,
   motion,
   useMotionValue,
@@ -397,79 +396,78 @@ function ItemSelectCard({
 
 // ---------- Step 3: slide-up-to-sim gesture ----------
 
-const SLIDE_TRIGGER_PX = 150;
-const SLIDE_OVERDRAG_PX = 60;
+// Mapping range for the green tint: 0px → tan, 200px upward → full
+// brand-green. Drag progress is piped directly through useTransform
+// with no intermediate state so finger position drives the wash
+// frame-perfectly on iOS Safari.
+const SLIDE_FULL_TINT_PX = 200;
 
 function SlideUpToSim({ onComplete }: { onComplete: () => void }) {
   const y = useMotionValue(0);
   const [completing, setCompleting] = useState(false);
 
-  // Drag progress 0 → 1 as the user pulls upward toward 150px.
   const progress = useTransform(y, (v) =>
-    Math.min(1, Math.max(0, -v / SLIDE_TRIGGER_PX)),
+    Math.min(1, Math.max(0, -v / SLIDE_FULL_TINT_PX)),
   );
-  // Subtle full-screen green wash that grows with the drag.
-  const tintOpacity = useTransform(progress, [0, 1], [0, 0.08]);
-  // Arrow + label fade out by ~40% drag — the green pill takes over.
+  // Green overlay opacity = drag progress. 0 at rest, 1 at 200px up.
+  // Animating opacity (not background-color) keeps the wash on the
+  // GPU compositor, so there's no repaint / no Safari jank.
+  const tintOpacity = progress;
+  // Arrow + label fade out by ~40% drag — the wash takes over.
   const promptOpacity = useTransform(progress, [0, 0.4], [1, 0]);
-  // Pill grows upward from the indicator's bottom edge.
-  const pillHeight = useTransform(progress, [0, 1], [0, 72]);
+  // Pill grows upward via scaleY (transform-only, GPU-accelerated).
+  // Anchored at the bottom edge so it appears to extend upward.
+  const pillScaleY = progress;
   const pillOpacity = useTransform(progress, [0, 0.05, 1], [0, 1, 1]);
 
   function handleDragEnd() {
     if (completing) return;
-    if (-y.get() >= SLIDE_TRIGGER_PX) {
-      // Trigger completion — exit the indicator upward off-screen,
-      // then hand off to the page-level GreenFlash overlay.
+    // Any upward drag — even a single pixel — fires completion on
+    // lift. No threshold, no snap-back, no spring. Downward or
+    // zero drag: do nothing.
+    if (y.get() < 0) {
       setCompleting(true);
-      animate(y, -window.innerHeight, {
-        duration: 0.3,
-        ease: [0.4, 0, 0.2, 1],
-        onComplete: () => onComplete(),
-      });
-    } else {
-      // Snap back to start with a satisfying spring.
-      animate(y, 0, { type: "spring", stiffness: 400, damping: 30 });
+      onComplete();
     }
   }
 
   return (
     <>
-      {/* Full-screen green tint — fixed-position overlay whose
-          opacity follows the drag. pointer-events-none so it never
-          intercepts the gesture. */}
+      {/* Full-screen green wash — opacity-only animation so iOS
+          Safari composites it on the GPU. pointer-events-none keeps
+          the gesture flowing through. */}
       <motion.div
         aria-hidden
         className="pointer-events-none fixed inset-0 z-[5] bg-[#00C853]"
         style={{ opacity: tintOpacity }}
       />
 
-      {/* Draggable indicator — vertical-only drag, no horizontal
-          movement. Min-height 88 so the touch target is comfortable
-          for thumbs even without dragging into the prompt itself. */}
+      {/* Draggable indicator — vertical-only drag, hard stop at the
+          200px tint range. No elastic, no momentum: position tracks
+          the finger 1:1. */}
       <motion.div
         drag="y"
-        dragConstraints={{
-          top: -(SLIDE_TRIGGER_PX + SLIDE_OVERDRAG_PX),
-          bottom: 0,
-        }}
+        dragConstraints={{ top: -SLIDE_FULL_TINT_PX, bottom: 0 }}
         dragElastic={0}
         dragMomentum={false}
         onDragEnd={handleDragEnd}
         style={{ y, touchAction: "none" }}
         className="relative z-10 flex min-h-[88px] w-40 cursor-grab flex-col items-center justify-end pb-2 active:cursor-grabbing"
       >
-        {/* Layer 1 — green pill that grows upward as drag progresses,
-            anchored to the indicator's bottom edge. */}
+        {/* Layer 1 — brand-green pill, transform-only (scaleY) so it
+            grows upward without triggering layout. */}
         <motion.div
           aria-hidden
-          className="absolute bottom-2 left-1/2 w-16 -translate-x-1/2 rounded-pill bg-brand"
-          style={{ height: pillHeight, opacity: pillOpacity }}
+          className="absolute bottom-2 left-1/2 h-16 w-16 -translate-x-1/2 rounded-pill bg-brand"
+          style={{
+            scaleY: pillScaleY,
+            opacity: pillOpacity,
+            transformOrigin: "bottom",
+          }}
         />
 
-        {/* Layer 2 — label + bouncing arrow. Fades out as the pill
-            takes over. relative + z-10 so it sits above the pill at
-            rest. */}
+        {/* Layer 2 — label + bouncing arrow. Fades out as the wash
+            and pill take over. */}
         <motion.div
           style={{ opacity: promptOpacity }}
           className="relative z-10 flex flex-col items-center gap-1.5"
