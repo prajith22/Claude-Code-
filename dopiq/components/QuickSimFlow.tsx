@@ -15,6 +15,7 @@ import {
   type QuickSimItem,
   type QuickSimLocation,
 } from "@/data/quick-sim-items";
+import { QuickSimItemIcon } from "@/components/QuickSimItemIcons";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
 import { useSavingsStore } from "@/lib/savings-store";
 import { formatUSD } from "@/lib/utils";
@@ -388,14 +389,21 @@ function ItemDeck({
           <SwipeCard
             key={item.id}
             item={item}
-            isFirst={stage.idx === 0}
             onDecide={decide}
           />
         </AnimatePresence>
       </div>
 
+      {/* Permanent swipe hint — always visible, never dismissable. */}
+      <p
+        aria-hidden
+        className="mt-3 text-center font-sans text-[12px] text-ink-muted"
+      >
+        ← Skip · Swipe to decide · Sim it →
+      </p>
+
       {/* Bottom action buttons */}
-      <div className="mt-5 flex items-center justify-center gap-6">
+      <div className="mt-4 flex items-center justify-center gap-6">
         <ActionButton
           variant="skip"
           onClick={() => decide(false)}
@@ -413,11 +421,9 @@ function ItemDeck({
 
 function SwipeCard({
   item,
-  isFirst,
   onDecide,
 }: {
   item: QuickSimItem;
-  isFirst: boolean;
   onDecide: (add: boolean) => void;
 }) {
   const x = useMotionValue(0);
@@ -477,9 +483,11 @@ function SwipeCard({
       />
 
       <div className="relative flex flex-col items-center gap-5 text-center">
-        <span aria-hidden className="text-[88px] leading-none">
-          {item.emoji}
-        </span>
+        <QuickSimItemIcon
+          kind={item.iconKey}
+          size={48}
+          className="text-[#0A0F1E]"
+        />
         <div className="space-y-2">
           <p className="font-heading text-[24px] font-extrabold leading-tight text-ink md:text-[28px]">
             {item.name}
@@ -488,12 +496,6 @@ function SwipeCard({
             {formatUSD(item.priceCents / 100)}
           </p>
         </div>
-
-        {isFirst && (
-          <p className="mt-2 text-[12px] font-medium text-ink-muted">
-            Swipe right to add · swipe left to skip
-          </p>
-        )}
       </div>
     </motion.div>
   );
@@ -610,8 +612,8 @@ function SummaryView({
             key={item.id}
             className="card flex items-center gap-3 px-4 py-3"
           >
-            <span aria-hidden className="text-[28px] leading-none">
-              {item.emoji}
+            <span className="flex h-9 w-9 flex-none items-center justify-center rounded-xl bg-surface-alt text-[#0A0F1E]">
+              <QuickSimItemIcon kind={item.iconKey} size={20} />
             </span>
             <p className="flex-1 text-[15px] font-bold text-ink">{item.name}</p>
             <p className="font-mono text-[15px] font-bold text-ink">
