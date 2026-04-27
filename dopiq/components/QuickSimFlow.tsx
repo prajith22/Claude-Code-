@@ -652,11 +652,18 @@ function SummaryView({
       </p>
 
       {/* Items — receipt block. Quantity bubble, name, price, hairline
-          divider between rows, single white surface around the lot. */}
+          divider between rows, single white surface around the lot.
+          Index-suffixed key intentionally: "Browse again" reshuffles
+          from the same 10-item pool, so the same item can land in
+          selected twice across rounds. Keying by id alone would let
+          React dedupe and the row would silently disappear. */}
       <section className="mt-4 overflow-hidden rounded-card border border-[#E8E4E0] bg-white shadow-card">
-        <ul className="divide-y divide-[#F0EAE0]">
-          {selected.map((item) => (
-            <li key={item.id} className="flex items-center gap-3 px-4 py-3">
+        <div className="divide-y divide-[#F0EAE0]">
+          {selected.map((item, index) => (
+            <div
+              key={`${item.id}-${index}`}
+              className="flex items-center gap-3 px-4 py-3"
+            >
               <span className="flex h-7 w-12 flex-none items-center justify-center rounded-full bg-surface-alt font-mono text-[12px] font-semibold text-ink-muted">
                 x1
               </span>
@@ -666,9 +673,9 @@ function SummaryView({
               <p className="font-mono text-[15px] font-bold text-ink">
                 {formatUSD(item.priceCents / 100)}
               </p>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </section>
 
       {/* Payment method — the most "this feels real" element on the
