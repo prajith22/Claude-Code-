@@ -80,26 +80,24 @@ export function QuickSimFlow() {
 
   async function commitSimulation(totalCents: number) {
     const allowed = await tryRun(async () => {
-      // Credit savings synchronously enough that the green flash and
-      // the post-flash home-page chip are in lockstep. Fire-and-forget
-      // is OK — the bump fires after the response returns.
-      try {
-        await fetch("/api/savings/record", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            section: "shop",
-            amount: totalCents / 100,
-            todayDateStr: todayDateStr(),
-          }),
-        });
-        bumpSavings();
-      } catch {
-        // best-effort — the green flash should not get blocked on a
-        // flaky network. Streak / savings will reconcile next visit.
-      }
+      // Show the flash the instant the cap check passes — fire the
+      // savings record in the background so the network round-trip
+      // doesn't sit between the user's gesture and the flash. The
+      // home-page chip bumps as soon as the request resolves; on a
+      // flaky network it just reconciles on the next visit.
       setStage({ kind: "flash", totalCents });
       window.setTimeout(() => router.push("/home"), 1900);
+      void fetch("/api/savings/record", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          section: "shop",
+          amount: totalCents / 100,
+          todayDateStr: todayDateStr(),
+        }),
+      })
+        .then(() => bumpSavings())
+        .catch(() => {});
     });
     return allowed;
   }
@@ -513,10 +511,10 @@ function GreenFlash({ totalCents }: { totalCents: number }) {
   return (
     <motion.div
       key="flash"
-      initial={{ opacity: 0 }}
+      initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.18 }}
+      transition={{ duration: 0.15 }}
       className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-brand text-white"
     >
       {/* Quick wash to brand-vivid then fade back to brand */}
@@ -527,10 +525,9 @@ function GreenFlash({ totalCents }: { totalCents: number }) {
         animate={{ scale: 1, opacity: 1 }}
         transition={{
           type: "spring",
-          stiffness: 220,
-          damping: 14,
-          mass: 0.9,
-          delay: 0.18,
+          stiffness: 260,
+          damping: 16,
+          mass: 0.7,
         }}
         className="relative flex h-28 w-28 items-center justify-center rounded-full bg-white text-brand shadow-lg"
       >
@@ -549,15 +546,15 @@ function GreenFlash({ totalCents }: { totalCents: number }) {
             strokeLinejoin="round"
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
-            transition={{ delay: 0.32, duration: 0.45, ease: "easeOut" }}
+            transition={{ delay: 0.08, duration: 0.3, ease: "easeOut" }}
           />
         </motion.svg>
       </motion.div>
 
       <motion.p
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.3 }}
+        transition={{ delay: 0.18, duration: 0.2 }}
         className="mt-6 font-mono text-[40px] font-extrabold tabular-nums text-white md:text-[52px]"
       >
         Saved {formatUSD(totalCents / 100)}
