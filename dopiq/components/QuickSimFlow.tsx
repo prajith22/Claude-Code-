@@ -16,7 +16,7 @@ import {
   type QuickSimLocation,
 } from "@/data/quick-sim-items";
 import { QuickSimItemIcon } from "@/components/QuickSimItemIcons";
-import { Pin } from "@/components/icons";
+import { Card, Pin } from "@/components/icons";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
 import { useSavingsStore } from "@/lib/savings-store";
 import { formatUSD } from "@/lib/utils";
@@ -39,6 +39,12 @@ type Stage =
       // Selected items can be toggled freely on the new tap-grid.
       // Order in the array matches tap order, which doesn't matter
       // for math but is stable for React keys.
+      selected: QuickSimItem[];
+    }
+  | {
+      kind: "checkout";
+      location: QuickSimLocation;
+      queue: QuickSimItem[];
       selected: QuickSimItem[];
     }
   | { kind: "flash"; totalCents: number };
@@ -102,7 +108,20 @@ export function QuickSimFlow() {
     return allowed;
   }
 
-  function checkout(selected: QuickSimItem[]) {
+  function goToCheckout() {
+    setStage((s) =>
+      s.kind === "items"
+        ? {
+            kind: "checkout",
+            location: s.location,
+            queue: s.queue,
+            selected: s.selected,
+          }
+        : s,
+    );
+  }
+
+  function confirmSim(selected: QuickSimItem[]) {
     const subtotalCents = selected.reduce((n, i) => n + i.priceCents, 0);
     if (subtotalCents === 0) {
       // Empty cart — flash $0.00 so the user still gets the
@@ -111,9 +130,9 @@ export function QuickSimFlow() {
       window.setTimeout(() => router.push("/home"), 1500);
       return;
     }
-    // Grand total — applies the same 8.25% tax the receipt used to
-    // surface, so the savings counter still credits the realistic
-    // total instead of the tax-free subtotal.
+    // Grand total — same 8.25% tax surfaced on the checkout summary
+    // so what the user sees on the receipt is exactly what credits
+    // the savings counter.
     const taxCents = Math.round(subtotalCents * TAX_RATE);
     const grandTotalCents = subtotalCents + taxCents;
     void commitSimulation(grandTotalCents);
@@ -124,7 +143,18 @@ export function QuickSimFlow() {
   }
 
   function back() {
-    setStage((s) => (s.kind === "items" ? { kind: "location" } : s));
+    setStage((s) => {
+      if (s.kind === "items") return { kind: "location" };
+      if (s.kind === "checkout") {
+        return {
+          kind: "items",
+          location: s.location,
+          queue: s.queue,
+          selected: s.selected,
+        };
+      }
+      return s;
+    });
   }
 
   return (
@@ -145,7 +175,13 @@ export function QuickSimFlow() {
           <ItemSelectionGrid
             stage={stage}
             onToggle={toggleItem}
-            onCheckout={() => checkout(stage.selected)}
+            onReview={goToCheckout}
+          />
+        )}
+        {stage.kind === "checkout" && (
+          <CheckoutSummary
+            stage={stage}
+            onConfirm={() => confirmSim(stage.selected)}
           />
         )}
       </main>
@@ -275,11 +311,11 @@ function LocationGrid({
 function ItemSelectionGrid({
   stage,
   onToggle,
-  onCheckout,
+  onReview,
 }: {
   stage: Extract<Stage, { kind: "items" }>;
   onToggle: (item: QuickSimItem) => void;
-  onCheckout: () => void;
+  onReview: () => void;
 }) {
   const subtotalCents = stage.selected.reduce(
     (n, i) => n + i.priceCents,
@@ -328,12 +364,19 @@ function ItemSelectionGrid({
         ))}
       </div>
 
-      {/* Slide-up-to-sim — sits at the bottom of the column via
-          mt-auto. Always visible, always pressable — empty cart
-          still triggers the flash with $0.00 (just won't credit
-          savings). */}
-      <div className="mt-auto flex justify-center pt-6">
-        <SlideUpToSim onComplete={onCheckout} />
+      {/* Review-Order CTA — full-width navy button at the bottom
+          of the column. Always tappable; empty cart still routes to
+          the checkout summary so the user can see the "No items
+          selected" state. */}
+      <div className="mt-auto pt-6">
+        <motion.button
+          type="button"
+          onClick={onReview}
+          whileTap={{ scale: 0.98 }}
+          className="w-full rounded-pill bg-[#0A0F1E] py-4 font-heading text-[16px] font-bold text-white shadow-cardHover"
+        >
+          Review Order
+        </motion.button>
       </div>
     </div>
   );
@@ -392,7 +435,116 @@ function ItemSelectCard({
   );
 }
 
-// ---------- Step 3: slide-up-to-sim gesture ----------
+// ---------- Step 3: checkout summary ----------
+
+function CheckoutSummary({
+  stage,
+  onConfirm,
+}: {
+  stage: Extract<Stage, { kind: "checkout" }>;
+  onConfirm: () => void;
+}) {
+  const subtotalCents = stage.selected.reduce(
+    (n, i) => n + i.priceCents,
+    0,
+  );
+  const taxCents = Math.round(subtotalCents * TAX_RATE);
+  const totalCents = subtotalCents + taxCents;
+
+  return (
+    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pt-2 safe-bottom">
+      {/* Store header — same card as the item selection screen so
+          the user sees continuity through the flow. */}
+      <section className="rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card">
+        <p className="font-heading text-[16px] font-bold leading-tight text-ink">
+          {stage.location.name}
+        </p>
+        <p className="mt-1 flex items-center gap-1.5 text-[12px] text-ink-muted">
+          <Pin size={12} className="flex-none" />
+          {STORE_ADDRESSES[stage.location.key]}
+        </p>
+      </section>
+
+      {/* Receipt block — selected items with dividers between rows.
+          Empty cart shows a single muted-italic placeholder. */}
+      <section className="mt-3 overflow-hidden rounded-card bg-white shadow-card">
+        {stage.selected.length === 0 ? (
+          <p className="px-4 py-4 font-sans text-[14px] italic text-ink-muted">
+            No items selected
+          </p>
+        ) : (
+          stage.selected.map((item, i) => (
+            <div
+              key={item.id}
+              className={`flex items-center gap-3 px-4 py-3 ${
+                i > 0 ? "border-t border-[#F0EDE8]" : ""
+              }`}
+            >
+              <span className="flex h-9 w-9 flex-none items-center justify-center">
+                <QuickSimItemIcon kind={item.iconKey} size={22} />
+              </span>
+              <p className="flex-1 font-sans text-[15px] font-bold leading-tight text-ink">
+                {item.name}
+              </p>
+              <p className="font-mono text-[15px] font-bold text-ink">
+                {formatUSD(item.priceCents / 100)}
+              </p>
+            </div>
+          ))
+        )}
+      </section>
+
+      {/* Fake payment method — Visa ••4242 with a "Saved" pill
+          badge. Just dressing for the receipt feel; nothing real
+          gets charged. */}
+      <section className="mt-3 flex items-center gap-3 rounded-card bg-white p-4 shadow-card">
+        <span className="flex h-9 w-9 flex-none items-center justify-center text-ink">
+          <Card size={22} />
+        </span>
+        <p className="flex-1 font-sans text-[15px] font-bold text-[#0A0F1E]">
+          Visa ending in 4242
+        </p>
+        <span className="rounded-pill bg-[#E8F5E9] px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[#1B5E20]">
+          Saved
+        </span>
+      </section>
+
+      {/* Totals — subtotal + tax + divider + grand total. The grand
+          total is the same number that gets credited to savings
+          when the user slides up to confirm. */}
+      <section className="mt-3 rounded-card bg-white p-4 shadow-card">
+        <div className="flex items-baseline justify-between">
+          <p className="text-[13px] text-ink-muted">Subtotal</p>
+          <p className="font-mono text-[15px] font-bold text-ink">
+            {formatUSD(subtotalCents / 100)}
+          </p>
+        </div>
+        <div className="mt-1.5 flex items-baseline justify-between">
+          <p className="text-[13px] text-ink-muted">Tax (8.25%)</p>
+          <p className="font-mono text-[15px] font-bold text-ink">
+            {formatUSD(taxCents / 100)}
+          </p>
+        </div>
+        <div className="my-3 h-px bg-[#F0EDE8]" />
+        <div className="flex items-baseline justify-between">
+          <p className="font-heading text-[15px] font-bold text-ink">Total</p>
+          <p className="font-mono text-[24px] font-extrabold text-brand">
+            {formatUSD(totalCents / 100)}
+          </p>
+        </div>
+      </section>
+
+      {/* Slide-up-to-sim gesture — lives only on the checkout page
+          now. Same lift-to-fire logic; empty cart still triggers
+          the $0.00 flash. */}
+      <div className="mt-auto flex justify-center pt-8">
+        <SlideUpToSim onComplete={onConfirm} />
+      </div>
+    </div>
+  );
+}
+
+// ---------- Step 4: slide-up-to-sim gesture ----------
 
 // Mapping range for the green tint: 0px → tan, 200px upward → full
 // brand-green. Drag progress is piped directly through useTransform
@@ -502,7 +654,7 @@ function SlideUpToSim({ onComplete }: { onComplete: () => void }) {
   );
 }
 
-// ---------- Step 4: green flash ----------
+// ---------- Step 5: green flash ----------
 
 function GreenFlash({ totalCents }: { totalCents: number }) {
   // Two layered animations: an instant 200ms green wash that fades
