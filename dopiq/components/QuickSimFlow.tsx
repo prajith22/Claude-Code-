@@ -626,7 +626,11 @@ function SummaryView({
   const grandTotalCents = subtotalCents + taxCents;
 
   return (
-    <div className="flex flex-1 flex-col overflow-y-auto px-5 pt-2 safe-bottom">
+    // min-h-0 is non-negotiable here — without it, the default
+    // min-height: auto on a flex child stops overflow-y-auto from
+    // engaging on iOS Safari, and any content past the viewport just
+    // clips off (you'd see the items list cut mid-row, no scroll).
+    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pt-2 safe-bottom">
       {/* Store header — feels like the location you're physically
           checking out at. */}
       <section className="rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card">
