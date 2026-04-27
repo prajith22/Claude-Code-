@@ -398,7 +398,7 @@ function ItemSelectCard({
 
 // ---------- Step 3: hold-to-confirm button ----------
 
-const HOLD_DURATION_MS = 1500;
+const HOLD_DURATION_MS = 800;
 const HOLD_RELEASE_MS = 300;
 const RING_R = 43;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_R;
@@ -452,6 +452,10 @@ function HoldToConfirm({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div className="flex flex-col items-center gap-3">
+      <p className="font-heading text-[16px] font-bold text-[#0A0F1E]">
+        Hold to confirm your sim
+      </p>
+
       <motion.button
         type="button"
         onTapStart={startHold}
@@ -496,64 +500,7 @@ function HoldToConfirm({ onComplete }: { onComplete: () => void }) {
             transform="rotate(-90 46 46)"
           />
         </svg>
-
-        {/* Center label — three states swap via AnimatePresence so
-            each transition is its own quick fade. */}
-        <span className="pointer-events-none relative">
-          <AnimatePresence mode="wait" initial={false}>
-            {completed ? (
-              <motion.span
-                key="done"
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ type: "spring", stiffness: 240, damping: 16 }}
-                className="block"
-              >
-                <svg
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth={3}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden
-                >
-                  <path d="m5 12.5 5 5 9-10" />
-                </svg>
-              </motion.span>
-            ) : holding ? (
-              <motion.span
-                key="holding"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                className="block font-sans text-[12px] font-semibold text-white"
-              >
-                Holding…
-              </motion.span>
-            ) : (
-              <motion.span
-                key="hold"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                className="block font-heading text-[16px] font-bold text-white"
-              >
-                Hold
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </span>
       </motion.button>
-
-      <p className="font-sans text-[12px] text-ink-muted">
-        Hold to confirm your sim
-      </p>
     </div>
   );
 }
