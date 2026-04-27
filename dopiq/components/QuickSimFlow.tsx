@@ -11,6 +11,7 @@ import {
 } from "framer-motion";
 import {
   QUICK_SIM_LOCATIONS,
+  QUICK_SIM_ICON_COLORS,
   pickQuickSimItems,
   type QuickSimItem,
   type QuickSimLocation,
@@ -433,6 +434,10 @@ function SwipeCard({
   const greenOpacity = useTransform(x, [0, 80, 160], [0, 0.4, 0.7]);
   const redOpacity = useTransform(x, [-160, -80, 0], [0.5, 0.25, 0]);
 
+  // Per-category pastel — icon, name, and price all inherit via
+  // currentColor so we set the foreground once on the card root.
+  const palette = QUICK_SIM_ICON_COLORS[item.iconKey];
+
   function handleDragEnd(_: unknown, info: PanInfo) {
     if (info.offset.x < -SWIPE_OFFSET || info.velocity.x < -SWIPE_VELOCITY) {
       onDecide(false);
@@ -451,7 +456,12 @@ function SwipeCard({
       dragConstraints={{ left: 0, right: 0 }}
       dragElastic={0.6}
       onDragEnd={handleDragEnd}
-      style={{ x, rotate }}
+      style={{
+        x,
+        rotate,
+        backgroundColor: palette.bg,
+        color: palette.fg,
+      }}
       variants={{
         initial: { opacity: 0, y: 30, scale: 0.95 },
         animate: { opacity: 1, y: 0, scale: 1 },
@@ -470,9 +480,11 @@ function SwipeCard({
         stiffness: 280,
         damping: 26,
       }}
-      className="relative w-full max-w-sm cursor-grab touch-pan-y rounded-card bg-white p-8 shadow-cardHover active:cursor-grabbing"
+      className="relative w-full max-w-sm cursor-grab touch-pan-y rounded-card p-8 shadow-cardHover active:cursor-grabbing"
     >
-      {/* Green / red wash overlays driven by drag x */}
+      {/* Green / red wash overlays driven by drag x — these are
+          action signals (add vs skip), not card decoration, so they
+          stay brand-green / red regardless of the card's pastel. */}
       <motion.div
         style={{ opacity: greenOpacity }}
         className="pointer-events-none absolute inset-0 rounded-card bg-brand"
@@ -483,16 +495,12 @@ function SwipeCard({
       />
 
       <div className="relative flex flex-col items-center gap-5 text-center">
-        <QuickSimItemIcon
-          kind={item.iconKey}
-          size={48}
-          className="text-[#0A0F1E]"
-        />
+        <QuickSimItemIcon kind={item.iconKey} size={48} />
         <div className="space-y-2">
-          <p className="font-heading text-[24px] font-extrabold leading-tight text-ink md:text-[28px]">
+          <p className="font-heading text-[24px] font-extrabold leading-tight md:text-[28px]">
             {item.name}
           </p>
-          <p className="font-mono text-[28px] font-extrabold text-brand md:text-[32px]">
+          <p className="font-mono text-[28px] font-extrabold md:text-[32px]">
             {formatUSD(item.priceCents / 100)}
           </p>
         </div>
