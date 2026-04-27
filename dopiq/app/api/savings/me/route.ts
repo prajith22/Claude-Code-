@@ -42,6 +42,9 @@ export async function GET(req: Request) {
       currentStreak: true,
       longestStreak: true,
       lastStreakDate: true,
+      plan: true,
+      simulationsUsed: true,
+      simulationsLimit: true,
     },
   });
 
@@ -67,5 +70,8 @@ export async function GET(req: Request) {
     longestStreak: user.longestStreak,
     lastStreakDate: user.lastStreakDate,
     streakStatus: status.state,
+    plan: user.plan ?? null,
+    simulationsUsed: user.simulationsUsed,
+    simulationsLimit: user.simulationsLimit,
   });
 }
