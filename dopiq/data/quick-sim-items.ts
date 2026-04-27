@@ -102,6 +102,30 @@ export const QUICK_SIM_ITEMS: Record<QuickSimLocation["key"], QuickSimItem[]> = 
   ],
 };
 
+/**
+ * Per-category pastel palette for the swipe cards. Each item picks its
+ * pair via iconKey, so a deck of 5 reads as 5 different colours rather
+ * than five copies of the same surface.
+ *
+ * Caller applies `bg` to backgroundColor and `fg` to the card's color
+ * style — the icon, name, and price all inherit via currentColor.
+ */
+export const QUICK_SIM_ICON_COLORS: Record<
+  QuickSimIconKey,
+  { bg: string; fg: string }
+> = {
+  drink: { bg: "#E3F2FD", fg: "#0D47A1" },
+  snack: { bg: "#FFF9C4", fg: "#5D4037" },
+  candy: { bg: "#FCE4EC", fg: "#880E4F" },
+  food: { bg: "#FFF3E0", fg: "#BF360C" },
+  scratch: { bg: "#FFFDE7", fg: "#F57F17" },
+  accessory: { bg: "#F3E5F5", fg: "#4A148C" },
+  magazine: { bg: "#E0F2F1", fg: "#004D40" },
+  flower: { bg: "#E8F5E9", fg: "#1B5E20" },
+  candle: { bg: "#EDE7F6", fg: "#311B92" },
+  coffee: { bg: "#EFEBE9", fg: "#3E2723" },
+};
+
 /** How many items the deck shows per visit. Drawn at random from the full 10. */
 export const QUICK_SIM_ITEMS_PER_VISIT = 5;
 
