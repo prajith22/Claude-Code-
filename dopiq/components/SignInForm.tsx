@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Lock, Card, Bolt } from "@/components/icons";
@@ -16,24 +17,72 @@ const fadeUp = {
   show: { opacity: 1, y: 0 },
 };
 
-const ERROR_MESSAGES: Record<string, string> = {
+const OAUTH_ERROR_MESSAGES: Record<string, string> = {
   AccessDenied: "Google blocked the sign-in. Try again.",
   Verification: "Verification link expired. Try again.",
-  OAuthSignin: "Couldn't reach Google. Try again.",
-  OAuthCallback: "Google sign-in didn't complete. Try again.",
-  OAuthCreateAccount: "Couldn't create your account. Try again.",
+  OAuthSignin: "Couldn’t reach Google. Try again.",
+  OAuthCallback: "Google sign-in didn’t complete. Try again.",
+  OAuthCreateAccount: "Couldn’t create your account. Try again.",
   Callback: "Sign-in failed. Try again.",
   Default: "Sign-in failed. Try again.",
 };
 
+// Maps the messages thrown from authorize() back to a single friendly
+// hint per failure mode. Keep keys in sync with lib/auth.ts.
+const CREDENTIALS_ERROR_MAP: Array<{ match: string; message: string }> = [
+  { match: "Missing email or password", message: "Enter your email and password." },
+  { match: "No account with that email", message: "No account with that email. Sign up?" },
+  { match: "Try signing in with Google", message: "This email signed up with Google. Use the Google button." },
+  { match: "Wrong password", message: "Wrong password. Try again." },
+];
+
+function mapCredentialsError(raw: string | undefined | null): string {
+  if (!raw) return "Sign-in failed. Try again.";
+  for (const { match, message } of CREDENTIALS_ERROR_MAP) {
+    if (raw.includes(match)) return message;
+  }
+  return raw;
+}
+
 export function SignInForm() {
+  const router = useRouter();
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/home";
-  const errorParam = params.get("error");
-  const errorMessage = errorParam
-    ? ERROR_MESSAGES[errorParam] ?? ERROR_MESSAGES.Default
+  const oauthErrorParam = params.get("error");
+  const oauthErrorMessage = oauthErrorParam
+    ? OAUTH_ERROR_MESSAGES[oauthErrorParam] ?? OAUTH_ERROR_MESSAGES.Default
     : null;
-  const [loading, setLoading] = useState(false);
+
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [credSubmitting, setCredSubmitting] = useState(false);
+  const [credError, setCredError] = useState<string | null>(null);
+
+  async function onCredentialsSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (credSubmitting) return;
+    setCredError(null);
+    setCredSubmitting(true);
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+      if (res?.error) {
+        setCredError(mapCredentialsError(res.error));
+        setCredSubmitting(false);
+        return;
+      }
+      router.push(callbackUrl);
+    } catch (err) {
+      setCredError(
+        err instanceof Error ? err.message : "Sign-in failed. Try again.",
+      );
+      setCredSubmitting(false);
+    }
+  }
 
   return (
     <motion.div
@@ -55,7 +104,7 @@ export function SignInForm() {
         transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
         className="mt-2 text-[15px] text-ink-muted"
       >
-        Use your Google account. No password, nothing to remember.
+        Use Google or your email — whichever you signed up with.
       </motion.p>
 
       {/* Trial banner */}
@@ -74,27 +123,94 @@ export function SignInForm() {
         whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(10,15,30,0.12)" }}
         whileTap={{ y: 0, scale: 0.99 }}
         type="button"
-        disabled={loading}
+        disabled={googleLoading}
         onClick={() => {
-          setLoading(true);
+          setGoogleLoading(true);
           signIn("google", { callbackUrl });
         }}
         className="mt-4 flex h-14 w-full items-center justify-center gap-3 rounded-pill border border-surface-border bg-white text-[15px] font-bold text-ink transition-colors duration-150 hover:bg-surface-alt disabled:opacity-60"
       >
         <GoogleMark />
-        <span>{loading ? "Opening Google…" : "Continue with Google"}</span>
+        <span>{googleLoading ? "Opening Google…" : "Continue with Google"}</span>
       </motion.button>
 
-      {errorMessage && (
+      {oauthErrorMessage && (
         <p className="mt-3 rounded-xl bg-red-50 px-4 py-2 text-center text-[12px] font-medium text-red-700">
-          {errorMessage}
+          {oauthErrorMessage}
         </p>
       )}
+
+      {/* "or" divider */}
+      <motion.div
+        variants={fadeUp}
+        transition={{ duration: 0.4, delay: 0.34, ease: "easeOut" }}
+        className="mt-6 flex items-center gap-3"
+        aria-hidden
+      >
+        <div className="h-px flex-1 bg-surface-border" />
+        <span className="text-[11px] font-semibold uppercase tracking-widest text-ink-muted">
+          or
+        </span>
+        <div className="h-px flex-1 bg-surface-border" />
+      </motion.div>
+
+      {/* Email + password form */}
+      <motion.form
+        variants={fadeUp}
+        transition={{ duration: 0.4, delay: 0.4, ease: "easeOut" }}
+        onSubmit={onCredentialsSubmit}
+        className="mt-5 space-y-3"
+      >
+        <input
+          type="email"
+          required
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          className="input"
+        />
+        <input
+          type="password"
+          required
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          className="input"
+        />
+        <motion.button
+          whileHover={{ y: -1 }}
+          whileTap={{ y: 0, scale: 0.99 }}
+          type="submit"
+          disabled={credSubmitting}
+          className="btn-navy mt-1 h-12 w-full"
+        >
+          {credSubmitting ? "Signing in…" : "Sign in"}
+        </motion.button>
+
+        {credError && (
+          <p className="rounded-xl bg-red-50 px-4 py-2 text-center text-[12px] font-medium text-red-700">
+            {credError}
+          </p>
+        )}
+      </motion.form>
+
+      <motion.p
+        variants={fadeUp}
+        transition={{ duration: 0.4, delay: 0.46, ease: "easeOut" }}
+        className="mt-5 text-center text-[13px] text-ink-muted"
+      >
+        New here?{" "}
+        <Link href="/signup" className="font-semibold text-ink underline">
+          Create an account
+        </Link>
+      </motion.p>
 
       {/* Trust badges */}
       <motion.div
         variants={fadeUp}
-        transition={{ duration: 0.4, delay: 0.4, ease: "easeOut" }}
+        transition={{ duration: 0.4, delay: 0.52, ease: "easeOut" }}
         className="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[12px] text-ink-muted"
       >
         <span className="inline-flex items-center gap-1.5">
@@ -115,8 +231,8 @@ export function SignInForm() {
 
       <motion.p
         variants={fadeUp}
-        transition={{ duration: 0.4, delay: 0.5, ease: "easeOut" }}
-        className="mt-8 text-center text-[11px] text-ink-faint"
+        transition={{ duration: 0.4, delay: 0.6, ease: "easeOut" }}
+        className="mt-6 text-center text-[11px] text-ink-faint"
       >
         By continuing you agree to the terms and privacy policy.
       </motion.p>
