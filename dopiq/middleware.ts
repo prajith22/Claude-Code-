@@ -14,6 +14,12 @@ const ALWAYS_ALLOW_PREFIXES = [
   "/robots.txt",
 ];
 
+// Authed-only paths that don't live under (app) — the middleware's
+// signed-out check still bounces unauthed visitors to /signin, but
+// the page itself doesn't get the gated TopNav/BottomNav chrome.
+// /onboarding renders the 3-screen welcome flow as a full-screen
+// overlay so the chrome would just get in the way.
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
