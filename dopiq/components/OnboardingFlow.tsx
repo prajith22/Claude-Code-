@@ -4,9 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 
-type Stage = 1 | 2 | 3;
-
-const RESPONSE_HOLD_MS = 1500;
+type Stage = 1 | 2 | 3 | 4;
 
 const screenVariants: Variants = {
   enter: { x: 320, opacity: 0 },
@@ -21,16 +19,16 @@ export function OnboardingFlow() {
   const [stage, setStage] = useState<Stage>(1);
   const [submitting, setSubmitting] = useState(false);
 
-  async function complete(redirectTo: "/paywall" = "/paywall") {
+  async function complete() {
     if (submitting) return;
     setSubmitting(true);
     try {
       await fetch("/api/onboarding/complete", { method: "POST" });
     } catch {
-      // best-effort — if the write fails, the user still moves on;
-      // they'll see the onboarding once more on next visit.
+      // best-effort — if the write fails the user moves on; they'll
+      // see the onboarding once more on next visit.
     }
-    router.push(redirectTo);
+    router.push("/paywall");
   }
 
   return (
@@ -40,7 +38,7 @@ export function OnboardingFlow() {
         <ProgressDots stage={stage} />
         <button
           type="button"
-          onClick={() => complete()}
+          onClick={complete}
           disabled={submitting}
           className="text-[13px] font-semibold text-ink-muted underline-offset-4 hover:text-ink hover:underline disabled:opacity-60"
         >
@@ -86,10 +84,20 @@ export function OnboardingFlow() {
               transition={screenTransition}
               className="flex flex-1 flex-col"
             >
-              <Screen3
-                onComplete={() => complete()}
-                submitting={submitting}
-              />
+              <Screen3 onAdvance={() => setStage(4)} />
+            </motion.div>
+          )}
+          {stage === 4 && (
+            <motion.div
+              key="s4"
+              variants={screenVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={screenTransition}
+              className="flex flex-1 flex-col"
+            >
+              <Screen4 onComplete={complete} submitting={submitting} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -102,14 +110,12 @@ export function OnboardingFlow() {
 
 function ProgressDots({ stage }: { stage: Stage }) {
   return (
-    <div className="flex items-center gap-2" aria-label={`Step ${stage} of 3`}>
-      {[1, 2, 3].map((n) => (
+    <div className="flex items-center gap-2" aria-label={`Step ${stage} of 4`}>
+      {[1, 2, 3, 4].map((n) => (
         <span
           key={n}
           className={`h-2 rounded-full transition-all duration-300 ${
-            n === stage
-              ? "w-6 bg-[#0A0F1E]"
-              : "w-2 bg-[#E5E7EB]"
+            n === stage ? "w-6 bg-[#0A0F1E]" : "w-2 bg-[#E5E7EB]"
           }`}
         />
       ))}
@@ -117,37 +123,108 @@ function ProgressDots({ stage }: { stage: Stage }) {
   );
 }
 
-// ---------- Screen 1: confessions + response ----------
+// ---------- Shared primitives ----------
 
-const CONFESSIONS = [
+const PRIMARY_BUTTON_CLASS =
+  "w-full rounded-pill bg-[#0A0F1E] px-6 py-4 text-center font-heading text-[16px] font-bold text-white shadow-navy transition active:bg-navy-light disabled:opacity-60";
+
+function NextButton({
+  label = "Next",
+  onClick,
+  delay = 0,
+  pulse = false,
+  disabled = false,
+}: {
+  label?: string;
+  onClick: () => void;
+  delay?: number;
+  pulse?: boolean;
+  disabled?: boolean;
+}) {
+  if (pulse) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay, duration: 0.45 }}
+        className="mt-4"
+      >
+        <motion.button
+          animate={{ scale: [1, 1.02, 1] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          whileTap={{ scale: 0.98 }}
+          type="button"
+          onClick={onClick}
+          disabled={disabled}
+          className={PRIMARY_BUTTON_CLASS}
+        >
+          {label}
+        </motion.button>
+      </motion.div>
+    );
+  }
+  return (
+    <motion.button
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.45 }}
+      whileTap={{ scale: 0.98 }}
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`${PRIMARY_BUTTON_CLASS} mt-4`}
+    >
+      {label}
+    </motion.button>
+  );
+}
+
+// ---------- Screen 1: Who are you? ----------
+
+const SCREEN_1_OPTIONS = [
   {
-    emoji: "🛒",
-    text: "You've added things to your cart at 2am that you didn't need.",
+    bg: "#F3E8FF",
+    fg: "#4A148C",
+    label: "My cart is always full of things I don't need.",
+    response: "Your cart deserves a safe place to live. We built it.",
   },
   {
-    emoji: "🍔",
-    text: "You've ordered food delivery when your fridge was full.",
+    bg: "#FFF9E6",
+    fg: "#5D4037",
+    label: "DoorDash knows my order before I do.",
+    response: "Those cravings are real. So is our food simulator.",
   },
   {
-    emoji: "🎰",
-    text: "You've placed a bet just to feel something.",
+    bg: "#E8F0FF",
+    fg: "#1A237E",
+    label: "I bet for the thrill more than the money.",
+    response: "The thrill is real. Now you can keep your money too.",
+  },
+  {
+    bg: "#E8F5E9",
+    fg: "#1B5E20",
+    label: "I do all of these and I want to stop.",
+    response:
+      "You came to exactly the right place. Dopiq was built for you.",
   },
 ];
 
 function Screen1({ onAdvance }: { onAdvance: () => void }) {
-  const [agreed, setAgreed] = useState(false);
-  const advanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
+  const [nextVisible, setNextVisible] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    if (selected === null) return;
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => setNextVisible(true), 1500);
     return () => {
-      if (advanceRef.current) clearTimeout(advanceRef.current);
+      if (timer.current) clearTimeout(timer.current);
     };
-  }, []);
+  }, [selected]);
 
-  function agree() {
-    setAgreed(true);
-    advanceRef.current = setTimeout(onAdvance, RESPONSE_HOLD_MS);
-  }
+  const response =
+    selected !== null ? SCREEN_1_OPTIONS[selected].response : null;
 
   return (
     <div className="flex flex-1 flex-col px-5 pb-8 pt-2">
@@ -157,152 +234,107 @@ function Screen1({ onAdvance }: { onAdvance: () => void }) {
         transition={{ duration: 0.45, ease: "easeOut" }}
         className="font-heading text-center text-[28px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[32px]"
       >
-        Be honest with yourself for a second.
+        Which of these sounds like you?
       </motion.h1>
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.12, duration: 0.4 }}
+        className="mt-2 text-center text-[15px] text-ink-muted md:text-[16px]"
+      >
+        Be honest. No judgment here.
+      </motion.p>
 
-      <div className="relative mt-8 flex flex-1 flex-col">
-        <AnimatePresence mode="wait">
-          {!agreed ? (
-            <motion.div
-              key="cards"
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.25 }}
-              className="flex flex-1 flex-col"
+      <motion.ul
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: {},
+          show: { transition: { staggerChildren: 0.15, delayChildren: 0.25 } },
+        }}
+        className="mt-6 flex flex-col gap-3"
+      >
+        {SCREEN_1_OPTIONS.map((opt, i) => {
+          const isSelected = selected === i;
+          return (
+            <motion.li
+              key={i}
+              variants={{
+                hidden: { opacity: 0, y: 18 },
+                show: { opacity: 1, y: 0 },
+              }}
+              transition={{ type: "spring", stiffness: 220, damping: 24 }}
             >
-              <motion.ul
-                initial="hidden"
-                animate="show"
-                variants={{
-                  hidden: {},
-                  show: { transition: { staggerChildren: 0.4, delayChildren: 0.2 } },
+              <motion.button
+                type="button"
+                onClick={() => setSelected(i)}
+                animate={{ scale: isSelected ? 1.02 : 1 }}
+                whileTap={{ scale: 0.99 }}
+                transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                className="w-full rounded-card border-2 px-5 py-4 text-left shadow-card transition-colors duration-200"
+                style={{
+                  backgroundColor: opt.bg,
+                  color: opt.fg,
+                  borderColor: isSelected ? "#0A0F1E" : "transparent",
                 }}
-                className="space-y-3"
               >
-                {CONFESSIONS.map((c, i) => (
-                  <motion.li
-                    key={i}
-                    variants={{
-                      hidden: { opacity: 0, y: 24 },
-                      show: { opacity: 1, y: 0 },
-                    }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 240,
-                      damping: 24,
-                    }}
-                    className="flex items-center gap-4 rounded-card border border-[#E8E4E0] bg-white p-5 shadow-card"
-                  >
-                    <span aria-hidden className="text-[34px] leading-none">
-                      {c.emoji}
-                    </span>
-                    <p className="text-[15px] font-medium leading-snug text-[#0A0F1E] md:text-[16px]">
-                      {c.text}
-                    </p>
-                  </motion.li>
-                ))}
-              </motion.ul>
+                <p className="font-sans text-[15px] font-bold leading-snug md:text-[16px]">
+                  {opt.label}
+                </p>
+              </motion.button>
+            </motion.li>
+          );
+        })}
+      </motion.ul>
 
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.6, duration: 0.5, ease: "easeOut" }}
-                className="mt-auto pt-8"
-              >
-                <motion.button
-                  type="button"
-                  onClick={agree}
-                  animate={{ scale: [1, 1.02, 1] }}
-                  transition={{
-                    duration: 2.4,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full rounded-pill bg-[#0A0F1E] px-6 py-4 text-[16px] font-bold text-white shadow-navy transition active:bg-navy-light"
-                >
-                  …yeah, that&rsquo;s me →
-                </motion.button>
-              </motion.div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="response"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="flex flex-1 flex-col items-center justify-center text-center"
-            >
-              <motion.div
-                initial={{ scale: 0, rotate: -10 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 240,
-                  damping: 14,
-                  delay: 0.05,
-                }}
-                className="flex h-24 w-24 items-center justify-center rounded-full bg-brand text-white shadow-cardHover"
-              >
-                <motion.svg
-                  viewBox="0 0 24 24"
-                  width="56"
-                  height="56"
-                  fill="none"
-                  aria-hidden
-                >
-                  <motion.path
-                    d="m5 12.5 5 5 9-10"
-                    stroke="currentColor"
-                    strokeWidth={2.8}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ delay: 0.32, duration: 0.5, ease: "easeOut" }}
-                  />
-                </motion.svg>
-              </motion.div>
+      <AnimatePresence>
+        {response && (
+          <motion.p
+            key="response"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.35 }}
+            className="mt-5 text-center text-[14px] italic leading-relaxed text-ink-muted md:text-[15px]"
+          >
+            {response}
+          </motion.p>
+        )}
+      </AnimatePresence>
 
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.4 }}
-                className="mt-6 font-heading text-[24px] font-bold leading-tight text-[#0A0F1E] md:text-[28px]"
-              >
-                We built Dopiq for exactly this moment.
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.78, duration: 0.4 }}
-                className="mt-3 max-w-md text-[15px] text-ink-muted"
-              >
-                That urge you feel? We can help you handle it.
-              </motion.p>
-            </motion.div>
-          )}
+      <div className="mt-auto pt-6">
+        <AnimatePresence>
+          {nextVisible && <NextButton onClick={onAdvance} />}
         </AnimatePresence>
       </div>
     </div>
   );
 }
 
-// ---------- Screen 2: brain science ----------
+// ---------- Screen 2: Meet Dopiq ----------
 
-const WITHOUT_STEPS = [
-  { icon: "brain", label: "Sees a deal or feels bored" },
-  { icon: "bolt", label: "Dopamine spike 🔥" },
-  { icon: "bag", label: "Spend $200" },
-  { icon: "sad", label: "Regret" },
-] as const;
-
-const WITH_STEPS = [
-  { icon: "brain", label: "Feels the urge" },
-  { icon: "phone", label: "Opens Dopiq" },
-  { icon: "bolt", label: "Same dopamine spike 🔥" },
-  { icon: "money", label: "$0 spent · No regret" },
-] as const;
+const SCREEN_2_FEATURES = [
+  {
+    bg: "#F3E8FF",
+    title: "Shop Simulator",
+    body: "Browse hundreds of real products, add to cart and checkout. Your bank account never moves.",
+  },
+  {
+    bg: "#FFF9E6",
+    title: "Food Simulator",
+    body: "Pick your restaurant, build your order and watch a fake delivery tracker. Zero dollars charged.",
+  },
+  {
+    bg: "#E8F0FF",
+    title: "Betting Simulator",
+    body: "Real odds, fake money. Place parlays, feel the rush. All the thrill, none of the risk.",
+  },
+  {
+    bg: "#E8F5E9",
+    title: "Quick Sim",
+    body: "Standing in a store feeling the pull? Simulate your impulse purchase in under 30 seconds.",
+  },
+];
 
 function Screen2({ onAdvance }: { onAdvance: () => void }) {
   return (
@@ -311,226 +343,107 @@ function Screen2({ onAdvance }: { onAdvance: () => void }) {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="font-heading text-center text-[26px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[32px]"
+        className="font-heading text-[26px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[30px]"
       >
-        Here&rsquo;s what&rsquo;s actually happening in your brain
+        Meet Dopiq. Your impulse control companion.
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12, duration: 0.4 }}
-        className="mt-2 text-center text-[14px] text-ink-muted md:text-[15px]"
+        className="mt-3 text-[15px] leading-relaxed text-ink-muted md:text-[16px]"
       >
-        It&rsquo;s not weakness. It&rsquo;s chemistry.
+        A behavioral wellness app designed to help you manage the urge
+        to impulse spend — without willpower, without guilt, and without
+        giving anything up.
+      </motion.p>
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.22, duration: 0.4 }}
+        className="mt-3 text-[14px] leading-relaxed text-ink-muted"
+      >
+        Your brain is wired to seek dopamine. Every notification, every
+        deal, every just-one-more order is designed to trigger that
+        exact response. You were never meant to resist it through sheer
+        willpower alone. Dopiq does not ask you to resist. It gives the
+        urge somewhere safe to go.
       </motion.p>
 
-      <div className="mt-7 grid flex-1 grid-cols-1 gap-4 md:grid-cols-2">
-        <FlowColumn
-          tone="red"
-          label="Without Dopiq"
-          steps={WITHOUT_STEPS}
-          startDelay={0.3}
-        />
-        <FlowColumn
-          tone="green"
-          label="With Dopiq"
-          steps={WITH_STEPS}
-          startDelay={1.5}
-        />
+      <motion.ul
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: {},
+          show: { transition: { staggerChildren: 0.2, delayChildren: 0.45 } },
+        }}
+        className="mt-6 flex flex-col gap-3"
+      >
+        {SCREEN_2_FEATURES.map((f, i) => (
+          <motion.li
+            key={i}
+            variants={{
+              hidden: { opacity: 0, y: 18 },
+              show: { opacity: 1, y: 0 },
+            }}
+            transition={{ type: "spring", stiffness: 220, damping: 24 }}
+            className="rounded-card px-5 py-4 shadow-card"
+            style={{ backgroundColor: f.bg }}
+          >
+            <p className="font-heading text-[16px] font-bold text-[#0A0F1E]">
+              {f.title}
+            </p>
+            <p className="mt-1 text-[14px] leading-relaxed text-[#0A0F1E]/80">
+              {f.body}
+            </p>
+          </motion.li>
+        ))}
+      </motion.ul>
+
+      <motion.p
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.45, duration: 0.45 }}
+        className="mt-6 text-center text-[14px] italic text-ink-muted"
+      >
+        The urge is real. The charge isn&rsquo;t.
+      </motion.p>
+
+      <div className="mt-auto pt-6">
+        <NextButton onClick={onAdvance} delay={1.6} />
       </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.7, duration: 0.5 }}
-        className="mt-6 rounded-card bg-[#F0E9DC] px-5 py-4"
-      >
-        <p className="text-center text-[14px] italic leading-relaxed text-[#0A0F1E] md:text-[15px]">
-          Your brain literally cannot tell the difference. The dopamine
-          hit is identical. We just redirected it.
-        </p>
-      </motion.div>
-
-      <motion.button
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.9, duration: 0.4 }}
-        whileTap={{ scale: 0.98 }}
-        type="button"
-        onClick={onAdvance}
-        className="mt-4 w-full rounded-pill bg-[#0A0F1E] px-6 py-4 text-[16px] font-bold text-white shadow-navy transition active:bg-navy-light"
-      >
-        Next →
-      </motion.button>
     </div>
   );
 }
 
-function FlowColumn({
-  tone,
-  label,
-  steps,
-  startDelay,
-}: {
-  tone: "red" | "green";
-  label: string;
-  steps: ReadonlyArray<{ icon: string; label: string }>;
-  startDelay: number;
-}) {
-  const isRed = tone === "red";
-  const labelClass = isRed
-    ? "bg-red-50 text-red-700"
-    : "bg-brand-light text-[#1B5E20]";
-  const cardClass = isRed
-    ? "border border-red-100 bg-red-50/60 text-[#7F1D1D]"
-    : "border border-brand-light bg-brand-light/40 text-[#1B5E20]";
-  const arrowClass = isRed ? "text-red-300" : "text-brand/60";
+// ---------- Screen 3: Stats ----------
 
-  return (
-    <motion.div
-      initial="hidden"
-      animate="show"
-      variants={{
-        hidden: {},
-        show: {
-          transition: {
-            staggerChildren: 0.3,
-            delayChildren: startDelay,
-          },
-        },
-      }}
-      className="flex flex-col"
-    >
-      <motion.span
-        variants={{
-          hidden: { opacity: 0, y: -6 },
-          show: { opacity: 1, y: 0 },
-        }}
-        className={`inline-flex w-fit items-center rounded-pill px-3 py-1 text-[10px] font-bold uppercase tracking-widest ${labelClass}`}
-      >
-        {label}
-      </motion.span>
-
-      <ol className="mt-3 flex-1 space-y-1.5">
-        {steps.map((s, i) => (
-          <motion.li
-            key={i}
-            variants={{
-              hidden: { opacity: 0, y: 16 },
-              show: { opacity: 1, y: 0 },
-            }}
-            transition={{ type: "spring", stiffness: 220, damping: 22 }}
-            className="flex flex-col items-stretch gap-0"
-          >
-            <div
-              className={`flex items-center gap-3 rounded-xl px-4 py-3 ${cardClass}`}
-            >
-              <FlowIcon name={s.icon} />
-              <span className="text-[14px] font-semibold">{s.label}</span>
-            </div>
-            {i < steps.length - 1 && (
-              <span
-                aria-hidden
-                className={`mx-auto block h-3 w-0.5 ${arrowClass.replace("text-", "bg-")}`}
-              />
-            )}
-          </motion.li>
-        ))}
-      </ol>
-    </motion.div>
-  );
-}
-
-function FlowIcon({ name }: { name: string }) {
-  const common = {
-    width: 22,
-    height: 22,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.6,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    "aria-hidden": true,
-  };
-  switch (name) {
-    case "brain":
-      return (
-        <svg {...common}>
-          <path d="M9 4a3 3 0 0 0-3 3v1a3 3 0 0 0-2 2.8V14a3 3 0 0 0 3 3v0a3 3 0 0 0 3 3h0a3 3 0 0 0 3-3" />
-          <path d="M15 4a3 3 0 0 1 3 3v1a3 3 0 0 1 2 2.8V14a3 3 0 0 1-3 3v0a3 3 0 0 1-3 3h0a3 3 0 0 1-3-3" />
-          <path d="M12 4v16" />
-        </svg>
-      );
-    case "bolt":
-      return (
-        <svg {...common}>
-          <path d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z" />
-        </svg>
-      );
-    case "bag":
-      return (
-        <svg {...common}>
-          <path d="M5 8h14l-1 12H6L5 8Z" />
-          <path d="M9 8a3 3 0 1 1 6 0" />
-        </svg>
-      );
-    case "sad":
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M9 9.5h.01M15 9.5h.01M8.5 16c1-1 2-1.5 3.5-1.5s2.5.5 3.5 1.5" />
-        </svg>
-      );
-    case "phone":
-      return (
-        <svg {...common}>
-          <rect x="7" y="3" width="10" height="18" rx="2" />
-          <path d="M11 18h2" />
-        </svg>
-      );
-    case "money":
-      return (
-        <svg {...common}>
-          <path d="M5 7c0-1 1-2 2-2h10c1 0 2 1 2 2v0c0 1-1 2-2 2c1 0 2 1 2 2v0c0 1-1 2-2 2c1 0 2 1 2 2v0c0 1-1 2-2 2H7c-1 0-2-1-2-2v0c0-1 1-2 2-2c-1 0-2-1-2-2v0c0-1 1-2 2-2c-1 0-2-1-2-2V7Z" />
-          <path d="M11 9h2a1.5 1.5 0 0 1 0 3h-2a1.5 1.5 0 0 0 0 3h2M12 8v9" />
-        </svg>
-      );
-    default:
-      return null;
-  }
-}
-
-// ---------- Screen 3: social proof ----------
-
-const TESTIMONIALS = [
+const SCREEN_3_STATS = [
   {
-    initials: "M.R.",
-    avatarBg: "#1B5E20",
-    quote:
-      "I almost bought $300 worth of stuff on Amazon last night. Opened Dopiq instead. Saved every dollar.",
+    bg: "#F3E8FF",
+    target: 89,
+    format: (v: number) => `${Math.round(v)}%`,
+    description: "of Gen Z regret at least one impulse purchase.",
+    source: "Consumer Survey, 2025",
   },
   {
-    initials: "J.K.",
-    avatarBg: "#4A148C",
-    quote:
-      "The food simulator is scary accurate. I get the same satisfaction without the delivery bill.",
+    bg: "#FFF9E6",
+    target: 60,
+    format: (v: number) => `${Math.round(v)}%`,
+    description:
+      "of people impulse buy because of social media — and most regret it.",
+    source: "Bankrate, 2023",
   },
   {
-    initials: "A.T.",
-    avatarBg: "#0D47A1",
-    quote:
-      "I was spending way too much on impulse bets. Now I sim bet and it scratches the exact same itch.",
+    bg: "#E8F0FF",
+    target: 2,
+    format: (v: number) => `${Math.round(v)}x`,
+    description: "Gen Z spends nearly twice as much as they have in savings.",
+    source: "Bank of America Institute, 2025",
   },
 ];
 
-function Screen3({
-  onComplete,
-  submitting,
-}: {
-  onComplete: () => void;
-  submitting: boolean;
-}) {
+function Screen3({ onAdvance }: { onAdvance: () => void }) {
   return (
     <div className="flex flex-1 flex-col px-5 pb-8 pt-2">
       <motion.h1
@@ -539,94 +452,237 @@ function Screen3({
         transition={{ duration: 0.45, ease: "easeOut" }}
         className="font-heading text-center text-[28px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[32px]"
       >
-        10,000+ people are spending smarter.
+        You are not alone in this.
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12, duration: 0.4 }}
-        className="mt-2 text-center text-[14px] text-ink-muted md:text-[15px]"
+        className="mt-2 text-center text-[15px] text-ink-muted md:text-[16px]"
       >
-        They used to impulse spend. Now they simulate.
+        The numbers tell the real story.
       </motion.p>
 
-      <motion.ul
-        initial="hidden"
-        animate="show"
-        variants={{
-          hidden: {},
-          show: { transition: { staggerChildren: 0.2, delayChildren: 0.35 } },
-        }}
-        className="mt-6 space-y-3"
-      >
-        {TESTIMONIALS.map((t, i) => (
-          <motion.li
+      <ul className="mt-6 flex flex-col gap-3">
+        {SCREEN_3_STATS.map((s, i) => (
+          <StatCard
             key={i}
-            variants={{
-              hidden: { opacity: 0, y: 18 },
-              show: { opacity: 1, y: 0 },
-            }}
-            transition={{ type: "spring", stiffness: 220, damping: 24 }}
-            className="rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card"
-          >
-            <div className="flex items-center gap-3">
-              <span
-                className="flex h-10 w-10 flex-none items-center justify-center rounded-full text-[12px] font-bold text-white"
-                style={{ backgroundColor: t.avatarBg }}
-              >
-                {t.initials}
-              </span>
-              <div className="flex gap-0.5 text-[#FACC15]">
-                {[0, 1, 2, 3, 4].map((s) => (
-                  <Star key={s} />
-                ))}
-              </div>
-            </div>
-            <p className="mt-3 text-[14px] leading-relaxed text-[#0A0F1E]">
-              {t.quote}
-            </p>
-          </motion.li>
+            bg={s.bg}
+            target={s.target}
+            format={s.format}
+            description={s.description}
+            source={s.source}
+            delay={0.3 + i * 0.3}
+          />
         ))}
-      </motion.ul>
+      </ul>
 
-      <motion.div
-        initial={{ opacity: 0, y: 32 }}
+      <motion.p
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.05, duration: 0.5, ease: "easeOut" }}
-        className="mt-6 rounded-card bg-brand px-5 py-4 text-center text-[14px] font-semibold text-white shadow-[0_2px_12px_rgba(0,200,83,0.3)]"
+        transition={{ delay: 1.4, duration: 0.5 }}
+        className="mt-6 text-center font-heading text-[20px] font-bold leading-snug text-[#0A0F1E] md:text-[22px]"
       >
-        ✨ Start free for 7 days — no charge until your trial ends.
-        Cancel anytime.
-      </motion.div>
+        Dopiq gives the urge somewhere safe to go.
+      </motion.p>
 
-      {/* Outer wrapper handles the staggered fade-in so the button
-          itself can run a continuous pulse loop without conflicts. */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.2, duration: 0.4 }}
-        className="mt-4"
-      >
-        <motion.button
-          animate={{ scale: [1, 1.02, 1] }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-          whileTap={{ scale: 0.98 }}
-          type="button"
-          onClick={onComplete}
-          disabled={submitting}
-          className="w-full rounded-pill bg-[#0A0F1E] px-6 py-4 text-[16px] font-bold text-white shadow-navy transition active:bg-navy-light disabled:opacity-60"
-        >
-          {submitting ? "Loading…" : "Let's go →"}
-        </motion.button>
-      </motion.div>
+      <div className="mt-auto pt-6">
+        <NextButton onClick={onAdvance} delay={1.6} />
+      </div>
     </div>
   );
 }
 
-function Star() {
+function StatCard({
+  bg,
+  target,
+  format,
+  description,
+  source,
+  delay,
+}: {
+  bg: string;
+  target: number;
+  format: (v: number) => string;
+  description: string;
+  source: string;
+  delay: number;
+}) {
   return (
-    <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
-      <path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.78L10 14.77 4.8 17.5l.99-5.78L1.58 7.62l5.82-.85L10 1.5z" />
+    <motion.li
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, type: "spring", stiffness: 220, damping: 24 }}
+      className="rounded-card px-5 py-5 shadow-card"
+      style={{ backgroundColor: bg }}
+    >
+      <CountUpNumber
+        target={target}
+        format={format}
+        durationMs={1000}
+        startDelayMs={Math.round(delay * 1000)}
+      />
+      <p className="mt-2 text-[15px] leading-snug text-[#0A0F1E] md:text-[16px]">
+        {description}
+      </p>
+      <p className="mt-2 text-[11px] italic text-ink-muted">{source}</p>
+    </motion.li>
+  );
+}
+
+function CountUpNumber({
+  target,
+  format,
+  durationMs,
+  startDelayMs,
+}: {
+  target: number;
+  format: (v: number) => string;
+  durationMs: number;
+  startDelayMs: number;
+}) {
+  const ref = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    // Wait until the card has slid in before kicking off the count-up.
+    // Writing directly to textContent via a ref keeps React out of
+    // the per-frame loop.
+    if (ref.current) ref.current.textContent = format(0);
+    let raf = 0;
+    const startTimer = window.setTimeout(() => {
+      const start = performance.now();
+      const tick = (now: number) => {
+        const elapsed = now - start;
+        const t = Math.min(1, elapsed / durationMs);
+        const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+        const current = target * eased;
+        if (ref.current) {
+          ref.current.textContent = t === 1 ? format(target) : format(current);
+        }
+        if (t < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    }, startDelayMs);
+
+    return () => {
+      window.clearTimeout(startTimer);
+      cancelAnimationFrame(raf);
+    };
+  }, [target, format, durationMs, startDelayMs]);
+
+  return (
+    <p
+      ref={ref}
+      className="font-heading text-[56px] font-extrabold leading-none tracking-tight text-[#0A0F1E] md:text-[64px]"
+    >
+      {format(0)}
+    </p>
+  );
+}
+
+// ---------- Screen 4: Closer ----------
+
+const REASSURANCE_LINES = [
+  "7 days completely free — no charge until your trial ends.",
+  "Cancel anytime, no questions asked.",
+  "Your impulses finally have somewhere to go.",
+];
+
+function Screen4({
+  onComplete,
+  submitting,
+}: {
+  onComplete: () => void;
+  submitting: boolean;
+}) {
+  return (
+    <div className="flex flex-1 flex-col items-stretch justify-center px-5 pb-8 pt-2">
+      <motion.h1
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="font-heading text-center text-[32px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[36px]"
+      >
+        Ready to feel the rush — without the damage?
+      </motion.h1>
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15, duration: 0.4 }}
+        className="mt-3 text-center text-[17px] text-ink-muted md:text-[18px]"
+      >
+        Welcome to Dopiq.
+      </motion.p>
+
+      <motion.div
+        initial={{ opacity: 0, scaleX: 0.6 }}
+        animate={{ opacity: 1, scaleX: 1 }}
+        transition={{ delay: 0.28, duration: 0.4 }}
+        className="mx-auto mt-5 h-px w-24 bg-[#E5E7EB]"
+      />
+
+      <motion.div
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: {},
+          show: { transition: { staggerChildren: 0.15, delayChildren: 0.4 } },
+        }}
+        className="mt-6 rounded-card bg-[#E8F5E9] p-5"
+      >
+        <ul className="space-y-2.5">
+          {REASSURANCE_LINES.map((line, i) => (
+            <motion.li
+              key={i}
+              variants={{
+                hidden: { opacity: 0, y: 8 },
+                show: { opacity: 1, y: 0 },
+              }}
+              transition={{ duration: 0.35 }}
+              className="flex items-start gap-2.5 text-[14px] font-semibold leading-snug text-[#1B5E20] md:text-[15px]"
+            >
+              <Tick />
+              <span>{line}</span>
+            </motion.li>
+          ))}
+        </ul>
+      </motion.div>
+
+      <NextButton
+        label={submitting ? "Loading…" : "Let's get started"}
+        onClick={onComplete}
+        delay={0.95}
+        pulse
+        disabled={submitting}
+      />
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.15, duration: 0.4 }}
+        className="mt-3 text-center text-[12px] text-ink-muted"
+      >
+        By continuing you agree to our terms and privacy policy.
+      </motion.p>
+    </div>
+  );
+}
+
+function Tick() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#1B5E20"
+      strokeWidth={2.4}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      className="mt-0.5 flex-none"
+    >
+      <path d="m5 12.5 5 5 9-10" />
     </svg>
   );
 }
