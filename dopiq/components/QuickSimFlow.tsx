@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  animate,
   AnimatePresence,
   motion,
   type PanInfo,
@@ -17,7 +18,7 @@ import {
   type QuickSimLocation,
 } from "@/data/quick-sim-items";
 import { QuickSimItemIcon } from "@/components/QuickSimItemIcons";
-import { Pin, Card as CardIcon } from "@/components/icons";
+import { Pin } from "@/components/icons";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
 import { useSavingsStore } from "@/lib/savings-store";
 import { formatUSD } from "@/lib/utils";
@@ -37,22 +38,12 @@ type Stage =
       kind: "items";
       location: QuickSimLocation;
       queue: QuickSimItem[];
-      idx: number;
-      selected: QuickSimItem[];
-    }
-  | {
-      kind: "summary";
-      location: QuickSimLocation;
-      // Carry the queue forward so back-from-summary can re-show the
-      // last card without re-shuffling (which would surface a different
-      // 5-item subset and lose any items the user already swiped on).
-      queue: QuickSimItem[];
+      // Selected items can be toggled freely on the new tap-grid.
+      // Order in the array matches tap order, which doesn't matter
+      // for math but is stable for React keys.
       selected: QuickSimItem[];
     }
   | { kind: "flash"; totalCents: number };
-
-const SWIPE_OFFSET = 100;
-const SWIPE_VELOCITY = 500;
 
 function todayDateStr(): string {
   const d = new Date();
@@ -74,26 +65,18 @@ export function QuickSimFlow() {
       kind: "items",
       location,
       queue,
-      idx: 0,
       selected: [],
     });
   }
 
-  function decideItem(add: boolean) {
+  function toggleItem(item: QuickSimItem) {
     setStage((s) => {
       if (s.kind !== "items") return s;
-      const item = s.queue[s.idx];
-      const nextSelected = add ? [...s.selected, item] : s.selected;
-      const nextIdx = s.idx + 1;
-      if (nextIdx >= s.queue.length) {
-        return {
-          kind: "summary",
-          location: s.location,
-          queue: s.queue,
-          selected: nextSelected,
-        };
-      }
-      return { ...s, idx: nextIdx, selected: nextSelected };
+      const exists = s.selected.some((i) => i.id === item.id);
+      const nextSelected = exists
+        ? s.selected.filter((i) => i.id !== item.id)
+        : [...s.selected, item];
+      return { ...s, selected: nextSelected };
     });
   }
 
@@ -123,18 +106,18 @@ export function QuickSimFlow() {
     return allowed;
   }
 
-  function commitFromSummary(selected: QuickSimItem[]) {
+  function checkout(selected: QuickSimItem[]) {
     const subtotalCents = selected.reduce((n, i) => n + i.priceCents, 0);
     if (subtotalCents === 0) {
-      // Empty cart — credit nothing, but still flash so the user gets
-      // their micro-reward for completing the simulation.
+      // Empty cart — flash $0.00 so the user still gets the
+      // satisfying completion. No savings credit, no cap consumed.
       setStage({ kind: "flash", totalCents: 0 });
       window.setTimeout(() => router.push("/home"), 1500);
       return;
     }
-    // Grand total — matches the receipt the user just saw. Credit the
-    // savings counter and drive the green-flash amount off the same
-    // figure so "Saved $4.52" matches what the receipt's Total said.
+    // Grand total — applies the same 8.25% tax the receipt used to
+    // surface, so the savings counter still credits the realistic
+    // total instead of the tax-free subtotal.
     const taxCents = Math.round(subtotalCents * TAX_RATE);
     const grandTotalCents = subtotalCents + taxCents;
     void commitSimulation(grandTotalCents);
@@ -145,21 +128,7 @@ export function QuickSimFlow() {
   }
 
   function back() {
-    setStage((s) => {
-      if (s.kind === "items") return { kind: "location" };
-      if (s.kind === "summary") {
-        // Re-show the last card of the deck the user already swiped
-        // through — same items, no new shuffle.
-        return {
-          kind: "items",
-          location: s.location,
-          queue: s.queue,
-          idx: s.queue.length - 1,
-          selected: s.selected,
-        };
-      }
-      return s;
-    });
+    setStage((s) => (s.kind === "items" ? { kind: "location" } : s));
   }
 
   return (
@@ -177,37 +146,10 @@ export function QuickSimFlow() {
           <LocationGrid onPick={selectLocation} />
         )}
         {stage.kind === "items" && (
-          <ItemDeck
+          <ItemSelectionGrid
             stage={stage}
-            onDecide={decideItem}
-            onSkipAll={() =>
-              setStage({
-                kind: "summary",
-                location: stage.location,
-                queue: stage.queue,
-                selected: stage.selected,
-              })
-            }
-          />
-        )}
-        {stage.kind === "summary" && (
-          <SummaryView
-            selected={stage.selected}
-            location={stage.location}
-            onSimIt={() => commitFromSummary(stage.selected)}
-            onAddMore={() => {
-              // "Browse again" reshuffles for a fresh set of 5 — the
-              // user is choosing to look at NEW items, not redo the
-              // ones they already swiped through.
-              const queue = pickQuickSimItems(stage.location.key);
-              setStage({
-                kind: "items",
-                location: stage.location,
-                queue,
-                idx: 0,
-                selected: stage.selected,
-              });
-            }}
+            onToggle={toggleItem}
+            onCheckout={() => checkout(stage.selected)}
           />
         )}
       </main>
@@ -332,414 +274,222 @@ function LocationGrid({
   );
 }
 
-// ---------- Step 2: item deck ----------
+// ---------- Step 2: item selection grid ----------
 
-function ItemDeck({
+function ItemSelectionGrid({
   stage,
-  onDecide,
-  onSkipAll,
+  onToggle,
+  onCheckout,
 }: {
   stage: Extract<Stage, { kind: "items" }>;
-  onDecide: (add: boolean) => void;
-  onSkipAll: () => void;
+  onToggle: (item: QuickSimItem) => void;
+  onCheckout: () => void;
 }) {
-  const total = stage.selected.reduce((n, i) => n + i.priceCents, 0);
-  const remaining = stage.queue.length - stage.idx;
-  const progress = ((stage.idx + 1) / stage.queue.length) * 100;
-  const item = stage.queue[stage.idx];
-
-  // Track which way the previous card exited so the AnimatePresence
-  // exit variant slides off in that direction. The button taps and
-  // swipes both call this before invoking onDecide.
-  const [exitDir, setExitDir] = useState<"left" | "right">("right");
-  function decide(add: boolean) {
-    setExitDir(add ? "right" : "left");
-    onDecide(add);
-  }
+  const subtotalCents = stage.selected.reduce(
+    (n, i) => n + i.priceCents,
+    0,
+  );
+  const isSelected = (id: string) =>
+    stage.selected.some((i) => i.id === id);
 
   return (
-    <div className="flex flex-1 flex-col px-5 pb-6 pt-2">
-      {/* Top bar — running total + progress */}
-      <div className="flex items-center justify-between gap-4">
+    <div className="flex min-h-0 flex-1 flex-col px-5 pt-2 safe-bottom">
+      {/* Store header — preserved from the receipt design. */}
+      <section className="rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card">
+        <p className="font-heading text-[16px] font-bold leading-tight text-ink">
+          {stage.location.name}
+        </p>
+        <p className="mt-1 flex items-center gap-1.5 text-[12px] text-ink-muted">
+          <Pin size={12} className="flex-none" />
+          {STORE_ADDRESSES[stage.location.key]}
+        </p>
+      </section>
+
+      {/* Running total — selection count + subtotal updating live. */}
+      <div className="mt-3 flex items-baseline justify-between">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-widest text-ink-muted">
             Cart
           </p>
-          <p className="font-mono text-[20px] font-extrabold leading-none text-brand">
-            {formatUSD(total / 100)}
-          </p>
-          <p className="mt-1 text-[11px] text-ink-muted">
-            {stage.selected.length} item{stage.selected.length === 1 ? "" : "s"}
+          <p className="mt-0.5 text-[13px] text-ink">
+            {stage.selected.length} of {stage.queue.length} selected
           </p>
         </div>
-        <div className="text-right">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-ink-muted">
-            Left
-          </p>
-          <p className="font-mono text-[20px] font-extrabold leading-none text-ink">
-            {remaining}
-          </p>
-          <button
-            type="button"
-            onClick={onSkipAll}
-            className="mt-1 text-[11px] font-semibold text-ink-muted hover:text-ink"
-          >
-            Skip rest →
-          </button>
-        </div>
+        <p className="font-mono text-[24px] font-extrabold leading-none text-brand">
+          {formatUSD(subtotalCents / 100)}
+        </p>
       </div>
 
-      {/* Progress bar */}
-      <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-surface-alt">
-        <motion.div
-          className="h-full bg-brand"
-          initial={{ width: 0 }}
-          animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-        />
-      </div>
-
-      {/* Card stage */}
-      <div className="relative mt-6 flex flex-1 items-center justify-center">
-        <AnimatePresence mode="popLayout" custom={exitDir}>
-          <SwipeCard
+      {/* Item cards — tap to toggle. All five visible at once. */}
+      <div className="mt-3 flex flex-col gap-2">
+        {stage.queue.map((item) => (
+          <ItemSelectCard
             key={item.id}
             item={item}
-            onDecide={decide}
+            selected={isSelected(item.id)}
+            onClick={() => onToggle(item)}
           />
-        </AnimatePresence>
+        ))}
       </div>
 
-      {/* Permanent swipe hint — always visible, never dismissable. */}
-      <p
-        aria-hidden
-        className="mt-3 text-center font-sans text-[12px] text-ink-muted"
-      >
-        ← Skip · Swipe to decide · Sim it →
-      </p>
-
-      {/* Bottom action buttons */}
-      <div className="mt-4 flex items-center justify-center gap-6">
-        <ActionButton
-          variant="skip"
-          onClick={() => decide(false)}
-          ariaLabel="Skip"
-        />
-        <ActionButton
-          variant="add"
-          onClick={() => decide(true)}
-          ariaLabel="Add to cart"
-        />
+      {/* Slider sits at the bottom of the column via mt-auto. Always
+          visible, always tappable — even with zero items selected. */}
+      <div className="mt-auto pt-4">
+        <SwipeSlider onComplete={onCheckout} />
       </div>
     </div>
   );
 }
 
-function SwipeCard({
+function ItemSelectCard({
   item,
-  onDecide,
+  selected,
+  onClick,
 }: {
   item: QuickSimItem;
-  onDecide: (add: boolean) => void;
-}) {
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 0, 200], [-12, 0, 12]);
-  // Add (right) flashes green; skip (left) flashes red — visible only
-  // while dragging. Built from x with useTransform so it stays buttery.
-  const greenOpacity = useTransform(x, [0, 80, 160], [0, 0.4, 0.7]);
-  const redOpacity = useTransform(x, [-160, -80, 0], [0.5, 0.25, 0]);
-
-  // Per-category pastel — icon, name, and price all inherit via
-  // currentColor so we set the foreground once on the card root.
-  const palette = QUICK_SIM_ICON_COLORS[item.iconKey];
-
-  function handleDragEnd(_: unknown, info: PanInfo) {
-    if (info.offset.x < -SWIPE_OFFSET || info.velocity.x < -SWIPE_VELOCITY) {
-      onDecide(false);
-    } else if (
-      info.offset.x > SWIPE_OFFSET ||
-      info.velocity.x > SWIPE_VELOCITY
-    ) {
-      onDecide(true);
-    }
-  }
-
-  return (
-    <motion.div
-      key={item.id}
-      drag="x"
-      dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.6}
-      onDragEnd={handleDragEnd}
-      style={{
-        x,
-        rotate,
-        backgroundColor: palette.bg,
-        color: palette.fg,
-      }}
-      variants={{
-        initial: { opacity: 0, y: 30, scale: 0.95 },
-        animate: { opacity: 1, y: 0, scale: 1 },
-        exit: (dir: "left" | "right" | undefined) => ({
-          x: dir === "right" ? 480 : dir === "left" ? -480 : 0,
-          opacity: 0,
-          scale: 0.9,
-          transition: { duration: 0.25 },
-        }),
-      }}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={{
-        type: "spring",
-        stiffness: 280,
-        damping: 26,
-      }}
-      className="relative w-full max-w-sm cursor-grab touch-pan-y rounded-card p-8 shadow-cardHover active:cursor-grabbing"
-    >
-      {/* Green / red wash overlays driven by drag x — these are
-          action signals (add vs skip), not card decoration, so they
-          stay brand-green / red regardless of the card's pastel. */}
-      <motion.div
-        style={{ opacity: greenOpacity }}
-        className="pointer-events-none absolute inset-0 rounded-card bg-brand"
-      />
-      <motion.div
-        style={{ opacity: redOpacity }}
-        className="pointer-events-none absolute inset-0 rounded-card bg-red-500"
-      />
-
-      <div className="relative flex flex-col items-center gap-5 text-center">
-        <QuickSimItemIcon kind={item.iconKey} size={48} />
-        <div className="space-y-2">
-          <p className="font-heading text-[24px] font-extrabold leading-tight md:text-[28px]">
-            {item.name}
-          </p>
-          <p className="font-mono text-[28px] font-extrabold md:text-[32px]">
-            {formatUSD(item.priceCents / 100)}
-          </p>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function ActionButton({
-  variant,
-  onClick,
-  ariaLabel,
-}: {
-  variant: "skip" | "add";
+  selected: boolean;
   onClick: () => void;
-  ariaLabel: string;
 }) {
-  const isSkip = variant === "skip";
   return (
     <motion.button
       type="button"
       onClick={onClick}
-      aria-label={ariaLabel}
-      whileTap={{ scale: 0.9 }}
-      whileHover={{ scale: 1.05 }}
-      transition={{ type: "spring", stiffness: 360, damping: 22 }}
-      className={`flex h-16 w-16 items-center justify-center rounded-full shadow-cardHover ${
-        isSkip
-          ? "border-2 border-red-200 bg-white text-red-500"
-          : "bg-brand text-white"
-      }`}
+      whileTap={{ scale: 0.98 }}
+      animate={{
+        backgroundColor: selected ? "#E8F5E9" : "#FFF8E7",
+        color: selected ? "#1B5E20" : "#5D4037",
+      }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className="flex w-full items-center gap-3 rounded-card px-4 py-3 text-left"
     >
-      {isSkip ? (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
-          <path
-            d="M6 6l12 12M18 6L6 18"
+      <span className="flex h-9 w-9 flex-none items-center justify-center">
+        <QuickSimItemIcon kind={item.iconKey} size={22} />
+      </span>
+      <p className="flex-1 text-[15px] font-bold leading-tight">
+        {item.name}
+      </p>
+      <p className="font-mono text-[15px] font-bold">
+        {formatUSD(item.priceCents / 100)}
+      </p>
+      {selected && (
+        <span
+          aria-hidden
+          className="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[#1B5E20] text-white"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
             stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-        </svg>
-      ) : (
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden>
-          <path
-            d="m5 12.5 5 5 9-10"
-            stroke="currentColor"
-            strokeWidth="2.8"
+            strokeWidth={3}
             strokeLinecap="round"
             strokeLinejoin="round"
-          />
-        </svg>
+          >
+            <path d="m5 12.5 5 5 9-10" />
+          </svg>
+        </span>
       )}
     </motion.button>
   );
 }
 
-// ---------- Step 3: summary ----------
+// ---------- Step 3: swipe-to-sim slider ----------
 
-function SummaryView({
-  selected,
-  location,
-  onSimIt,
-  onAddMore,
-}: {
-  selected: QuickSimItem[];
-  location: QuickSimLocation;
-  onSimIt: () => void;
-  onAddMore: () => void;
-}) {
-  const totalCents = selected.reduce((n, i) => n + i.priceCents, 0);
+const SLIDER_HANDLE_PX = 48;
+const SLIDER_PAD_PX = 4;
+const SLIDER_COMPLETE_RATIO = 0.9;
 
-  if (selected.length === 0) {
-    return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 pb-10 text-center">
-        <span aria-hidden className="text-[64px] leading-none">
-          {location.emoji}
-        </span>
-        <p className="font-heading text-[28px] font-extrabold leading-tight text-ink">
-          You skipped everything.
-        </p>
-        <p className="text-[15px] text-ink-muted">
-          That’s the strongest sim of all. Want to look again?
-        </p>
-        <div className="mt-3 flex w-full max-w-sm flex-col gap-2">
-          <button
-            type="button"
-            onClick={onAddMore}
-            className="btn-secondary w-full"
-          >
-            Browse again
-          </button>
-          <button
-            type="button"
-            onClick={onSimIt}
-            className="text-[13px] font-semibold text-ink-muted hover:text-ink"
-          >
-            Done — back to home
-          </button>
-        </div>
-      </div>
-    );
+function SwipeSlider({ onComplete }: { onComplete: () => void }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const [maxX, setMaxX] = useState(0);
+  const [completing, setCompleting] = useState(false);
+
+  // Fill width tracks the handle's left edge plus the handle itself,
+  // so the green wash always reaches the handle's right side.
+  const fillWidth = useTransform(
+    x,
+    (v) => `${v + SLIDER_HANDLE_PX + SLIDER_PAD_PX}px`,
+  );
+
+  useEffect(() => {
+    const recompute = () => {
+      const el = trackRef.current;
+      if (!el) return;
+      setMaxX(el.offsetWidth - SLIDER_HANDLE_PX - SLIDER_PAD_PX * 2);
+    };
+    recompute();
+    window.addEventListener("resize", recompute);
+    return () => window.removeEventListener("resize", recompute);
+  }, []);
+
+  function onDragEnd(_: unknown, _info: PanInfo) {
+    if (completing || maxX <= 0) return;
+    const current = x.get();
+    if (current >= maxX * SLIDER_COMPLETE_RATIO) {
+      // Snap to fully right and trigger completion. The page-level
+      // GreenFlash takes over visually after this.
+      setCompleting(true);
+      animate(x, maxX, {
+        type: "spring",
+        stiffness: 400,
+        damping: 30,
+        onComplete: () => onComplete(),
+      });
+    } else {
+      // Snap back to start.
+      animate(x, 0, {
+        type: "spring",
+        stiffness: 400,
+        damping: 30,
+      });
+    }
   }
 
-  // Receipt math — subtotal + 8.25% tax, all rounded to cents so
-  // "Subtotal + Tax = Total" never drifts by a penny on display.
-  const subtotalCents = totalCents;
-  const taxCents = Math.round(subtotalCents * TAX_RATE);
-  const grandTotalCents = subtotalCents + taxCents;
-
   return (
-    // min-h-0 is non-negotiable here — without it, the default
-    // min-height: auto on a flex child stops overflow-y-auto from
-    // engaging on iOS Safari, and any content past the viewport just
-    // clips off (you'd see the items list cut mid-row, no scroll).
-    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pt-2 safe-bottom">
-      {/* Store header — feels like the location you're physically
-          checking out at. */}
-      <section className="rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card">
-        <p className="font-heading text-[18px] font-bold leading-tight text-ink">
-          {location.name}
-        </p>
-        <p className="mt-1 flex items-center gap-1.5 text-[12px] text-ink-muted">
-          <Pin size={12} className="flex-none" />
-          {STORE_ADDRESSES[location.key]}
-        </p>
-      </section>
+    <div
+      ref={trackRef}
+      className="relative h-14 w-full overflow-hidden rounded-pill bg-[#0A0F1E] shadow-cardHover"
+    >
+      {/* Green progress fill — width derived from the handle's x. */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-0 bg-brand"
+        style={{ width: fillWidth }}
+      />
 
-      <h1 className="mt-5 font-heading text-[28px] font-extrabold leading-tight text-ink md:text-[34px]">
-        Ready to checkout?
-      </h1>
-      <p className="mt-1 text-[13px] text-ink-muted">
-        {selected.length} item{selected.length === 1 ? "" : "s"} ·{" "}
-        {location.name}
-      </p>
+      {/* Center label — pointer-events-none so the drag handle
+          underneath stays the only thing the user interacts with. */}
+      <span className="pointer-events-none absolute inset-0 flex items-center justify-center font-sans text-[14px] font-semibold text-white/85">
+        Swipe to sim
+      </span>
 
-      {/* Items — receipt block. Stripped of any CSS that could hide
-          subsequent rows (overflow-hidden + divide-y with arbitrary
-          color). Each row is a self-contained block with explicit
-          inline border-bottom; the last row gets none. data-attr
-          surfaces the array length in DevTools so we can sanity
-          check selected against what's painted. */}
-      <section
-        data-item-count={selected.length}
-        className="mt-4 rounded-card border border-[#E8E4E0] bg-white shadow-card"
+      {/* Drag handle — large 48px target for thumbs. */}
+      <motion.div
+        drag="x"
+        dragConstraints={{ left: 0, right: maxX }}
+        dragElastic={0}
+        dragMomentum={false}
+        onDragEnd={onDragEnd}
+        whileTap={{ scale: 0.97 }}
+        style={{ x }}
+        className="absolute left-1 top-1 flex h-12 w-12 cursor-grab items-center justify-center rounded-full bg-white text-[#0A0F1E] shadow-md active:cursor-grabbing"
       >
-        {selected.map((item, index) => (
-          <div
-            key={`${item.id}-${index}`}
-            className="flex items-center gap-3 px-4 py-3"
-            style={{
-              borderBottom:
-                index < selected.length - 1 ? "1px solid #F0EAE0" : "none",
-            }}
-          >
-            <span className="flex h-7 w-12 flex-none items-center justify-center rounded-full bg-surface-alt font-mono text-[12px] font-semibold text-ink-muted">
-              x1
-            </span>
-            <p className="flex-1 text-[15px] font-bold text-ink">
-              {item.name}
-            </p>
-            <p className="font-mono text-[15px] font-bold text-ink">
-              {formatUSD(item.priceCents / 100)}
-            </p>
-          </div>
-        ))}
-      </section>
-
-      {/* Payment method — the most "this feels real" element on the
-          page. The Saved pill mirrors what every checkout shows when
-          a card is on file. */}
-      <section className="mt-3 rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-ink-muted">
-          Payment
-        </p>
-        <div className="mt-2 flex items-center gap-3">
-          <span className="flex h-9 w-12 flex-none items-center justify-center rounded-lg bg-surface-alt text-ink">
-            <CardIcon size={20} />
-          </span>
-          <p className="flex-1 text-[15px] font-bold text-ink">
-            Visa ending in 4242
-          </p>
-          <span className="rounded-full bg-brand-light px-2.5 py-0.5 text-[11px] font-bold text-brand">
-            Saved
-          </span>
-        </div>
-      </section>
-
-      {/* Receipt total breakdown — Subtotal / Tax / divider / Total
-          mirroring an actual paper receipt. */}
-      <section className="mt-4 rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card">
-        <div className="flex items-baseline justify-between text-[14px]">
-          <span className="text-ink-muted">Subtotal</span>
-          <span className="font-mono font-semibold text-ink">
-            {formatUSD(subtotalCents / 100)}
-          </span>
-        </div>
-        <div className="mt-2 flex items-baseline justify-between text-[14px]">
-          <span className="text-ink-muted">Tax (8.25%)</span>
-          <span className="font-mono font-semibold text-ink">
-            {formatUSD(taxCents / 100)}
-          </span>
-        </div>
-        <div className="my-3 h-px bg-[#F0EAE0]" />
-        <div className="flex items-baseline justify-between">
-          <span className="text-[13px] font-semibold uppercase tracking-widest text-ink-muted">
-            Total
-          </span>
-          <span className="font-mono text-[26px] font-extrabold text-brand">
-            {formatUSD(grandTotalCents / 100)}
-          </span>
-        </div>
-      </section>
-
-      <motion.button
-        type="button"
-        onClick={onSimIt}
-        whileTap={{ scale: 0.98 }}
-        className="btn-primary mt-5 w-full"
-      >
-        Sim It
-      </motion.button>
-      <p className="mt-2 pb-1 text-center text-[11px] text-ink-muted">
-        Simulated checkout — no real money will be charged.
-      </p>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
+          <path d="m9 6 6 6-6 6" />
+        </svg>
+      </motion.div>
     </div>
   );
 }

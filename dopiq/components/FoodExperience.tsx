@@ -182,6 +182,21 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
         style={{ scrollbarWidth: "none" }}
       >
         <div className="flex gap-2 px-4">
+          {/* All — reset pill. Active when no cuisine is selected.
+              Sits first so users can return to the unfiltered list
+              with one tap, mirroring the Shop page's pill row. */}
+          <button
+            type="button"
+            onClick={() => setActivePill(null)}
+            aria-pressed={activePill === null}
+            className={`flex flex-none items-center rounded-pill border px-4 py-2 text-[13px] font-semibold shadow-sm transition ${
+              activePill === null
+                ? "border-navy bg-navy text-white"
+                : "border-surface-border bg-white text-ink hover:bg-surface-alt"
+            }`}
+          >
+            All
+          </button>
           {PILLS.map((p) => {
             const selected = activePill === p.key;
             return (
