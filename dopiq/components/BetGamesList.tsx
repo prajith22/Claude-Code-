@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Game } from "@/types";
 import { cn, formatOdds, signed } from "@/lib/utils";
 import { TeamLogo } from "@/components/TeamLogo";
+import { PredictionMarketsList } from "@/components/PredictionMarketsList";
 import {
   buildSelection,
   slipKey,
@@ -22,6 +23,7 @@ import {
   Cage,
   Flag,
   Flame,
+  Spark,
 } from "@/components/icons";
 import type { ComponentType, SVGProps } from "react";
 
@@ -36,6 +38,8 @@ type SportKey =
   | "boxing"
   | "ufc"
   | "golf";
+
+type TabKey = "predictions" | SportKey;
 
 type SportMeta = {
   rawCount: number;
@@ -56,7 +60,9 @@ type OddsResponse = Record<SportKey, Game[]> & {
 
 type IconComponent = ComponentType<SVGProps<SVGSVGElement> & { size?: number }>;
 
-const SPORTS: { key: SportKey; label: string; icon: IconComponent }[] = [
+// Predictions sits first; sport tabs are unchanged behind it.
+const TABS: { key: TabKey; label: string; icon: IconComponent }[] = [
+  { key: "predictions", label: "Predictions", icon: Spark },
   { key: "nfl", label: "Football", icon: Football },
   { key: "nba", label: "Basketball", icon: Basketball },
   { key: "mlb", label: "Baseball", icon: Baseball },
@@ -69,15 +75,21 @@ const SPORTS: { key: SportKey; label: string; icon: IconComponent }[] = [
   { key: "golf", label: "Golf", icon: Flag },
 ];
 
-const DEFAULT_SPORT: SportKey = "nfl";
+const SPORTS = TABS.filter(
+  (t): t is { key: SportKey; label: string; icon: IconComponent } =>
+    t.key !== "predictions",
+);
+
+const DEFAULT_TAB: TabKey = "predictions";
 
 export function BetGamesList() {
   const [data, setData] = useState<OddsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [selected, setSelected] = useState<SportKey>(DEFAULT_SPORT);
-  const userPickedRef = useRef(false);
+  const [selected, setSelected] = useState<TabKey>(DEFAULT_TAB);
 
   useEffect(() => {
+    // Predictions don't need /api/odds; the deck is static. We still
+    // pre-warm the odds cache so switching to a sport tab is instant.
     let cancelled = false;
     fetch("/api/odds")
       .then((r) => {
@@ -98,40 +110,38 @@ export function BetGamesList() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!data || userPickedRef.current) return;
-    if ((data[DEFAULT_SPORT]?.length ?? 0) > 0) return;
-    const firstNonEmpty = SPORTS.find((s) => (data[s.key]?.length ?? 0) > 0);
-    if (firstNonEmpty) setSelected(firstNonEmpty.key);
-  }, [data]);
-
-  function pick(key: SportKey) {
-    userPickedRef.current = true;
+  function pick(key: TabKey) {
     setSelected(key);
   }
 
-  const games = data?.[selected] ?? [];
+  const isPredictions = selected === "predictions";
+  const sportSelected = !isPredictions ? (selected as SportKey) : null;
+  const games = sportSelected ? data?.[sportSelected] ?? [] : [];
   const liveGames = games.filter((g) => g.isLive);
   const upcomingGames = games.filter((g) => !g.isLive);
-  const activeSport = SPORTS.find((s) => s.key === selected);
+  const activeSport = sportSelected
+    ? SPORTS.find((s) => s.key === sportSelected)
+    : null;
 
   return (
     <section>
-      {/* Sport selector */}
+      {/* Tabs — Predictions sits first; sports follow. */}
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0">
-        {SPORTS.map((s) => (
+        {TABS.map((t) => (
           <SportTab
-            key={s.key}
-            Icon={s.icon}
-            label={s.label}
-            active={selected === s.key}
-            onClick={() => pick(s.key)}
+            key={t.key}
+            Icon={t.icon}
+            label={t.label}
+            active={selected === t.key}
+            onClick={() => pick(t.key)}
           />
         ))}
       </div>
 
       <div className="mt-5 space-y-6">
-        {error ? (
+        {isPredictions ? (
+          <PredictionMarketsList />
+        ) : error ? (
           <ErrorCard message={error} />
         ) : !data ? (
           <LoadingSkeleton />
