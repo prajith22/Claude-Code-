@@ -11,7 +11,7 @@ import {
 } from "framer-motion";
 import {
   QUICK_SIM_LOCATIONS,
-  QUICK_SIM_ITEMS,
+  pickQuickSimItems,
   type QuickSimItem,
   type QuickSimLocation,
 } from "@/data/quick-sim-items";
@@ -28,7 +28,15 @@ type Stage =
       idx: number;
       selected: QuickSimItem[];
     }
-  | { kind: "summary"; location: QuickSimLocation; selected: QuickSimItem[] }
+  | {
+      kind: "summary";
+      location: QuickSimLocation;
+      // Carry the queue forward so back-from-summary can re-show the
+      // last card without re-shuffling (which would surface a different
+      // 5-item subset and lose any items the user already swiped on).
+      queue: QuickSimItem[];
+      selected: QuickSimItem[];
+    }
   | { kind: "flash"; totalCents: number };
 
 const SWIPE_OFFSET = 100;
@@ -46,7 +54,10 @@ export function QuickSimFlow() {
   const bumpSavings = useSavingsStore((s) => s.bump);
 
   function selectLocation(location: QuickSimLocation) {
-    const queue = QUICK_SIM_ITEMS[location.key];
+    // Pick a fresh random 5 from the location's full 10 every time
+    // the user lands here — so revisiting the same location keeps it
+    // surprising.
+    const queue = pickQuickSimItems(location.key);
     setStage({
       kind: "items",
       location,
@@ -63,7 +74,12 @@ export function QuickSimFlow() {
       const nextSelected = add ? [...s.selected, item] : s.selected;
       const nextIdx = s.idx + 1;
       if (nextIdx >= s.queue.length) {
-        return { kind: "summary", location: s.location, selected: nextSelected };
+        return {
+          kind: "summary",
+          location: s.location,
+          queue: s.queue,
+          selected: nextSelected,
+        };
       }
       return { ...s, idx: nextIdx, selected: nextSelected };
     });
@@ -115,12 +131,13 @@ export function QuickSimFlow() {
     setStage((s) => {
       if (s.kind === "items") return { kind: "location" };
       if (s.kind === "summary") {
-        const queue = QUICK_SIM_ITEMS[s.location.key];
+        // Re-show the last card of the deck the user already swiped
+        // through — same items, no new shuffle.
         return {
           kind: "items",
           location: s.location,
-          queue,
-          idx: queue.length - 1,
+          queue: s.queue,
+          idx: s.queue.length - 1,
           selected: s.selected,
         };
       }
@@ -129,7 +146,7 @@ export function QuickSimFlow() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-[#FAFAF8] safe-top">
+    <div className="fixed inset-0 z-50 flex flex-col bg-[#F5EFE4] safe-top">
       {stage.kind !== "flash" && (
         <Header
           showBack={stage.kind !== "location"}
@@ -150,6 +167,7 @@ export function QuickSimFlow() {
               setStage({
                 kind: "summary",
                 location: stage.location,
+                queue: stage.queue,
                 selected: stage.selected,
               })
             }
@@ -161,7 +179,10 @@ export function QuickSimFlow() {
             location={stage.location}
             onSimIt={() => commitFromSummary(stage.selected)}
             onAddMore={() => {
-              const queue = QUICK_SIM_ITEMS[stage.location.key];
+              // "Browse again" reshuffles for a fresh set of 5 — the
+              // user is choosing to look at NEW items, not redo the
+              // ones they already swiped through.
+              const queue = pickQuickSimItems(stage.location.key);
               setStage({
                 kind: "items",
                 location: stage.location,

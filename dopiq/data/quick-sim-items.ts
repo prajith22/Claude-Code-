@@ -89,3 +89,51 @@ export const QUICK_SIM_ITEMS: Record<QuickSimLocation["key"], QuickSimItem[]> = 
     { id: "coff-10", name: "Sparkling Lemonade", emoji: "🍋", priceCents: 450 },
   ],
 };
+
+/** How many items the deck shows per visit. Drawn at random from the full 10. */
+export const QUICK_SIM_ITEMS_PER_VISIT = 5;
+
+function fisherYates<T>(input: T[]): T[] {
+  const a = input.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/**
+ * Picks a fresh random subset for the deck. Called every time the
+ * user lands on a location, so two consecutive visits to the same
+ * location surface different items.
+ */
+export function pickQuickSimItems(
+  locationKey: QuickSimLocation["key"],
+): QuickSimItem[] {
+  const all = QUICK_SIM_ITEMS[locationKey];
+  return fisherYates(all).slice(0, QUICK_SIM_ITEMS_PER_VISIT);
+}
+
+/** How many items the deck shows per visit. Drawn at random from the full 10. */
+export const QUICK_SIM_ITEMS_PER_VISIT = 5;
+
+function fisherYates<T>(input: T[]): T[] {
+  const a = input.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/**
+ * Picks a fresh random subset for the deck. Called every time the
+ * user lands on a location, so two consecutive visits to the same
+ * location surface different items.
+ */
+export function pickQuickSimItems(
+  locationKey: QuickSimLocation["key"],
+): QuickSimItem[] {
+  const all = QUICK_SIM_ITEMS[locationKey];
+  return fisherYates(all).slice(0, QUICK_SIM_ITEMS_PER_VISIT);
+}
