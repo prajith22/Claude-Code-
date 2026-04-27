@@ -52,6 +52,10 @@ export function SignInForm() {
   const oauthErrorMessage = oauthErrorParam
     ? OAUTH_ERROR_MESSAGES[oauthErrorParam] ?? OAUTH_ERROR_MESSAGES.Default
     : null;
+  // ?deleted=1 — set by the post-account-delete redirect.
+  const deletedNotice = params.get("deleted")
+    ? "Your account has been deleted."
+    : null;
 
   const [googleLoading, setGoogleLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -106,6 +110,16 @@ export function SignInForm() {
       >
         Use Google or your email — whichever you signed up with.
       </motion.p>
+
+      {deletedNotice && (
+        <motion.div
+          variants={fadeUp}
+          transition={{ duration: 0.4, delay: 0.18, ease: "easeOut" }}
+          className="mt-5 rounded-card border border-surface-border bg-surface-alt px-4 py-3 text-center text-[13px] font-medium text-ink"
+        >
+          {deletedNotice}
+        </motion.div>
+      )}
 
       {/* Trial banner */}
       <motion.div
