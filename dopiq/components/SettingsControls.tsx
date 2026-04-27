@@ -117,6 +117,23 @@ export function SettingsControls({
     }
   }
 
+  async function resumeSubscription() {
+    setBusy("resume");
+    setError(null);
+    setNotice(null);
+    try {
+      const res = await fetch("/api/stripe/resume", { method: "POST" });
+      const data = (await res.json()) as { error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Couldn’t resume subscription.");
+      setLocalCancelAtPeriodEnd(false);
+      setNotice("Subscription resumed. Billing will continue normally.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong.");
+    } finally {
+      setBusy(null);
+    }
+  }
+
   async function confirmDelete() {
     setBusy("delete");
     setError(null);
@@ -251,23 +268,49 @@ export function SettingsControls({
         </section>
       )}
 
-      {/* Cancel */}
+      {/* Cancel — soft outlined style; the destructive cousin
+          (Delete) is solid red so the visual hierarchy reads
+          "easy reversible action" → "permanent action". */}
       {hasSubscription && !localCancelAtPeriodEnd && (
         <section className="rounded-card border border-surface-border bg-white p-6 shadow-card">
           <h3 className="font-heading text-[18px] font-bold text-ink">
             Cancel subscription
           </h3>
-          <p className="mt-1 text-[13px] text-ink-muted">
-            You&apos;ll keep access until the end of the current billing
-            period. No refunds for the time already paid.
-          </p>
           <button
             type="button"
             onClick={() => setConfirmingCancel(true)}
-            className="mt-4 rounded-pill border border-red-200 bg-white px-5 py-2.5 text-[13px] font-bold text-red-700 transition hover:bg-red-50"
+            className="mt-3 rounded-pill border border-surface-border bg-white px-5 py-2.5 text-[13px] font-semibold text-ink-muted transition hover:bg-surface-alt hover:text-ink"
           >
             Cancel subscription
           </button>
+          <p className="mt-3 text-[12px] leading-relaxed text-ink-muted">
+            You keep full access until the end of your billing period.
+            Your account and all your data stay intact — savings,
+            streak, bet history. You can resubscribe anytime.
+          </p>
+        </section>
+      )}
+
+      {/* Resume — only when a cancellation is pending. Brand-green
+          outline so it reads as a positive, restorative action. */}
+      {hasSubscription && localCancelAtPeriodEnd && (
+        <section className="rounded-card border border-surface-border bg-white p-6 shadow-card">
+          <h3 className="font-heading text-[18px] font-bold text-ink">
+            Resume subscription
+          </h3>
+          <button
+            type="button"
+            onClick={resumeSubscription}
+            disabled={busy === "resume"}
+            className="mt-3 rounded-pill border-2 border-brand bg-white px-5 py-2.5 text-[13px] font-bold text-brand transition hover:bg-brand-light disabled:opacity-60"
+          >
+            {busy === "resume" ? "Resuming…" : "Resume subscription"}
+          </button>
+          <p className="mt-3 text-[12px] leading-relaxed text-ink-muted">
+            {nextBillingLabel
+              ? `Your subscription is set to end on ${nextBillingLabel}. Resume to keep your access and continue billing normally.`
+              : "Your subscription is set to end at the close of this billing period. Resume to keep your access and continue billing normally."}
+          </p>
         </section>
       )}
 
@@ -284,22 +327,24 @@ export function SettingsControls({
       )}
 
       {/* Delete account — last so destructive actions sit at the
-          bottom of the page, away from the day-to-day controls. */}
+          bottom of the page, away from the day-to-day controls.
+          Solid red button is intentional: it should feel heavier
+          than the soft outlined Cancel above it. */}
       <section className="rounded-card border border-red-200 bg-white p-6 shadow-card">
         <h3 className="font-heading text-[18px] font-bold text-ink">
           Delete account
         </h3>
-        <p className="mt-1 text-[13px] text-ink-muted">
-          Permanently remove your account, your simulations, and any
-          active subscription. This cannot be undone.
-        </p>
         <button
           type="button"
           onClick={() => setConfirmingDelete(true)}
-          className="mt-4 rounded-pill bg-red-600 px-5 py-2.5 text-[13px] font-bold text-white transition hover:bg-red-700"
+          className="mt-3 rounded-pill bg-red-600 px-5 py-2.5 text-[13px] font-bold text-white transition hover:bg-red-700"
         >
           Delete account
         </button>
+        <p className="mt-3 text-[12px] leading-relaxed text-ink-muted">
+          Immediately cancels your billing and permanently erases your
+          account and all data. This cannot be undone.
+        </p>
       </section>
 
       {confirmingCancel && (
