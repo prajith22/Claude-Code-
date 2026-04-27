@@ -195,7 +195,10 @@ function AnimatedSavedAmount({
       return;
     }
 
-    const start = value - COUNT_OFFSET;
+    // Clamp to 0 so small values (e.g. $22 today) lift off from $0
+    // instead of starting in the negatives — feels more like a
+    // counter and less like a balance ledger.
+    const start = Math.max(0, value - COUNT_OFFSET);
     motionValue.set(start);
     // Write the start frame synchronously so the user doesn't see a
     // flicker of the previous value while RAF spins up.
