@@ -44,30 +44,53 @@ export default async function HomePage() {
         {/* Money saved + streak hero */}
         <HomeStreakHero initial={initialSummary} />
 
-        {/* Quick Sim — fast urge-buster for the in-store moment.
-            Deliberately the only dark surface on the home page; meant
-            to feel urgent and tappable, not blend in. */}
+        {/* Quick Sim — sibling to the Shop / Food / Bet pastel cards.
+            Coral-tinted so it's distinct from the other three but
+            still part of the same family. */}
         <Link
           href="/quick-sim"
-          className="group relative flex items-center gap-4 overflow-hidden rounded-card bg-[#0A0F1E] p-5 ring-1 ring-brand/40 transition active:scale-[0.99]"
+          className="group relative flex items-center gap-4 overflow-hidden rounded-card bg-[#FFE4E1] p-5 transition active:scale-[0.99]"
         >
+          {/* Same dotted texture as the other home sim cards, tinted
+              to the title shade. Static SVG id is fine because there's
+              only one Quick Sim card per page. */}
+          <svg
+            aria-hidden
+            className="pointer-events-none absolute inset-0 h-full w-full text-[#8B2500] opacity-[0.07]"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <pattern
+                id="qs-dots"
+                x="0"
+                y="0"
+                width="14"
+                height="14"
+                patternUnits="userSpaceOnUse"
+              >
+                <circle cx="2" cy="2" r="1.4" fill="currentColor" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#qs-dots)" />
+          </svg>
+
           <span
             aria-hidden
-            className="flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-white/10 text-[28px] leading-none"
+            className="relative flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-white/60 text-[28px] leading-none backdrop-blur-sm"
           >
             ⚡
           </span>
-          <div className="min-w-0 flex-1">
-            <p className="font-heading text-[18px] font-extrabold leading-tight text-white">
+          <div className="relative min-w-0 flex-1">
+            <p className="font-heading text-[18px] font-extrabold leading-tight text-[#8B2500]">
               Quick Sim
             </p>
-            <p className="mt-0.5 text-[12px] text-white/60">
+            <p className="mt-0.5 text-[12px] text-[#8B2500]/70">
               Impulse hitting? Sim it in seconds.
             </p>
           </div>
           <span
             aria-hidden
-            className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white/10 text-white transition group-hover:bg-brand group-hover:text-navy"
+            className="relative flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white/60 text-[#8B2500] backdrop-blur-sm transition group-hover:translate-x-0.5"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
               <path
