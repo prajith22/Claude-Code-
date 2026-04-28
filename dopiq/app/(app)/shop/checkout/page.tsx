@@ -139,7 +139,7 @@ function PaymentMethod() {
           VISA
         </div>
         <div>
-          <p className="text-sm font-medium">•••• 4242</p>
+          <p className="text-sm font-medium">•••• FAKE</p>
           <p className="text-xs text-ink-muted">Exp 12/29 · Simulated card</p>
         </div>
       </div>
