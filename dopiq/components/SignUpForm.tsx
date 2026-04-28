@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { signIn } from "next-auth/react";
 import { Lock, Card, Bolt } from "@/components/icons";
 
 const fadeRight = {
@@ -51,24 +50,10 @@ export function SignUpForm() {
         throw new Error(data.error ?? "Couldn’t create your account.");
       }
 
-      // Sign the new user in immediately so the next page has a
-      // session, then bounce through /home — the session guard
-      // routes a never-onboarded user to /onboarding, and routes
-      // already-onboarded-but-not-subscribed users to /paywall.
-      // Avoids hardcoding the destination here so flow changes
-      // (extra steps, email verification, etc.) only need to
-      // touch the guard.
-      const signInRes = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-      if (signInRes?.error) {
-        throw new Error(
-          "Account created but sign-in failed. Try signing in manually.",
-        );
-      }
-      router.push("/home");
+      // Account created — the user is NOT signed in. Hand off to
+      // /verify-email so they can check their inbox; sign-in only
+      // happens after they click the link in the email.
+      router.push(`/verify-email?email=${encodeURIComponent(email)}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
       setSubmitting(false);

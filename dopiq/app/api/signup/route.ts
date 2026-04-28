@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import crypto from "node:crypto";
 import { prisma } from "@/lib/prisma";
+import { sendVerificationEmail } from "@/lib/email";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,8 +13,10 @@ const MIN_PASSWORD_LEN = 8;
 
 /**
  * Email + password signup. Hashes the password with bcrypt at 12
- * rounds and creates the User row. Conflict if the email already
- * has an account (whether OAuth or credentials).
+ * rounds, creates the User row with emailVerified=null, generates a
+ * verification token, and sends the verification email. The client
+ * is then routed to /verify-email — not signed in until the user
+ * clicks the link.
  *
  * Lives at /api/signup (not /api/auth/signup) because the entire
  * /api/auth/* namespace is owned by the NextAuth catch-all route.
@@ -53,12 +57,31 @@ export async function POST(req: Request) {
   }
 
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+  const emailVerificationToken = crypto.randomBytes(32).toString("hex");
   const user = await prisma.user.create({
     data: {
       email,
       passwordHash,
+      emailVerified: null,
+      emailVerificationToken,
     },
   });
 
-  return NextResponse.json({ ok: true, userId: user.id });
+  // Fire the verification email. We surface failures back to the
+  // client so the SignUpForm can show "couldn't send email" state
+  // and offer a manual retry via the resend endpoint.
+  const send = await sendVerificationEmail(email, emailVerificationToken);
+  if (!send.ok) {
+    return NextResponse.json(
+      {
+        ok: true,
+        userId: user.id,
+        emailSent: false,
+        error: "Account created but we couldn't send the verification email.",
+      },
+      { status: 200 },
+    );
+  }
+
+  return NextResponse.json({ ok: true, userId: user.id, emailSent: true });
 }
