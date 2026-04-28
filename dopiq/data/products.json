@@ -998,5 +998,55 @@
     "rating": 4.6,
     "reviewCount": 6432,
     "imageUrl": "/products/HydrationRunningBelt.webp"
+  },
+  {
+    "id": "p-clothes-21",
+    "name": "Ribbed Henley Long Sleeve",
+    "description": "Slim-fit ribbed henley with a button placket and raw hem in a vintage wash. Layers cleanly under a flannel or stands on its own with denim.",
+    "price": 38.99,
+    "category": "Clothes",
+    "rating": 4.6,
+    "reviewCount": 5432,
+    "imageUrl": "/products/RibbedHenleyLongSleeve.webp"
+  },
+  {
+    "id": "p-electronics-21",
+    "name": "Foldable Phone Stand",
+    "description": "Aluminum foldable phone and tablet stand with an adjustable viewing angle and a non-slip base. Folds flat for a pocket or a backpack pouch.",
+    "price": 16.99,
+    "category": "Electronics",
+    "rating": 4.7,
+    "reviewCount": 8765,
+    "imageUrl": "/products/FoldablePhoneStand.webp"
+  },
+  {
+    "id": "p-home-21",
+    "name": "Linen Table Runner",
+    "description": "A stonewashed linen table runner in a natural oat color, 14 by 72 inches. Adds a quiet, lived-in layer to weeknight dinners and weekend hosting alike.",
+    "price": 24.99,
+    "category": "Home Goods",
+    "rating": 4.6,
+    "reviewCount": 3456,
+    "imageUrl": "/products/LinenTableRunner.webp"
+  },
+  {
+    "id": "p-beauty-21",
+    "name": "Barrier Repair Face Cream",
+    "description": "A fragrance-free barrier repair moisturizer with ceramides and peptides, formulated for sensitive skin. Sinks in fast and layers under SPF without pilling.",
+    "price": 32,
+    "category": "Beauty",
+    "rating": 4.7,
+    "reviewCount": 6789,
+    "imageUrl": "/products/BarrierRepairFaceCream.webp"
+  },
+  {
+    "id": "p-sports-21",
+    "name": "Neoprene Dumbbell Pair",
+    "description": "Color-coded neoprene-coated dumbbell pair with a contoured grip, available in 5 lb, 8 lb, and 10 lb. Quiet on hardwood and easy on the hands for long sets.",
+    "price": 28.99,
+    "category": "Sports",
+    "rating": 4.6,
+    "reviewCount": 7654,
+    "imageUrl": "/products/NeopreneDumbbellPair.webp"
   }
 ]
