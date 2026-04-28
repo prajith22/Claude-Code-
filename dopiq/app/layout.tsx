@@ -26,8 +26,16 @@ export const metadata: Metadata = {
   description:
     "Simulate shopping, food delivery, and sports betting with fake money. Get the dopamine hit without touching your bank account.",
   applicationName: "Dopiq",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "Dopiq" },
-  icons: { icon: "/favicon.ico" },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Dopiq",
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/icons/icon-192.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -46,6 +54,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="text-ink antialiased">
         <Providers>{children}</Providers>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  });
+}`,
+          }}
+        />
       </body>
     </html>
   );
