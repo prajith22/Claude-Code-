@@ -494,7 +494,7 @@ function CheckoutSummary({
         )}
       </section>
 
-      {/* Fake payment method — Visa ••4242 with a "Saved" pill
+      {/* Fake payment method — Visa ••FAKE with a "Saved" pill
           badge. Just dressing for the receipt feel; nothing real
           gets charged. */}
       <section className="mt-3 flex items-center gap-3 rounded-card bg-white p-4 shadow-card">
@@ -502,7 +502,7 @@ function CheckoutSummary({
           <Card size={22} />
         </span>
         <p className="flex-1 font-sans text-[15px] font-bold text-[#0A0F1E]">
-          Visa ending in 4242
+          Visa ending in FAKE
         </p>
         <span className="rounded-pill bg-[#E8F5E9] px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[#1B5E20]">
           Saved
