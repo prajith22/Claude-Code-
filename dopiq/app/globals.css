@@ -90,4 +90,15 @@ button, a { -webkit-tap-highlight-color: transparent; }
   /* Anchor a sticky bottom bar so it sits ABOVE the mobile tab bar
      instead of behind it. */
   .bottom-nav { bottom: var(--bottom-nav-h); }
+  /* Soft tan shimmer used behind Explore card images while they load. */
+  .explore-shimmer {
+    background: linear-gradient(110deg, #F5F0E8 0%, #EFE9DC 35%, #F5F0E8 70%);
+    background-size: 200% 100%;
+    animation: explore-shimmer 1.6s linear infinite;
+  }
+}
+
+@keyframes explore-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
