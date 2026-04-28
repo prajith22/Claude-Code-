@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 
@@ -191,7 +192,7 @@ const SCREEN_1_OPTIONS = [
   {
     bg: "#FFF9E6",
     fg: "#5D4037",
-    label: "DoorDash knows my order before I do.",
+    label: "I order food delivery way more than I should.",
     response: "Those cravings are real. So is our food simulator.",
   },
   {
@@ -662,7 +663,21 @@ function Screen4({
         transition={{ delay: 1.15, duration: 0.4 }}
         className="mt-3 text-center text-[12px] text-ink-muted"
       >
-        By continuing you agree to our terms and privacy policy.
+        By continuing you agree to our{" "}
+        <Link
+          href="/terms"
+          className="text-brand underline-offset-2 hover:underline"
+        >
+          terms
+        </Link>{" "}
+        and{" "}
+        <Link
+          href="/privacy"
+          className="text-brand underline-offset-2 hover:underline"
+        >
+          privacy policy
+        </Link>
+        .
       </motion.p>
     </div>
   );
