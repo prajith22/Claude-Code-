@@ -248,7 +248,21 @@ export function SignInForm() {
         transition={{ duration: 0.4, delay: 0.6, ease: "easeOut" }}
         className="mt-6 text-center text-[11px] text-ink-faint"
       >
-        By continuing you agree to the terms and privacy policy.
+        By continuing you agree to the{" "}
+        <Link
+          href="/terms"
+          className="text-brand underline-offset-2 hover:underline"
+        >
+          terms
+        </Link>{" "}
+        and{" "}
+        <Link
+          href="/privacy"
+          className="text-brand underline-offset-2 hover:underline"
+        >
+          privacy policy
+        </Link>
+        .
       </motion.p>
     </motion.div>
   );

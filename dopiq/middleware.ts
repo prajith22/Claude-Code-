@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/", "/signin", "/signup", "/paywall"];
+const PUBLIC_PATHS = ["/", "/signin", "/signup", "/paywall", "/terms", "/privacy"];
 const ALWAYS_ALLOW_PREFIXES = [
   "/api/auth",
   "/api/signup",
