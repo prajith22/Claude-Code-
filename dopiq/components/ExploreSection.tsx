@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import type { Product, ProductCategory } from "@/types";
 import { cn, formatUSD } from "@/lib/utils";
+import { useCartStore } from "@/lib/cart-store";
 import { Bag, StarFilled } from "@/components/icons";
 
 type CategoryKey = "all" | ProductCategory;
@@ -58,10 +60,26 @@ const variants = {
 };
 
 export function ExploreSection({ products }: { products: Product[] }) {
+  const router = useRouter();
+  const addToCart = useCartStore((s) => s.add);
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("all");
   const [shuffled, setShuffled] = useState<Product[]>(products);
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
+
+  // Drop the visible product into the shop cart and jump straight
+  // to checkout. The checkout page reads from the cart store, so a
+  // single-line cart is enough to render the full flow.
+  function purchaseNow(product: Product) {
+    addToCart("shop", {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      qty: 1,
+    });
+    router.push("/shop/checkout");
+  }
 
   // Re-filter + re-shuffle every time the products prop or the
   // selected category changes. SSR-safe: first render uses the
@@ -222,9 +240,16 @@ export function ExploreSection({ products }: { products: Product[] }) {
                       {current.rating.toFixed(1)}
                     </span>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => purchaseNow(current)}
+                    className="btn-primary mt-3 w-full"
+                  >
+                    Purchase Now
+                  </button>
                   <Link
                     href={`/shop/${current.id}`}
-                    className="btn-navy mt-3 w-full"
+                    className="btn-navy mt-2 w-full"
                   >
                     View Product
                   </Link>
