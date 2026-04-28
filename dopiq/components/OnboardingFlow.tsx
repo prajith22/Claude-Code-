@@ -191,7 +191,7 @@ const SCREEN_1_OPTIONS = [
   {
     bg: "#FFF9E6",
     fg: "#5D4037",
-    label: "DoorDash knows my order before I do.",
+    label: "I order food delivery way more than I should.",
     response: "Those cravings are real. So is our food simulator.",
   },
   {
