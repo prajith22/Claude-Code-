@@ -23,6 +23,25 @@ const MAX_DOTS = 5;
 const SWIPE_OFFSET = 60;
 const SWIPE_VELOCITY = 500;
 
+// Module-scope in-memory image cache. Holding live HTMLImageElement
+// references prevents the browser from evicting recently-decoded
+// images, so a swipe back to a previously seen card renders
+// instantly with no placeholder flash. The cache is shared across
+// renders and across category switches.
+const imageCache = new Map<string, HTMLImageElement>();
+
+function preloadImage(src: string) {
+  if (!src) return;
+  if (typeof window === "undefined") return;
+  if (imageCache.has(src)) return;
+  const img = new window.Image();
+  img.decoding = "async";
+  img.src = src;
+  // Stash the element immediately so a second preload call for the
+  // same URL is a no-op even if onload hasn't fired yet.
+  imageCache.set(src, img);
+}
+
 function fisherYates<T>(input: T[]): T[] {
   const a = input.slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -56,6 +75,26 @@ export function ExploreSection({ products }: { products: Product[] }) {
     setShuffled(fisherYates(pool));
     setIndex(0);
   }, [products, selectedCategory]);
+
+  // Preload the next two cards' images as soon as the current card
+  // renders. Keeps swipes feeling instant — by the time the user
+  // pans, the next image is already decoded in the browser cache.
+  useEffect(() => {
+    if (shuffled.length === 0) return;
+    for (let offset = 1; offset <= 2; offset++) {
+      const next = shuffled[(index + offset) % shuffled.length];
+      if (next?.imageUrl) preloadImage(next.imageUrl);
+    }
+  }, [index, shuffled]);
+
+  // On a category tap (or initial shuffle), warm the first 5 images
+  // in the new pool before the user starts swiping.
+  useEffect(() => {
+    if (shuffled.length === 0) return;
+    shuffled.slice(0, 5).forEach((p) => {
+      if (p.imageUrl) preloadImage(p.imageUrl);
+    });
+  }, [shuffled]);
 
   const hasProducts = shuffled.length > 0;
   const current = hasProducts ? shuffled[index] : null;
@@ -166,7 +205,7 @@ export function ExploreSection({ products }: { products: Product[] }) {
                 onDragEnd={handleDragEnd}
                 className="card cursor-grab touch-pan-y overflow-hidden active:cursor-grabbing"
               >
-                <CardImage product={current} />
+                <CardImage product={current} priority={index < 3} />
                 <div className="space-y-1.5 p-5">
                   <p className="font-heading text-[20px] font-bold leading-tight text-ink">
                     {current.name}
@@ -224,10 +263,31 @@ function EmptyCategoryCard() {
   );
 }
 
-function CardImage({ product }: { product: Product }) {
+function CardImage({
+  product,
+  priority,
+}: {
+  product: Product;
+  priority: boolean;
+}) {
+  // If the URL is already in our in-memory cache the browser has it
+  // decoded — skip the placeholder entirely on this render so swipe-
+  // backs feel instant.
+  const cached = product.imageUrl ? imageCache.has(product.imageUrl) : false;
+  const [loaded, setLoaded] = useState(cached);
+
+  // Reset loaded state when the product changes (e.g., user swipes
+  // to a new card). Cached images skip the placeholder.
+  useEffect(() => {
+    setLoaded(product.imageUrl ? imageCache.has(product.imageUrl) : true);
+  }, [product.imageUrl]);
+
   // 60% of card height — card is image (h-[300px]) + info block (~200px).
   return (
-    <div className="relative h-[300px] w-full overflow-hidden bg-surface-alt">
+    <div className="relative h-[300px] w-full overflow-hidden bg-[#F5F0E8]">
+      {!loaded && (
+        <div aria-hidden className="absolute inset-0 explore-shimmer" />
+      )}
       {product.imageUrl ? (
         <Image
           src={product.imageUrl}
@@ -235,11 +295,26 @@ function CardImage({ product }: { product: Product }) {
           fill
           sizes="(max-width: 640px) 100vw, 600px"
           draggable={false}
-          className="select-none object-cover"
-          style={{ filter: "blur(0.8px)" }}
+          priority={priority}
+          // Eager loading kills the IntersectionObserver-driven
+          // pop-in. priority handles the first 3 cards more
+          // aggressively (fetchpriority=high) and itself implies
+          // eager, so we only set loading explicitly when priority
+          // is off to avoid the Next.js prop-conflict warning.
+          loading={priority ? undefined : "eager"}
+          onLoadingComplete={(img) => {
+            if (product.imageUrl && !imageCache.has(product.imageUrl)) {
+              const cacheEl = new window.Image();
+              cacheEl.src = img.currentSrc || product.imageUrl;
+              imageCache.set(product.imageUrl, cacheEl);
+            }
+            setLoaded(true);
+          }}
+          className="select-none object-cover transition-opacity duration-200"
+          style={{ filter: "blur(0.8px)", opacity: loaded ? 1 : 0 }}
         />
       ) : (
-        <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-ink-faint">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-ink-faint">
           <Bag size={40} />
           <span className="text-[13px] font-semibold">{product.category}</span>
         </div>
