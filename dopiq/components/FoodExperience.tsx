@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import restaurants from "@/data/restaurants.json";
 import type { Restaurant, Cuisine, FoodPrefs } from "@/types";
@@ -32,6 +32,15 @@ const deliveryUpperMinutes = (t: string) => {
   return parseInt(nums[nums.length - 1], 10);
 };
 
+function fisherYates<T>(input: T[]): T[] {
+  const a = input.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
   const [search, setSearch] = useState("");
   const [activePill, setActivePill] = useState<string | null>(null);
@@ -41,7 +50,16 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
     topRated: boolean;
   }>({ popular: false, fastest: false, topRated: false });
 
-  const all = restaurants as Restaurant[];
+  // Server render and the first client render use the JSON order to
+  // avoid hydration mismatches; the effect below rolls a fresh
+  // random order on mount so the All Restaurants section doesn't
+  // show the same names up top every visit. Sorted sections (Most
+  // popular, Fastest, Top rated) re-sort by their own criteria, so
+  // they aren't affected by this shuffle.
+  const [all, setAll] = useState<Restaurant[]>(restaurants as Restaurant[]);
+  useEffect(() => {
+    setAll(fisherYates(restaurants as Restaurant[]));
+  }, []);
 
   const baseOrdered = useMemo(() => {
     const preferred = (prefs?.cuisines ?? []) as Cuisine[];
