@@ -1947,5 +1947,522 @@
         "category": "Desserts"
       }
     ]
+  },
+  {
+    "id": "r-the-taco-stand",
+    "name": "The Taco Stand",
+    "cuisine": "Mexican",
+    "rating": 4.6,
+    "deliveryTime": "15-25 min",
+    "deliveryFee": 0.99,
+    "imageUrl": "/restaurants/TheTacoStand.webp",
+    "menu": [
+      {
+        "id": "r-the-taco-stand-m1",
+        "name": "Carne Asada Tacos 3pc",
+        "description": "Grilled carne asada with cilantro, onion, and salsa verde on warm corn tortillas.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-the-taco-stand-m2",
+        "name": "Birria Quesadilla",
+        "description": "Slow-braised beef with melted cheese and consommé for dipping.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-the-taco-stand-m3",
+        "name": "Elote Bowl",
+        "description": "Street corn off the cob with cotija cheese, chili, and lime.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-the-taco-stand-m4",
+        "name": "Carnitas Burrito",
+        "description": "Slow-roasted pork with rice, beans, pico de gallo, and sour cream.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-the-taco-stand-m5",
+        "name": "Veggie Fajita Bowl",
+        "description": "Roasted peppers, onions, and mushrooms over cilantro-lime rice with guacamole.",
+        "price": 9.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-the-taco-stand-m6",
+        "name": "Chips and Salsa",
+        "description": "Warm tortilla chips with a side of fresh tomato salsa.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-the-taco-stand-m7",
+        "name": "Street Corn",
+        "description": "Grilled corn on the cob with cotija, mayo, chili, and lime.",
+        "price": 4.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-the-taco-stand-m8",
+        "name": "Queso Fundido",
+        "description": "Melted Oaxaca cheese with chorizo, served with warm tortillas.",
+        "price": 5.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-the-taco-stand-m9",
+        "name": "Horchata",
+        "description": "Sweet rice and cinnamon drink, served chilled.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-the-taco-stand-m10",
+        "name": "Jarritos",
+        "description": "Mexican fruit soda in your choice of flavor.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-the-taco-stand-m11",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-the-taco-stand-m12",
+        "name": "Churros with Chocolate",
+        "description": "Crispy cinnamon-sugar churros with warm chocolate dipping sauce.",
+        "price": 4.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-the-taco-stand-m13",
+        "name": "Tres Leches Slice",
+        "description": "Sponge cake soaked in three milks, topped with whipped cream.",
+        "price": 4.49,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-naan-stop",
+    "name": "Naan Stop",
+    "cuisine": "Indian",
+    "rating": 4.7,
+    "deliveryTime": "30-40 min",
+    "deliveryFee": 2.49,
+    "imageUrl": "/restaurants/NaanStop.webp",
+    "menu": [
+      {
+        "id": "r-naan-stop-m1",
+        "name": "Garlic Naan Wrap",
+        "description": "Tandoor-baked naan wrapped around spiced chicken tikka and mint chutney.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-naan-stop-m2",
+        "name": "Paneer Tikka Masala",
+        "description": "Grilled cottage cheese cubes simmered in a creamy tomato masala.",
+        "price": 13.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-naan-stop-m3",
+        "name": "Chicken Korma",
+        "description": "Tender chicken in a mild almond and cream sauce, served with basmati rice.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-naan-stop-m4",
+        "name": "Vegetable Samosa Chaat",
+        "description": "Crispy samosas over spiced chickpeas with tamarind and mint chutneys.",
+        "price": 11.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-naan-stop-m5",
+        "name": "Lamb Keema Bowl",
+        "description": "Spiced minced lamb with peas over fluffy basmati rice.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-naan-stop-m6",
+        "name": "Garlic Naan",
+        "description": "Tandoor-baked flatbread brushed with garlic butter and cilantro.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-naan-stop-m7",
+        "name": "Samosa 2pc",
+        "description": "Two crispy pastries stuffed with spiced potatoes and peas.",
+        "price": 4.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-naan-stop-m8",
+        "name": "Mint Chutney Dip",
+        "description": "Bright, herbaceous mint and cilantro chutney.",
+        "price": 1.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-naan-stop-m9",
+        "name": "Mango Lassi",
+        "description": "Sweet, creamy yogurt drink blended with ripe mango.",
+        "price": 3.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-naan-stop-m10",
+        "name": "Masala Chai",
+        "description": "Black tea simmered with milk and warming spices.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-naan-stop-m11",
+        "name": "Rose Milk",
+        "description": "Chilled milk sweetened with floral rose syrup.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-naan-stop-m12",
+        "name": "Gulab Jamun",
+        "description": "Soft milk dumplings soaked in cardamom-rose syrup.",
+        "price": 4.49,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-naan-stop-m13",
+        "name": "Kulfi Ice Cream",
+        "description": "Dense, creamy Indian-style ice cream with pistachio.",
+        "price": 3.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-stack-house",
+    "name": "Stack House",
+    "cuisine": "Burgers",
+    "rating": 4.8,
+    "deliveryTime": "15-25 min",
+    "deliveryFee": 1.49,
+    "imageUrl": "/restaurants/StackHouse.webp",
+    "menu": [
+      {
+        "id": "r-stack-house-m1",
+        "name": "Double Stack Smash Burger",
+        "description": "Two smashed beef patties with American cheese, special sauce, and pickles.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-stack-house-m2",
+        "name": "Truffle Aioli Burger",
+        "description": "Single patty with truffle aioli, aged cheddar, and peppery arugula.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-stack-house-m3",
+        "name": "Crispy Chicken Sandwich",
+        "description": "Buttermilk-fried chicken with pickles and honey mustard on a brioche bun.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-stack-house-m4",
+        "name": "Breakfast Burger",
+        "description": "Beef patty topped with a fried egg, bacon, and a crispy hash brown.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-stack-house-m5",
+        "name": "Portobello Veggie Burger",
+        "description": "Grilled portobello mushroom with roasted peppers and chipotle mayo.",
+        "price": 10.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-stack-house-m6",
+        "name": "Waffle Fries",
+        "description": "Crispy seasoned waffle-cut fries served hot.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-stack-house-m7",
+        "name": "Loaded Cheese Fries",
+        "description": "Fries piled with melted cheese, bacon bits, and scallions.",
+        "price": 5.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-stack-house-m8",
+        "name": "Fried Pickles",
+        "description": "Battered pickle chips fried golden, served with ranch.",
+        "price": 4.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-stack-house-m9",
+        "name": "Salted Caramel Milkshake",
+        "description": "Thick vanilla shake blended with salted caramel sauce.",
+        "price": 6.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-stack-house-m10",
+        "name": "Strawberry Milkshake",
+        "description": "Real strawberry shake topped with whipped cream.",
+        "price": 6.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-stack-house-m11",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-stack-house-m12",
+        "name": "Deep Fried Oreos 4pc",
+        "description": "Four classic chocolate sandwich cookies battered and fried, dusted with powdered sugar.",
+        "price": 4.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-stack-house-m13",
+        "name": "Mini Churro Bites",
+        "description": "Bite-sized cinnamon-sugar churros with chocolate dip.",
+        "price": 3.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-sushi-spot",
+    "name": "Sushi Spot",
+    "cuisine": "Sushi",
+    "rating": 4.7,
+    "deliveryTime": "25-40 min",
+    "deliveryFee": 2.99,
+    "imageUrl": "/restaurants/SushiSpot.webp",
+    "menu": [
+      {
+        "id": "r-sushi-spot-m1",
+        "name": "Spicy Tuna Roll",
+        "description": "Fresh tuna with sriracha, cucumber, and toasted sesame.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sushi-spot-m2",
+        "name": "Salmon Avocado Roll",
+        "description": "Fresh salmon with creamy avocado and tobiko.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sushi-spot-m3",
+        "name": "Volcano Roll",
+        "description": "Baked spicy tuna piled on a California roll, finished with eel sauce.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sushi-spot-m4",
+        "name": "Sashimi Platter 12pc",
+        "description": "Assorted fresh fish sliced thin, served with wasabi and pickled ginger.",
+        "price": 18.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sushi-spot-m5",
+        "name": "Chirashi Bowl",
+        "description": "Assorted sashimi over seasoned sushi rice with tamago.",
+        "price": 16.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sushi-spot-m6",
+        "name": "Edamame",
+        "description": "Steamed soybean pods sprinkled with sea salt.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sushi-spot-m7",
+        "name": "Gyoza 5pc",
+        "description": "Five pan-seared pork dumplings with ponzu dipping sauce.",
+        "price": 6.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sushi-spot-m8",
+        "name": "Miso Soup",
+        "description": "Warm dashi broth with tofu, seaweed, and scallions.",
+        "price": 2.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sushi-spot-m9",
+        "name": "Yuzu Lemonade",
+        "description": "Bright citrus lemonade made with Japanese yuzu.",
+        "price": 4.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sushi-spot-m10",
+        "name": "Ramune Soda",
+        "description": "Japanese marble-bottle soda in your choice of flavor.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sushi-spot-m11",
+        "name": "Green Tea",
+        "description": "Hot or iced sencha green tea.",
+        "price": 2.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sushi-spot-m12",
+        "name": "Mochi Ice Cream 3pc",
+        "description": "Three pieces of chewy mochi wrapped around ice cream.",
+        "price": 5.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-sushi-spot-m13",
+        "name": "Matcha Cheesecake Slice",
+        "description": "Creamy cheesecake slice infused with stone-ground matcha.",
+        "price": 6.49,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-the-comfort-kitchen",
+    "name": "The Comfort Kitchen",
+    "cuisine": "American",
+    "rating": 4.6,
+    "deliveryTime": "20-30 min",
+    "deliveryFee": 1.99,
+    "imageUrl": "/restaurants/TheComfortKitchen.webp",
+    "menu": [
+      {
+        "id": "r-the-comfort-kitchen-m1",
+        "name": "Mac and Cheese Bowl",
+        "description": "Creamy four-cheese macaroni topped with toasted breadcrumbs.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m2",
+        "name": "Fried Chicken Plate",
+        "description": "Buttermilk-fried chicken thighs with mashed potatoes and country gravy.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m3",
+        "name": "Meatloaf with Mashed Potatoes",
+        "description": "Slow-baked meatloaf with caramelized onion gravy and whipped potatoes.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m4",
+        "name": "Grilled Cheese and Tomato Soup",
+        "description": "Sourdough grilled cheese paired with roasted tomato-basil soup for dipping.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m5",
+        "name": "Chicken Pot Pie",
+        "description": "Flaky pastry crust filled with chicken, peas, carrots, and cream sauce.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m6",
+        "name": "Cornbread",
+        "description": "Sweet skillet cornbread served with honey butter.",
+        "price": 3.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m7",
+        "name": "Biscuits and Gravy",
+        "description": "Two buttermilk biscuits smothered in sausage gravy.",
+        "price": 5.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m8",
+        "name": "Side Salad",
+        "description": "Mixed greens with cherry tomatoes, cucumbers, and house ranch.",
+        "price": 4.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m9",
+        "name": "Sweet Tea",
+        "description": "Brewed black tea sweetened Southern-style.",
+        "price": 2.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m10",
+        "name": "Lemonade",
+        "description": "Fresh-squeezed lemonade served over ice.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m11",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 1.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m12",
+        "name": "Banana Pudding",
+        "description": "Layered vanilla pudding with banana slices and vanilla wafers.",
+        "price": 4.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m13",
+        "name": "Apple Pie Slice",
+        "description": "Warm spiced apple pie with a flaky golden crust.",
+        "price": 4.49,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-the-comfort-kitchen-m14",
+        "name": "Chocolate Brownie",
+        "description": "Fudgy chocolate brownie with a crackly top.",
+        "price": 3.99,
+        "category": "Desserts"
+      }
+    ]
   }
 ]
