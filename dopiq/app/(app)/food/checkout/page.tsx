@@ -74,7 +74,7 @@ export default function FoodCheckoutPage() {
             VISA
           </div>
           <div>
-            <p className="text-sm font-medium">•••• 4242</p>
+            <p className="text-sm font-medium">•••• FAKE</p>
             <p className="text-xs text-ink-muted">Simulated card</p>
           </div>
         </div>
