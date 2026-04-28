@@ -3,6 +3,7 @@ import type { Product } from "@/types";
 import { requireSubscribedUser } from "@/lib/session-guards";
 import { CartButton } from "@/components/CartButton";
 import { ShopExperience } from "@/components/ShopExperience";
+import { SimDisclaimer } from "@/components/SimDisclaimer";
 
 export default async function ShopPage() {
   await requireSubscribedUser();
@@ -28,6 +29,8 @@ export default async function ShopPage() {
       </header>
 
       <ShopExperience products={all} todayLabel={todayLabel} />
+
+      <SimDisclaimer text="All products, prices, and reviews are fictional and for simulation purposes only. Dopiq does not sell or own any items. No real purchase is ever made." />
     </div>
   );
 }
