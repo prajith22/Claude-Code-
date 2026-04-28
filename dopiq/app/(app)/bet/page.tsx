@@ -3,6 +3,7 @@ import { requireSubscribedUser } from "@/lib/session-guards";
 import { BetGamesList } from "@/components/BetGamesList";
 import { BetSlipPanel } from "@/components/BetSlipPanel";
 import { FeaturedParlays } from "@/components/FeaturedParlays";
+import { SimDisclaimer } from "@/components/SimDisclaimer";
 
 export default async function BetPage() {
   await requireSubscribedUser();
@@ -43,6 +44,8 @@ export default async function BetPage() {
 
         {/* Sport tabs + game cards */}
         <BetGamesList />
+
+        <SimDisclaimer text="All odds, teams, and markets are fictional simulations. Dopiq is not a gambling platform. No real money is ever wagered. For entertainment and wellness purposes only." />
       </div>
 
       {/* Bet slip — desktop rail + mobile bottom sheet */}

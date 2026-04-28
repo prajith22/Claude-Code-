@@ -16,6 +16,10 @@ model User {
   image                String?
   googleId             String?   @unique
   passwordHash         String?
+  // Verification token for the credentials sign-up flow. Nulled out
+  // once the user clicks the link in the email. The 24-hour expiry
+  // is enforced by checking createdAt at /api/auth/verify time.
+  emailVerificationToken String? @unique
   plan                 String?
   simulationsUsed      Int      @default(0)
   simulationsLimit     Int      @default(0)
