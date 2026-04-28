@@ -88,6 +88,30 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: { signIn: "/signin" },
+  events: {
+    // Google has already verified the user's email before redirecting
+    // back, so we stamp emailVerified on the first OAuth sign-in.
+    // The credentials provider returns from authorize() and never
+    // hits this event, so credentials users still need the link.
+    async signIn({ user, account }) {
+      if (account?.provider !== "google") return;
+      if (!user?.id) return;
+      try {
+        const existing = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { emailVerified: true },
+        });
+        if (existing && !existing.emailVerified) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { emailVerified: new Date() },
+          });
+        }
+      } catch (err) {
+        console.error("[auth.events.signIn] verify-stamp failed:", err);
+      }
+    },
+  },
   callbacks: {
     async jwt({ token, user }) {
       // `user` is only populated on the initial sign-in; on subsequent

@@ -9,6 +9,13 @@ export async function requireUser() {
   if (!session?.user?.id) redirect("/signin");
   const user = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!user) redirect("/signin");
+  // Credentials users must verify their email before they can use
+  // any gated page. Google OAuth users have emailVerified set the
+  // first time they sign in (see lib/auth.ts events.signIn) since
+  // Google has already verified them.
+  if (user.passwordHash && !user.emailVerified) {
+    redirect(`/verify-email?email=${encodeURIComponent(user.email)}`);
+  }
   return user;
 }
 
