@@ -250,6 +250,20 @@ function Header({
 
 // ---------- Step 1: location grid ----------
 
+// Pastel palette per location — matches the rest of the app's
+// pastel surfaces (Quick Sim items, onboarding cards, sign-in
+// marketing). Each location gets one accent so the four cards
+// read as four distinct moods at a glance.
+const LOCATION_COLORS: Record<
+  QuickSimLocation["key"],
+  { bg: string; fg: string; muted: string }
+> = {
+  gas:         { bg: "#FFF9E6", fg: "#5D4037", muted: "#8D6E63" },
+  convenience: { bg: "#E8F0FF", fg: "#1A237E", muted: "#3F51B5" },
+  grocery:     { bg: "#E8F5E9", fg: "#1B5E20", muted: "#2E7D32" },
+  coffee:      { bg: "#FDE7E9", fg: "#880E4F", muted: "#AD1457" },
+};
+
 function LocationGrid({
   onPick,
 }: {
@@ -275,32 +289,39 @@ function LocationGrid({
       </motion.p>
 
       <div className="mt-6 grid flex-1 grid-cols-2 gap-3 content-start sm:gap-4">
-        {QUICK_SIM_LOCATIONS.map((loc, i) => (
-          <motion.button
-            key={loc.key}
-            type="button"
-            onClick={() => onPick(loc)}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.35,
-              delay: 0.1 + i * 0.04,
-              ease: "easeOut",
-            }}
-            whileTap={{ scale: 0.97 }}
-            className="card flex flex-col items-start gap-2 p-5 text-left transition hover:shadow-cardHover"
-          >
-            <span aria-hidden className="text-[40px] leading-none">
-              {loc.emoji}
-            </span>
-            <p className="font-heading text-[18px] font-bold text-ink">
-              {loc.name}
-            </p>
-            <p className="text-[12px] leading-snug text-ink-muted">
-              {loc.subtitle}
-            </p>
-          </motion.button>
-        ))}
+        {QUICK_SIM_LOCATIONS.map((loc, i) => {
+          const palette = LOCATION_COLORS[loc.key];
+          return (
+            <motion.button
+              key={loc.key}
+              type="button"
+              onClick={() => onPick(loc)}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.35,
+                delay: 0.1 + i * 0.04,
+                ease: "easeOut",
+              }}
+              whileTap={{ scale: 0.97 }}
+              className="flex flex-col items-start gap-2 rounded-card p-5 text-left shadow-card transition hover:shadow-cardHover"
+              style={{ backgroundColor: palette.bg, color: palette.fg }}
+            >
+              <span aria-hidden className="text-[40px] leading-none">
+                {loc.emoji}
+              </span>
+              <p className="font-heading text-[18px] font-bold">
+                {loc.name}
+              </p>
+              <p
+                className="text-[12px] leading-snug"
+                style={{ color: palette.muted }}
+              >
+                {loc.subtitle}
+              </p>
+            </motion.button>
+          );
+        })}
       </div>
     </div>
   );
