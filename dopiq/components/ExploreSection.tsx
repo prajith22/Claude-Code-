@@ -146,7 +146,7 @@ export function ExploreSection({ products }: { products: Product[] }) {
     <section className="space-y-4">
       <div>
         <h2 className="font-heading text-[20px] font-bold tracking-tight text-ink">
-          Explore
+          Swipe to Explore
         </h2>
         <p className="text-[13px] text-ink-muted">Something new every refresh.</p>
       </div>
