@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { formatUSD } from "@/lib/utils";
+import { playDing } from "@/lib/sounds";
 
 type LastOrder = { orderNumber: string; total: number; count: number };
 
@@ -18,6 +19,8 @@ export default function ShopConfirmedPage() {
         setOrder(JSON.parse(raw));
       } catch {}
     }
+
+    playDing();
 
     const duration = 1600;
     const end = Date.now() + duration;
