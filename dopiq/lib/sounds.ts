@@ -1,11 +1,17 @@
-// Tiny Web Audio "ding" used at success moments throughout the app.
-// No external assets, no libraries — a 1kHz sine with an exponential
-// gain decay over 300ms. Implemented to be safe on iPhone Safari:
+// Apple-Pay-style success chime synthesized in Web Audio. Two sine
+// notes a perfect fifth apart (A5 → E6), with the second voice coming
+// in 70ms after the first so the two ring together for that bright
+// "ding-DING" feel. Each note has a quick attack + smooth exponential
+// tail; together they read as a single satisfying confirmation.
+//
+// No assets, no libraries. Safe on iPhone Safari:
 //
 //  - Lazy AudioContext (created on first call) so we don't violate
 //    autoplay policies; the first user-interaction-driven call
 //    constructs and unlocks it, every subsequent call reuses it.
-//  - webkitAudioContext fallback for older iOS Safari builds.
+//  - webkitAudioContext fallback for older Safari builds.
+//  - Resumes a suspended context on each call (iOS keeps it
+//    suspended until a user gesture).
 //  - Wrapped in try/catch and a no-op on the server / when audio is
 //    blocked, so the app never throws because of a sound.
 
@@ -28,6 +34,29 @@ function getContext(): AudioContext | null {
   }
 }
 
+// Schedule one sine note with a quick 8ms attack and an exponential
+// decay to a near-zero floor (exponential ramps can't end at 0).
+function scheduleNote(
+  ctx: AudioContext,
+  frequency: number,
+  startTime: number,
+  durationSec: number,
+  peakGain: number,
+) {
+  const osc = ctx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(frequency, startTime);
+
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.0001, startTime);
+  gain.gain.exponentialRampToValueAtTime(peakGain, startTime + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + durationSec);
+
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(startTime);
+  osc.stop(startTime + durationSec + 0.02);
+}
+
 export function playDing(): void {
   if (typeof window === "undefined") return;
   // 10ms delay so the audio doesn't fight a UI animation kicking off
@@ -42,20 +71,16 @@ export function playDing(): void {
       if (ctx.state === "suspended") {
         ctx.resume().catch(() => {});
       }
+
       const now = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(1000, now);
 
-      const gain = ctx.createGain();
-      // Exponential ramps can't end at 0, so we land at a tiny floor
-      // — inaudible, no clip, smooth bell-like decay.
-      gain.gain.setValueAtTime(0.3, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+      // Note 1 — A5 (880 Hz). Hits first, sets the bell tone.
+      scheduleNote(ctx, 880, now, 0.45, 0.22);
 
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.31);
+      // Note 2 — E6 (1318.5 Hz). A perfect fifth above A5, 70ms later
+      // so the two voices overlap. The interval is the same one used
+      // in Apple Pay's success chime — bright, resolved, friendly.
+      scheduleNote(ctx, 1318.5, now + 0.07, 0.5, 0.2);
     } catch {
       // Audio blocked / unsupported — fail silently.
     }
