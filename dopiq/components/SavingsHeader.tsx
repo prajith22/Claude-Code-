@@ -77,7 +77,12 @@ export function SavingsHeader() {
     <Link
       href="/home"
       aria-label={`Saved today: ${formatMoney(saved)}. ${streak} day streak.`}
-      className="inline-flex items-center gap-2 text-[12px] font-bold"
+      // flex-1 + justify-center so the chip pair fills the gap
+      // between the logo and avatar in the TopNav and the two pills
+      // sit dead-center as a group with a consistent gap-3 between
+      // them. Min-w-0 lets the truncate behavior at narrow widths
+      // not blow out the parent flex layout.
+      className="flex min-w-0 flex-1 items-center justify-center gap-3 text-[12px] font-bold"
     >
       <SavingsTicker amount={saved} />
       <StreakChip streak={streak} atRisk={atRisk} />
