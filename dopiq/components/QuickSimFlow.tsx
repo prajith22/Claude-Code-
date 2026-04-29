@@ -558,8 +558,13 @@ function CheckoutSummary({
 
       {/* Slide-up-to-sim gesture — lives only on the checkout page
           now. Same lift-to-fire logic; empty cart still triggers
-          the $0.00 flash. */}
-      <div className="mt-auto flex justify-center pt-8">
+          the $0.00 flash. No mt-auto here on purpose: combined
+          with overflow-y-auto + min-h-0 above it, iOS Safari
+          mis-computes the column height and clips items off the
+          top of the receipt block. Letting the slide-up sit at
+          the natural end of content with explicit padding keeps
+          every row visible and the page scrollable to reach it. */}
+      <div className="flex justify-center pb-6 pt-8">
         <SlideUpToSim onComplete={onConfirm} />
       </div>
     </div>
