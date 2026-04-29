@@ -19,6 +19,7 @@ import { QuickSimItemIcon } from "@/components/QuickSimItemIcons";
 import { Card, Pin } from "@/components/icons";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
 import { useSavingsStore } from "@/lib/savings-store";
+import { playDing } from "@/lib/sounds";
 import { formatUSD } from "@/lib/utils";
 
 const STORE_ADDRESSES: Record<QuickSimLocation["key"], string> = {
@@ -681,6 +682,10 @@ function GreenFlash({ totalCents }: { totalCents: number }) {
   // Two layered animations: an instant 200ms green wash that fades
   // over 300ms, plus a spring-bouncy checkmark + savings amount that
   // settle in as the wash fades.
+  useEffect(() => {
+    playDing();
+  }, []);
+
   return (
     <motion.div
       key="flash"
