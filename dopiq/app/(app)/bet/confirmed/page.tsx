@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { cn, formatOdds, formatUSD } from "@/lib/utils";
+import { playDing } from "@/lib/sounds";
 import type { SlipSelection } from "@/lib/bet-slip-store";
 
 type PlacedBet = {
@@ -46,6 +47,7 @@ export default function BetConfirmedPage() {
 
   useEffect(() => {
     if (!mounted) return;
+    playDing();
     const colors = ["#00C853", "#00E676", "#e6f9ee", "#ffffff"];
     const duration = 1500;
     const end = Date.now() + duration;
