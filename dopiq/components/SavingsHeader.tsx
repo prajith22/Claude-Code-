@@ -81,8 +81,10 @@ export function SavingsHeader() {
       // between the logo and avatar in the TopNav and the two pills
       // sit dead-center as a group with a consistent gap-3 between
       // them. Min-w-0 lets the truncate behavior at narrow widths
-      // not blow out the parent flex layout.
-      className="flex min-w-0 flex-1 items-center justify-center gap-3 text-[12px] font-bold"
+      // not blow out the parent flex layout. pl-3 nudges the
+      // group a few pixels right of the geometric center so the
+      // savings pill isn't visually crowding the dopiq logo.
+      className="flex min-w-0 flex-1 items-center justify-center gap-3 pl-3 text-[12px] font-bold"
     >
       <SavingsTicker amount={saved} />
       <StreakChip streak={streak} atRisk={atRisk} />
