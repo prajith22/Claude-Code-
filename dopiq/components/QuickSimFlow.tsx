@@ -473,8 +473,16 @@ function CheckoutSummary({
   const taxCents = Math.round(subtotalCents * TAX_RATE);
   const totalCents = subtotalCents + taxCents;
 
+  // Absolute-positioned scroll container instead of a flex-1 +
+  // min-h-0 + overflow-y-auto column. The parent <main> is
+  // `relative flex flex-1 overflow-hidden`, so absolute inset-0
+  // gives this div a concrete pixel height (header-bottom →
+  // viewport-bottom) and overflow-y-auto scrolls cleanly. iOS
+  // Safari mis-computes nested flex+overflow heights and was
+  // clipping the top of the receipt list with the previous flex
+  // layout — this approach has zero ambiguous height inheritance.
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pt-2 safe-bottom">
+    <div className="absolute inset-0 overflow-y-auto px-5 pt-2 safe-bottom">
       {/* Store header — same card as the item selection screen so
           the user sees continuity through the flow. */}
       <section className="rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card">
