@@ -216,7 +216,7 @@ export function DailySpinWheel() {
         }
         className="btn-primary w-full max-w-xs disabled:opacity-100"
       >
-        {spinning ? "Spinning…" : landed ? "Spin again" : "Spin to simulate"}
+        {spinning ? "Spinning…" : landed ? "Spin again" : "Can't Decide"}
       </motion.button>
 
       {/* Result card */}
