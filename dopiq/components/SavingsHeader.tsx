@@ -77,14 +77,13 @@ export function SavingsHeader() {
     <Link
       href="/home"
       aria-label={`Saved today: ${formatMoney(saved)}. ${streak} day streak.`}
-      // flex-1 + justify-center so the chip pair fills the gap
-      // between the logo and avatar in the TopNav and the two pills
-      // sit dead-center as a group with a consistent gap-3 between
-      // them. Min-w-0 lets the truncate behavior at narrow widths
-      // not blow out the parent flex layout. pl-3 nudges the
-      // group a few pixels right of the geometric center so the
-      // savings pill isn't visually crowding the dopiq logo.
-      className="flex min-w-0 flex-1 items-center justify-center gap-3 pl-3 text-[12px] font-bold"
+      // The TopNav parent uses justify-between, which gives equal
+      // gaps between this chip group and its neighbors (logo on
+      // the left, avatar on the right). gap-3 between the two
+      // pills is wider than the inter-element gap from justify-
+      // between's distribution, so the chips read as a single
+      // group rather than four roughly-equal-spaced items.
+      className="inline-flex flex-none items-center gap-3 text-[12px] font-bold"
     >
       <SavingsTicker amount={saved} />
       <StreakChip streak={streak} atRisk={atRisk} />
