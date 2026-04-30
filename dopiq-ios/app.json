@@ -11,12 +11,20 @@
       "resizeMode": "contain",
       "backgroundColor": "#FAFAF8"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.dopiq.app",
       "buildNumber": "1",
+<<<<<<< Updated upstream
       "associatedDomains": ["applinks:dopiqapp.com"]
+=======
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+>>>>>>> Stashed changes
     },
     "scheme": "dopiq",
     "android": {
@@ -28,6 +36,17 @@
     },
     "web": {
       "favicon": "./assets/icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "49a4e55b-83d7-473b-9123-c158a825c7cd"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/49a4e55b-83d7-473b-9123-c158a825c7cd"
     }
   }
 }
