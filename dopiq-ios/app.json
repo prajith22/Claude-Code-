@@ -18,13 +18,10 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.dopiq.app",
       "buildNumber": "1",
-<<<<<<< Updated upstream
-      "associatedDomains": ["applinks:dopiqapp.com"]
-=======
+      "associatedDomains": ["applinks:dopiqapp.com"],
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
->>>>>>> Stashed changes
     },
     "scheme": "dopiq",
     "android": {
