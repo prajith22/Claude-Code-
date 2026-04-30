@@ -1,0 +1,19 @@
+node_modules/
+.expo/
+.expo-shared/
+
+# Native build artifacts (only present when running prebuild / EAS local)
+ios/Pods/
+ios/build/
+android/build/
+android/app/build/
+android/.gradle/
+
+# OS / editor noise
+.DS_Store
+*.log
+.vscode/
+
+# Env
+.env
+.env.local
