@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Dopiq",
+    "slug": "dopiq",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FAFAF8"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.dopiq.app",
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#FAFAF8"
+      },
+      "package": "com.dopiq.app"
+    },
+    "web": {
+      "favicon": "./assets/icon.png"
+    }
+  }
+}
