@@ -5,7 +5,6 @@ import {
   type AppStateStatus,
   BackHandler,
   Platform,
-  SafeAreaView,
   StyleSheet,
   View,
 } from "react-native";
@@ -112,42 +111,44 @@ export default function App() {
   }
 
   return (
+    // Edge-to-edge: a plain View instead of SafeAreaView, so the
+    // WebView fills the whole screen including under the iOS notch
+    // and home indicator. The web app already pads its own header
+    // with safe-top and bottom-nav with safe-area-inset-bottom, so
+    // we don't need a native inset wrapper. The tan background
+    // matches what the page renders, so any one-frame paint
+    // before the WebView mounts blends in cleanly.
     <View style={styles.root}>
-      {/* Light status bar over a tan background so the iOS clock /
-          battery icons stay legible against the Dopiq palette. */}
-      <StatusBar style="dark" backgroundColor={BRAND_BG} />
+      {/* Translucent status bar with dark icons so the iOS clock /
+          battery stay legible against the Dopiq tan palette while
+          the WebView paints behind it. */}
+      <StatusBar style="dark" translucent backgroundColor="transparent" />
 
-      {/* SafeAreaView keeps the WebView edge-to-edge but clipped under
-          the top notch / status bar inset on iPhone. */}
-      <SafeAreaView style={styles.safeArea}>
-        <WebView
-          ref={webRef}
-          source={{ uri: TARGET_URL }}
-          style={styles.webview}
-          javaScriptEnabled
-          domStorageEnabled
-          startInLoadingState
-          allowsBackForwardNavigationGestures
-          sharedCookiesEnabled
-          onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
-          onNavigationStateChange={onNavigationStateChange}
-          renderLoading={() => (
-            <View style={styles.loadingOverlay}>
-              <ActivityIndicator size="large" color={BRAND_GREEN} />
-            </View>
-          )}
-        />
-      </SafeAreaView>
+      <WebView
+        ref={webRef}
+        source={{ uri: TARGET_URL }}
+        style={styles.webview}
+        contentInsetAdjustmentBehavior="never"
+        automaticallyAdjustContentInsets={false}
+        javaScriptEnabled
+        domStorageEnabled
+        startInLoadingState
+        allowsBackForwardNavigationGestures
+        sharedCookiesEnabled
+        onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
+        onNavigationStateChange={onNavigationStateChange}
+        renderLoading={() => (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color={BRAND_GREEN} />
+          </View>
+        )}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
-    flex: 1,
-    backgroundColor: BRAND_BG,
-  },
-  safeArea: {
     flex: 1,
     backgroundColor: BRAND_BG,
   },
