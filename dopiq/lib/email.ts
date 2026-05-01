@@ -12,8 +12,24 @@ function client(): Resend | null {
   return _client;
 }
 
+// Resolve the canonical app URL at module load. In production we
+// refuse to boot if NEXT_PUBLIC_APP_URL is missing, so a Vercel
+// deploy without the env var fails loudly here instead of silently
+// shipping verification emails that point at http://localhost:3000.
+// Local dev keeps the localhost fallback.
+const APP_URL = (() => {
+  const url = process.env.NEXT_PUBLIC_APP_URL;
+  if (url) return url;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "[email] NEXT_PUBLIC_APP_URL is required in production — verification email links would otherwise point at http://localhost:3000.",
+    );
+  }
+  return "http://localhost:3000";
+})();
+
 function appUrl(): string {
-  return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  return APP_URL;
 }
 
 function fromAddress(): string {

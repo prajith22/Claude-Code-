@@ -29,17 +29,24 @@ const APPLE_TOKEN_URL = "https://appleid.apple.com/auth/token";
 // any of the four Apple env vars missing, so we fail loudly at
 // build/first-boot rather than later when a user clicks the
 // "Continue with Apple" button. Local dev is unaffected.
+// Boot-time validation — refuse to start a production deploy with
+// any required env var missing, so we fail loudly at build/first
+// boot rather than later when a user clicks a button or opens a
+// verification email. Covers both the Apple JWT pieces and the
+// canonical app URL used by the verification email + verify route.
+// Local dev is unaffected.
 if (process.env.NODE_ENV === "production") {
   const required = [
     "APPLE_ID",
     "APPLE_TEAM_ID",
     "APPLE_KEY_ID",
     "APPLE_PRIVATE_KEY",
+    "NEXT_PUBLIC_APP_URL",
   ];
   const missing = required.filter((k) => !process.env[k]);
   if (missing.length > 0) {
     throw new Error(
-      `[auth] Sign in with Apple is not configured. Missing env var(s): ${missing.join(", ")}`,
+      `[auth] Required environment variable(s) missing: ${missing.join(", ")}`,
     );
   }
 }
