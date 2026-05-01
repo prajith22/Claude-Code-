@@ -1,6 +1,7 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import AppleProvider from "next-auth/providers/apple";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
@@ -50,6 +51,15 @@ export const authOptions: NextAuthOptions = {
         },
       },
     }),
+    // Sign in with Apple. APPLE_ID is the Services ID configured in
+    // Apple Developer; APPLE_SECRET is the JWT generated from the
+    // private key + key ID + team ID. Apple only returns the user's
+    // name on the very first sign-in, so the PrismaAdapter records
+    // it then and subsequent sign-ins reuse the stored profile.
+    AppleProvider({
+      clientId: process.env.APPLE_ID ?? "",
+      clientSecret: process.env.APPLE_SECRET ?? "",
+    }),
     CredentialsProvider({
       id: "credentials",
       name: "Email",
@@ -89,12 +99,15 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: { signIn: "/signin" },
   events: {
-    // Google has already verified the user's email before redirecting
-    // back, so we stamp emailVerified on the first OAuth sign-in.
-    // The credentials provider returns from authorize() and never
-    // hits this event, so credentials users still need the link.
+    // Google and Apple have already verified the user's email before
+    // redirecting back, so we stamp emailVerified on the first OAuth
+    // sign-in for both. The credentials provider returns from
+    // authorize() and never hits this event, so credentials users
+    // still need the email link.
     async signIn({ user, account }) {
-      if (account?.provider !== "google") return;
+      if (account?.provider !== "google" && account?.provider !== "apple") {
+        return;
+      }
       if (!user?.id) return;
       try {
         const existing = await prisma.user.findUnique({
