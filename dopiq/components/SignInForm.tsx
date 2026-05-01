@@ -58,6 +58,7 @@ export function SignInForm() {
     : null;
 
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [appleLoading, setAppleLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [credSubmitting, setCredSubmitting] = useState(false);
@@ -130,6 +131,26 @@ export function SignInForm() {
         7 days free — no charge until your trial ends
       </motion.div>
 
+      {/* Apple button — sits above Google per Apple's HIG, since
+          we offer Apple sign-in. Black surface, white logo + text,
+          full-width pill matching the Google button's footprint. */}
+      <motion.button
+        variants={fadeUp}
+        transition={{ duration: 0.4, delay: 0.28, ease: "easeOut" }}
+        whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(0,0,0,0.18)" }}
+        whileTap={{ y: 0, scale: 0.99 }}
+        type="button"
+        disabled={appleLoading}
+        onClick={() => {
+          setAppleLoading(true);
+          signIn("apple", { callbackUrl });
+        }}
+        className="mt-7 flex h-14 w-full items-center justify-center gap-3 rounded-pill bg-black text-[15px] font-bold text-white transition-colors duration-150 hover:bg-[#1A1A1A] disabled:opacity-60"
+      >
+        <AppleMark />
+        <span>{appleLoading ? "Opening Apple…" : "Continue with Apple"}</span>
+      </motion.button>
+
       {/* Google button */}
       <motion.button
         variants={fadeUp}
@@ -142,7 +163,7 @@ export function SignInForm() {
           setGoogleLoading(true);
           signIn("google", { callbackUrl });
         }}
-        className="mt-4 flex h-14 w-full items-center justify-center gap-3 rounded-pill border border-surface-border bg-white text-[15px] font-bold text-ink transition-colors duration-150 hover:bg-surface-alt disabled:opacity-60"
+        className="mt-3 flex h-14 w-full items-center justify-center gap-3 rounded-pill border border-surface-border bg-white text-[15px] font-bold text-ink transition-colors duration-150 hover:bg-surface-alt disabled:opacity-60"
       >
         <GoogleMark />
         <span>{googleLoading ? "Opening Google…" : "Continue with Google"}</span>
@@ -265,6 +286,23 @@ export function SignInForm() {
         .
       </motion.p>
     </motion.div>
+  );
+}
+
+function AppleMark() {
+  // Apple HIG-compliant logomark, sized to sit cleanly to the left
+  // of "Continue with Apple". Single white path on the black button
+  // surface keeps the rendering contrast Apple requires.
+  return (
+    <svg
+      width="18"
+      height="22"
+      viewBox="0 0 14 17"
+      fill="white"
+      aria-hidden="true"
+    >
+      <path d="M11.624 9.025c-.013-2.179 1.778-3.225 1.86-3.275-1.013-1.48-2.59-1.683-3.149-1.706-1.34-.135-2.617.789-3.296.789-.69 0-1.732-.768-2.85-.747-1.466.022-2.819.852-3.572 2.166-1.524 2.642-.39 6.553 1.099 8.701.726 1.052 1.59 2.232 2.722 2.19 1.094-.045 1.508-.708 2.83-.708 1.31 0 1.7.708 2.85.683 1.18-.022 1.928-1.07 2.65-2.123.835-1.219 1.18-2.398 1.198-2.46-.025-.012-2.298-.882-2.322-3.51zm-2.166-6.45c.605-.733 1.012-1.75.9-2.762-.87.036-1.92.58-2.546 1.314-.561.65-1.052 1.685-.92 2.678.97.075 1.96-.494 2.566-1.23z" />
+    </svg>
   );
 }
 
