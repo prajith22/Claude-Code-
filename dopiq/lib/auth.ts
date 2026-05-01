@@ -248,6 +248,16 @@ export const authOptions: NextAuthOptions = {
         if (!ok) {
           throw new Error("Wrong password.");
         }
+        // Block credentials sign-in for accounts that haven't clicked
+        // the verification link yet. Checked AFTER bcrypt so an
+        // attacker can't probe which emails are verified by timing
+        // / error-message difference. Google + Apple users have
+        // emailVerified stamped via events.signIn so this guard
+        // doesn't apply to them — they have no passwordHash, and
+        // that path was already short-circuited above.
+        if (user.passwordHash && !user.emailVerified) {
+          throw new Error("Verify your email first.");
+        }
         return {
           id: user.id,
           email: user.email,
