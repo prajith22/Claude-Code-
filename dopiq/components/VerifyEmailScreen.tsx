@@ -10,6 +10,11 @@ const RESEND_COOLDOWN_SEC = 60;
 export function VerifyEmailScreen() {
   const params = useSearchParams();
   const email = params.get("email") ?? "";
+  // Set when the signin form bounces an unverified credentials user
+  // here — surfaces a banner so the user knows why they didn't reach
+  // /home, instead of staring at a screen they think they already
+  // dealt with.
+  const unverifiedRedirect = params.get("unverified") === "1";
 
   const [cooldown, setCooldown] = useState(0);
   const [sending, setSending] = useState(false);
@@ -112,6 +117,17 @@ export function VerifyEmailScreen() {
       >
         Check your inbox
       </motion.h1>
+
+      {unverifiedRedirect && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12, duration: 0.4, ease: "easeOut" }}
+          className="mt-5 rounded-card border border-[#E8F5E9] bg-[#E8F5E9] px-4 py-3 text-[13px] font-medium text-[#1B5E20]"
+        >
+          Please verify your email to continue.
+        </motion.div>
+      )}
 
       <motion.p
         initial={{ opacity: 0, y: 8 }}

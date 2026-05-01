@@ -34,7 +34,14 @@ const CREDENTIALS_ERROR_MAP: Array<{ match: string; message: string }> = [
   { match: "No account with that email", message: "No account with that email. Sign up?" },
   { match: "Try signing in with Google", message: "This email signed up with Google. Use the Google button." },
   { match: "Wrong password", message: "Wrong password. Try again." },
+  // Defense-in-depth — the unverified-email error is normally handled
+  // by redirecting straight to /verify-email, but if the navigation
+  // is interrupted the user still sees a useful inline message
+  // instead of the raw thrown text.
+  { match: "Verify your email first", message: "Please verify your email to continue." },
 ];
+
+const UNVERIFIED_ERROR_MATCH = "Verify your email first";
 
 function mapCredentialsError(raw: string | undefined | null): string {
   if (!raw) return "Sign-in failed. Try again.";
@@ -76,6 +83,18 @@ export function SignInForm() {
         redirect: false,
       });
       if (res?.error) {
+        // Unverified-credentials path: bounce the user to the
+        // existing /verify-email screen with their email pre-filled
+        // and an unverified=1 flag so the page shows a "please
+        // verify your email to continue" banner. Resending the
+        // email is one tap away from there.
+        if (res.error.includes(UNVERIFIED_ERROR_MATCH)) {
+          setCredError("Please verify your email to continue.");
+          router.push(
+            `/verify-email?email=${encodeURIComponent(email)}&unverified=1`,
+          );
+          return;
+        }
         setCredError(mapCredentialsError(res.error));
         setCredSubmitting(false);
         return;
