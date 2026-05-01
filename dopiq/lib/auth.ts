@@ -117,6 +117,54 @@ export const authOptions: NextAuthOptions = {
         maxAge: SESSION_MAX_AGE,
       },
     },
+    // ---- Cross-site cookies for Apple's form_post callback -------
+    // Apple posts the OAuth response from appleid.apple.com back to
+    // /api/auth/callback/apple as a cross-site POST. Cookies set
+    // with sameSite=lax are stripped on that request, which means
+    // NextAuth can't read its own pkce / state / nonce cookies on
+    // the callback and fails with "PKCE code_verifier cookie was
+    // missing". Override these three with sameSite=none + secure
+    // so they survive the cross-site round trip. They only need to
+    // live long enough for one OAuth handshake (15 min).
+    pkceCodeVerifier: {
+      name:
+        process.env.NODE_ENV === "production"
+          ? "__Secure-next-auth.pkce.code_verifier"
+          : "next-auth.pkce.code_verifier",
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 900,
+      },
+    },
+    state: {
+      name:
+        process.env.NODE_ENV === "production"
+          ? "__Secure-next-auth.state"
+          : "next-auth.state",
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 900,
+      },
+    },
+    nonce: {
+      name:
+        process.env.NODE_ENV === "production"
+          ? "__Secure-next-auth.nonce"
+          : "next-auth.nonce",
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 900,
+      },
+    },
   },
   providers: [
     GoogleProvider({
