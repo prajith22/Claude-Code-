@@ -33,6 +33,7 @@ export default async function SettingsPage() {
           stripeSubscriptionId={user.stripeSubscriptionId}
           userPlan={(user.plan as PlanId | null) ?? null}
           userSubscriptionStatus={user.subscriptionStatus ?? null}
+          isReviewer={user.isReviewer}
         />
       </Suspense>
     </div>
@@ -43,10 +44,12 @@ async function SettingsBody({
   stripeSubscriptionId,
   userPlan,
   userSubscriptionStatus,
+  isReviewer,
 }: {
   stripeSubscriptionId: string | null;
   userPlan: PlanId | null;
   userSubscriptionStatus: string | null;
+  isReviewer: boolean;
 }) {
   let currentPlan: PlanId | null = null;
   let status: string | null = userSubscriptionStatus;
@@ -85,6 +88,7 @@ async function SettingsBody({
         priceUsd: p.priceUsd,
         simulationsLimit: p.simulationsLimit,
       }))}
+      isReviewer={isReviewer}
     />
   );
 }

@@ -24,6 +24,11 @@ model User {
   simulationsUsed      Int      @default(0)
   simulationsLimit     Int      @default(0)
   subscriptionStatus   String?
+  // Manual override for App Store review accounts. Bypasses the
+  // Stripe paywall + monthly simulation cap so Apple's reviewers
+  // can test every gated feature without entering a credit card.
+  // Flipped via SQL after the reviewer verifies their email.
+  isReviewer           Boolean  @default(false)
   billingCycleStart    DateTime?
   stripeCustomerId     String?  @unique
   stripeSubscriptionId String?  @unique
