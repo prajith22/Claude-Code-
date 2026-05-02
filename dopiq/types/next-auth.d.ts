@@ -8,6 +8,7 @@ declare module "next-auth" {
       subscriptionStatus?: string | null;
       simulationsUsed?: number;
       simulationsLimit?: number;
+      isReviewer?: boolean;
     } & DefaultSession["user"];
   }
 }
