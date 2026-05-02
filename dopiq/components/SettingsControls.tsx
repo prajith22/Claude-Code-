@@ -19,6 +19,11 @@ type Props = {
   hasSubscription: boolean;
   stripeError: string | null;
   plans: PlanSummary[];
+  // App Store reviewer accounts have no Stripe customer/subscription.
+  // hasSubscription already hides every Stripe-gated section, but we
+  // also swap the "Current plan" card copy so the reviewer doesn't
+  // see "No plan selected".
+  isReviewer: boolean;
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -49,6 +54,7 @@ export function SettingsControls({
   hasSubscription,
   stripeError,
   plans,
+  isReviewer,
 }: Props) {
   const [confirmingCancel, setConfirmingCancel] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -176,21 +182,29 @@ export function SettingsControls({
         </p>
         <div className="mt-2 flex flex-wrap items-baseline justify-between gap-3">
           <h2 className="font-heading text-[24px] font-bold text-ink">
-            {planRecord?.name ?? "No plan selected"}
+            {isReviewer
+              ? "Reviewer access"
+              : planRecord?.name ?? "No plan selected"}
           </h2>
           <span className="rounded-pill bg-surface-alt px-3 py-1 text-[12px] font-bold text-ink">
-            {statusLabel}
+            {isReviewer ? "Active" : statusLabel}
           </span>
         </div>
-        {planRecord && (
+        {isReviewer ? (
           <p className="mt-1 text-[14px] text-ink-muted">
-            ${planRecord.priceUsd.toFixed(2)}/mo ·{" "}
-            {planRecord.simulationsLimit >= 999_999
-              ? "Unlimited simulations"
-              : `${planRecord.simulationsLimit} simulations / month`}
+            Unlimited simulations · no billing
           </p>
+        ) : (
+          planRecord && (
+            <p className="mt-1 text-[14px] text-ink-muted">
+              ${planRecord.priceUsd.toFixed(2)}/mo ·{" "}
+              {planRecord.simulationsLimit >= 999_999
+                ? "Unlimited simulations"
+                : `${planRecord.simulationsLimit} simulations / month`}
+            </p>
+          )
         )}
-        {nextBillingLabel && hasSubscription && (
+        {!isReviewer && nextBillingLabel && hasSubscription && (
           <p className="mt-3 text-[13px] text-ink-muted">
             {localCancelAtPeriodEnd
               ? `Access ends on ${nextBillingLabel}.`
