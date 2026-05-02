@@ -28,10 +28,26 @@ export async function POST() {
       simulationsUsed: true,
       simulationsLimit: true,
       billingCycleStart: true,
+      isReviewer: true,
     },
   });
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  // App Store reviewers bypass the monthly cap entirely so they can
+  // exercise every simulator path during a 24-hour review without
+  // tripping the upgrade modal. We don't even bump the counter for
+  // them — the displayed used / limit is meaningless on a reviewer
+  // account anyway since access is set in the database, not by Stripe.
+  if (user.isReviewer) {
+    return NextResponse.json({
+      ok: true,
+      plan: user.plan,
+      used: user.simulationsUsed,
+      limit: user.simulationsLimit,
+      unlimited: true,
+    });
   }
 
   // Roll the billing cycle forward whenever a full period has elapsed.

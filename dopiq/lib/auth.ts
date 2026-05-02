@@ -323,18 +323,21 @@ export const authOptions: NextAuthOptions = {
               subscriptionStatus: true,
               simulationsUsed: true,
               simulationsLimit: true,
+              isReviewer: true,
             },
           });
           session.user.plan = u?.plan ?? null;
           session.user.subscriptionStatus = u?.subscriptionStatus ?? null;
           session.user.simulationsUsed = u?.simulationsUsed ?? 0;
           session.user.simulationsLimit = u?.simulationsLimit ?? 0;
+          session.user.isReviewer = u?.isReviewer ?? false;
         } catch (err) {
           console.error("[auth.session] augmentation failed:", err);
           session.user.plan = null;
           session.user.subscriptionStatus = null;
           session.user.simulationsUsed = 0;
           session.user.simulationsLimit = 0;
+          session.user.isReviewer = false;
         }
       }
       return session;
