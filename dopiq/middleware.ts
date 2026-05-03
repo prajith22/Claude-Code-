@@ -8,6 +8,7 @@ const PUBLIC_PATHS = [
   "/paywall",
   "/terms",
   "/privacy",
+  "/support",
   "/verify-email",
   "/verify-email/error",
 ];
