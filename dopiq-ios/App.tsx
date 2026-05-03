@@ -24,19 +24,33 @@ const TARGET_URL = "https://dopiqapp.com";
 const BRAND_GREEN = "#00C853";
 const BRAND_BG = "#FAFAF8";
 
+// Tag the WebView's User-Agent string so the Next.js server can
+// detect requests coming from inside the iOS shell. The web app's
+// /paywall route reads for this marker and renders a no-pricing
+// "Finish setup on the web" screen on iOS to comply with App Store
+// Review Guideline 3.1.1.
+const WEBVIEW_UA_MARKER = "DopiqIOSApp";
+
 // Reliability tuning
 const LOAD_TIMEOUT_MS = 10_000;
 const RETRY_DELAY_MS = 2_000;
 
-// Hosts that must open in native Safari rather than the in-app
-// WebView. Google's OAuth flow returns `disallowed_useragent` when
-// it sees a WebView UA, so we punt accounts.google.com out to the
-// system browser. The post-auth redirect back to dopiqapp.com is
-// caught by the universal-link / AppState handlers below.
-const EXTERNAL_HOST_PATTERNS = [/accounts\.google\.com/i];
+// Hosts and paths that must open in native Safari rather than the
+// in-app WebView.
+//   - accounts.google.com: Google's OAuth flow returns
+//     `disallowed_useragent` when it sees a WebView UA.
+//   - dopiqapp.com/finish-setup: the web-side Stripe paywall lives
+//     here. Apple disallows showing prices / "Subscribe" CTAs
+//     inside iOS apps for digital goods, so we punt to Safari for
+//     the actual checkout. Universal links + AppState reload pull
+//     the user back into the WebView once they're done.
+const EXTERNAL_URL_PATTERNS = [
+  /accounts\.google\.com/i,
+  /^https:\/\/dopiqapp\.com\/finish-setup(?:[/?#]|$)/i,
+];
 
 function shouldOpenExternally(url: string): boolean {
-  return EXTERNAL_HOST_PATTERNS.some((rx) => rx.test(url));
+  return EXTERNAL_URL_PATTERNS.some((rx) => rx.test(url));
 }
 
 export default function App() {
@@ -157,6 +171,20 @@ export default function App() {
     return true;
   }
 
+  // target="_blank" links inside the WebView fire this handler on
+  // iOS instead of going through onShouldStartLoadWithRequest. The
+  // "Continue setup on the web" link in IOSSetupScreen is one; we
+  // route it (and any other _blank link) straight to Safari.
+  function onOpenWindow(
+    e: { nativeEvent: { targetUrl: string } } | { targetUrl: string },
+  ) {
+    const targetUrl =
+      "nativeEvent" in e ? e.nativeEvent.targetUrl : e.targetUrl;
+    if (!targetUrl) return;
+    externalAuthInFlightRef.current = true;
+    Linking.openURL(targetUrl).catch(() => {});
+  }
+
   function onNavigationStateChange(navState: WebViewNavigation) {
     setCanGoBack(navState.canGoBack);
   }
@@ -217,11 +245,21 @@ export default function App() {
         startInLoadingState
         allowsBackForwardNavigationGestures
         sharedCookiesEnabled
+        // Append a stable marker to the WebView's User-Agent. The
+        // Next.js /paywall route reads this to decide whether to
+        // render the App Store-compliant no-pricing setup screen.
+        applicationNameForUserAgent={WEBVIEW_UA_MARKER}
         // Cache the page so cold starts paint the last known UI
         // instantly while a fresh fetch happens in the background.
         // cacheMode is Android-only in RNWebView; harmless on iOS.
         cacheEnabled
         cacheMode="LOAD_CACHE_ELSE_NETWORK"
+        // target="_blank" handling — Android: setSupportMultipleWindows
+        // false routes the click through onShouldStartLoadWithRequest.
+        // iOS: WKWebView fires onOpenWindow for _blank links instead,
+        // so we handle both. Either path ends in Linking.openURL.
+        setSupportMultipleWindows={false}
+        onOpenWindow={onOpenWindow}
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
         onNavigationStateChange={onNavigationStateChange}
         onLoadStart={onLoadStart}
