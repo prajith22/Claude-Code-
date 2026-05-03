@@ -4,9 +4,16 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { computeAccessState } from "@/lib/access";
+import { isIOSWebView } from "@/lib/is-ios-webview";
 import { PLANS, type Plan } from "@/lib/stripe";
-import { PlanCheckoutButton } from "@/components/PaywallCTA";
+import { IOSSetupScreen } from "@/components/IOSSetupScreen";
+import { PaywallPlanCard } from "@/components/PaywallPlanCard";
 import { UpdatePaymentButton } from "@/components/UpdatePaymentButton";
+
+// /paywall must be dynamically rendered per request because the
+// iOS-vs-web branch reads the User-Agent header. Without this,
+// Next.js could cache the wrong variant for the wrong client.
+export const dynamic = "force-dynamic";
 
 type PaywallReason = "payment_failed" | "canceled";
 
@@ -27,8 +34,22 @@ export default async function PaywallPage({
     ? await prisma.user.findUnique({ where: { id: session.user.id } })
     : null;
 
+  // Reviewer accounts (computeAccessState returns "active") and
+  // already-subscribed users skip the paywall entirely on every
+  // surface — including iOS — and land on /home. This must run
+  // BEFORE the iOS-WebView branch so reviewers never see the
+  // setup screen.
   if (user && computeAccessState(user) === "active") {
     redirect("/home");
+  }
+
+  // App Store Review Guideline 3.1.1: iOS apps may not display
+  // prices or "Subscribe" CTAs for digital goods sold outside IAP.
+  // For requests originating from the iOS WebView, render a no-
+  // pricing setup screen that points users to the web. The full
+  // Stripe paywall only renders for web user-agents.
+  if (isIOSWebView()) {
+    return <IOSSetupScreen />;
   }
 
   // Defense in depth: a logged-in but not-yet-onboarded user should
@@ -79,7 +100,7 @@ export default async function PaywallPage({
 
       <section className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
         {order.map((plan) => (
-          <PlanCard key={plan.id} plan={plan} />
+          <PaywallPlanCard key={plan.id} plan={plan} />
         ))}
       </section>
 
@@ -95,63 +116,3 @@ export default async function PaywallPage({
   );
 }
 
-function PlanCard({ plan }: { plan: Plan }) {
-  const isHighlighted = plan.highlighted;
-  return (
-    <div
-      className={`relative flex flex-col rounded-card border p-6 transition-all ${
-        isHighlighted
-          ? "border-brand bg-white shadow-cardHover md:scale-[1.03]"
-          : "border-surface-border bg-white shadow-card"
-      }`}
-    >
-      {isHighlighted && (
-        <span className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-pill bg-brand px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-navy shadow-sm">
-          Most Popular
-        </span>
-      )}
-
-      <p className="font-heading text-[20px] font-bold tracking-tight text-ink">
-        {plan.name}
-      </p>
-      <div className="mt-3 flex items-baseline gap-1">
-        <span className="money text-[40px] text-navy">
-          ${plan.priceUsd.toFixed(2)}
-        </span>
-        <span className="text-[14px] text-ink-muted">/mo</span>
-      </div>
-      <p className="mt-1 text-[12px] font-semibold uppercase tracking-widest text-ink-muted">
-        {plan.simulationsLimit >= 999_999
-          ? "Unlimited simulations"
-          : `${plan.simulationsLimit} simulations / month`}
-      </p>
-
-      <ul className="mt-5 flex-1 space-y-2.5 text-[14px] text-ink">
-        {plan.features.map((f) => (
-          <li key={f} className="flex items-start gap-2.5">
-            <span className="mt-0.5 inline-flex h-5 w-5 flex-none items-center justify-center rounded-full bg-brand-light text-brand">
-              <svg viewBox="0 0 20 20" className="h-3 w-3" aria-hidden>
-                <path
-                  fill="currentColor"
-                  d="M7.7 13.3 4.4 10l-1.4 1.4 4.7 4.7 10-10-1.4-1.4z"
-                />
-              </svg>
-            </span>
-            <span>{f}</span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-6">
-        <PlanCheckoutButton
-          plan={plan.id}
-          label={plan.ctaLabel}
-          variant={isHighlighted ? "primary" : "navy"}
-        />
-        <p className="mt-2 text-center text-[12px] text-ink-muted">
-          7-day free trial — cancel anytime
-        </p>
-      </div>
-    </div>
-  );
-}
