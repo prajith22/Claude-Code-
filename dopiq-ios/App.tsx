@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import * as Linking from "expo-linking";
 import { StatusBar } from "expo-status-bar";
+import * as WebBrowser from "expo-web-browser";
 import {
   WebView,
   type WebViewNavigation,
@@ -35,23 +36,43 @@ const WEBVIEW_UA_MARKER = "DopiqIOSApp";
 const LOAD_TIMEOUT_MS = 10_000;
 const RETRY_DELAY_MS = 2_000;
 
-// Hosts and paths that must open in native Safari rather than the
-// in-app WebView.
-//   - accounts.google.com: Google's OAuth flow returns
-//     `disallowed_useragent` when it sees a WebView UA.
-//   - dopiqapp.com/finish-setup: the web-side Stripe paywall lives
-//     here. Apple disallows showing prices / "Subscribe" CTAs
-//     inside iOS apps for digital goods, so we punt to Safari for
-//     the actual checkout. Universal links + AppState reload pull
-//     the user back into the WebView once they're done.
-const EXTERNAL_URL_PATTERNS = [
-  /accounts\.google\.com/i,
+// URLs that must NOT load inside the in-app WebView. Two different
+// destinations — both bail out of the WebView, but each lands in
+// a different in-app browser surface:
+//
+//   - Google OAuth (accounts.google.com) MUST go to standalone
+//     Safari (Linking.openURL). Google blocks any embedded browser
+//     UA — including SFSafariViewController — with a
+//     `disallowed_useragent` error, so SafariViewController would
+//     fail the same way the WebView does.
+//
+//   - Everything else routed externally (right now just
+//     dopiqapp.com/finish-setup, which hosts the web-side Stripe
+//     paywall) opens in SFSafariViewController via
+//     WebBrowser.openBrowserAsync. That keeps the user inside the
+//     app sheet, on Apple's preferred presentation per Guideline 4.
+const GOOGLE_OAUTH_PATTERN = /accounts\.google\.com/i;
+const SFSAFARI_URL_PATTERNS = [
   /^https:\/\/dopiqapp\.com\/finish-setup(?:[/?#]|$)/i,
 ];
 
-function shouldOpenExternally(url: string): boolean {
-  return EXTERNAL_URL_PATTERNS.some((rx) => rx.test(url));
+type ExternalRoute = "google-oauth" | "sfsafari" | null;
+
+function classifyExternalUrl(url: string): ExternalRoute {
+  if (GOOGLE_OAUTH_PATTERN.test(url)) return "google-oauth";
+  if (SFSAFARI_URL_PATTERNS.some((rx) => rx.test(url))) return "sfsafari";
+  return null;
 }
+
+// SFSafariViewController presentation options shared by every call.
+// PAGE_SHEET reads as a modal hand-off rather than a full takeover,
+// matching the in-app feel Apple's Guideline 4 reviewer asked for.
+const SF_BROWSER_OPTIONS: WebBrowser.WebBrowserOpenOptions = {
+  presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET,
+  toolbarColor: "#FAFAF8",
+  controlsColor: "#00C853",
+  enableBarCollapsing: true,
+};
 
 export default function App() {
   const webRef = useRef<WebView>(null);
@@ -160,12 +181,26 @@ export default function App() {
   }, []);
 
   function onShouldStartLoadWithRequest(req: ShouldStartLoadRequest): boolean {
-    if (shouldOpenExternally(req.url)) {
+    const route = classifyExternalUrl(req.url);
+    if (route === "google-oauth") {
+      // Standalone Safari only — Safari View Controller would also
+      // be blocked by Google's embedded-browser check.
       externalAuthInFlightRef.current = true;
-      Linking.openURL(req.url).catch(() => {
-        // openURL only rejects if the URL is malformed or no app can
-        // handle it. Either way we fall through silently.
-      });
+      Linking.openURL(req.url).catch(() => {});
+      return false;
+    }
+    if (route === "sfsafari") {
+      // In-app Safari sheet. The promise resolves when the user
+      // dismisses it, at which point we reload the WebView so any
+      // session cookie set on dopiqapp.com flows through. The
+      // AppState foreground listener is still wired as a backup.
+      externalAuthInFlightRef.current = true;
+      WebBrowser.openBrowserAsync(req.url, SF_BROWSER_OPTIONS)
+        .then(() => {
+          externalAuthInFlightRef.current = false;
+          webRef.current?.reload();
+        })
+        .catch(() => {});
       return false;
     }
     return true;
@@ -174,7 +209,8 @@ export default function App() {
   // target="_blank" links inside the WebView fire this handler on
   // iOS instead of going through onShouldStartLoadWithRequest. The
   // "Continue setup on the web" link in IOSSetupScreen is one; we
-  // route it (and any other _blank link) straight to Safari.
+  // never render _blank links for OAuth, so this path always uses
+  // Safari View Controller.
   function onOpenWindow(
     e: { nativeEvent: { targetUrl: string } } | { targetUrl: string },
   ) {
@@ -182,7 +218,12 @@ export default function App() {
       "nativeEvent" in e ? e.nativeEvent.targetUrl : e.targetUrl;
     if (!targetUrl) return;
     externalAuthInFlightRef.current = true;
-    Linking.openURL(targetUrl).catch(() => {});
+    WebBrowser.openBrowserAsync(targetUrl, SF_BROWSER_OPTIONS)
+      .then(() => {
+        externalAuthInFlightRef.current = false;
+        webRef.current?.reload();
+      })
+      .catch(() => {});
   }
 
   function onNavigationStateChange(navState: WebViewNavigation) {

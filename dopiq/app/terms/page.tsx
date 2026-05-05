@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
+import { isIOSWebView } from "@/lib/is-ios-webview";
 
 export const metadata: Metadata = {
   title: "Terms of Service — Dopiq",
 };
+
+// /terms is rendered differently for the iOS WebView vs. the web,
+// so it must SSR per request — never static.
+export const dynamic = "force-dynamic";
 
 const SECTIONS = [
   {
@@ -68,12 +73,35 @@ const SECTIONS = [
   },
 ];
 
+// Two sections that mention "sports betting" / "sports teams" /
+// "odds" / "wager" describe a feature the iOS app cannot reach
+// (Apple disallows gambling for individual developer accounts and
+// we hide the entire /bet tree from the iOS WebView). Rewriting
+// just those two for iOS keeps the legal description accurate to
+// the iOS product without misrepresenting the web product to web
+// users. Every other section is identical across both surfaces.
+const IOS_SECTION_OVERRIDES: Record<string, string> = {
+  "Description of Service":
+    "Dopiq is a behavioral wellness and impulse control application that provides simulated shopping and food ordering experiences using fake money, plus a Quick Sim flow for capturing impulse-purchase moments in real time. No real money is ever spent or transacted within any simulation feature. Dopiq is not a retail platform or a food delivery service. All simulations are for entertainment and behavioral wellness purposes only.",
+  "Simulated Content Disclaimer":
+    "All products, restaurants, and other content displayed within Dopiq simulations are fictional and for simulation purposes only. Any resemblance to real products, businesses, or events is coincidental. No purchase or order is ever real. No money is ever transferred within simulations.",
+};
+
+function sectionsFor(excludeBet: boolean) {
+  if (!excludeBet) return SECTIONS;
+  return SECTIONS.map((s) =>
+    IOS_SECTION_OVERRIDES[s.heading]
+      ? { ...s, body: IOS_SECTION_OVERRIDES[s.heading] }
+      : s,
+  );
+}
+
 export default function TermsPage() {
   return (
     <LegalPage
       title="Terms of Service"
       lastUpdated="Last updated: April 27, 2026"
-      sections={SECTIONS}
+      sections={sectionsFor(isIOSWebView())}
     />
   );
 }
