@@ -34,6 +34,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -125,6 +126,50 @@ type FetchState =
   | { kind: "ready"; subs: Subscription[] }
   | { kind: "error"; message: string };
 
+// Lightweight telemetry surfaced in the debug panel at the bottom
+// of the paywall. We track every step of the IAP boot sequence so
+// that when the paywall renders with em-dashes for prices we have
+// concrete data to point at instead of a generic "couldn't load"
+// banner. Reset on every retry.
+type Diag = {
+  // initConnection result. null = not attempted yet (still on the
+  // network), true = succeeded, false = threw.
+  initOk: boolean | null;
+  initError: string | null;
+  // getSubscriptions result. Count is the size of the array Apple
+  // returned (note: 0 is a possible "successful" value that still
+  // indicates a configuration mismatch — we treat 0 as an error
+  // path so the user sees a concrete SKU list instead of empty
+  // cards).
+  fetchedCount: number;
+  fetchError: string | null;
+  fetchErrorCode: string | null;
+  // The SKUs we asked Apple about. Always equal to SKUS but we copy
+  // it into the debug panel so a future SKU change is impossible to
+  // misread on-device.
+  attemptedSkus: string[];
+};
+
+const INITIAL_DIAG: Diag = {
+  initOk: null,
+  initError: null,
+  fetchedCount: 0,
+  fetchError: null,
+  fetchErrorCode: null,
+  attemptedSkus: [...SKUS],
+};
+
+function describeError(err: unknown): { message: string; code: string | null } {
+  if (err && typeof err === "object") {
+    const e = err as { message?: unknown; code?: unknown };
+    const message =
+      typeof e.message === "string" ? e.message : String(err);
+    const code = typeof e.code === "string" ? e.code : null;
+    return { message, code };
+  }
+  return { message: String(err), code: null };
+}
+
 type PurchaseUIState =
   | { kind: "idle" }
   | { kind: "buying"; sku: string }
@@ -159,6 +204,7 @@ export function NativePaywall({
 }: Props) {
   const [fetchState, setFetchState] = useState<FetchState>({ kind: "loading" });
   const [uiState, setUIState] = useState<PurchaseUIState>({ kind: "idle" });
+  const [diag, setDiag] = useState<Diag>(INITIAL_DIAG);
 
   // Track the current "we initiated this purchase from inside the
   // paywall" sku so the global purchaseUpdatedListener can drive the
@@ -179,25 +225,89 @@ export function NativePaywall({
     let errorSub: { remove(): void } | null = null;
 
     (async () => {
+      // initConnection is the first failure surface. Track its
+      // outcome separately so the debug panel can tell a "Apple
+      // refused to start a session" failure from a "session OK
+      // but no products returned" failure.
       try {
         await initConnection();
         if (!mounted) return;
-
-        purchaseSub = purchaseUpdatedListener(handlePurchaseEvent);
-        errorSub = purchaseErrorListener(handlePurchaseError);
-
-        const subs = await getSubscriptions({ skus: SKUS });
-        if (!mounted) return;
-        setFetchState({ kind: "ready", subs });
+        setDiag((d) => ({ ...d, initOk: true, initError: null }));
       } catch (err) {
         if (!mounted) return;
-        console.error("[NativePaywall] init failed:", err);
+        const { message, code } = describeError(err);
+        console.error("[NativePaywall] initConnection failed:", err);
+        setDiag((d) => ({
+          ...d,
+          initOk: false,
+          initError: code ? `${message} (${code})` : message,
+        }));
         setFetchState({
           kind: "error",
           message:
-            "Couldn't load subscription options. Check your connection and try again.",
+            "Couldn't connect to the App Store. Check your connection and try again.",
         });
+        return;
       }
+
+      purchaseSub = purchaseUpdatedListener(handlePurchaseEvent);
+      errorSub = purchaseErrorListener(handlePurchaseError);
+
+      // getSubscriptions is the second surface. Two failure modes
+      // we care about:
+      //   1. It throws — usually a config issue (paid agreement
+      //      not signed, products not yet in App Store Connect).
+      //   2. It resolves with [] — usually a SKU mismatch between
+      //      the iOS bundle id and the products configured in App
+      //      Store Connect, or the products are still in
+      //      "Waiting for Review".
+      // Both end up in the debug panel below.
+      let subs: Subscription[] = [];
+      try {
+        subs = await getSubscriptions({ skus: SKUS });
+      } catch (err) {
+        if (!mounted) return;
+        const { message, code } = describeError(err);
+        console.error("[NativePaywall] getSubscriptions failed:", err);
+        setDiag((d) => ({
+          ...d,
+          fetchError: message,
+          fetchErrorCode: code,
+          fetchedCount: 0,
+        }));
+        setFetchState({
+          kind: "error",
+          message: "Couldn't load subscription options from Apple.",
+        });
+        return;
+      }
+
+      if (!mounted) return;
+      setDiag((d) => ({
+        ...d,
+        fetchedCount: subs.length,
+        fetchError: null,
+        fetchErrorCode: null,
+      }));
+
+      if (subs.length === 0) {
+        // No throw, no products. Treat as an error state so the
+        // debug panel surfaces the SKU list and the user / tester
+        // doesn't sit on em-dashes forever waiting for a load that
+        // already returned.
+        console.warn(
+          "[NativePaywall] getSubscriptions returned 0 products for SKUs:",
+          SKUS,
+        );
+        setFetchState({
+          kind: "error",
+          message:
+            "No products returned by Apple. The SKUs may not match App Store Connect or the agreement isn't active yet.",
+        });
+        return;
+      }
+
+      setFetchState({ kind: "ready", subs });
     })();
 
     return () => {
@@ -317,18 +427,50 @@ export function NativePaywall({
 
   function onRetryFetch() {
     setFetchState({ kind: "loading" });
+    // Reset diagnostics so the debug panel reflects this retry
+    // attempt, not the previous one. Keep initOk because we don't
+    // re-call initConnection here.
+    setDiag((d) => ({
+      ...d,
+      fetchedCount: 0,
+      fetchError: null,
+      fetchErrorCode: null,
+    }));
     (async () => {
+      let subs: Subscription[] = [];
       try {
-        const subs = await getSubscriptions({ skus: SKUS });
-        setFetchState({ kind: "ready", subs });
+        subs = await getSubscriptions({ skus: SKUS });
       } catch (err) {
+        const { message, code } = describeError(err);
         console.error("[NativePaywall] retry getSubscriptions failed:", err);
+        setDiag((d) => ({
+          ...d,
+          fetchError: message,
+          fetchErrorCode: code,
+          fetchedCount: 0,
+        }));
         setFetchState({
           kind: "error",
           message:
             "Still couldn't reach the App Store. Try again in a moment.",
         });
+        return;
       }
+      setDiag((d) => ({
+        ...d,
+        fetchedCount: subs.length,
+        fetchError: null,
+        fetchErrorCode: null,
+      }));
+      if (subs.length === 0) {
+        setFetchState({
+          kind: "error",
+          message:
+            "No products returned by Apple. The SKUs may not match App Store Connect or the agreement isn't active yet.",
+        });
+        return;
+      }
+      setFetchState({ kind: "ready", subs });
     })();
   }
 
@@ -446,6 +588,8 @@ export function NativePaywall({
               </Text>
             </Pressable>
 
+            <DebugPanel diag={diag} fetchState={fetchState} />
+
             {userEmail ? (
               <Text style={styles.signedInAs}>Signed in as {userEmail}</Text>
             ) : null}
@@ -526,6 +670,57 @@ function SuccessCelebration() {
         <Text style={styles.successCheck}>✓</Text>
       </View>
       <Text style={styles.successHeadline}>Welcome to Dopiq</Text>
+    </View>
+  );
+}
+
+// Debug panel for diagnosing "products won't load" failures on a
+// real device. Visibility rules:
+//   - __DEV__ (Expo Go / dev client) → always visible.
+//   - production / TestFlight + 0 products fetched → visible.
+//   - production / TestFlight + ≥1 product fetched → hidden.
+// The panel is intentionally ugly — small monospace text on a
+// soft yellow card — so a tester reads it as "this is data, not
+// the real UI". When products eventually load correctly the panel
+// disappears and the paywall is back to its production look.
+function DebugPanel({
+  diag,
+  fetchState,
+}: {
+  diag: Diag;
+  fetchState: FetchState;
+}) {
+  const productsEmpty =
+    fetchState.kind !== "ready" || fetchState.subs.length === 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const isDev = typeof __DEV__ !== "undefined" ? (__DEV__ as boolean) : false;
+  if (!isDev && !productsEmpty) return null;
+
+  const initLabel =
+    diag.initOk === null
+      ? "pending"
+      : diag.initOk
+        ? "ok"
+        : `failed: ${diag.initError ?? "unknown"}`;
+
+  const fetchLabel = diag.fetchError
+    ? `failed: ${diag.fetchError}${diag.fetchErrorCode ? ` (${diag.fetchErrorCode})` : ""}`
+    : `${diag.fetchedCount} product(s)`;
+
+  return (
+    <View style={styles.debugPanel}>
+      <Text style={styles.debugTitle}>IAP debug</Text>
+      <Text style={styles.debugLine}>init: {initLabel}</Text>
+      <Text style={styles.debugLine}>getSubscriptions: {fetchLabel}</Text>
+      <Text style={styles.debugLine}>SKUs requested:</Text>
+      {diag.attemptedSkus.map((sku) => (
+        <Text key={sku} style={styles.debugLine}>
+          • {sku}
+        </Text>
+      ))}
+      {fetchState.kind === "error" && (
+        <Text style={styles.debugLine}>banner: {fetchState.message}</Text>
+      )}
     </View>
   );
 }
@@ -734,5 +929,27 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "800",
     letterSpacing: -0.5,
+  },
+  debugPanel: {
+    marginTop: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: "#FFF9E6",
+    borderWidth: 1,
+    borderColor: "#F2E4B7",
+  },
+  debugTitle: {
+    fontFamily: Platform.select({ ios: "Menlo", default: "monospace" }),
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#5D4037",
+    marginBottom: 4,
+  },
+  debugLine: {
+    fontFamily: Platform.select({ ios: "Menlo", default: "monospace" }),
+    fontSize: 11,
+    lineHeight: 16,
+    color: "#5D4037",
   },
 });
