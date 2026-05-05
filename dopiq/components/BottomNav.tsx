@@ -11,15 +11,20 @@ const TABS = [
   { href: "/bet",     label: "Bet",     icon: TicketIcon },
 ] as const;
 
-export function BottomNav() {
+export function BottomNav({ excludeBet = false }: { excludeBet?: boolean }) {
   const pathname = usePathname();
+  // iOS users never see the Bet tab — Apple prohibits gambling
+  // features for individual developer accounts. Filter the static
+  // tab list rather than rendering and hiding so the layout
+  // distributes the remaining three tabs evenly.
+  const tabs = excludeBet ? TABS.filter((t) => t.href !== "/bet") : TABS;
   return (
     <nav
       className="fixed inset-x-0 bottom-0 z-40 bg-[#F5EFE4]/95 backdrop-blur-sm md:hidden"
       aria-label="Primary"
     >
       <ul className="mx-auto flex max-w-lg items-stretch justify-between safe-bottom">
-        {TABS.map((t) => {
+        {tabs.map((t) => {
           const active = pathname === t.href || pathname.startsWith(t.href + "/");
           const Icon = t.icon;
           return (

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/session-guards";
+import { isIOSWebView } from "@/lib/is-ios-webview";
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 
 export const dynamic = "force-dynamic";
@@ -17,5 +18,9 @@ export default async function OnboardingPage() {
     redirect("/paywall");
   }
 
-  return <OnboardingFlow />;
+  // iOS users see a betting-free variant of Screens 1 and 2 — the
+  // betting trigger option and the Betting Simulator feature card
+  // are dropped (Apple disallows gambling for individual dev
+  // accounts).
+  return <OnboardingFlow excludeBet={isIOSWebView()} />;
 }
