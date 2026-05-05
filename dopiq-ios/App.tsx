@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   AppState,
   type AppStateStatus,
   BackHandler,
@@ -18,7 +19,10 @@ import {
   type ShouldStartLoadRequest,
   type WebViewErrorEvent,
   type WebViewHttpErrorEvent,
+  type WebViewMessageEvent,
 } from "react-native-webview";
+import { NativePaywall, type DopiqPlan } from "./components/NativePaywall";
+import { restoreLatestPurchase } from "./lib/iap";
 
 const TARGET_URL = "https://dopiqapp.com";
 const BRAND_GREEN = "#00C853";
@@ -35,22 +39,32 @@ const WEBVIEW_UA_MARKER = "DopiqIOSApp";
 const LOAD_TIMEOUT_MS = 10_000;
 const RETRY_DELAY_MS = 2_000;
 
-// Hosts and paths that must open in native Safari rather than the
-// in-app WebView.
+// Hosts that must open in native Safari rather than the in-app
+// WebView.
 //   - accounts.google.com: Google's OAuth flow returns
-//     `disallowed_useragent` when it sees a WebView UA.
-//   - dopiqapp.com/finish-setup: the web-side Stripe paywall lives
-//     here. Apple disallows showing prices / "Subscribe" CTAs
-//     inside iOS apps for digital goods, so we punt to Safari for
-//     the actual checkout. Universal links + AppState reload pull
-//     the user back into the WebView once they're done.
-const EXTERNAL_URL_PATTERNS = [
-  /accounts\.google\.com/i,
-  /^https:\/\/dopiqapp\.com\/finish-setup(?:[/?#]|$)/i,
-];
+//     `disallowed_useragent` when it sees a WebView UA. SFSafari
+//     would also be blocked, so this is one of the few URLs we
+//     route to Linking.openURL (standalone Safari).
+//
+// /paywall and /finish-setup are NO LONGER routed externally —
+// they're caught below and replaced with the native StoreKit
+// paywall (NativePaywall component) so iOS purchases happen via
+// Apple IAP, never via the web Stripe flow.
+const EXTERNAL_URL_PATTERNS = [/accounts\.google\.com/i];
 
 function shouldOpenExternally(url: string): boolean {
   return EXTERNAL_URL_PATTERNS.some((rx) => rx.test(url));
+}
+
+// Any of these URL patterns trigger the native paywall and abort
+// the WebView navigation. /paywall is the canonical Stripe paywall
+// route on the web; /finish-setup was the old "go to web to
+// subscribe" hand-off that's now obsoleted by native IAP.
+const PAYWALL_URL_PATTERN =
+  /^https:\/\/dopiqapp\.com\/(paywall|finish-setup)(?:[/?#]|$)/i;
+
+function isPaywallUrl(url: string): boolean {
+  return PAYWALL_URL_PATTERN.test(url);
 }
 
 export default function App() {
@@ -58,6 +72,18 @@ export default function App() {
   const [canGoBack, setCanGoBack] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hadError, setHadError] = useState(false);
+  // Native StoreKit paywall presentation. Triggered when the WebView
+  // tries to navigate to /paywall or /finish-setup, OR when the user
+  // taps "Manage subscription" / similar surfaces that resolve to
+  // those URLs. Web users never see this — it's purely an iOS shell.
+  const [paywallVisible, setPaywallVisible] = useState(false);
+  // Captured from session-info postMessages so the paywall can show
+  // "Signed in as <email>" without re-fetching from the WebView.
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  // Defends against the postMessage-driven Restore from running
+  // while one is already in flight (the WebView Settings button is
+  // a fire-and-forget message; it doesn't disable itself locally).
+  const restoreInFlightRef = useRef(false);
 
   // Tracks whether we've punted the user out to Safari for OAuth.
   // When the app returns to foreground after that, we refresh the
@@ -160,6 +186,14 @@ export default function App() {
   }, []);
 
   function onShouldStartLoadWithRequest(req: ShouldStartLoadRequest): boolean {
+    // Intercept the paywall URL family BEFORE the WebView starts
+    // loading anything, so the user never sees a flash of the web
+    // paywall before the native sheet covers it. The request is
+    // dropped (return false) and the React Modal is shown.
+    if (isPaywallUrl(req.url)) {
+      setPaywallVisible(true);
+      return false;
+    }
     if (shouldOpenExternally(req.url)) {
       externalAuthInFlightRef.current = true;
       Linking.openURL(req.url).catch(() => {
@@ -169,6 +203,92 @@ export default function App() {
       return false;
     }
     return true;
+  }
+
+  // ---- Native paywall plumbing ------------------------------------
+
+  const onPurchaseSuccess = useCallback((_plan: DopiqPlan) => {
+    // Drop the Modal and bounce the WebView to /home. The user is
+    // now an active subscriber server-side (verify-receipt updated
+    // the User row), so /home will render normally.
+    setPaywallVisible(false);
+    webRef.current?.injectJavaScript(
+      `window.location.href = ${JSON.stringify(`${TARGET_URL}/home`)}; true;`,
+    );
+  }, []);
+
+  const onPaywallClose = useCallback(() => {
+    // Apple HIG says no close affordance on the paywall, but expose
+    // a handler so future flows (e.g., a dev override) have a way
+    // out. Fall back by reloading the WebView so the underlying
+    // page state is fresh.
+    setPaywallVisible(false);
+    webRef.current?.reload();
+  }, []);
+
+  // ---- WebView postMessage protocol -------------------------------
+  //
+  // Messages from the web app (sent via window.ReactNativeWebView
+  // .postMessage(...)) are JSON envelopes with a `type` discriminator.
+  // Currently supported types:
+  //
+  //   { type: "session", email: string | null }
+  //     Sent on every session-aware page render so the native shell
+  //     can keep `userEmail` fresh for the paywall display.
+  //
+  //   { type: "restore_purchases" }
+  //     Sent by the iOS-only "Restore Purchases" button on the
+  //     in-WebView Settings page. Triggers getAvailablePurchases +
+  //     verify-receipt and surfaces the result via Alert.alert.
+  //
+  // Unknown types are ignored — the protocol is intentionally
+  // additive so the iOS app and web app can ship at different
+  // cadences.
+  async function handleRestoreFromSettings() {
+    if (restoreInFlightRef.current) return;
+    restoreInFlightRef.current = true;
+    try {
+      const plan = await restoreLatestPurchase();
+      Alert.alert(
+        "Subscription restored",
+        `You're now on the Dopiq ${plan.charAt(0).toUpperCase() + plan.slice(1)} plan.`,
+        [
+          {
+            text: "OK",
+            onPress: () => webRef.current?.reload(),
+          },
+        ],
+      );
+    } catch (err) {
+      Alert.alert(
+        "Restore Purchases",
+        err instanceof Error
+          ? err.message
+          : "Couldn't restore purchases. Please try again.",
+      );
+    } finally {
+      restoreInFlightRef.current = false;
+    }
+  }
+
+  function onWebViewMessage(event: WebViewMessageEvent) {
+    let parsed: { type?: string; email?: string | null } | null = null;
+    try {
+      parsed = JSON.parse(event.nativeEvent.data) as typeof parsed;
+    } catch {
+      return;
+    }
+    if (!parsed || typeof parsed.type !== "string") return;
+    switch (parsed.type) {
+      case "session":
+        setUserEmail(parsed.email ?? null);
+        return;
+      case "restore_purchases":
+        void handleRestoreFromSettings();
+        return;
+      default:
+        return;
+    }
   }
 
   // target="_blank" links inside the WebView fire this handler on
@@ -262,10 +382,22 @@ export default function App() {
         onOpenWindow={onOpenWindow}
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
         onNavigationStateChange={onNavigationStateChange}
+        onMessage={onWebViewMessage}
         onLoadStart={onLoadStart}
         onLoad={onLoad}
         onError={onError}
         onHttpError={onHttpError}
+      />
+
+      {/* Native StoreKit paywall — rendered on top of the WebView
+          when the WebView would otherwise navigate to /paywall or
+          /finish-setup. Apple IAP only; no Stripe surface visible
+          inside the iOS app. */}
+      <NativePaywall
+        isVisible={paywallVisible}
+        userEmail={userEmail}
+        onPurchaseSuccess={onPurchaseSuccess}
+        onClose={onPaywallClose}
       />
 
       {/* Branded loading veneer — hides the WebView's white "no

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { requireUser } from "@/lib/session-guards";
+import { isIOSWebView } from "@/lib/is-ios-webview";
 import { stripe, PLANS, planFromPriceId, type PlanId } from "@/lib/stripe";
 import { SettingsControls } from "@/components/SettingsControls";
 
@@ -34,6 +35,7 @@ export default async function SettingsPage() {
           userPlan={(user.plan as PlanId | null) ?? null}
           userSubscriptionStatus={user.subscriptionStatus ?? null}
           isReviewer={user.isReviewer}
+          isIOSWebView={isIOSWebView()}
         />
       </Suspense>
     </div>
@@ -45,11 +47,13 @@ async function SettingsBody({
   userPlan,
   userSubscriptionStatus,
   isReviewer,
+  isIOSWebView,
 }: {
   stripeSubscriptionId: string | null;
   userPlan: PlanId | null;
   userSubscriptionStatus: string | null;
   isReviewer: boolean;
+  isIOSWebView: boolean;
 }) {
   let currentPlan: PlanId | null = null;
   let status: string | null = userSubscriptionStatus;
@@ -89,6 +93,7 @@ async function SettingsBody({
         simulationsLimit: p.simulationsLimit,
       }))}
       isReviewer={isReviewer}
+      isIOSWebView={isIOSWebView}
     />
   );
 }
