@@ -1,26 +1,35 @@
 "use client";
 
+import Link from "next/link";
 import { signOut } from "next-auth/react";
 
 // IMPORTANT — App Store Review Guideline 3.1.1 compliance:
 //
 // This screen is rendered ONLY inside the iOS WebView in place of
-// the Stripe paywall. It must not display:
+// the Stripe paywall. It is a sign-in-only gate for users whose
+// session doesn't carry an active subscription — the iOS app must
+// not surface ANY purchase, signup, or "go to web to subscribe"
+// path. It must not display:
 //   - Any prices ($3.99, $6.99, $12.99)
 //   - Any plan names presented as purchase options
-//   - Any "Subscribe" / "Start trial" CTA
+//   - Any "Subscribe" / "Start trial" / "Get started" CTA
+//   - Any "Continue setup on the web" or "Finish setup" copy
 //   - Any "Choose a plan" or pricing comparison language
 //   - Any payment-related copy at all
 //
-// The compliance pattern is "tell users to set up their account on
-// the web, with no in-app pricing surface". The web app's existing
-// Stripe paywall continues to handle the actual purchase.
+// The two paths offered here are:
+//   1. Sign in to an existing subscription (/signin, in-WebView).
+//   2. Sign out, in case the wrong account is signed in.
 //
-// If you find yourself adding a price or a Subscribe button here,
-// stop — it belongs on /finish-setup or /paywall (web only), never
-// inside this component.
-
-const FINISH_SETUP_URL = "https://dopiqapp.com/finish-setup";
+// New users — and reviewers with an active demo account — never
+// reach this screen: the /paywall page redirects active-access
+// users to /home before this component renders, so reviewers
+// (isReviewer = true → computeAccessState "active") and paying
+// subscribers go straight to the home tab.
+//
+// If you find yourself adding any pricing surface or "subscribe
+// on the web" CTA here, stop — that's the rejection vector Apple
+// flagged. The web /paywall handles purchases for web users only.
 
 export function IOSSetupScreen() {
   return (
@@ -54,38 +63,33 @@ export function IOSSetupScreen() {
       </div>
 
       <h1 className="mt-10 font-heading text-[28px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[32px]">
-        Welcome to Dopiq
+        Sign in to continue
       </h1>
 
       <p className="mt-3 max-w-sm font-sans text-[16px] leading-relaxed text-ink-muted">
-        Your account is almost ready. Finish setting up your account on the
-        web, then come back here and sign in.
+        This Dopiq account doesn&rsquo;t have access yet. If you&rsquo;ve
+        subscribed on the web, sign in below. If not, visit dopiqapp.com to
+        learn more about Dopiq.
       </p>
 
-      {/* Primary CTA — opens dopiqapp.com/finish-setup in mobile Safari.
-          The iOS shell's onShouldStartLoadWithRequest interceptor catches
-          the URL pattern and routes it through Linking.openURL so it
-          never loads inside the WebView. target="_blank" is harmless on
-          web; on iOS the interceptor takes precedence. */}
-      <a
-        href={FINISH_SETUP_URL}
-        target="_blank"
-        rel="noopener noreferrer"
+      {/* Primary CTA — stays inside the WebView so the user lands on
+          /signin without leaving the app. */}
+      <Link
+        href="/signin"
         className="mt-9 flex h-14 w-full max-w-xs items-center justify-center rounded-pill bg-[#00C853] font-heading text-[15px] font-bold text-white shadow-[0_2px_12px_rgba(0,200,83,0.3)] transition-opacity active:opacity-90"
       >
-        Continue setup on the web
-      </a>
+        Sign in
+      </Link>
 
-      {/* Secondary "I already finished" affordance. Sign-out with
-          callbackUrl=/signin so the user can sign back in and have
-          their freshly-active subscription state pulled into the
-          session. */}
+      {/* Secondary "wrong account" escape hatch. Lets the user sign
+          out so they can try another account on /signin. No purchase
+          path; the active subscription has to come from the web. */}
       <button
         type="button"
         onClick={() => signOut({ callbackUrl: "/signin" })}
         className="mt-6 font-sans text-[13px] text-ink-muted underline-offset-2 hover:underline"
       >
-        Already finished setup? Sign out and sign back in to refresh.
+        Sign out
       </button>
     </main>
   );
