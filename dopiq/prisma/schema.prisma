@@ -24,6 +24,24 @@ model User {
   simulationsUsed      Int      @default(0)
   simulationsLimit     Int      @default(0)
   subscriptionStatus   String?
+  // Tracks whether this user's subscription was bought via the web
+  // Stripe flow ("stripe") or Apple In-App Purchase ("ios"). Null
+  // means no subscription has ever been started. Used by IAP-side
+  // code paths to identify which payment system owns the user; the
+  // paywall + access checks key off subscriptionStatus and stay
+  // source-agnostic.
+  subscriptionSource   String?
+  // Apple's persistent ID for an IAP subscription — stays constant
+  // across every renewal, refund, and grace period for the same
+  // subscription. Used to look up the user when Apple sends
+  // server-to-server notifications. @unique so we can't accidentally
+  // tie one Apple subscription to two users.
+  appleOriginalTransactionId String? @unique
+  // Most recent base64-encoded receipt blob from Apple's
+  // verifyReceipt endpoint. Stashed so we can re-verify
+  // subscription state on demand without forcing the iOS app to
+  // resend the receipt.
+  appleLatestReceiptData String?
   // Manual override for App Store review accounts. Bypasses the
   // Stripe paywall + monthly simulation cap so Apple's reviewers
   // can test every gated feature without entering a credit card.

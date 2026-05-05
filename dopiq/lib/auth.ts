@@ -41,6 +41,7 @@ if (process.env.NODE_ENV === "production") {
     "APPLE_TEAM_ID",
     "APPLE_KEY_ID",
     "APPLE_PRIVATE_KEY",
+    "APPLE_IAP_SHARED_SECRET",
     "NEXT_PUBLIC_APP_URL",
   ];
   const missing = required.filter((k) => !process.env[k]);
