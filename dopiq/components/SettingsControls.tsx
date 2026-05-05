@@ -24,6 +24,10 @@ type Props = {
   // also swap the "Current plan" card copy so the reviewer doesn't
   // see "No plan selected".
   isReviewer: boolean;
+  // True when the request came from the Dopiq iOS WebView. Used to
+  // surface IAP-specific affordances (Restore Purchases) that talk
+  // back to the native shell via window.ReactNativeWebView.
+  isIOSWebView: boolean;
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -46,6 +50,22 @@ function formatDate(unixSec: number | null) {
   });
 }
 
+// Tells the iOS shell to run getAvailablePurchases + verify-receipt
+// and Alert the result. The shell listens for this message in
+// dopiq-ios/App.tsx (onWebViewMessage). Web users never run this —
+// the button that triggers it only renders when isIOSWebView is true,
+// AND the postMessage call no-ops outside the WebView.
+function postRestoreToNativeShell(): void {
+  // window.ReactNativeWebView is injected by react-native-webview.
+  type RNWebView = { postMessage: (msg: string) => void };
+  const w = (typeof window !== "undefined" ? window : undefined) as
+    | (Window & { ReactNativeWebView?: RNWebView })
+    | undefined;
+  w?.ReactNativeWebView?.postMessage(
+    JSON.stringify({ type: "restore_purchases" }),
+  );
+}
+
 export function SettingsControls({
   currentPlan,
   status,
@@ -55,6 +75,7 @@ export function SettingsControls({
   stripeError,
   plans,
   isReviewer,
+  isIOSWebView,
 }: Props) {
   const [confirmingCancel, setConfirmingCancel] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -337,6 +358,31 @@ export function SettingsControls({
           <a href="/paywall" className="btn-primary mt-4 inline-flex">
             Choose a plan
           </a>
+        </section>
+      )}
+
+      {/* Restore Purchases — iOS only. Tapping postMessages the
+          native shell, which calls getAvailablePurchases against
+          Apple, posts the latest receipt to /api/iap/verify-receipt,
+          and surfaces the result via a native Alert. Hidden on web
+          since web subscribers manage their plan via the Stripe
+          sections above. */}
+      {isIOSWebView && (
+        <section className="rounded-card border border-surface-border bg-white p-6 shadow-card">
+          <h3 className="font-heading text-[18px] font-bold text-ink">
+            Restore purchases
+          </h3>
+          <p className="mt-2 text-[14px] text-ink-muted">
+            Already subscribed on this Apple ID? Restore to sync your
+            subscription with this account.
+          </p>
+          <button
+            type="button"
+            onClick={postRestoreToNativeShell}
+            className="btn-secondary mt-4 inline-flex"
+          >
+            Restore purchases
+          </button>
         </section>
       )}
 

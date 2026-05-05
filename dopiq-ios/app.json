@@ -44,6 +44,14 @@
     },
     "updates": {
       "url": "https://u.expo.dev/49a4e55b-83d7-473b-9123-c158a825c7cd"
-    }
+    },
+    "plugins": [
+      [
+        "react-native-iap",
+        {
+          "paymentProvider": "Apple AppStore"
+        }
+      ]
+    ]
   }
 }
