@@ -4,15 +4,20 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { computeAccessState } from "@/lib/access";
-import { isIOSWebView } from "@/lib/is-ios-webview";
 import { PLANS, type Plan } from "@/lib/stripe";
-import { IOSSetupScreen } from "@/components/IOSSetupScreen";
 import { PaywallPlanCard } from "@/components/PaywallPlanCard";
 import { UpdatePaymentButton } from "@/components/UpdatePaymentButton";
 
-// /paywall must be dynamically rendered per request because the
-// iOS-vs-web branch reads the User-Agent header. Without this,
-// Next.js could cache the wrong variant for the wrong client.
+// /paywall renders the same Stripe-backed plan grid for every
+// caller. iOS shells almost never reach this URL — the native
+// app's URL interceptor catches /paywall navigations BEFORE the
+// WebView starts loading and presents the StoreKit-backed
+// NativePaywall (see dopiq-ios/components/NativePaywall.tsx). If
+// an iOS user does land here (e.g., interception fails on a
+// server-side redirect chain), the web paywall is a safer
+// fallback than the deprecated "go to web to subscribe" screen
+// even though the Stripe success URL won't return them to the
+// iOS app cleanly. force-dynamic stays so cache is per-request.
 export const dynamic = "force-dynamic";
 
 type PaywallReason = "payment_failed" | "canceled";
@@ -36,20 +41,9 @@ export default async function PaywallPage({
 
   // Reviewer accounts (computeAccessState returns "active") and
   // already-subscribed users skip the paywall entirely on every
-  // surface — including iOS — and land on /home. This must run
-  // BEFORE the iOS-WebView branch so reviewers never see the
-  // setup screen.
+  // surface — including iOS — and land on /home.
   if (user && computeAccessState(user) === "active") {
     redirect("/home");
-  }
-
-  // App Store Review Guideline 3.1.1: iOS apps may not display
-  // prices or "Subscribe" CTAs for digital goods sold outside IAP.
-  // For requests originating from the iOS WebView, render a no-
-  // pricing setup screen that points users to the web. The full
-  // Stripe paywall only renders for web user-agents.
-  if (isIOSWebView()) {
-    return <IOSSetupScreen />;
   }
 
   // Defense in depth: a logged-in but not-yet-onboarded user should

@@ -3,14 +3,15 @@ import { PlanCheckoutButton } from "@/components/PaywallCTA";
 
 // Shared plan-card markup for the web Stripe paywall. Used by both
 // /paywall (the canonical paywall route) and /finish-setup (the
-// landing page iOS users hit after tapping "Continue setup on the
-// web"). Extracted so the two surfaces stay visually identical
-// without duplicating ~60 lines of JSX.
+// post-onboarding web landing surface). Extracted so the two
+// surfaces stay visually identical without duplicating ~60 lines
+// of JSX.
 //
-// IMPORTANT: this component IS allowed to display prices because
-// it only ever renders for web (mobile Safari, desktop) — never
-// inside the iOS WebView. The iOS shell sees IOSSetupScreen
-// instead, which strips all pricing.
+// IMPORTANT: this component renders pricing and is allowed to —
+// the iOS shell intercepts /paywall and /finish-setup before the
+// WebView loads them and shows the native StoreKit paywall (see
+// dopiq-ios/components/NativePaywall.tsx) instead, so this card
+// only paints for mobile Safari + desktop browsers.
 export function PaywallPlanCard({ plan }: { plan: Plan }) {
   const isHighlighted = plan.highlighted;
   return (

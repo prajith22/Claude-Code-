@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { computeAccessState } from "@/lib/access";
+import { isIOSWebView } from "@/lib/is-ios-webview";
 import { PLANS, type Plan } from "@/lib/stripe";
 import { PaywallPlanCard } from "@/components/PaywallPlanCard";
 
@@ -50,6 +51,18 @@ export default async function FinishSetupPage({
 
   if (!user.onboardingCompleted) {
     redirect("/onboarding");
+  }
+
+  // iOS shells normally never reach this URL — the native app's
+  // URL interceptor catches /finish-setup before the WebView
+  // navigates and presents the StoreKit paywall instead. If iOS
+  // somehow does reach this page (interception miss on a server
+  // redirect chain, deep-link, etc.), show a generic "Continue
+  // in the app" screen with NO purchase CTAs. Apple disallows
+  // pricing surfaces inside iOS apps for digital goods, so we
+  // can't render the Stripe plan grid here.
+  if (isIOSWebView()) {
+    return <ContinueInTheApp />;
   }
 
   const isActive = computeAccessState(user) === "active";
@@ -280,6 +293,47 @@ function PaymentSuccess({ email }: { email: string }) {
           subscription.
         </p>
       </div>
+    </main>
+  );
+}
+
+// iOS-only fallback. Rendered when the WebView somehow reaches
+// /finish-setup despite the native shell's URL interceptor — this
+// almost always means a server-side redirect that bypassed
+// onShouldStartLoadWithRequest. The screen contains zero purchase
+// CTAs and zero pricing language so it's safe under App Store
+// Review Guideline 3.1.1; it just nudges the user back into the
+// native app where the StoreKit paywall lives.
+function ContinueInTheApp() {
+  return (
+    <main className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col items-center justify-center bg-[#FAFAF8] px-6 py-12 text-center safe-top">
+      <div className="flex items-center gap-3">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden>
+          <rect width="44" height="44" rx="10" fill="#00C853" />
+          <path
+            d="M10 10 L10 34 L18 34 Q30 34 30 22 Q30 10 18 10 Z"
+            fill="white"
+          />
+          <line
+            x1="10"
+            y1="22"
+            x2="27"
+            y2="22"
+            stroke="#00C853"
+            strokeWidth="2.5"
+          />
+        </svg>
+        <span className="font-heading text-[28px] font-extrabold leading-none text-[#0A0F1E]">
+          dopiq
+        </span>
+      </div>
+
+      <h1 className="mt-10 font-heading text-[28px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[32px]">
+        All set!
+      </h1>
+      <p className="mt-3 max-w-sm font-sans text-[16px] leading-relaxed text-ink-muted">
+        Continue in the Dopiq app to keep going.
+      </p>
     </main>
   );
 }
