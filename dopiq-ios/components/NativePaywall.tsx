@@ -74,11 +74,25 @@ const PILL_YELLOW_TEXT = "#5D4037";
 const PILL_BLUE = "#E8F0FF";
 const PILL_BLUE_TEXT = "#1A237E";
 
+// Each plan card carries:
+//   - simulationsLabel: prominent uppercase line under the price,
+//     replacing the older "LIGHT ACCESS" / "FULL ACCESS" / etc.
+//     This is the single most useful piece of information per
+//     plan, so it gets its own visual slot above the bullets.
+//   - features: four ✓ bullets mirroring the web paywall's
+//     PaywallPlanCard. The Lite tier intentionally drops the
+//     "Sports betting simulator" bullet that the web shows: the
+//     iOS app hides the entire /bet tree (App Store rules for
+//     individual developer accounts), and surfacing it on the
+//     paywall would both confuse iOS users and re-flag the app
+//     during App Review. We swap in "Streak rewards and
+//     milestones" so the bullet count stays at four.
 const PRODUCTS: ReadonlyArray<{
   sku: string;
   plan: DopiqPlan;
   name: string;
-  description: string;
+  simulationsLabel: string;
+  features: ReadonlyArray<string>;
   highlighted: boolean;
   bg: string;
   fg: string;
@@ -87,7 +101,13 @@ const PRODUCTS: ReadonlyArray<{
     sku: "com.dopiq.app.lite_monthly",
     plan: "lite",
     name: "Dopiq Lite",
-    description: "Light access",
+    simulationsLabel: "75 SIMULATIONS / MONTH",
+    features: [
+      "75 simulations per month",
+      "Shop and Food simulators",
+      "Daily spin wheel",
+      "Streak rewards and milestones",
+    ],
     highlighted: false,
     bg: PILL_PURPLE,
     fg: PILL_PURPLE_TEXT,
@@ -96,7 +116,13 @@ const PRODUCTS: ReadonlyArray<{
     sku: "com.dopiq.app.plus_monthly",
     plan: "plus",
     name: "Dopiq Plus",
-    description: "Full access",
+    simulationsLabel: "600 SIMULATIONS / MONTH",
+    features: [
+      "600 simulations per month",
+      "All Lite features",
+      "Priority access to new features",
+      "Flash deals and exclusive drops",
+    ],
     highlighted: false,
     bg: PILL_YELLOW,
     fg: PILL_YELLOW_TEXT,
@@ -105,7 +131,13 @@ const PRODUCTS: ReadonlyArray<{
     sku: "com.dopiq.app.pro_monthly",
     plan: "pro",
     name: "Dopiq Pro",
-    description: "Unlimited everything",
+    simulationsLabel: "UNLIMITED SIMULATIONS",
+    features: [
+      "Unlimited simulations",
+      "All Plus features",
+      "Never hit a limit",
+      "Early access to beta features",
+    ],
     highlighted: true,
     bg: PILL_BLUE,
     fg: PILL_BLUE_TEXT,
@@ -533,7 +565,8 @@ export function NativePaywall({
                   <PlanCard
                     key={p.sku}
                     name={p.name}
-                    description={p.description}
+                    simulationsLabel={p.simulationsLabel}
+                    features={p.features}
                     bg={p.bg}
                     fg={p.fg}
                     highlighted={p.highlighted}
@@ -602,7 +635,8 @@ export function NativePaywall({
 
 function PlanCard({
   name,
-  description,
+  simulationsLabel,
+  features,
   bg,
   fg,
   highlighted,
@@ -612,7 +646,8 @@ function PlanCard({
   onSubscribe,
 }: {
   name: string;
-  description: string;
+  simulationsLabel: string;
+  features: ReadonlyArray<string>;
   bg: string;
   fg: string;
   highlighted: boolean;
@@ -639,9 +674,19 @@ function PlanCard({
         <Text style={[styles.price, { color: fg }]}>{price ?? "—"}</Text>
         <Text style={[styles.priceSuffix, { color: fg }]}>/month</Text>
       </View>
-      <Text style={[styles.cardDescription, { color: fg }]}>
-        {description}
+      <Text style={[styles.cardSimulations, { color: fg }]}>
+        {simulationsLabel}
       </Text>
+
+      <View style={styles.featureList}>
+        {features.map((feature) => (
+          <View key={feature} style={styles.featureRow}>
+            <Text style={styles.featureCheck}>✓</Text>
+            <Text style={[styles.featureText, { color: fg }]}>{feature}</Text>
+          </View>
+        ))}
+      </View>
+
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={`Subscribe to ${name}`}
@@ -659,6 +704,10 @@ function PlanCard({
           <Text style={styles.primaryButtonText}>Subscribe</Text>
         )}
       </Pressable>
+
+      <Text style={[styles.trialCaption, { color: fg }]}>
+        7-day free trial — cancel anytime
+      </Text>
     </View>
   );
 }
@@ -808,12 +857,42 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     opacity: 0.7,
   },
-  cardDescription: {
+  cardSimulations: {
     marginTop: 4,
-    fontSize: 13,
-    fontWeight: "600",
+    fontSize: 12,
+    fontWeight: "700",
     textTransform: "uppercase",
     letterSpacing: 1,
+    opacity: 0.75,
+  },
+  featureList: {
+    marginTop: 14,
+    gap: 8,
+  },
+  featureRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+  },
+  featureCheck: {
+    color: BRAND_GREEN,
+    fontSize: 15,
+    fontWeight: "800",
+    lineHeight: 20,
+    width: 16,
+    textAlign: "center",
+  },
+  featureText: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: "500",
+    opacity: 0.95,
+  },
+  trialCaption: {
+    marginTop: 8,
+    fontSize: 11,
+    textAlign: "center",
     opacity: 0.7,
   },
   primaryButton: {
