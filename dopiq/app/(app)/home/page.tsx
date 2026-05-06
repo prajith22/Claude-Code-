@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireSubscribedUser } from "@/lib/session-guards";
+import { isIOSWebView } from "@/lib/is-ios-webview";
 import { DailySpinWheel } from "@/components/DailySpinWheel";
 import { SimCard } from "@/components/SimCard";
 import { HomeStreakHero } from "@/components/HomeStreakHero";
@@ -9,6 +10,11 @@ import { streakStatus } from "@/lib/streaks";
 export default async function HomePage() {
   const user = await requireSubscribedUser();
   const firstName = user.name?.trim().split(/\s+/)[0] || "there";
+  // Apple prohibits gambling features for individual developer
+  // accounts, so on iOS we hide the Bet simulator card and tell
+  // the spin wheel to randomize over Shop / Food only. Web users
+  // see every surface unchanged.
+  const excludeBet = isIOSWebView();
 
   // Initial paint: streak fields render correctly off the User row, but
   // the daily-saved counter needs the user's local midnight which the
@@ -105,8 +111,16 @@ export default async function HomePage() {
           </span>
         </Link>
 
-        {/* Three simulator cards */}
-        <div className="grid grid-cols-3 gap-3 md:gap-4">
+        {/* Simulator cards — three on web, two on iOS (Apple
+            disallows gambling features for individual developer
+            accounts so the Bet card is dropped there). The grid
+            column count flips alongside the card count so the
+            remaining cards fill the row evenly. */}
+        <div
+          className={`grid gap-3 md:gap-4 ${
+            excludeBet ? "grid-cols-2" : "grid-cols-3"
+          }`}
+        >
           <SimCard
             href="/shop"
             label="Shop"
@@ -123,18 +137,20 @@ export default async function HomePage() {
             icon="🍔"
             delay={0.15}
           />
-          <SimCard
-            href="/bet"
-            label="Bet"
-            bg="bg-[#DBEAFE]"
-            title="text-[#1E3A8A]"
-            icon="🎰"
-            delay={0.3}
-          />
+          {!excludeBet && (
+            <SimCard
+              href="/bet"
+              label="Bet"
+              bg="bg-[#DBEAFE]"
+              title="text-[#1E3A8A]"
+              icon="🎰"
+              delay={0.3}
+            />
+          )}
         </div>
 
         {/* Daily spin wheel */}
-        <DailySpinWheel />
+        <DailySpinWheel excludeBet={excludeBet} />
 
         {/* Plan usage — sits at the bottom as a quiet reference card.
             Server-renders the initial values straight off the User

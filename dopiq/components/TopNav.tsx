@@ -15,11 +15,14 @@ const TABS = [
   { href: "/bet", label: "Bet" },
 ];
 
-export function TopNav() {
+export function TopNav({ excludeBet = false }: { excludeBet?: boolean }) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  // iOS users never see the Bet tab — Apple prohibits gambling
+  // features for individual developer accounts.
+  const tabs = excludeBet ? TABS.filter((t) => t.href !== "/bet") : TABS;
 
   const name = session?.user?.name ?? "Guest";
   const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
@@ -65,7 +68,7 @@ export function TopNav() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
-          {TABS.map((t) => {
+          {tabs.map((t) => {
             const active = pathname === t.href || pathname.startsWith(t.href + "/");
             return (
               <Link

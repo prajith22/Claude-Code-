@@ -13,10 +13,11 @@ type Sector = {
   centerDeg: number; // measured clockwise from the top
 };
 
-// Three sectors at 0°, 120°, 240° from the top. Sector colours match
-// the home simulator cards so the wheel feels like a continuation of
-// the same surface.
-const SECTORS: Sector[] = [
+// Three sectors at 0°, 120°, 240° from the top — used on web. The
+// no-Bet variant below redistributes the remaining two sectors to
+// half-discs (left + right) so the wheel still looks balanced when
+// rendered inside the iOS shell.
+const SECTORS_FULL: Sector[] = [
   {
     key: "shop",
     label: "Shop",
@@ -43,6 +44,25 @@ const SECTORS: Sector[] = [
   },
 ];
 
+const SECTORS_NO_BET: Sector[] = [
+  {
+    key: "shop",
+    label: "Shop",
+    href: "/shop",
+    fill: "#E8E3FF",
+    textColor: "#4C1D95",
+    centerDeg: 90,
+  },
+  {
+    key: "food",
+    label: "Food",
+    href: "/food",
+    fill: "#FFF3CD",
+    textColor: "#78350F",
+    centerDeg: 270,
+  },
+];
+
 const CX = 100;
 const CY = 100;
 const R = 92;
@@ -62,11 +82,22 @@ function slicePath(startDeg: number, endDeg: number): string {
   return `M${CX},${CY} L${x1},${y1} A${R},${R} 0 ${largeArc} 1 ${x2},${y2} Z`;
 }
 
-export function DailySpinWheel() {
+export function DailySpinWheel({
+  excludeBet = false,
+}: {
+  excludeBet?: boolean;
+}) {
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [landedIdx, setLandedIdx] = useState<number | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // On iOS, drop the Bet sector and use the two-sector half-disc
+  // variant. Slice math (start = center - half, end = center +
+  // half) is parameterized off sectors.length so both shapes draw
+  // correctly.
+  const sectors = excludeBet ? SECTORS_NO_BET : SECTORS_FULL;
+  const sliceHalfWidth = 360 / sectors.length / 2;
 
   useEffect(() => {
     return () => {
@@ -79,8 +110,8 @@ export function DailySpinWheel() {
     setLandedIdx(null);
     setSpinning(true);
 
-    const idx = Math.floor(Math.random() * SECTORS.length);
-    const sectorCenter = SECTORS[idx].centerDeg;
+    const idx = Math.floor(Math.random() * sectors.length);
+    const sectorCenter = sectors[idx].centerDeg;
 
     // For sector N's center to land at the top (0°), total rotation modulo
     // 360 must equal (360 - centerDeg) % 360. Compute how far to travel
@@ -100,7 +131,7 @@ export function DailySpinWheel() {
     }, SPIN_MS);
   }
 
-  const landed = landedIdx !== null ? SECTORS[landedIdx] : null;
+  const landed = landedIdx !== null ? sectors[landedIdx] : null;
 
   return (
     <div className="flex flex-col items-center gap-5">
@@ -151,9 +182,9 @@ export function DailySpinWheel() {
             {/* Outer dark-navy ring */}
             <circle cx={CX} cy={CY} r={R + 4} fill="#0A0F1E" />
 
-            {SECTORS.map((sector, i) => {
-              const start = sector.centerDeg - 60;
-              const end = sector.centerDeg + 60;
+            {sectors.map((sector, i) => {
+              const start = sector.centerDeg - sliceHalfWidth;
+              const end = sector.centerDeg + sliceHalfWidth;
               const isWinner = landedIdx === i;
               const labelAngle = ((sector.centerDeg - 90) * Math.PI) / 180;
               const labelRadius = R * 0.58;

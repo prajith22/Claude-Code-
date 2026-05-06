@@ -30,7 +30,16 @@ const SIMS: {
   { Icon: Slot, label: "Bet", bg: "#E8F0FF", fg: "#1A237E" },
 ];
 
-export function SignInMarketing() {
+export function SignInMarketing({
+  excludeBet = false,
+}: {
+  excludeBet?: boolean;
+}) {
+  // iOS users never see the betting preview tile — Apple disallows
+  // gambling features for individual developer accounts. Filter
+  // the static SIMS list rather than rendering and hiding so the
+  // grid stays balanced with two columns.
+  const sims = excludeBet ? SIMS.filter((s) => s.label !== "Bet") : SIMS;
   return (
     <aside className="relative flex flex-col justify-between overflow-hidden bg-[#FAFAF8] px-6 py-10 text-[#0A0F1E] md:min-h-[100dvh] md:px-10 md:py-12 lg:px-14">
       <div className="relative">
@@ -87,9 +96,11 @@ export function SignInMarketing() {
           animate="show"
           variants={fadeUp}
           transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
-          className="mt-8 grid grid-cols-3 gap-3"
+          className={`mt-8 grid gap-3 ${
+            sims.length === 2 ? "grid-cols-2" : "grid-cols-3"
+          }`}
         >
-          {SIMS.map((s, i) => {
+          {sims.map((s, i) => {
             const Icon = s.Icon;
             return (
               <motion.div
