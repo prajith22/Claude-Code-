@@ -307,6 +307,19 @@ export default function App() {
 
   function onNavigationStateChange(navState: WebViewNavigation) {
     setCanGoBack(navState.canGoBack);
+    // Belt-and-suspenders for the paywall intercept. Some iOS WKWebView
+    // paths reach a /paywall or /finish-setup URL WITHOUT firing
+    // onShouldStartLoadWithRequest first — most commonly a Next.js
+    // server redirect (302/307) chained from /onboarding/complete or
+    // a JS router.push() invoked by an in-page interaction. Without
+    // this fallback the WebView would land on the web Stripe paywall
+    // and the user could initiate a Stripe checkout, which Apple
+    // rejects under 3.1.1. The shared isPaywallUrl helper keeps the
+    // pattern in one place so this and onShouldStartLoadWithRequest
+    // can never disagree.
+    if (isPaywallUrl(navState.url) && !paywallVisible) {
+      setPaywallVisible(true);
+    }
   }
 
   function onLoadStart() {

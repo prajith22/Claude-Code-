@@ -4,20 +4,23 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { computeAccessState } from "@/lib/access";
+import { isIOSWebView } from "@/lib/is-ios-webview";
 import { PLANS, type Plan } from "@/lib/stripe";
+import { IOSPaywallFallback } from "@/components/IOSPaywallFallback";
 import { PaywallPlanCard } from "@/components/PaywallPlanCard";
 import { UpdatePaymentButton } from "@/components/UpdatePaymentButton";
 
-// /paywall renders the same Stripe-backed plan grid for every
-// caller. iOS shells almost never reach this URL — the native
-// app's URL interceptor catches /paywall navigations BEFORE the
-// WebView starts loading and presents the StoreKit-backed
-// NativePaywall (see dopiq-ios/components/NativePaywall.tsx). If
-// an iOS user does land here (e.g., interception fails on a
-// server-side redirect chain), the web paywall is a safer
-// fallback than the deprecated "go to web to subscribe" screen
-// even though the Stripe success URL won't return them to the
-// iOS app cleanly. force-dynamic stays so cache is per-request.
+// /paywall renders the Stripe-backed plan grid for web users. iOS
+// shells almost never reach this URL — the native app's URL
+// interceptor catches /paywall navigations BEFORE the WebView
+// starts loading and presents the StoreKit-backed NativePaywall
+// (see dopiq-ios/components/NativePaywall.tsx). If an iOS user
+// somehow does land here (an unexpected redirect chain that
+// bypassed onShouldStartLoadWithRequest), we render the
+// IOSPaywallFallback below — a no-pricing instructional screen
+// — so Apple-disallowed Stripe checkout never shows up inside
+// the iOS app. force-dynamic stays so the iOS-vs-web branch is
+// never statically cached.
 export const dynamic = "force-dynamic";
 
 type PaywallReason = "payment_failed" | "canceled";
@@ -44,6 +47,16 @@ export default async function PaywallPage({
   // surface — including iOS — and land on /home.
   if (user && computeAccessState(user) === "active") {
     redirect("/home");
+  }
+
+  // App Store Review Guideline 3.1.1: iOS apps may not display
+  // prices or "Subscribe" CTAs for digital goods sold outside IAP.
+  // The native shell normally intercepts this URL before render;
+  // if it didn't, render a no-pricing instructional screen instead
+  // of the Stripe paywall. Runs AFTER the active-redirect check so
+  // reviewers / paying subs never see this screen either.
+  if (isIOSWebView()) {
+    return <IOSPaywallFallback />;
   }
 
   // Defense in depth: a logged-in but not-yet-onboarded user should
