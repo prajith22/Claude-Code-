@@ -15,7 +15,11 @@ const screenVariants: Variants = {
 
 const screenTransition = { type: "spring", stiffness: 280, damping: 30 } as const;
 
-export function OnboardingFlow() {
+export function OnboardingFlow({
+  excludeBet = false,
+}: {
+  excludeBet?: boolean;
+}) {
   const router = useRouter();
   const [stage, setStage] = useState<Stage>(1);
   const [submitting, setSubmitting] = useState(false);
@@ -59,7 +63,10 @@ export function OnboardingFlow() {
               transition={screenTransition}
               className="flex flex-1 flex-col"
             >
-              <Screen1 onAdvance={() => setStage(2)} />
+              <Screen1
+                onAdvance={() => setStage(2)}
+                excludeBet={excludeBet}
+              />
             </motion.div>
           )}
           {stage === 2 && (
@@ -72,7 +79,10 @@ export function OnboardingFlow() {
               transition={screenTransition}
               className="flex flex-1 flex-col"
             >
-              <Screen2 onAdvance={() => setStage(3)} />
+              <Screen2
+                onAdvance={() => setStage(3)}
+                excludeBet={excludeBet}
+              />
             </motion.div>
           )}
           {stage === 3 && (
@@ -182,26 +192,34 @@ function NextButton({
 
 // ---------- Screen 1: Who are you? ----------
 
+// Each option is tagged with a `category` so the iOS path can
+// drop the betting prompt — Apple disallows gambling features for
+// individual developer accounts, so even asking the user to
+// self-identify as a bettor doesn't fit the iOS surface.
 const SCREEN_1_OPTIONS = [
   {
+    category: "shop" as const,
     bg: "#F3E8FF",
     fg: "#4A148C",
     label: "My cart is always full of things I don't need.",
     response: "Your cart deserves a safe place to live. We built it.",
   },
   {
+    category: "food" as const,
     bg: "#FFF9E6",
     fg: "#5D4037",
     label: "I order food delivery way more than I should.",
     response: "Those cravings are real. So is our food simulator.",
   },
   {
+    category: "bet" as const,
     bg: "#E8F0FF",
     fg: "#1A237E",
     label: "I bet for the thrill more than the money.",
     response: "The thrill is real. Now you can keep your money too.",
   },
   {
+    category: "all" as const,
     bg: "#E8F5E9",
     fg: "#1B5E20",
     label: "I do all of these and I want to stop.",
@@ -210,7 +228,19 @@ const SCREEN_1_OPTIONS = [
   },
 ];
 
-function Screen1({ onAdvance }: { onAdvance: () => void }) {
+function Screen1({
+  onAdvance,
+  excludeBet,
+}: {
+  onAdvance: () => void;
+  excludeBet: boolean;
+}) {
+  // Drop the betting trigger when this is rendering inside the iOS
+  // shell — Apple disallows gambling features for individual
+  // developer accounts.
+  const options = excludeBet
+    ? SCREEN_1_OPTIONS.filter((o) => o.category !== "bet")
+    : SCREEN_1_OPTIONS;
   const [selected, setSelected] = useState<number | null>(null);
   const [nextVisible, setNextVisible] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -225,7 +255,7 @@ function Screen1({ onAdvance }: { onAdvance: () => void }) {
   }, [selected]);
 
   const response =
-    selected !== null ? SCREEN_1_OPTIONS[selected].response : null;
+    selected !== null ? options[selected].response : null;
 
   return (
     <div className="flex flex-1 flex-col px-5 pb-8 pt-2">
@@ -255,7 +285,7 @@ function Screen1({ onAdvance }: { onAdvance: () => void }) {
         }}
         className="mt-6 flex flex-col gap-3"
       >
-        {SCREEN_1_OPTIONS.map((opt, i) => {
+        {options.map((opt, i) => {
           const isSelected = selected === i;
           return (
             <motion.li
@@ -316,28 +346,43 @@ function Screen1({ onAdvance }: { onAdvance: () => void }) {
 
 const SCREEN_2_FEATURES = [
   {
+    category: "shop" as const,
     bg: "#F3E8FF",
     title: "Shop Simulator",
     body: "Browse hundreds of real products, add to cart and checkout. Your bank account never moves.",
   },
   {
+    category: "food" as const,
     bg: "#FFF9E6",
     title: "Food Simulator",
     body: "Pick your restaurant, build your order and watch a fake delivery tracker. Zero dollars charged.",
   },
   {
+    category: "bet" as const,
     bg: "#E8F0FF",
     title: "Betting Simulator",
     body: "Real odds, fake money. Place parlays, feel the rush. All the thrill, none of the risk.",
   },
   {
+    category: "quick-sim" as const,
     bg: "#E8F5E9",
     title: "Quick Sim",
     body: "Standing in a store feeling the pull? Simulate your impulse purchase in under 30 seconds.",
   },
 ];
 
-function Screen2({ onAdvance }: { onAdvance: () => void }) {
+function Screen2({
+  onAdvance,
+  excludeBet,
+}: {
+  onAdvance: () => void;
+  excludeBet: boolean;
+}) {
+  // Drop the Betting Simulator card on iOS for the same reason
+  // Screen1 drops the betting trigger.
+  const features = excludeBet
+    ? SCREEN_2_FEATURES.filter((f) => f.category !== "bet")
+    : SCREEN_2_FEATURES;
   return (
     <div className="flex flex-1 flex-col px-5 pb-8 pt-2">
       <motion.h1
@@ -380,7 +425,7 @@ function Screen2({ onAdvance }: { onAdvance: () => void }) {
         }}
         className="mt-6 flex flex-col gap-3"
       >
-        {SCREEN_2_FEATURES.map((f, i) => (
+        {features.map((f, i) => (
           <motion.li
             key={i}
             variants={{
