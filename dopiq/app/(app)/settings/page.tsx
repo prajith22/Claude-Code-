@@ -34,6 +34,7 @@ export default async function SettingsPage() {
           stripeSubscriptionId={user.stripeSubscriptionId}
           userPlan={(user.plan as PlanId | null) ?? null}
           userSubscriptionStatus={user.subscriptionStatus ?? null}
+          subscriptionSource={user.subscriptionSource ?? null}
           isReviewer={user.isReviewer}
           isIOSWebView={isIOSWebView()}
         />
@@ -46,22 +47,35 @@ async function SettingsBody({
   stripeSubscriptionId,
   userPlan,
   userSubscriptionStatus,
+  subscriptionSource,
   isReviewer,
   isIOSWebView,
 }: {
   stripeSubscriptionId: string | null;
   userPlan: PlanId | null;
   userSubscriptionStatus: string | null;
+  subscriptionSource: string | null;
   isReviewer: boolean;
   isIOSWebView: boolean;
 }) {
-  let currentPlan: PlanId | null = null;
+  // Default to the User row's own values. For an IAP-sourced user
+  // these are the source of truth (their subscription is governed
+  // by Apple — there's no Stripe object to retrieve), and for a
+  // Stripe user they're a fallback if the Stripe call below fails.
+  let currentPlan: PlanId | null = userPlan;
   let status: string | null = userSubscriptionStatus;
   let nextBillingAt: number | null = null;
   let cancelAtPeriodEnd = false;
   let stripeError: string | null = null;
 
-  if (stripeSubscriptionId) {
+  // Only round-trip Stripe for Stripe-managed subscriptions. IAP
+  // users have stripeSubscriptionId === null on purpose; calling
+  // stripe.subscriptions.retrieve there would 4xx and put the user
+  // on the "No plan selected" fallback even though their User row
+  // says they're active. Source-agnostic: subscriptionStatus is
+  // what computeAccessState reads, and that's what we should
+  // surface in the UI too.
+  if (subscriptionSource === "stripe" && stripeSubscriptionId) {
     try {
       const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
       status = sub.status;
@@ -78,13 +92,21 @@ async function SettingsBody({
     }
   }
 
+  // hasSubscription is now source-agnostic: a user is subscribed
+  // when their subscriptionStatus is one of the access-granting
+  // states, regardless of payment processor. This unblocks IAP
+  // users (stripeSubscriptionId=null) from rendering as "no
+  // active subscription".
+  const hasSubscription = status === "active" || status === "trialing";
+
   return (
     <SettingsControls
       currentPlan={currentPlan}
       status={status}
       nextBillingAt={nextBillingAt}
       cancelAtPeriodEnd={cancelAtPeriodEnd}
-      hasSubscription={!!stripeSubscriptionId}
+      hasSubscription={hasSubscription}
+      subscriptionSource={subscriptionSource}
       stripeError={stripeError}
       plans={Object.values(PLANS).map((p) => ({
         id: p.id,

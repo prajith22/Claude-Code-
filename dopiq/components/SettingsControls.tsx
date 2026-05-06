@@ -16,7 +16,14 @@ type Props = {
   status: string | null;
   nextBillingAt: number | null;
   cancelAtPeriodEnd: boolean;
+  // True when the user has an access-granting subscription, regardless
+  // of payment processor (Stripe-active or IAP-active both count).
   hasSubscription: boolean;
+  // Which payment system owns this subscription, mirrored from the
+  // User row. Drives whether the management UI shows Stripe controls
+  // (Cancel/Resume/Change/Update Payment) or the Apple deep link.
+  // null means no subscription has ever been started.
+  subscriptionSource: string | null;
   stripeError: string | null;
   plans: PlanSummary[];
   // App Store reviewer accounts have no Stripe customer/subscription.
@@ -29,6 +36,13 @@ type Props = {
   // back to the native shell via window.ReactNativeWebView.
   isIOSWebView: boolean;
 };
+
+// iOS App Store deep link for the per-Apple-ID subscriptions list.
+// WKWebView routes itms-apps:// requests to the App Store app via
+// the system URL handler, so a plain <a href> is enough — no
+// postMessage shim required.
+const APPLE_MANAGE_SUBSCRIPTIONS_URL =
+  "itms-apps://apps.apple.com/account/subscriptions";
 
 const STATUS_LABELS: Record<string, string> = {
   trialing: "Free trial",
@@ -72,11 +86,21 @@ export function SettingsControls({
   nextBillingAt,
   cancelAtPeriodEnd,
   hasSubscription,
+  subscriptionSource,
   stripeError,
   plans,
   isReviewer,
   isIOSWebView,
 }: Props) {
+  // Gate every Stripe-bound management section on this — reviewer
+  // accounts and IAP users both have hasSubscription=true on their
+  // User rows but no Stripe object to talk to. Without this gate the
+  // Cancel/Resume/Change/Update Payment buttons would all 4xx the
+  // /api/stripe/* routes for those users.
+  const hasStripeSubscription =
+    hasSubscription && subscriptionSource === "stripe";
+  const hasIOSSubscription =
+    hasSubscription && subscriptionSource === "ios";
   const [confirmingCancel, setConfirmingCancel] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
@@ -236,8 +260,38 @@ export function SettingsControls({
         )}
       </section>
 
-      {/* Payment method */}
-      {hasSubscription && (
+      {/* Apple-managed subscription card. Rendered for IAP users
+          in lieu of the Stripe Cancel/Resume/Change/Update controls,
+          which don't apply when the subscription is governed by
+          Apple. Deep-links to the per-Apple-ID Subscriptions screen
+          inside iOS Settings via the itms-apps:// scheme. WKWebView
+          forwards that scheme to the App Store app automatically,
+          so this works in the iOS shell without any native
+          interceptor. On desktop / mobile Safari (rare path: a paid
+          iOS user opens dopiqapp.com on their laptop) the link is a
+          no-op gracefully. */}
+      {hasIOSSubscription && (
+        <section className="rounded-card border border-surface-border bg-white p-6 shadow-card">
+          <h3 className="font-heading text-[18px] font-bold text-ink">
+            Manage subscription
+          </h3>
+          <p className="mt-1 text-[13px] text-ink-muted">
+            Subscriptions are managed through Apple. Tap below to open
+            iOS Settings → Apple ID → Subscriptions, where you can
+            change plan, update payment, or cancel.
+          </p>
+          <a
+            href={APPLE_MANAGE_SUBSCRIPTIONS_URL}
+            className="btn-navy mt-4 inline-flex"
+          >
+            Manage in iOS Settings
+          </a>
+        </section>
+      )}
+
+      {/* Payment method — Stripe portal. Hidden for IAP users since
+          Apple manages their card on file. */}
+      {hasStripeSubscription && (
         <section className="rounded-card border border-surface-border bg-white p-6 shadow-card">
           <h3 className="font-heading text-[18px] font-bold text-ink">
             Payment method
@@ -256,8 +310,10 @@ export function SettingsControls({
         </section>
       )}
 
-      {/* Change plan */}
-      {hasSubscription && !localCancelAtPeriodEnd && (
+      {/* Change plan — Stripe-only. IAP users change plans via
+          Apple Settings, surfaced through the Apple-managed card
+          above. */}
+      {hasStripeSubscription && !localCancelAtPeriodEnd && (
         <section className="rounded-card border border-surface-border bg-white p-6 shadow-card">
           <h3 className="font-heading text-[18px] font-bold text-ink">
             Change plan
@@ -305,8 +361,9 @@ export function SettingsControls({
 
       {/* Cancel — soft outlined style; the destructive cousin
           (Delete) is solid red so the visual hierarchy reads
-          "easy reversible action" → "permanent action". */}
-      {hasSubscription && !localCancelAtPeriodEnd && (
+          "easy reversible action" → "permanent action". Stripe-only;
+          IAP users cancel inside iOS Settings (linked above). */}
+      {hasStripeSubscription && !localCancelAtPeriodEnd && (
         <section className="rounded-card border border-surface-border bg-white p-6 shadow-card">
           <h3 className="font-heading text-[18px] font-bold text-ink">
             Cancel subscription
@@ -327,8 +384,10 @@ export function SettingsControls({
       )}
 
       {/* Resume — only when a cancellation is pending. Brand-green
-          outline so it reads as a positive, restorative action. */}
-      {hasSubscription && localCancelAtPeriodEnd && (
+          outline so it reads as a positive, restorative action.
+          Stripe-only — Apple's resume mechanic lives inside iOS
+          Settings → Subscriptions. */}
+      {hasStripeSubscription && localCancelAtPeriodEnd && (
         <section className="rounded-card border border-surface-border bg-white p-6 shadow-card">
           <h3 className="font-heading text-[18px] font-bold text-ink">
             Resume subscription
