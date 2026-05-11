@@ -18,7 +18,10 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.dopiq.app",
       "buildNumber": "1",
-      "associatedDomains": ["applinks:dopiqapp.com"],
+      "associatedDomains": [
+        "applinks:dopiqapp.com",
+        "applinks:www.dopiqapp.com"
+      ],
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }

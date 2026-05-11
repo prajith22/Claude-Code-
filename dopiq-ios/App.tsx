@@ -80,6 +80,13 @@ export default function App() {
   // Captured from session-info postMessages so the paywall can show
   // "Signed in as <email>" without re-fetching from the WebView.
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  // Universal Link cold-start URL. iOS hands a dopiqapp.com URL to
+  // the app when the user taps a verification / reset / OAuth-
+  // callback link in Mail or Messages while the app is closed. We
+  // resolve it before the first WebView render so the WebView's
+  // initial navigation IS that URL — no flash of the home page
+  // followed by a JS-driven redirect.
+  const [initialUrl, setInitialUrl] = useState<string | null>(null);
   // Defends against the postMessage-driven Restore from running
   // while one is already in flight (the WebView Settings button is
   // a fire-and-forget message; it doesn't disable itself locally).
@@ -142,21 +149,47 @@ export default function App() {
     return () => sub.remove();
   }, [canGoBack]);
 
-  // Universal-link return path: iOS hands off the post-OAuth
-  // dopiqapp.com URL to the app via Linking when associatedDomains
-  // is set up. We forward the URL straight into the WebView so the
-  // session callback fires inside the native shell.
+  // Universal Link plumbing. Two paths:
+  //
+  //   1. Cold start — iOS launches Dopiq from a tapped link while
+  //      the app wasn't running. Linking.getInitialURL() returns the
+  //      URL, we stash it in initialUrl, and the WebView's source
+  //      below uses it as the first navigation. No JS injection
+  //      needed because the WebView hasn't rendered yet.
+  //
+  //   2. Warm start — link tapped while the app is already running.
+  //      The addEventListener("url", …) handler fires with the new
+  //      URL; we inject window.location.href so the WebView leaves
+  //      whatever page it was on and loads the Universal Link's
+  //      target.
+  //
+  // Both paths filter to URLs that start with https://dopiqapp.com
+  // so unrelated `expo-linking` events (custom schemes, etc.) can't
+  // hijack the WebView.
   useEffect(() => {
-    const handle = ({ url }: { url: string }) => {
-      if (!url || !webRef.current) return;
-      if (!url.startsWith(TARGET_URL)) return;
+    Linking.getInitialURL()
+      .then((url) => {
+        if (!url || !url.startsWith(TARGET_URL)) return;
+        setInitialUrl(url);
+      })
+      .catch(() => {});
+
+    const sub = Linking.addEventListener("url", ({ url }) => {
+      if (!url || !url.startsWith(TARGET_URL)) return;
+      // Reset the external-auth-in-flight ref so the AppState
+      // foreground listener doesn't double-reload on top of the
+      // navigation we're about to do.
       externalAuthInFlightRef.current = false;
-      const safe = JSON.stringify(url);
-      webRef.current.injectJavaScript(`window.location.href = ${safe}; true;`);
-    };
-    const sub = Linking.addEventListener("url", handle);
-    Linking.getInitialURL().then((url) => {
-      if (url) handle({ url });
+      if (webRef.current) {
+        const safe = JSON.stringify(url);
+        webRef.current.injectJavaScript(
+          `window.location.href = ${safe}; true;`,
+        );
+      } else {
+        // WebView ref isn't ready yet — fall back to initialUrl so
+        // the first render picks it up.
+        setInitialUrl(url);
+      }
     });
     return () => sub.remove();
   }, []);
@@ -369,7 +402,7 @@ export default function App() {
 
       <WebView
         ref={webRef}
-        source={{ uri: TARGET_URL }}
+        source={{ uri: initialUrl ?? TARGET_URL }}
         style={styles.webview}
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustContentInsets={false}
