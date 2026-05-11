@@ -478,6 +478,7 @@ export function SettingsControls({
       {confirmingDelete && (
         <DeleteAccountModal
           busy={busy === "delete"}
+          hasIOSSubscription={hasIOSSubscription}
           onConfirm={confirmDelete}
           onClose={() => !busy && setConfirmingDelete(false)}
         />
@@ -533,10 +534,12 @@ function CancelModal({
 
 function DeleteAccountModal({
   busy,
+  hasIOSSubscription,
   onConfirm,
   onClose,
 }: {
   busy: boolean;
+  hasIOSSubscription: boolean;
   onConfirm: () => void;
   onClose: () => void;
 }) {
@@ -547,9 +550,21 @@ function DeleteAccountModal({
           Delete your account?
         </h2>
         <p className="mt-2 text-[14px] text-ink-muted">
-          This will permanently delete your account and cancel your
-          subscription. This cannot be undone.
+          This will permanently delete your account and all your saved
+          data. This cannot be undone.
         </p>
+        {hasIOSSubscription && (
+          // IAP-source users keep paying Apple after a DB deletion
+          // unless they cancel the auto-renewal in iOS Settings. The
+          // backend can't reach Apple's StoreKit servers on the
+          // user's behalf, so we have to tell them how to stop the
+          // billing themselves.
+          <p className="mt-3 rounded-card border border-[#E8E4E0] bg-[#FFF9E6] px-3 py-2 text-[12px] leading-relaxed text-[#5D4037]">
+            Your active subscription will continue until the end of
+            your billing period. To cancel auto-renewal, manage
+            subscriptions in iOS Settings → Apple ID → Subscriptions.
+          </p>
+        )}
         <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <button
             type="button"

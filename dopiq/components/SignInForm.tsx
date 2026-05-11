@@ -51,7 +51,11 @@ function mapCredentialsError(raw: string | undefined | null): string {
   return raw;
 }
 
-export function SignInForm() {
+export function SignInForm({
+  excludeGoogle = false,
+}: {
+  excludeGoogle?: boolean;
+}) {
   const router = useRouter();
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/home";
@@ -170,23 +174,32 @@ export function SignInForm() {
         <span>{appleLoading ? "Opening Apple…" : "Continue with Apple"}</span>
       </motion.button>
 
-      {/* Google button */}
-      <motion.button
-        variants={fadeUp}
-        transition={{ duration: 0.4, delay: 0.3, ease: "easeOut" }}
-        whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(10,15,30,0.12)" }}
-        whileTap={{ y: 0, scale: 0.99 }}
-        type="button"
-        disabled={googleLoading}
-        onClick={() => {
-          setGoogleLoading(true);
-          signIn("google", { callbackUrl });
-        }}
-        className="mt-3 flex h-14 w-full items-center justify-center gap-3 rounded-pill border border-surface-border bg-white text-[15px] font-bold text-ink transition-colors duration-150 hover:bg-surface-alt disabled:opacity-60"
-      >
-        <GoogleMark />
-        <span>{googleLoading ? "Opening Google…" : "Continue with Google"}</span>
-      </motion.button>
+      {/* Google button — hidden inside the iOS WebView. Google's
+          OAuth flow refuses embedded UAs (disallowed_useragent) and
+          the workaround of kicking out to standalone Safari was
+          flagged by Apple under Guideline 4. iOS users sign in
+          with Apple or email + password instead. Web users see
+          the button as before. */}
+      {!excludeGoogle && (
+        <motion.button
+          variants={fadeUp}
+          transition={{ duration: 0.4, delay: 0.3, ease: "easeOut" }}
+          whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(10,15,30,0.12)" }}
+          whileTap={{ y: 0, scale: 0.99 }}
+          type="button"
+          disabled={googleLoading}
+          onClick={() => {
+            setGoogleLoading(true);
+            signIn("google", { callbackUrl });
+          }}
+          className="mt-3 flex h-14 w-full items-center justify-center gap-3 rounded-pill border border-surface-border bg-white text-[15px] font-bold text-ink transition-colors duration-150 hover:bg-surface-alt disabled:opacity-60"
+        >
+          <GoogleMark />
+          <span>
+            {googleLoading ? "Opening Google…" : "Continue with Google"}
+          </span>
+        </motion.button>
+      )}
 
       {oauthErrorMessage && (
         <p className="mt-3 rounded-xl bg-red-50 px-4 py-2 text-center text-[12px] font-medium text-red-700">

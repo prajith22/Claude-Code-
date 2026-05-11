@@ -9,13 +9,16 @@ import { isIOSWebView } from "@/lib/is-ios-webview";
 export const dynamic = "force-dynamic";
 
 export default function SignInPage() {
-  const excludeBet = isIOSWebView();
+  // Both the marketing column's Bet tile and the SignInForm's
+  // Google button are hidden inside the iOS WebView — same UA
+  // check, two consumers.
+  const ios = isIOSWebView();
   return (
     <main className="min-h-[100dvh] bg-[#FAFAF8] md:grid md:grid-cols-2">
-      <SignInMarketing excludeBet={excludeBet} />
+      <SignInMarketing excludeBet={ios} />
       <section className="flex min-h-[100dvh] items-center justify-center px-6 py-10 md:py-12">
         <Suspense fallback={null}>
-          <SignInForm />
+          <SignInForm excludeGoogle={ios} />
         </Suspense>
       </section>
     </main>
