@@ -1,4 +1,4 @@
-{
+﻿{
   "applinks": {
     "details": [
       {
@@ -7,6 +7,10 @@
           {
             "/": "/verify*",
             "comment": "Email verification links"
+          },
+          {
+            "/": "/api/auth/verify*",
+            "comment": "Email verification endpoint"
           },
           {
             "/": "/reset-password*",
