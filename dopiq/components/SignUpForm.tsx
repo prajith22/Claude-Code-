@@ -17,7 +17,11 @@ const fadeUp = {
   show: { opacity: 1, y: 0 },
 };
 
-export function SignUpForm() {
+export function SignUpForm({
+  excludeGoogle = false,
+}: {
+  excludeGoogle?: boolean;
+}) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -106,23 +110,30 @@ export function SignUpForm() {
         <span>{appleLoading ? "Opening Apple…" : "Continue with Apple"}</span>
       </motion.button>
 
-      {/* Google button */}
-      <motion.button
-        variants={fadeUp}
-        transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
-        whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(10,15,30,0.12)" }}
-        whileTap={{ y: 0, scale: 0.99 }}
-        type="button"
-        disabled={googleLoading}
-        onClick={() => {
-          setGoogleLoading(true);
-          signIn("google", { callbackUrl: "/home" });
-        }}
-        className="mt-3 flex h-14 w-full items-center justify-center gap-3 rounded-pill border border-surface-border bg-white text-[15px] font-bold text-ink transition-colors duration-150 hover:bg-surface-alt disabled:opacity-60"
-      >
-        <GoogleMark />
-        <span>{googleLoading ? "Opening Google…" : "Continue with Google"}</span>
-      </motion.button>
+      {/* Google button — hidden inside the iOS WebView. Google's
+          OAuth flow refuses embedded UAs and Apple Guideline 4
+          flagged the kick-out-to-Safari workaround. iOS users
+          sign up with Apple or email + password instead. */}
+      {!excludeGoogle && (
+        <motion.button
+          variants={fadeUp}
+          transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
+          whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(10,15,30,0.12)" }}
+          whileTap={{ y: 0, scale: 0.99 }}
+          type="button"
+          disabled={googleLoading}
+          onClick={() => {
+            setGoogleLoading(true);
+            signIn("google", { callbackUrl: "/home" });
+          }}
+          className="mt-3 flex h-14 w-full items-center justify-center gap-3 rounded-pill border border-surface-border bg-white text-[15px] font-bold text-ink transition-colors duration-150 hover:bg-surface-alt disabled:opacity-60"
+        >
+          <GoogleMark />
+          <span>
+            {googleLoading ? "Opening Google…" : "Continue with Google"}
+          </span>
+        </motion.button>
+      )}
 
       {/* "or" divider */}
       <motion.div
