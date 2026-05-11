@@ -29,7 +29,6 @@ export default function ProductDetailPage({
           priority
           sizes="(max-width: 640px) 100vw, 600px"
           className="object-cover"
-          style={{ filter: "blur(0.8px)" }}
         />
       </div>
 

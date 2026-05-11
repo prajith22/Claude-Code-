@@ -336,7 +336,7 @@ function CardImage({
             setLoaded(true);
           }}
           className="select-none object-cover transition-opacity duration-200"
-          style={{ filter: "blur(0.8px)", opacity: loaded ? 1 : 0 }}
+          style={{ opacity: loaded ? 1 : 0 }}
         />
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-ink-faint">
