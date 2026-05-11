@@ -156,7 +156,6 @@ function DealCard({
             fill
             sizes="(max-width: 640px) 100vw, 33vw"
             className="object-cover"
-            style={{ filter: "blur(0.8px)" }}
           />
           <span className="absolute left-3 top-3 rounded-pill bg-red-600 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">
             Flash Deal

@@ -41,7 +41,6 @@ export default function ShopCartPage() {
                       fill
                       sizes="80px"
                       className="object-cover"
-                      style={{ filter: "blur(0.8px)" }}
                     />
                   </div>
                 )}

@@ -415,7 +415,6 @@ export function RestaurantLogo({
               : "(max-width: 640px) 50vw, 220px"
           }
           className="object-cover"
-          style={{ filter: "blur(0.8px)" }}
         />
       </span>
     );
