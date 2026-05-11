@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { encode } from "next-auth/jwt";
 import { prisma } from "@/lib/prisma";
+import { computeAccessState } from "@/lib/access";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -37,7 +38,18 @@ function appUrl(): string {
  * GET /api/auth/verify?token=<token>
  *
  * Validates the verification token, marks the user as verified,
- * issues a NextAuth JWT session cookie, and redirects to /paywall.
+ * issues a NextAuth JWT session cookie, and redirects based on
+ * where the user is in the funnel:
+ *
+ *   - onboarding not yet completed → /onboarding
+ *   - onboarded + already-active access (subscription or
+ *     reviewer flag)              → /home
+ *   - onboarded + no active access → /paywall
+ *
+ * This priority mirrors how the rest of the app's session guards
+ * route users — verify-and-sign-in shouldn't shortcut the
+ * onboarding flow that requireSubscribedUser would have enforced
+ * on the next page render anyway.
  *
  * Lives at /api/auth/verify — Next.js routes more-specific segments
  * before the [...nextauth] catch-all, so this doesn't collide with
@@ -95,7 +107,22 @@ export async function GET(req: NextRequest) {
     maxAge: SESSION_MAX_AGE_SEC,
   });
 
-  const res = NextResponse.redirect(new URL("/paywall", appUrl()));
+  // Route by funnel state. Onboarding always wins because the
+  // welcome flow is part of how we activate the account — sending
+  // a freshly-verified user past it leaves them on /paywall
+  // without the trigger / preference signal we collect in
+  // onboarding, and the next /home request would just bounce
+  // them back through requireSubscribedUser → /onboarding anyway.
+  let destination: "/onboarding" | "/home" | "/paywall";
+  if (!user.onboardingCompleted) {
+    destination = "/onboarding";
+  } else if (computeAccessState(user) === "active") {
+    destination = "/home";
+  } else {
+    destination = "/paywall";
+  }
+
+  const res = NextResponse.redirect(new URL(destination, appUrl()));
   res.cookies.set(SESSION_COOKIE_NAME, sessionJwt, {
     httpOnly: true,
     sameSite: "lax",
