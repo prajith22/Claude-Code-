@@ -1,0 +1,27 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["55A647F524.com.dopiq.app"],
+        "components": [
+          {
+            "/": "/verify*",
+            "comment": "Email verification links"
+          },
+          {
+            "/": "/reset-password*",
+            "comment": "Password reset links"
+          },
+          {
+            "/": "/magic-link*",
+            "comment": "Magic sign-in links"
+          },
+          {
+            "/": "/api/auth/callback*",
+            "comment": "NextAuth callback URLs"
+          }
+        ]
+      }
+    ]
+  }
+}

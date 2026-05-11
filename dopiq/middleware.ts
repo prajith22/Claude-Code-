@@ -22,6 +22,13 @@ const ALWAYS_ALLOW_PREFIXES = [
   "/icon",
   "/apple-icon",
   "/robots.txt",
+  // Apple iOS hits the AASA file unauthenticated when validating
+  // Associated Domains for Universal Links. The default no-session
+  // branch below would 307 it to /signin, which kills the entire
+  // Universal Link flow. Both well-known and root paths are
+  // standardized lookups — let them through.
+  "/.well-known/",
+  "/apple-app-site-association",
 ];
 
 // Authed-only paths that don't live under (app) — the middleware's
