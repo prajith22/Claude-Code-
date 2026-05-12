@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { WaitingRoom } from "./WaitingRoom";
-import { PriceIncreasePopup } from "./PriceIncreasePopup";
 import { FeeBreakdown, computeFees } from "./FeeBreakdown";
 import { TICKETS_BRAND } from "@/data/tickets";
 import { formatUSD } from "@/lib/utils";
@@ -32,7 +31,7 @@ export type PendingPurchase = {
   reason: string;
 };
 
-type Stage = "queue" | "price-bump" | "breakdown" | "submitting";
+type Stage = "queue" | "breakdown" | "submitting";
 
 function todayDateStr(): string {
   const d = new Date();
@@ -46,11 +45,10 @@ function hashSeed(s: string): number {
 }
 
 /**
- * The full Tickets checkout flow. Renders a WaitingRoom, optionally
- * a PriceIncreasePopup (~30% of runs), then the itemized FeeBreakdown
- * with a Complete Purchase CTA. On commit it records to /api/savings/record
- * exactly like Shop / Food and routes to the shared /tickets/confirmed
- * receipt.
+ * The full Tickets checkout flow. Renders a WaitingRoom, then the
+ * itemized FeeBreakdown with a Complete Purchase CTA. On commit it
+ * records to /api/savings/record exactly like Shop / Food and
+ * routes to the shared /tickets/confirmed receipt.
  *
  * One-time gating (useSimulationGuard) lives upstream on the booking
  * page's Continue button — by the time we get here the sim slot is
@@ -61,23 +59,14 @@ export function TicketsCheckout({ pending }: { pending: PendingPurchase }) {
   const bumpSavings = useSavingsStore((s) => s.bump);
 
   const [stage, setStage] = useState<Stage>("queue");
-  const [priceIncrease, setPriceIncrease] = useState(0);
-  const [adjustedFace, setAdjustedFace] = useState(pending.subtotal);
 
   const fees = useMemo(
-    () => computeFees(adjustedFace, hashSeed(pending.reason)),
-    [adjustedFace, pending.reason],
+    () => computeFees(pending.subtotal, hashSeed(pending.reason)),
+    [pending.subtotal, pending.reason],
   );
 
   function onQueueComplete() {
-    if (Math.random() < 0.3) {
-      const bump = 20 + Math.floor(Math.random() * 41);
-      setPriceIncrease(bump);
-      setAdjustedFace(pending.subtotal + bump);
-      setStage("price-bump");
-    } else {
-      setStage("breakdown");
-    }
+    setStage("breakdown");
   }
 
   async function onCompletePurchase() {
@@ -105,15 +94,6 @@ export function TicketsCheckout({ pending }: { pending: PendingPurchase }) {
 
   if (stage === "queue") {
     return <WaitingRoom onComplete={onQueueComplete} />;
-  }
-
-  if (stage === "price-bump") {
-    return (
-      <PriceIncreasePopup
-        increase={priceIncrease}
-        onAccept={() => setStage("breakdown")}
-      />
-    );
   }
 
   return (
@@ -173,15 +153,6 @@ export function TicketsCheckout({ pending }: { pending: PendingPurchase }) {
         <div className="mt-4">
           <FeeBreakdown values={fees} />
         </div>
-
-        {priceIncrease > 0 && (
-          <p
-            className="mt-3 text-center text-[11px] italic"
-            style={{ color: TICKETS_BRAND.inkSoft }}
-          >
-            Price increased by ${priceIncrease} while you waited.
-          </p>
-        )}
       </div>
 
       <div
