@@ -13,6 +13,7 @@ const TABS = [
   { href: "/shop", label: "Shop" },
   { href: "/food", label: "Food" },
   { href: "/bet", label: "Bet" },
+  { href: "/tickets", label: "Tickets" },
 ];
 
 export function TopNav({ excludeBet = false }: { excludeBet?: boolean }) {

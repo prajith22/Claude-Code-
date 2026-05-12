@@ -38,7 +38,7 @@ export async function sumUrgesSince(
  */
 export async function recordSimulatedSpend(args: {
   userId: string;
-  section: "shop" | "food" | "bet";
+  section: "shop" | "food" | "bet" | "tickets";
   amountDollars: number;
   reason?: string | null;
   todayDateStr: string;

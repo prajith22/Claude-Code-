@@ -364,6 +364,12 @@ const SCREEN_2_FEATURES = [
     body: "Real odds, fake money. Place parlays, feel the rush. All the thrill, none of the risk.",
   },
   {
+    category: "tickets" as const,
+    bg: "#D1FAE5",
+    title: "Tickets Simulator",
+    body: "Concerts, games, flights. Service fees, surge pricing, the works — without ever burning the cash.",
+  },
+  {
     category: "quick-sim" as const,
     bg: "#E8F5E9",
     title: "Quick Sim",
