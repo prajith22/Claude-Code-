@@ -45,10 +45,15 @@ function hashSeed(s: string): number {
 }
 
 /**
- * The full Tickets checkout flow. Renders a WaitingRoom, then the
- * itemized FeeBreakdown with a Complete Purchase CTA. On commit it
- * records to /api/savings/record exactly like Shop / Food and
- * routes to the shared /tickets/confirmed receipt.
+ * The full Tickets checkout flow. Renders a WaitingRoom (for
+ * concerts + sports), then the itemized FeeBreakdown with a Complete
+ * Purchase CTA. On commit it records to /api/savings/record exactly
+ * like Shop / Food and routes to the shared /tickets/confirmed
+ * receipt.
+ *
+ * Travel skips the queue: booking a flight doesn't share the
+ * Ticketmaster-style queue-ritual that's the joke for concerts and
+ * sports, so dropping into the queue would just feel out-of-place.
  *
  * One-time gating (useSimulationGuard) lives upstream on the booking
  * page's Continue button — by the time we get here the sim slot is
@@ -58,7 +63,9 @@ export function TicketsCheckout({ pending }: { pending: PendingPurchase }) {
   const router = useRouter();
   const bumpSavings = useSavingsStore((s) => s.bump);
 
-  const [stage, setStage] = useState<Stage>("queue");
+  const [stage, setStage] = useState<Stage>(
+    pending.kind === "travel" ? "breakdown" : "queue",
+  );
 
   const fees = useMemo(
     () => computeFees(pending.subtotal, hashSeed(pending.reason)),
