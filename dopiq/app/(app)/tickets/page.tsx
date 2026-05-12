@@ -14,35 +14,34 @@ type CategoryCard = {
   fg: string;
 };
 
-// Distinct pastel tints per category — pulled from the same palette
-// the rest of the app's home-grid SimCards use so the surface reads
-// as part of the same family. Hard-coded here rather than threaded
-// through data/tickets.ts because there are only three categories
-// and this is the only place that consumes them.
+// Three of the home-grid SimCard tints reused here so the Tickets
+// hub reads as part of the same card vocabulary (lavender / sky /
+// soft yellow). Each fg is dark enough that the title, subtitle,
+// and arrow all clear WCAG-large on the tinted surface.
 const CATEGORIES: CategoryCard[] = [
   {
     href: "/tickets/concerts",
     title: "Concerts",
     subtitle: "Stadium acts, indie darlings, and DJs who go on at 2am.",
     emoji: "🎤",
-    bg: "#FCE4EC",
-    fg: "#880E4F",
+    bg: "#E8E3FF",
+    fg: "#4C1D95",
   },
   {
     href: "/tickets/sports",
     title: "Sports",
     subtitle: "Cheer for a team you'll convince yourself you've always liked.",
     emoji: "🏟️",
-    bg: "#E0F2FE",
-    fg: "#0277BD",
+    bg: "#DBEAFE",
+    fg: "#1E3A8A",
   },
   {
     href: "/tickets/travel",
     title: "Travel",
     subtitle: "Flights to somewhere you'd rather be. Allegedly.",
     emoji: "✈️",
-    bg: "#FFF3E0",
-    fg: "#BF360C",
+    bg: "#FFF3CD",
+    fg: "#78350F",
   },
 ];
 
