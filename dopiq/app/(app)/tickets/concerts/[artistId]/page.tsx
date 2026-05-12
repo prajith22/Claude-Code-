@@ -12,7 +12,9 @@ export default async function ConcertDetailPage({
 }) {
   await requireSubscribedUser();
   const artist = findConcert(params.artistId);
-  if (!artist) notFound();
+  if (!artist) {
+    notFound();
+  }
 
   return <ConcertBooking artist={artist} />;
 }
