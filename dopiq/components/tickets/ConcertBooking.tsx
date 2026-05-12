@@ -10,12 +10,7 @@ import {
 import { SeatMap, type Seat } from "@/components/tickets/SeatMap";
 import { formatUSD } from "@/lib/utils";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
-import { useSavingsStore } from "@/lib/savings-store";
-
-function todayDateStr(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
+import type { PendingPurchase } from "@/components/tickets/TicketsCheckout";
 
 export function ConcertBooking({ artist }: { artist: ConcertArtist }) {
   const router = useRouter();
@@ -24,49 +19,37 @@ export function ConcertBooking({ artist }: { artist: ConcertArtist }) {
   const [total, setTotal] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const { tryRun, modal } = useSimulationGuard();
-  const bumpSavings = useSavingsStore((s) => s.bump);
 
   async function onContinue() {
     if (seats.length === 0) return;
     setSubmitting(true);
+    // Gate at "Continue" so a free user out of slots gets the
+    // upgrade modal before they sit through the queue. Savings
+    // record + receipt happen inside TicketsCheckout once they
+    // Complete Purchase.
     const allowed = await tryRun(async () => {
-      // Stash the selection so the (still-to-be-built) full checkout
-      // can pick it up — for now this records straight to savings
-      // and routes to the receipt. Step 5 will replace the receipt
-      // with the WaitingRoom → PriceIncrease → FeeBreakdown chain.
+      const pending: PendingPurchase = {
+        kind: "concert",
+        artistName: artist.name,
+        venue: selectedDate.venue,
+        city: selectedDate.city,
+        date: selectedDate.date,
+        seats: seats.map((s) => ({
+          label: `${s.section} R${s.row} S${s.seatNumber}`,
+          section: s.section,
+          row: s.row,
+          seatNumber: s.seatNumber,
+          tier: s.tier,
+          price: s.price,
+        })),
+        subtotal: total,
+        reason: `concert:${artist.id}:${selectedDate.id}`,
+      };
       sessionStorage.setItem(
-        "dopiq-last-tickets-purchase",
-        JSON.stringify({
-          kind: "concert",
-          artistName: artist.name,
-          tourDateId: selectedDate.id,
-          venue: selectedDate.venue,
-          city: selectedDate.city,
-          date: selectedDate.date,
-          seats: seats.map((s) => ({
-            label: `${s.section} R${s.row} S${s.seatNumber}`,
-            section: s.section,
-            row: s.row,
-            seatNumber: s.seatNumber,
-            tier: s.tier,
-            price: s.price,
-          })),
-          subtotal: total,
-        }),
+        "dopiq-tickets-pending-checkout",
+        JSON.stringify(pending),
       );
-      fetch("/api/savings/record", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          section: "tickets",
-          amount: total,
-          reason: `concert:${artist.id}`,
-          todayDateStr: todayDateStr(),
-        }),
-      })
-        .then(() => bumpSavings())
-        .catch(() => {});
-      router.push("/tickets/confirmed");
+      router.push("/tickets/checkout");
     });
     if (!allowed) setSubmitting(false);
   }

@@ -76,7 +76,12 @@ export default function TicketsConfirmedPage() {
     frame();
   }, []);
 
-  const punchline = purchase ? RECEIPT_PUNCHLINES[purchase.kind](purchase) : "";
+  const punchline =
+    purchase && purchase.kind in RECEIPT_PUNCHLINES
+      ? RECEIPT_PUNCHLINES[purchase.kind as keyof typeof RECEIPT_PUNCHLINES](
+          purchase,
+        )
+      : "";
 
   return (
     <div
