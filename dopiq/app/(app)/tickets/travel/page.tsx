@@ -42,41 +42,40 @@ export default async function TravelBrowsePage() {
             <Link
               key={dest.id}
               href={`/tickets/travel/${dest.id}`}
-              className="group block overflow-hidden rounded-2xl border bg-white transition active:scale-[0.99]"
+              className="group block overflow-hidden rounded-2xl transition active:scale-[0.99]"
               style={{
-                borderColor: TICKETS_BRAND.creamDeep,
+                backgroundColor: dest.bgColor,
                 boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
               }}
             >
               <div
                 className="flex aspect-[4/3] items-center justify-center text-6xl"
-                style={{ backgroundColor: dest.bgColor }}
                 aria-hidden
               >
                 {dest.emoji}
               </div>
-              <div className="p-3">
+              <div className="px-3 pb-3">
                 <div
-                  className="text-[15px] font-bold leading-tight"
-                  style={{ color: TICKETS_BRAND.ink }}
+                  className="text-[15px] font-extrabold leading-tight"
+                  style={{ color: dest.fgColor }}
                 >
                   {dest.city}
                 </div>
                 <div
-                  className="text-[11px]"
-                  style={{ color: TICKETS_BRAND.inkSoft }}
+                  className="text-[11px] font-semibold"
+                  style={{ color: dest.fgColor, opacity: 0.8 }}
                 >
                   {dest.country}
                 </div>
                 <div
                   className="mt-1 line-clamp-1 text-[11px] italic"
-                  style={{ color: TICKETS_BRAND.inkSoft }}
+                  style={{ color: dest.fgColor, opacity: 0.7 }}
                 >
                   {dest.tagline}
                 </div>
                 <div
-                  className="mt-1.5 text-[12px] font-semibold"
-                  style={{ color: TICKETS_BRAND.emerald }}
+                  className="mt-1.5 inline-block rounded-full bg-white/70 px-2 py-0.5 text-[11px] font-bold backdrop-blur-sm"
+                  style={{ color: dest.fgColor }}
                 >
                   From ${cheapest}
                 </div>

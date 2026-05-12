@@ -41,46 +41,42 @@ export default async function ConcertsBrowsePage() {
           <Link
             key={artist.id}
             href={`/tickets/concerts/${artist.id}`}
-            className="group block overflow-hidden rounded-2xl border bg-white transition active:scale-[0.99]"
+            className="group block overflow-hidden rounded-2xl transition active:scale-[0.99]"
             style={{
-              borderColor: TICKETS_BRAND.creamDeep,
+              backgroundColor: artist.bgColor,
               boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             }}
           >
             <div
               className="flex aspect-[4/3] items-center justify-center text-6xl"
-              style={{ backgroundColor: artist.bgColor }}
               aria-hidden
             >
               {artist.emoji}
             </div>
-            <div className="p-3">
+            <div className="px-3 pb-3">
               <div className="flex items-center gap-1.5">
                 <span
-                  className="rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider"
-                  style={{
-                    backgroundColor: artist.bgColor,
-                    color: artist.fgColor,
-                  }}
+                  className="rounded-full bg-white/70 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider backdrop-blur-sm"
+                  style={{ color: artist.fgColor }}
                 >
                   {artist.genre}
                 </span>
               </div>
               <div
-                className="mt-1.5 text-[15px] font-bold leading-tight"
-                style={{ color: TICKETS_BRAND.ink }}
+                className="mt-1.5 text-[15px] font-extrabold leading-tight"
+                style={{ color: artist.fgColor }}
               >
                 {artist.name}
               </div>
               <div
                 className="mt-0.5 line-clamp-1 text-[11px]"
-                style={{ color: TICKETS_BRAND.inkSoft }}
+                style={{ color: artist.fgColor, opacity: 0.75 }}
               >
                 {artist.tagline}
               </div>
               <div
-                className="mt-2 text-[12px] font-semibold"
-                style={{ color: TICKETS_BRAND.emerald }}
+                className="mt-2 inline-block rounded-full bg-white/70 px-2 py-0.5 text-[11px] font-bold backdrop-blur-sm"
+                style={{ color: artist.fgColor }}
               >
                 From ${Math.round(artist.basePrice * 0.65)}
               </div>

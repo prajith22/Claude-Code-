@@ -40,16 +40,15 @@ export default async function SportsBrowsePage() {
           <Link
             key={game.id}
             href={`/tickets/sports/${game.id}`}
-            className="group block overflow-hidden rounded-2xl border bg-white transition active:scale-[0.99]"
+            className="group block overflow-hidden rounded-2xl transition active:scale-[0.99]"
             style={{
-              borderColor: TICKETS_BRAND.creamDeep,
+              backgroundColor: game.bgColor,
               boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             }}
           >
             <div className="flex items-center gap-4 p-4">
               <div
-                className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-4xl"
-                style={{ backgroundColor: game.bgColor }}
+                className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white/60 text-4xl backdrop-blur-sm"
                 aria-hidden
               >
                 {game.emoji}
@@ -57,37 +56,34 @@ export default async function SportsBrowsePage() {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5">
                   <span
-                    className="rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider"
-                    style={{
-                      backgroundColor: game.bgColor,
-                      color: game.fgColor,
-                    }}
+                    className="rounded-full bg-white/70 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider backdrop-blur-sm"
+                    style={{ color: game.fgColor }}
                   >
                     {game.sport}
                   </span>
                 </div>
                 <div
-                  className="mt-1 text-[15px] font-bold leading-tight"
-                  style={{ color: TICKETS_BRAND.ink }}
+                  className="mt-1 text-[15px] font-extrabold leading-tight"
+                  style={{ color: game.fgColor }}
                 >
                   {game.homeTeam}
                 </div>
                 <div
-                  className="text-[12px]"
-                  style={{ color: TICKETS_BRAND.inkSoft }}
+                  className="text-[12px] font-semibold"
+                  style={{ color: game.fgColor, opacity: 0.85 }}
                 >
                   vs {game.awayTeam}
                 </div>
                 <div
                   className="mt-1.5 text-[11px]"
-                  style={{ color: TICKETS_BRAND.inkSoft }}
+                  style={{ color: game.fgColor, opacity: 0.7 }}
                 >
                   {game.date} · {game.venue}
                 </div>
               </div>
               <div
-                className="text-[13px] font-bold"
-                style={{ color: TICKETS_BRAND.emerald }}
+                className="rounded-full bg-white/70 px-2 py-1 text-[12px] font-bold backdrop-blur-sm"
+                style={{ color: game.fgColor }}
               >
                 From ${Math.round(game.basePrice * 0.65)}
               </div>
