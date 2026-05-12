@@ -71,7 +71,7 @@ export function TravelBooking({
 
   return (
     <div
-      className="-mx-4 -mt-4 px-4 pb-32 pt-6"
+      className="-mx-4 -mt-4 px-4 pb-nav-action pt-6"
       style={{ backgroundColor: TICKETS_BRAND.cream }}
     >
       <div className="mx-auto max-w-3xl">
@@ -175,7 +175,7 @@ export function TravelBooking({
       </div>
 
       <div
-        className="fixed inset-x-0 bottom-0 z-30 border-t bg-white px-4 pb-[max(env(safe-area-inset-bottom),12px)] pt-3"
+        className="bottom-nav fixed inset-x-0 z-30 border-t bg-white/95 px-4 py-3 backdrop-blur-sm"
         style={{ borderColor: TICKETS_BRAND.creamDeep }}
       >
         <div className="mx-auto flex max-w-3xl items-center gap-3">
