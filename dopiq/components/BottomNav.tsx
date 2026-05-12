@@ -8,15 +8,17 @@ const TABS = [
   { href: "/home",    label: "Home",    icon: HomeIcon },
   { href: "/shop",    label: "Shop",    icon: BagIcon },
   { href: "/food",    label: "Food",    icon: ForkIcon },
-  { href: "/bet",     label: "Bet",     icon: TicketIcon },
+  { href: "/bet",     label: "Bet",     icon: ChartIcon },
+  { href: "/tickets", label: "Tickets", icon: TicketIcon },
 ] as const;
 
 export function BottomNav({ excludeBet = false }: { excludeBet?: boolean }) {
   const pathname = usePathname();
   // iOS users never see the Bet tab — Apple prohibits gambling
   // features for individual developer accounts. Filtering rather
-  // than rendering-and-hiding so the remaining three tabs
-  // distribute evenly.
+  // than rendering-and-hiding so the remaining tabs distribute
+  // evenly. Tickets stays visible on iOS — the joke is on the
+  // event industry, not on Apple's policy.
   const tabs = excludeBet ? TABS.filter((t) => t.href !== "/bet") : TABS;
   return (
     <nav
@@ -78,6 +80,15 @@ function TicketIcon({ active }: IconProps) {
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8Z"
         stroke="currentColor" strokeWidth={active ? 2.5 : 1.8} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.12 : 0} />
+      <path d="M14 6v12" stroke="currentColor" strokeWidth={active ? 2.5 : 1.8} strokeDasharray="2 2" strokeLinecap="round" />
+    </svg>
+  );
+}
+function ChartIcon({ active }: IconProps) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M4 20V10M10 20V4M16 20v-7M22 20H2"
+        stroke="currentColor" strokeWidth={active ? 2.5 : 1.8} strokeLinecap="round" />
     </svg>
   );
 }

@@ -111,14 +111,14 @@ export default async function HomePage() {
           </span>
         </Link>
 
-        {/* Simulator cards — three on web, two on iOS (Apple
-            disallows gambling features for individual developer
-            accounts so the Bet card is dropped there). The grid
-            column count flips alongside the card count so the
-            remaining cards fill the row evenly. */}
+        {/* Simulator cards — four on web (2x2), three on iOS (single
+            row; Apple disallows gambling features for individual
+            developer accounts so the Bet card is dropped there).
+            Tickets stays on both surfaces — it's parody of the
+            event-industry markup, not a gated category. */}
         <div
           className={`grid gap-3 md:gap-4 ${
-            excludeBet ? "grid-cols-2" : "grid-cols-3"
+            excludeBet ? "grid-cols-3" : "grid-cols-2"
           }`}
         >
           <SimCard
@@ -147,6 +147,14 @@ export default async function HomePage() {
               delay={0.3}
             />
           )}
+          <SimCard
+            href="/tickets"
+            label="Tickets"
+            bg="bg-[#D1FAE5]"
+            title="text-[#064E3B]"
+            icon="🎟️"
+            delay={excludeBet ? 0.3 : 0.45}
+          />
         </div>
 
         {/* Daily spin wheel */}

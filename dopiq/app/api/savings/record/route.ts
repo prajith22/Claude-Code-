@@ -6,13 +6,15 @@ import { recordSimulatedSpend } from "@/lib/savings";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const VALID_SECTIONS = new Set(["shop", "food"]);
+const VALID_SECTIONS = new Set(["shop", "food", "tickets"]);
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
  * Credits a simulated checkout to the user's totalSavedCents counter
  * and touches their streak. Bet placement uses /api/bets/place which
- * records its own savings; this endpoint covers shop + food only.
+ * records its own savings; this endpoint covers shop, food, and
+ * tickets (concerts / sports / travel — all funnel through the
+ * shared TicketsCheckout).
  */
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -41,7 +43,7 @@ export async function POST(req: Request) {
 
   await recordSimulatedSpend({
     userId: session.user.id,
-    section: section as "shop" | "food",
+    section: section as "shop" | "food" | "tickets",
     amountDollars: amount,
     reason,
     todayDateStr,
