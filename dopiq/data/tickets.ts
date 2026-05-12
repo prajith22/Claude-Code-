@@ -9,6 +9,12 @@
  * PlaneSeatMap apply tier multipliers and seat-by-seat variance at
  * render time; FeeBreakdown layers the Service / Convenience /
  * Facility / Processing / Delivery fees on top at checkout.
+ *
+ * bgColor / fgColor on each entry pull from the same saturated
+ * pastel palette the home-grid SimCards use (lavender / yellow /
+ * sky / mint / rose / orange / cyan / violet / coral / lime /
+ * amber / teal). Twelve tints rotate across each category so two
+ * neighboring items in a list never share a swatch.
  */
 
 // ─── Concerts ──────────────────────────────────────────────────────
@@ -49,8 +55,8 @@ export const CONCERTS: ConcertArtist[] = [
     tagline: "The Reheat World Tour",
     basePrice: 95,
     emoji: "🎛️",
-    bgColor: "#EDE7F6",
-    fgColor: "#311B92",
+    bgColor: "#DDD6FE",
+    fgColor: "#5B21B6",
     tourDates: [
       { id: "djm-1", date: "Jun 14, 2026", city: "Las Vegas, NV", venue: "The Sphere of Influence" },
       { id: "djm-2", date: "Jun 21, 2026", city: "Miami, FL", venue: "Dome Depot Arena" },
@@ -65,8 +71,8 @@ export const CONCERTS: ConcertArtist[] = [
     tagline: "The Glass Onion Tour",
     basePrice: 210,
     emoji: "🧅",
-    bgColor: "#FCE4EC",
-    fgColor: "#880E4F",
+    bgColor: "#FBCFE8",
+    fgColor: "#831843",
     tourDates: [
       { id: "fxn-1", date: "May 30, 2026", city: "Los Angeles, CA", venue: "Skyline Coliseum" },
       { id: "fxn-2", date: "Jun 08, 2026", city: "Chicago, IL", venue: "Hangover Stadium" },
@@ -80,8 +86,8 @@ export const CONCERTS: ConcertArtist[] = [
     tagline: "The Resting Heart Rate Tour",
     basePrice: 175,
     emoji: "❤️‍🔥",
-    bgColor: "#FFE0E0",
-    fgColor: "#B71C1C",
+    bgColor: "#FECDD3",
+    fgColor: "#9F1239",
     tourDates: [
       { id: "cdb-1", date: "Aug 02, 2026", city: "New York, NY", venue: "The Echo Bowl" },
       { id: "cdb-2", date: "Aug 15, 2026", city: "Houston, TX", venue: "Dome Depot Arena" },
@@ -96,8 +102,8 @@ export const CONCERTS: ConcertArtist[] = [
     tagline: "Soft Boy, Hard Bars",
     basePrice: 120,
     emoji: "🦴",
-    bgColor: "#E1F5FE",
-    fgColor: "#01579B",
+    bgColor: "#DBEAFE",
+    fgColor: "#1E3A8A",
     tourDates: [
       { id: "lpk-1", date: "Jun 04, 2026", city: "Portland, OR", venue: "The Pickle Pavilion" },
       { id: "lpk-2", date: "Jun 18, 2026", city: "Denver, CO", venue: "Hangover Stadium" },
@@ -111,8 +117,8 @@ export const CONCERTS: ConcertArtist[] = [
     tagline: "Short n' Splintered Tour",
     basePrice: 155,
     emoji: "🔨",
-    bgColor: "#FFF3E0",
-    fgColor: "#BF360C",
+    bgColor: "#FED7AA",
+    fgColor: "#9A3412",
     tourDates: [
       { id: "sbc-1", date: "May 22, 2026", city: "Nashville, TN", venue: "The Big Onion" },
       { id: "sbc-2", date: "Jun 06, 2026", city: "Boston, MA", venue: "Skyline Coliseum" },
@@ -127,8 +133,8 @@ export const CONCERTS: ConcertArtist[] = [
     tagline: "Aisle Five After Midnight Tour",
     basePrice: 110,
     emoji: "🛒",
-    bgColor: "#FFF9C4",
-    fgColor: "#5D4037",
+    bgColor: "#FDE68A",
+    fgColor: "#78350F",
     tourDates: [
       { id: "mwm-1", date: "Jul 12, 2026", city: "Dallas, TX", venue: "Hangover Stadium" },
       { id: "mwm-2", date: "Jul 25, 2026", city: "Oklahoma City, OK", venue: "The Pickle Pavilion" },
@@ -142,8 +148,8 @@ export const CONCERTS: ConcertArtist[] = [
     tagline: "The Cosmic Renaissance Tour",
     basePrice: 245,
     emoji: "🪩",
-    bgColor: "#F3E5F5",
-    fgColor: "#4A148C",
+    bgColor: "#E8E3FF",
+    fgColor: "#4C1D95",
     tourDates: [
       { id: "bnc-1", date: "Jun 28, 2026", city: "New York, NY", venue: "Skyline Coliseum" },
       { id: "bnc-2", date: "Jul 11, 2026", city: "Los Angeles, CA", venue: "The Sphere of Influence" },
@@ -158,8 +164,8 @@ export const CONCERTS: ConcertArtist[] = [
     tagline: "Banjos & Brimstone Tour",
     basePrice: 85,
     emoji: "🪕",
-    bgColor: "#E8F5E9",
-    fgColor: "#1B5E20",
+    bgColor: "#D9F99D",
+    fgColor: "#365314",
     tourDates: [
       { id: "kbl-1", date: "Jun 11, 2026", city: "Asheville, NC", venue: "The Big Onion" },
       { id: "kbl-2", date: "Jun 25, 2026", city: "Memphis, TN", venue: "The Pickle Pavilion" },
@@ -173,8 +179,8 @@ export const CONCERTS: ConcertArtist[] = [
     tagline: "Brined Tour",
     basePrice: 145,
     emoji: "🫒",
-    bgColor: "#E8F5E9",
-    fgColor: "#33691E",
+    bgColor: "#99F6E4",
+    fgColor: "#134E4A",
     tourDates: [
       { id: "olr-1", date: "May 17, 2026", city: "San Francisco, CA", venue: "The Echo Bowl" },
       { id: "olr-2", date: "May 31, 2026", city: "Seattle, WA", venue: "Skyline Coliseum" },
@@ -189,8 +195,8 @@ export const CONCERTS: ConcertArtist[] = [
     tagline: "World Tour: Bruised but Beautiful",
     basePrice: 165,
     emoji: "🍌",
-    bgColor: "#FFFDE7",
-    fgColor: "#F57F17",
+    bgColor: "#FFF3CD",
+    fgColor: "#78350F",
     tourDates: [
       { id: "bdb-1", date: "Jul 18, 2026", city: "Miami, FL", venue: "The Pickle Pavilion" },
       { id: "bdb-2", date: "Aug 01, 2026", city: "San Juan, PR", venue: "Dome Depot Arena" },
@@ -204,8 +210,8 @@ export const CONCERTS: ConcertArtist[] = [
     tagline: "Preheat to 425 Tour",
     basePrice: 185,
     emoji: "🥖",
-    bgColor: "#FFF3E0",
-    fgColor: "#8B2500",
+    bgColor: "#A5F3FC",
+    fgColor: "#155E75",
     tourDates: [
       { id: "dab-1", date: "Jun 07, 2026", city: "Toronto, ON", venue: "Skyline Coliseum" },
       { id: "dab-2", date: "Jun 21, 2026", city: "New York, NY", venue: "Dome Depot Arena" },
@@ -220,8 +226,8 @@ export const CONCERTS: ConcertArtist[] = [
     tagline: "After Hours, Before Brunch",
     basePrice: 195,
     emoji: "🌙",
-    bgColor: "#ECEFF1",
-    fgColor: "#263238",
+    bgColor: "#D1FAE5",
+    fgColor: "#064E3B",
     tourDates: [
       { id: "twk-1", date: "May 24, 2026", city: "Las Vegas, NV", venue: "The Sphere of Influence" },
       { id: "twk-2", date: "Jun 07, 2026", city: "Los Angeles, CA", venue: "Skyline Coliseum" },
@@ -267,8 +273,8 @@ export const SPORTS_GAMES: SportsGame[] = [
     date: "Sep 13, 2026",
     basePrice: 140,
     emoji: "🏈",
-    bgColor: "#FFF3E0",
-    fgColor: "#5D4037",
+    bgColor: "#DBEAFE",
+    fgColor: "#1E3A8A",
     tagline: "Division opener. Field-level prices, parking-lot vibes.",
   },
   {
@@ -281,8 +287,8 @@ export const SPORTS_GAMES: SportsGame[] = [
     date: "Oct 04, 2026",
     basePrice: 95,
     emoji: "🏈",
-    bgColor: "#FCE4EC",
-    fgColor: "#880E4F",
+    bgColor: "#FBCFE8",
+    fgColor: "#831843",
     tagline: "It's a rebuilding year. For everyone.",
   },
   {
@@ -295,8 +301,8 @@ export const SPORTS_GAMES: SportsGame[] = [
     date: "Nov 21, 2026",
     basePrice: 165,
     emoji: "🏀",
-    bgColor: "#FFEBEE",
-    fgColor: "#B71C1C",
+    bgColor: "#FECDD3",
+    fgColor: "#9F1239",
     tagline: "Both teams are tanking. The vibes are immaculate.",
   },
   {
@@ -309,8 +315,8 @@ export const SPORTS_GAMES: SportsGame[] = [
     date: "Dec 09, 2026",
     basePrice: 220,
     emoji: "🏀",
-    bgColor: "#E1F5FE",
-    fgColor: "#0277BD",
+    bgColor: "#DDD6FE",
+    fgColor: "#5B21B6",
     tagline: "Courtside is taken. By an actor you've heard of.",
   },
   {
@@ -323,8 +329,8 @@ export const SPORTS_GAMES: SportsGame[] = [
     date: "Jul 26, 2026",
     basePrice: 75,
     emoji: "⚾",
-    bgColor: "#FFF9C4",
-    fgColor: "#827717",
+    bgColor: "#D1FAE5",
+    fgColor: "#064E3B",
     tagline: "Nine innings, three hot dogs, one nap.",
   },
   {
@@ -337,8 +343,8 @@ export const SPORTS_GAMES: SportsGame[] = [
     date: "Aug 14, 2026",
     basePrice: 55,
     emoji: "⚾",
-    bgColor: "#FFFDE7",
-    fgColor: "#3E2723",
+    bgColor: "#FDE68A",
+    fgColor: "#78350F",
     tagline: "Bring a coat. Even in August.",
   },
   {
@@ -351,8 +357,8 @@ export const SPORTS_GAMES: SportsGame[] = [
     date: "Feb 07, 2026",
     basePrice: 130,
     emoji: "🏒",
-    bgColor: "#E0F2F1",
-    fgColor: "#004D40",
+    bgColor: "#A5F3FC",
+    fgColor: "#155E75",
     tagline: "A fight will break out. You came for that.",
   },
   {
@@ -365,8 +371,8 @@ export const SPORTS_GAMES: SportsGame[] = [
     date: "Mar 14, 2026",
     basePrice: 105,
     emoji: "🏒",
-    bgColor: "#E8F5E9",
-    fgColor: "#1B5E20",
+    bgColor: "#D9F99D",
+    fgColor: "#365314",
     tagline: "Two original-twenty teams. One sad zamboni.",
   },
   {
@@ -379,8 +385,8 @@ export const SPORTS_GAMES: SportsGame[] = [
     date: "Jun 13, 2026",
     basePrice: 85,
     emoji: "⚽",
-    bgColor: "#F3E5F5",
-    fgColor: "#4A148C",
+    bgColor: "#E8E3FF",
+    fgColor: "#4C1D95",
     tagline: "Ninety minutes of running in vague directions.",
   },
   {
@@ -393,8 +399,8 @@ export const SPORTS_GAMES: SportsGame[] = [
     date: "Jul 11, 2026",
     basePrice: 70,
     emoji: "⚽",
-    bgColor: "#FFE0B2",
-    fgColor: "#E65100",
+    bgColor: "#FED7AA",
+    fgColor: "#9A3412",
     tagline: "The promo posters were better than the squad.",
   },
   {
@@ -407,8 +413,8 @@ export const SPORTS_GAMES: SportsGame[] = [
     date: "May 23, 2026",
     basePrice: 195,
     emoji: "🏎️",
-    bgColor: "#FFEBEE",
-    fgColor: "#C62828",
+    bgColor: "#FFF3CD",
+    fgColor: "#78350F",
     tagline: "Four hours of left turns. Earplugs sold separately.",
   },
   {
@@ -421,8 +427,8 @@ export const SPORTS_GAMES: SportsGame[] = [
     date: "Oct 17, 2026",
     basePrice: 305,
     emoji: "🥊",
-    bgColor: "#ECEFF1",
-    fgColor: "#263238",
+    bgColor: "#99F6E4",
+    fgColor: "#134E4A",
     tagline: "Main event starts at midnight. Bring caffeine.",
   },
 ];
@@ -453,8 +459,8 @@ export const TRAVEL_DESTINATIONS: TravelDestination[] = [
     city: "Tokyo",
     country: "Japan",
     emoji: "🗼",
-    bgColor: "#FCE4EC",
-    fgColor: "#880E4F",
+    bgColor: "#FBCFE8",
+    fgColor: "#831843",
     tagline: "Vending machines, vending feelings.",
     airlines: [
       { name: "Delusion Airlines", basePrice: 1240, flightDuration: "13h 45m", stops: 0 },
@@ -467,8 +473,8 @@ export const TRAVEL_DESTINATIONS: TravelDestination[] = [
     city: "Paris",
     country: "France",
     emoji: "🗼",
-    bgColor: "#F3E5F5",
-    fgColor: "#4A148C",
+    bgColor: "#E8E3FF",
+    fgColor: "#4C1D95",
     tagline: "Wine, walking, mild contempt.",
     airlines: [
       { name: "AirSus", basePrice: 720, flightDuration: "7h 30m", stops: 0 },
@@ -481,8 +487,8 @@ export const TRAVEL_DESTINATIONS: TravelDestination[] = [
     city: "Bali",
     country: "Indonesia",
     emoji: "🌴",
-    bgColor: "#E8F5E9",
-    fgColor: "#1B5E20",
+    bgColor: "#D1FAE5",
+    fgColor: "#064E3B",
     tagline: "Find yourself. Then post about it.",
     airlines: [
       { name: "Delusion Airlines", basePrice: 1180, flightDuration: "23h 15m", stops: 2 },
@@ -495,8 +501,8 @@ export const TRAVEL_DESTINATIONS: TravelDestination[] = [
     city: "Reykjavik",
     country: "Iceland",
     emoji: "🌋",
-    bgColor: "#E1F5FE",
-    fgColor: "#01579B",
+    bgColor: "#DBEAFE",
+    fgColor: "#1E3A8A",
     tagline: "Six hours of daylight. Forty bucks for soup.",
     airlines: [
       { name: "JetSkim Airways", basePrice: 480, flightDuration: "5h 50m", stops: 0 },
@@ -509,8 +515,8 @@ export const TRAVEL_DESTINATIONS: TravelDestination[] = [
     city: "Cape Town",
     country: "South Africa",
     emoji: "🦓",
-    bgColor: "#FFF3E0",
-    fgColor: "#BF360C",
+    bgColor: "#FDE68A",
+    fgColor: "#78350F",
     tagline: "The exchange rate gives you delusions of wealth.",
     airlines: [
       { name: "VirginNot Atlantic", basePrice: 1490, flightDuration: "16h 25m", stops: 1 },
@@ -523,8 +529,8 @@ export const TRAVEL_DESTINATIONS: TravelDestination[] = [
     city: "Sydney",
     country: "Australia",
     emoji: "🦘",
-    bgColor: "#E0F2F1",
-    fgColor: "#004D40",
+    bgColor: "#99F6E4",
+    fgColor: "#134E4A",
     tagline: "You'll lose a full day on the flight. Literally.",
     airlines: [
       { name: "Delusion Airlines", basePrice: 1580, flightDuration: "21h 40m", stops: 1 },
@@ -537,8 +543,8 @@ export const TRAVEL_DESTINATIONS: TravelDestination[] = [
     city: "Marrakech",
     country: "Morocco",
     emoji: "🕌",
-    bgColor: "#FFFDE7",
-    fgColor: "#F57F17",
+    bgColor: "#FFF3CD",
+    fgColor: "#78350F",
     tagline: "Three rugs. You'll come home with three rugs.",
     airlines: [
       { name: "AirSus", basePrice: 890, flightDuration: "9h 20m", stops: 1 },
@@ -551,8 +557,8 @@ export const TRAVEL_DESTINATIONS: TravelDestination[] = [
     city: "Buenos Aires",
     country: "Argentina",
     emoji: "🥩",
-    bgColor: "#E1F5FE",
-    fgColor: "#0277BD",
+    bgColor: "#FECDD3",
+    fgColor: "#9F1239",
     tagline: "Dinner starts at 11. So does the second dinner.",
     airlines: [
       { name: "Southnorth Air", basePrice: 960, flightDuration: "10h 30m", stops: 0 },
@@ -565,8 +571,8 @@ export const TRAVEL_DESTINATIONS: TravelDestination[] = [
     city: "Lisbon",
     country: "Portugal",
     emoji: "🐟",
-    bgColor: "#EDE7F6",
-    fgColor: "#311B92",
+    bgColor: "#DDD6FE",
+    fgColor: "#5B21B6",
     tagline: "Pastel de nata for breakfast. And brunch. And lunch.",
     airlines: [
       { name: "AirSus", basePrice: 580, flightDuration: "7h 55m", stops: 0 },
@@ -579,8 +585,8 @@ export const TRAVEL_DESTINATIONS: TravelDestination[] = [
     city: "Bangkok",
     country: "Thailand",
     emoji: "🍜",
-    bgColor: "#FFEBEE",
-    fgColor: "#C62828",
+    bgColor: "#FED7AA",
+    fgColor: "#9A3412",
     tagline: "Eight dollars buys dinner for four. Or one massage.",
     airlines: [
       { name: "Delusion Airlines", basePrice: 1090, flightDuration: "20h 15m", stops: 1 },
@@ -593,8 +599,8 @@ export const TRAVEL_DESTINATIONS: TravelDestination[] = [
     city: "Rome",
     country: "Italy",
     emoji: "🏛️",
-    bgColor: "#FFF3E0",
-    fgColor: "#8B2500",
+    bgColor: "#D9F99D",
+    fgColor: "#365314",
     tagline: "A coin in the fountain guarantees you'll return broke.",
     airlines: [
       { name: "AirSus", basePrice: 760, flightDuration: "9h 10m", stops: 0 },
@@ -607,8 +613,8 @@ export const TRAVEL_DESTINATIONS: TravelDestination[] = [
     city: "Mexico City",
     country: "Mexico",
     emoji: "🌵",
-    bgColor: "#FFE0B2",
-    fgColor: "#E65100",
+    bgColor: "#A5F3FC",
+    fgColor: "#155E75",
     tagline: "Altitude sickness or mezcal — pick your hangover.",
     airlines: [
       { name: "Southnorth Air", basePrice: 380, flightDuration: "4h 50m", stops: 0 },
