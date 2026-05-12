@@ -14,6 +14,8 @@ type LastTicketsPurchase = {
   teamHome?: string;
   teamAway?: string;
   destinationCity?: string;
+  airline?: string;
+  travelClass?: string;
   venue?: string;
   city?: string;
   date?: string;
@@ -36,8 +38,12 @@ const RECEIPT_PUNCHLINES: Record<LastTicketsPurchase["kind"], (p: LastTicketsPur
   },
   sports: (p) =>
     `watch the ${p.teamHome ?? "home team"} lose in person`,
-  travel: () =>
-    `fly first class somewhere you'd just sleep the whole way`,
+  travel: (p) => {
+    const where = p.destinationCity
+      ? p.destinationCity.split(",")[0]
+      : "somewhere";
+    return `fly to ${where} just to sleep the whole way`;
+  },
 };
 
 export default function TicketsConfirmedPage() {
@@ -150,7 +156,15 @@ export default function TicketsConfirmedPage() {
               {purchase.destinationCity && (
                 <Receipt label="Destination" value={purchase.destinationCity} />
               )}
-              {purchase.date && <Receipt label="Date" value={purchase.date} />}
+              {purchase.airline && (
+                <Receipt label="Airline" value={purchase.airline} />
+              )}
+              {purchase.date && (
+                <Receipt
+                  label={purchase.kind === "travel" ? "Itinerary" : "Date"}
+                  value={purchase.date}
+                />
+              )}
               {purchase.venue && <Receipt label="Venue" value={purchase.venue} />}
               {purchase.city && <Receipt label="City" value={purchase.city} />}
               <Receipt
