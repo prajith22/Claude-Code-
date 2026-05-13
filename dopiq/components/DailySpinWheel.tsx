@@ -264,7 +264,11 @@ export function DailySpinWheel({
             ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
             : { duration: 0.2 }
         }
-        className="btn-primary w-full max-w-xs disabled:opacity-100"
+        // Pastel mint outlined pill — keeps the wheel as the focal
+        // point. Hex matches the Saved Today / Tickets SimCard mint
+        // family so it pairs with the surrounding home palette.
+        className="inline-flex w-full max-w-xs items-center justify-center rounded-pill border bg-[#D1FAE5] px-6 py-3.5 text-[15px] font-semibold tracking-tight text-[#064E3B] shadow-sm transition-colors duration-150 active:bg-[#B8E5CC] disabled:pointer-events-none disabled:opacity-60"
+        style={{ borderColor: "#A7E8C1" }}
       >
         {spinning ? "Spinning…" : landed ? "Spin again" : "Can't Decide"}
       </motion.button>
