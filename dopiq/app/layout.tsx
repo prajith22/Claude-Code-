@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Sora, Inter, JetBrains_Mono } from "next/font/google";
+import { Sora, Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 
@@ -19,6 +19,17 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   display: "swap",
+});
+
+// Editorial serif used sparingly on Shop — magazine-style page title
+// + curated category tiles. Lighter weights (400/500) give the
+// Anthropologie / Free People feel; heavier weights would compete
+// with the sans-serif body.
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -50,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable} ${playfair.variable}`}
     >
       <body className="text-ink antialiased">
         <Providers>{children}</Providers>

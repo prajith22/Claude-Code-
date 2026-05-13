@@ -34,6 +34,7 @@ const config: Config = {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         heading: ["var(--font-sora)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
+        display: ["var(--font-display)", "Georgia", "serif"],
       },
       borderRadius: {
         card: "16px",
