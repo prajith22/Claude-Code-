@@ -4,8 +4,18 @@
 // successful response is cached and reused on failure. Static
 // assets are left to Next.js / browser caching, which already
 // handles them well.
+//
+// Cache version: bump this string on every deploy whose HTML
+// references new JS chunk hashes. The activate handler nukes any
+// cache whose name isn't the current CACHE constant, so existing
+// users on the previous SW drop their stale HTML on next launch
+// and re-fetch the new shell from the network. Without this bump
+// a user who was offline mid-deploy could get served cached HTML
+// that points at chunk URLs the CDN no longer has, hydration
+// fails, and the page goes white after the layout chrome
+// briefly flashes.
 
-const CACHE = "dopiq-shell-v1";
+const CACHE = "dopiq-shell-v2";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
