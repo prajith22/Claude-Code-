@@ -9,6 +9,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { formatUSD, cn } from "@/lib/utils";
 import { cardHover, cardHoverTransition } from "@/lib/card-hover";
 import { Heart, HeartFilled, StarFilled } from "@/components/icons";
+import { MasonryProductGrid } from "@/components/MasonryProductGrid";
 
 const CATEGORIES: ProductCategory[] = [
   "Clothes",
@@ -19,14 +20,12 @@ const CATEGORIES: ProductCategory[] = [
 ];
 
 /**
- * "Browse" section — formerly the multi-aisle Today's Finds feed.
- * Now a simpler stack: a small left-aligned section label, the
- * category filter pills, and a flat 2/3-col grid of ProductCards.
+ * "Browse" section — small label + category pills + masonry grid.
  *
  * The parent (ShopExperience) owns the filter + product list and
  * feeds the already-filtered array in so this component is a pure
- * presenter. Forwarded ref lets the Curated tiles above smooth-
- * scroll to the section's top when tapped.
+ * presenter. forwardRef is preserved for future scroll-anchoring
+ * even though the Curated grid no longer triggers a callback.
  */
 export const BrowseSection = forwardRef<
   HTMLElement,
@@ -47,9 +46,6 @@ export const BrowseSection = forwardRef<
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      // scroll-mt-20 lifts the section anchor below the sticky TopNav
-      // so a smooth-scroll lands the header in a comfortable spot
-      // rather than pinned right under the nav edge.
       className="scroll-mt-20"
       aria-label="Browse all products"
     >
@@ -83,12 +79,7 @@ export const BrowseSection = forwardRef<
         ))}
       </div>
 
-      {/* Flat 2/3-col grid */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-        {products.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
+      <MasonryProductGrid products={products} />
     </motion.section>
   );
 });
@@ -103,6 +94,25 @@ function ProductCardImpl({
   const wishlist = useCartStore((s) => s.wishlist);
   const toggle = useCartStore((s) => s.toggleWishlist);
   const saved = wishlist.includes(product.id);
+
+  // Deterministic metadata variation — drives masonry rhythm without
+  // any randomness, so server and client render identical heights.
+  // All knobs key off stable product fields:
+  //
+  //   - nameClamp: 3 buckets by name length (≤20 / 21-40 / >40 chars)
+  //   - topRated:  product.rating >= 4.7
+  //   - popular:   product.reviewCount > 5000  → renders the saved-count line
+  //   - descPreview: always rendered (every product has a description),
+  //                  truncated to 50 chars
+  const nameLength = product.name.length;
+  const nameClamp =
+    nameLength <= 20 ? "" : nameLength <= 40 ? "line-clamp-2" : "line-clamp-4";
+  const topRated = product.rating >= 4.7;
+  const popular = product.reviewCount > 5000;
+  const descPreview =
+    product.description.length > 50
+      ? `${product.description.slice(0, 50).trimEnd()}…`
+      : product.description;
 
   return (
     <motion.div
@@ -140,11 +150,11 @@ function ProductCardImpl({
       >
         <HeartIcon filled={saved} />
       </button>
-      <Link href={`/shop/${product.id}`} className="block p-3">
-        <p className="line-clamp-2 min-h-[34px] text-[13px] font-bold leading-snug text-ink">
+      <Link href={`/shop/${product.id}`} className="block space-y-1.5 p-3">
+        <p className={cn("text-[13px] font-bold leading-snug text-ink", nameClamp)}>
           {product.name}
         </p>
-        <div className="mt-1.5 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <p className="font-mono text-[15px] font-bold text-navy">
             {formatUSD(product.price)}
           </p>
@@ -153,6 +163,19 @@ function ProductCardImpl({
             {product.rating.toFixed(1)}
           </p>
         </div>
+        {topRated && (
+          <span className="inline-flex items-center gap-1 rounded-full bg-[#D1FAE5] px-2 py-0.5 text-[11px] font-bold text-[#065F46]">
+            ★ Top Rated
+          </span>
+        )}
+        {popular && (
+          <p className="text-[12px] text-ink-muted">
+            {product.reviewCount.toLocaleString()}+ saved
+          </p>
+        )}
+        <p className="text-[12px] leading-snug text-ink-muted">
+          {descPreview}
+        </p>
       </Link>
     </motion.div>
   );
@@ -188,9 +211,6 @@ function FilterPill({
 }
 
 function HeartIcon({ filled }: { filled: boolean }) {
-  // Saved-state heart: filled in ink (not red — keep the palette quiet),
-  // outline otherwise. Brand-green is reserved for money-saved + bet-won,
-  // never decoration.
   return filled ? (
     <HeartFilled size={18} className="text-ink" />
   ) : (
