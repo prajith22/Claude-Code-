@@ -1,18 +1,16 @@
 import Link from "next/link";
-import { requireSubscribedUser } from "@/lib/session-guards";
 import { getAllOdds } from "@/lib/odds";
 import type { Game } from "@/types";
 import { BetSlip } from "@/components/BetSlip";
 
 export const dynamic = "force-dynamic";
 
+// Auth + subscription enforced upstream by (app)/layout.tsx.
 export default async function GameDetailPage({
   params,
 }: {
   params: { id: string };
 }) {
-  await requireSubscribedUser();
-
   let g: Game | null = null;
   try {
     const odds = await getAllOdds();

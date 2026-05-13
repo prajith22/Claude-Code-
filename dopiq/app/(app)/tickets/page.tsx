@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { requireSubscribedUser } from "@/lib/session-guards";
 import { TICKETS_BRAND } from "@/data/tickets";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 
@@ -45,9 +44,8 @@ const CATEGORIES: CategoryCard[] = [
   },
 ];
 
-export default async function TicketsLandingPage() {
-  await requireSubscribedUser();
-
+// Auth + subscription enforced upstream by (app)/layout.tsx.
+export default function TicketsLandingPage() {
   return (
     <div
       className="-mx-4 -mt-4 px-4 pt-6 pb-10"

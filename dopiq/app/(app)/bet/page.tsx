@@ -1,13 +1,11 @@
 import Link from "next/link";
-import { requireSubscribedUser } from "@/lib/session-guards";
 import { BetGamesList } from "@/components/BetGamesList";
 import { BetSlipPanel } from "@/components/BetSlipPanel";
 import { FeaturedParlays } from "@/components/FeaturedParlays";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 
+// Auth + subscription enforced upstream by (app)/layout.tsx.
 export default async function BetPage() {
-  await requireSubscribedUser();
-
   return (
     <div className="pb-nav-action space-y-6 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10 lg:space-y-0 lg:pb-10">
       {/* Main column */}
