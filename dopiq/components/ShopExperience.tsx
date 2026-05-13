@@ -1,73 +1,41 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import type { Product, ProductCategory } from "@/types";
 import { ExploreSection } from "@/components/ExploreSection";
-import {
-  CuratedShopGrid,
-  type CuratedFilter,
-} from "@/components/CuratedShopGrid";
+import { CuratedShopGrid } from "@/components/CuratedShopGrid";
 import { BrowseSection, ProductCard } from "@/components/DiscoveryFeed";
 import { Bag } from "@/components/icons";
-
-type Filter =
-  | { kind: "none" }
-  | { kind: "category"; cat: ProductCategory }
-  | { kind: "top-picks" };
-
-const TOP_PICKS_COUNT = 12;
 
 /**
  * Magazine-style Shop landing — Anthropologie / Free People inspired.
  * Order top to bottom: Search → Explore swipe → Curated 2x3 magazine
- * grid → Browse (filter pills + flat grid). Old FlashDeals and
- * CollectionsGrid sections were removed in this redesign.
+ * grid → Browse (filter pills + flat grid).
+ *
+ * The Curated grid is a pure navigation surface — tapping a tile
+ * routes to /shop/category/<slug>. Browse below stays as an
+ * in-page filter for users who'd rather scroll.
  */
 export function ShopExperience({ products }: { products: Product[] }) {
-  const [filter, setFilter] = useState<Filter>({ kind: "none" });
+  const [activeCategory, setActiveCategory] = useState<ProductCategory | null>(
+    null,
+  );
   const [search, setSearch] = useState("");
-  const browseRef = useRef<HTMLElement>(null);
-
-  // Tapping a Curated tile drives both the filter state AND a smooth
-  // scroll to the Browse section so the user sees the filtered grid
-  // without a jarring jump.
-  function selectCurated(f: CuratedFilter) {
-    setFilter(f);
-    // Defer the scroll one frame so the filter state propagates
-    // (and the Browse grid renders the filtered list) before we
-    // anchor — otherwise the scroll-into-view target shifts as
-    // the grid reflows beneath us.
-    requestAnimationFrame(() => {
-      browseRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-  }
 
   function selectCategory(cat: ProductCategory | null) {
-    setFilter(cat ? { kind: "category", cat } : { kind: "none" });
+    setActiveCategory(cat);
   }
 
   const { browseList, browseSubtitle } = useMemo(() => {
-    if (filter.kind === "category") {
-      const list = products.filter((p) => p.category === filter.cat);
+    if (activeCategory) {
+      const list = products.filter((p) => p.category === activeCategory);
       return {
         browseList: list,
-        browseSubtitle: `${list.length} in ${filter.cat}`,
-      };
-    }
-    if (filter.kind === "top-picks") {
-      const list = [...products]
-        .sort((a, b) => b.rating - a.rating)
-        .slice(0, TOP_PICKS_COUNT);
-      return {
-        browseList: list,
-        browseSubtitle: `${list.length} highest-rated`,
+        browseSubtitle: `${list.length} in ${activeCategory}`,
       };
     }
     return { browseList: products, browseSubtitle: null as string | null };
-  }, [filter, products]);
+  }, [activeCategory, products]);
 
   // Search overrides the curated experience entirely — when the user
   // types we hide Explore + Curated and surface a flat grid of
@@ -82,8 +50,6 @@ export function ShopExperience({ products }: { products: Product[] }) {
         p.category.toLowerCase().includes(q),
     );
   }, [searchTerm, products]);
-
-  const activeCategory = filter.kind === "category" ? filter.cat : null;
 
   return (
     <div className="space-y-10">
@@ -142,12 +108,12 @@ export function ShopExperience({ products }: { products: Product[] }) {
           {/* Explore swipe — the hero discovery mechanic, now at the top */}
           <ExploreSection products={products} />
 
-          {/* Curated 2x3 magazine grid — taps filter + scrolls to Browse */}
-          <CuratedShopGrid products={products} onSelect={selectCurated} />
+          {/* Curated 2x3 magazine grid — each tile links to its
+              dedicated category page; no parent callback needed. */}
+          <CuratedShopGrid products={products} />
 
-          {/* Browse — filter pills + flat grid */}
+          {/* Browse — filter pills + flat grid; independent of Curated */}
           <BrowseSection
-            ref={browseRef}
             products={browseList}
             subtitle={browseSubtitle}
             activeCategory={activeCategory}
