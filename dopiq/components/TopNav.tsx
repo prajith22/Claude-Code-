@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { SavingsHeader } from "@/components/SavingsHeader";
 
 const TABS = [
   { href: "/home", label: "Home" },
@@ -94,15 +93,15 @@ export function TopNav({ excludeBet = false }: { excludeBet?: boolean }) {
           })}
         </nav>
 
-        {/* Savings + streak chip — visible on every gated page */}
-        <SavingsHeader />
-
-        {/* User menu */}
+        {/* User menu — sole right-side element. The row's
+            justify-between anchors it to the far right opposite
+            the logo block; items-center keeps it vertically
+            centered with the logo. */}
         <div className="relative" ref={ref}>
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
-            className="flex items-center gap-2.5 rounded-pill border border-surface-border bg-white px-3 py-1.5 transition-all duration-150 hover:bg-surface-alt"
+            className="flex h-9 items-center gap-2.5 rounded-pill border border-surface-border bg-white px-3 transition-all duration-150 hover:bg-surface-alt"
           >
             {avatar ? (
               <Image
