@@ -11,19 +11,15 @@ export default function ShopPage() {
   const all = products as Product[];
 
   return (
-    <div className="space-y-8 pb-4">
-      {/* Centered editorial header — serif title, cart button anchored
-          to the far right. The relative+absolute lets the title sit
-          true-center while the cart stays flush-right regardless of
-          how long the title becomes. */}
-      <header className="relative pt-2">
-        <h1 className="text-center font-display text-[30px] font-normal tracking-tight text-ink md:text-[34px]">
-          Shop
-        </h1>
-        <div className="absolute right-0 top-2">
-          <CartButton kind="shop" />
-        </div>
-      </header>
+    <div className="space-y-6 pb-4">
+      {/* Cart button row — minimal top chrome now that the centered
+          "Shop" title is gone. Keeps a tap-target to /shop/cart
+          (the only other path is the Add-to-Cart bar on a detail
+          page, so removing this would strand users without a cart
+          in progress). Everything else moves up. */}
+      <div className="flex justify-end pt-2">
+        <CartButton kind="shop" />
+      </div>
 
       <ShopExperience products={all} />
 
