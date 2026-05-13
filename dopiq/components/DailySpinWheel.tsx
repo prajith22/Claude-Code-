@@ -216,6 +216,33 @@ export function DailySpinWheel({
             role="img"
             aria-label="Spin wheel"
           >
+            {/* Per-slice dot patterns — reuse RESULT_COLORS' titleColor
+                so the wheel uses the same darker-tone-of-itself dot
+                system every other pastel surface in the app uses.
+                Patterns live inside the same SVG that lives inside
+                the rotating <div>, so the dots rotate with the
+                slices instead of staying static. */}
+            <defs>
+              {(["shop", "food", "tickets", "bet"] as const).map((key) => (
+                <pattern
+                  key={key}
+                  id={`wheel-dots-${key}`}
+                  x="0"
+                  y="0"
+                  width="14"
+                  height="14"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <circle
+                    cx="2"
+                    cy="2"
+                    r="1.4"
+                    fill={RESULT_COLORS[key].titleColor}
+                  />
+                </pattern>
+              ))}
+            </defs>
+
             {/* Outer dark-navy ring */}
             <circle cx={CX} cy={CY} r={R + 4} fill="#0A0F1E" />
 
@@ -227,10 +254,11 @@ export function DailySpinWheel({
               const labelRadius = R * 0.58;
               const labelX = CX + labelRadius * Math.cos(labelAngle);
               const labelY = CY + labelRadius * Math.sin(labelAngle);
+              const d = slicePath(start, end);
               return (
                 <g key={sector.key}>
                   <path
-                    d={slicePath(start, end)}
+                    d={d}
                     fill={sector.fill}
                     stroke="#FBF3E5"
                     strokeWidth={2}
@@ -240,6 +268,15 @@ export function DailySpinWheel({
                         : "none",
                       transition: "filter 0.35s ease",
                     }}
+                  />
+                  {/* Dot-texture overlay — same path, pattern fill at
+                      7% opacity. Matches the DotTexture intensity
+                      used on every pastel card. */}
+                  <path
+                    d={d}
+                    fill={`url(#wheel-dots-${sector.key})`}
+                    opacity={0.07}
+                    pointerEvents="none"
                   />
                   <g
                     transform={`translate(${labelX}, ${labelY}) rotate(${sector.centerDeg})`}
@@ -282,14 +319,19 @@ export function DailySpinWheel({
             ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
             : { duration: 0.2 }
         }
-        // Pastel lavender outlined pill — breaks the green-stack on
-        // the wheel page (Spin button + Plan Usage card both sat in
-        // the mint family before). Lavender pairs with the Shop
-        // slice and keeps the wheel itself as the focal point.
-        className="inline-flex w-full max-w-xs items-center justify-center rounded-pill border bg-[#E8E3FF] px-6 py-3.5 text-[15px] font-semibold tracking-tight text-[#4C1D95] shadow-sm transition-colors duration-150 active:bg-[#D8CFFF] disabled:pointer-events-none disabled:opacity-60"
+        // Pastel lavender outlined pill with the shared DotTexture
+        // baked in — matches the wheel slices' speckle so the
+        // button visually pairs with the wheel above. relative +
+        // overflow-hidden so the SVG texture clips to the pill
+        // shape. Border bumped to 1.5px for a more intentional
+        // outline (1px reads as accidental on iOS at this size).
+        className="relative inline-flex w-full max-w-xs items-center justify-center overflow-hidden rounded-pill border-[1.5px] bg-[#E8E3FF] px-6 py-3.5 text-[15px] font-semibold tracking-tight text-[#4C1D95] shadow-sm transition-colors duration-150 active:bg-[#D8CFFF] disabled:pointer-events-none disabled:opacity-60"
         style={{ borderColor: "#C8BFFF" }}
       >
-        {spinning ? "Spinning…" : landed ? "Spin again" : "Can't Decide"}
+        <DotTexture className="text-[#4C1D95]" />
+        <span className="relative">
+          {spinning ? "Spinning…" : landed ? "Spin again" : "Can't Decide"}
+        </span>
       </motion.button>
 
       {/* Result card */}
