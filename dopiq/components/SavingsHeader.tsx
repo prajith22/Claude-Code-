@@ -77,13 +77,10 @@ export function SavingsHeader() {
     <Link
       href="/home"
       aria-label={`Saved today: ${formatMoney(saved)}. ${streak} day streak.`}
-      // The TopNav parent uses justify-between, which gives equal
-      // gaps between this chip group and its neighbors (logo on
-      // the left, avatar on the right). gap-3 between the two
-      // pills is wider than the inter-element gap from justify-
-      // between's distribution, so the chips read as a single
-      // group rather than four roughly-equal-spaced items.
-      className="inline-flex flex-none items-center gap-3 text-[12px] font-bold"
+      // 8px gap matches the avatar pill's gap in TopNav's right
+      // cluster, so all three pills read as a single evenly-
+      // spaced row.
+      className="inline-flex flex-none items-center gap-2 text-[12px] font-bold"
     >
       <SavingsTicker amount={saved} />
       <StreakChip streak={streak} atRisk={atRisk} />
@@ -93,7 +90,7 @@ export function SavingsHeader() {
 
 function SavingsTicker({ amount }: { amount: number }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-pill border border-[#1B5E20]/20 bg-white px-3 py-1.5">
+    <span className="inline-flex h-9 items-center gap-1.5 rounded-pill border border-[#1B5E20]/20 bg-white px-3">
       <Coin size={13} className="text-[#1B5E20]" />
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
@@ -116,7 +113,7 @@ function SavingsTicker({ amount }: { amount: number }) {
 
 function StreakChip({ streak, atRisk }: { streak: number; atRisk: boolean }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-pill border border-[#E8E4E0] bg-white px-3 py-1.5">
+    <span className="inline-flex h-9 items-center gap-1.5 rounded-pill border border-[#E8E4E0] bg-white px-3">
       <Flame
         size={13}
         className={

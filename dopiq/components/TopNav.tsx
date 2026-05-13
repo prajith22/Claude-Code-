@@ -94,78 +94,84 @@ export function TopNav({ excludeBet = false }: { excludeBet?: boolean }) {
           })}
         </nav>
 
-        {/* Savings + streak chip — visible on every gated page */}
-        <SavingsHeader />
+        {/* Right cluster — savings + streak + user-menu pills sit in
+            one flex group so the gap between them is explicit (gap-2)
+            rather than whatever justify-between's distribution
+            decided to give them. h-9 on every pill keeps the three
+            heights identical regardless of internal content. */}
+        <div className="flex items-center gap-2">
+          <SavingsHeader />
 
-        {/* User menu */}
-        <div className="relative" ref={ref}>
-          <button
-            type="button"
-            onClick={() => setOpen((o) => !o)}
-            className="flex items-center gap-2.5 rounded-pill border border-surface-border bg-white px-3 py-1.5 transition-all duration-150 hover:bg-surface-alt"
-          >
-            {avatar ? (
-              <Image
-                src={avatar}
-                alt={name}
-                width={26}
-                height={26}
-                className="rounded-full"
-              />
-            ) : (
-              <span className="inline-flex h-[26px] w-[26px] items-center justify-center rounded-full bg-navy text-[11px] font-bold text-white">
-                {initials}
-              </span>
-            )}
-            <span className="hidden text-[13px] font-semibold text-ink sm:block">
-              {name.split(" ")[0]}
-            </span>
-            <svg
-              viewBox="0 0 16 16"
-              className="h-3 w-3 text-ink-muted"
-              fill="currentColor"
-              aria-hidden
+          {/* User menu */}
+          <div className="relative" ref={ref}>
+            <button
+              type="button"
+              onClick={() => setOpen((o) => !o)}
+              className="flex h-9 items-center gap-2.5 rounded-pill border border-surface-border bg-white px-3 transition-all duration-150 hover:bg-surface-alt"
             >
-              <path
-                d="M4 6l4 4 4-4"
-                stroke="currentColor"
-                strokeWidth={1.5}
-                fill="none"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
+              {avatar ? (
+                <Image
+                  src={avatar}
+                  alt={name}
+                  width={26}
+                  height={26}
+                  className="rounded-full"
+                />
+              ) : (
+                <span className="inline-flex h-[26px] w-[26px] items-center justify-center rounded-full bg-navy text-[11px] font-bold text-white">
+                  {initials}
+                </span>
+              )}
+              <span className="hidden text-[13px] font-semibold text-ink sm:block">
+                {name.split(" ")[0]}
+              </span>
+              <svg
+                viewBox="0 0 16 16"
+                className="h-3 w-3 text-ink-muted"
+                fill="currentColor"
+                aria-hidden
+              >
+                <path
+                  d="M4 6l4 4 4-4"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                  fill="none"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
 
-          {open && (
-            <>
-              <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-              <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-2xl border border-surface-border bg-white py-1 shadow-cardHover">
-                <div className="border-b border-surface-border px-4 py-2.5">
-                  <p className="text-[13px] font-semibold text-ink">{name}</p>
-                  <p className="text-[11px] text-ink-muted">
-                    {session?.user?.email ?? "Guest"}
-                  </p>
+            {open && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+                <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-2xl border border-surface-border bg-white py-1 shadow-cardHover">
+                  <div className="border-b border-surface-border px-4 py-2.5">
+                    <p className="text-[13px] font-semibold text-ink">{name}</p>
+                    <p className="text-[11px] text-ink-muted">
+                      {session?.user?.email ?? "Guest"}
+                    </p>
+                  </div>
+                  <div className="border-b border-surface-border px-4 py-2.5">
+                    <UsageLine />
+                  </div>
+                  <Link
+                    href="/settings"
+                    onClick={() => setOpen(false)}
+                    className="block w-full px-4 py-2.5 text-left text-[13px] font-medium text-ink transition hover:bg-surface-alt"
+                  >
+                    Settings
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => signOut({ callbackUrl: "/signin" })}
+                    className="w-full px-4 py-2.5 text-left text-[13px] font-medium text-ink-muted transition hover:bg-surface-alt hover:text-ink"
+                  >
+                    Sign out
+                  </button>
                 </div>
-                <div className="border-b border-surface-border px-4 py-2.5">
-                  <UsageLine />
-                </div>
-                <Link
-                  href="/settings"
-                  onClick={() => setOpen(false)}
-                  className="block w-full px-4 py-2.5 text-left text-[13px] font-medium text-ink transition hover:bg-surface-alt"
-                >
-                  Settings
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => signOut({ callbackUrl: "/signin" })}
-                  className="w-full px-4 py-2.5 text-left text-[13px] font-medium text-ink-muted transition hover:bg-surface-alt hover:text-ink"
-                >
-                  Sign out
-                </button>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </header>
