@@ -76,8 +76,8 @@ export function PlanUsageCard({ initial }: { initial: PlanSummary }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="relative overflow-hidden rounded-card border bg-[#FFEDD5] p-5"
-      style={{ borderColor: "#FDC78A" }}
+      className="relative overflow-hidden rounded-card border-[2.5px] bg-[#FFEDD5] p-5"
+      style={{ borderColor: "#2A1F18" }}
     >
       {/* Same peach-on-peach DotTexture as the home Streak card —
           deep warm brown at 7% opacity reads as darker speckle on

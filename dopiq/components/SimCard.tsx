@@ -27,7 +27,10 @@ function SimCardImpl({
 
   return (
     <motion.div
-      className={cn("group relative min-h-[180px] overflow-hidden rounded-card", bg)}
+      className={cn(
+        "group relative min-h-[180px] overflow-hidden rounded-card border-[2.5px] border-[#2A1F18]",
+        bg,
+      )}
       initial={{ opacity: 0, y: 24 }}
       animate={
         entered

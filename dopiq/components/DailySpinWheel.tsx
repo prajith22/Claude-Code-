@@ -323,10 +323,11 @@ export function DailySpinWheel({
         // baked in — matches the wheel slices' speckle so the
         // button visually pairs with the wheel above. relative +
         // overflow-hidden so the SVG texture clips to the pill
-        // shape. Border bumped to 1.5px for a more intentional
-        // outline (1px reads as accidental on iOS at this size).
-        className="relative inline-flex w-full max-w-xs items-center justify-center overflow-hidden rounded-pill border-[1.5px] bg-[#E8E3FF] px-6 py-3.5 text-[15px] font-semibold tracking-tight text-[#4C1D95] shadow-sm transition-colors duration-150 active:bg-[#D8CFFF] disabled:pointer-events-none disabled:opacity-60"
-        style={{ borderColor: "#C8BFFF" }}
+        // shape. 2.5px warm-dark border (#2A1F18) matches the
+        // editorial frame applied to every other card on /home
+        // and the wheel result page.
+        className="relative inline-flex w-full max-w-xs items-center justify-center overflow-hidden rounded-pill border-[2.5px] bg-[#E8E3FF] px-6 py-3.5 text-[15px] font-semibold tracking-tight text-[#4C1D95] shadow-sm transition-colors duration-150 active:bg-[#D8CFFF] disabled:pointer-events-none disabled:opacity-60"
+        style={{ borderColor: "#2A1F18" }}
       >
         <DotTexture className="text-[#4C1D95]" />
         <span className="relative">
@@ -350,10 +351,10 @@ export function DailySpinWheel({
             // "Let's go →" emerald CTA below stays solid
             // (btn-primary) so the confident "yes" action pops
             // against every tint.
-            className="relative w-full max-w-xs overflow-hidden rounded-card border p-5 text-center shadow-card"
+            className="relative w-full max-w-xs overflow-hidden rounded-card border-[2.5px] p-5 text-center shadow-card"
             style={{
               backgroundColor: RESULT_COLORS[landed.key].bg,
-              borderColor: RESULT_COLORS[landed.key].border,
+              borderColor: "#2A1F18",
             }}
           >
             <DotTexture style={{ color: RESULT_COLORS[landed.key].titleColor }} />

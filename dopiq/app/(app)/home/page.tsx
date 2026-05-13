@@ -61,7 +61,7 @@ export default async function HomePage() {
             still part of the same family. */}
         <Link
           href="/quick-sim"
-          className="group relative flex items-center gap-4 overflow-hidden rounded-card bg-[#FFE4E1] p-5 transition active:scale-[0.99]"
+          className="group relative flex items-center gap-4 overflow-hidden rounded-card border-[2.5px] border-[#2A1F18] bg-[#FFE4E1] p-5 transition active:scale-[0.99]"
         >
           {/* Same dotted texture as the other home sim cards, tinted
               to the title shade. Static SVG id is fine because there's
