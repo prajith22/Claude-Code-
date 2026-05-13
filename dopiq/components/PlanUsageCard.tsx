@@ -75,16 +75,16 @@ export function PlanUsageCard({ initial }: { initial: PlanSummary }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="rounded-card border bg-[#D1FAE5] p-5"
-      style={{ borderColor: "#A7E8C1" }}
+      className="rounded-card border bg-[#FFEDD5] p-5"
+      style={{ borderColor: "#FDC78A" }}
     >
       <div className="flex items-center justify-between gap-3">
         <p className="text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
           Plan usage
         </p>
         <span
-          className="rounded-pill border bg-[#ECFDF5] px-3 py-1 text-[11px] font-bold text-[#064E3B]"
-          style={{ borderColor: "#A7E8C1" }}
+          className="rounded-pill border bg-[#FFF7ED] px-3 py-1 text-[11px] font-bold text-[#7C2D12]"
+          style={{ borderColor: "#FDC78A" }}
         >
           {label} plan
         </span>

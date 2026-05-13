@@ -13,6 +13,23 @@ type Sector = {
   centerDeg: number; // measured clockwise from the top
 };
 
+// Result-card palette keyed by the winning slice. Each entry tints
+// the "You landed on X" card to match the home-grid SimCard for
+// that sim — Shop → lavender, Food → soft yellow, Tickets → mint,
+// Bet → sky blue. Creates a "this is YOUR result" moment instead
+// of a generic white card every spin. The internal "Let's go →"
+// CTA stays solid emerald (the one confident action on the screen)
+// so it pops against whichever tint won.
+const RESULT_COLORS: Record<
+  Sector["key"],
+  { bg: string; border: string; titleColor: string }
+> = {
+  shop: { bg: "#E8E3FF", border: "#C8BFFF", titleColor: "#4C1D95" },
+  food: { bg: "#FFF3CD", border: "#F5E6A3", titleColor: "#92400E" },
+  tickets: { bg: "#D1FAE5", border: "#A7E8C1", titleColor: "#064E3B" },
+  bet: { bg: "#DBEAFE", border: "#B5D5F7", titleColor: "#1E3A8A" },
+};
+
 // Four sectors at 0° / 90° / 180° / 270° — used on web where every
 // simulator (Shop / Food / Bet / Tickets) is in play. The no-Bet
 // variant below drops Bet (Apple prohibits gambling on individual
@@ -264,11 +281,12 @@ export function DailySpinWheel({
             ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
             : { duration: 0.2 }
         }
-        // Pastel mint outlined pill — keeps the wheel as the focal
-        // point. Hex matches the Saved Today / Tickets SimCard mint
-        // family so it pairs with the surrounding home palette.
-        className="inline-flex w-full max-w-xs items-center justify-center rounded-pill border bg-[#D1FAE5] px-6 py-3.5 text-[15px] font-semibold tracking-tight text-[#064E3B] shadow-sm transition-colors duration-150 active:bg-[#B8E5CC] disabled:pointer-events-none disabled:opacity-60"
-        style={{ borderColor: "#A7E8C1" }}
+        // Pastel lavender outlined pill — breaks the green-stack on
+        // the wheel page (Spin button + Plan Usage card both sat in
+        // the mint family before). Lavender pairs with the Shop
+        // slice and keeps the wheel itself as the focal point.
+        className="inline-flex w-full max-w-xs items-center justify-center rounded-pill border bg-[#E8E3FF] px-6 py-3.5 text-[15px] font-semibold tracking-tight text-[#4C1D95] shadow-sm transition-colors duration-150 active:bg-[#D8CFFF] disabled:pointer-events-none disabled:opacity-60"
+        style={{ borderColor: "#C8BFFF" }}
       >
         {spinning ? "Spinning…" : landed ? "Spin again" : "Can't Decide"}
       </motion.button>
@@ -282,9 +300,20 @@ export function DailySpinWheel({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className="card w-full max-w-xs p-5 text-center"
+            // Card tint shifts with the winning slice — see
+            // RESULT_COLORS above. The internal "Let's go →"
+            // emerald CTA below stays solid (btn-primary) so the
+            // confident "yes" action pops against every tint.
+            className="w-full max-w-xs rounded-card border p-5 text-center shadow-card"
+            style={{
+              backgroundColor: RESULT_COLORS[landed.key].bg,
+              borderColor: RESULT_COLORS[landed.key].border,
+            }}
           >
-            <p className="text-[18px] font-bold text-ink">
+            <p
+              className="text-[18px] font-bold"
+              style={{ color: RESULT_COLORS[landed.key].titleColor }}
+            >
               You landed on {landed.label}.
             </p>
             <Link href={landed.href} className="btn-primary mt-4 w-full">
