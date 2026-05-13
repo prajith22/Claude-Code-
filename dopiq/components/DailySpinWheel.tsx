@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 
 type Sector = {
-  key: "shop" | "food" | "bet";
+  key: "shop" | "food" | "bet" | "tickets";
   label: string;
   href: string;
   fill: string;
@@ -13,11 +13,49 @@ type Sector = {
   centerDeg: number; // measured clockwise from the top
 };
 
-// Three sectors at 0°, 120°, 240° from the top — used on web. The
-// no-Bet variant below redistributes the remaining two sectors to
-// half-discs (left + right) so the wheel still looks balanced when
-// rendered inside the iOS shell.
+// Four sectors at 0° / 90° / 180° / 270° — used on web where every
+// simulator (Shop / Food / Bet / Tickets) is in play. The no-Bet
+// variant below drops Bet (Apple prohibits gambling on individual
+// developer accounts) and falls back to a three-wedge layout at
+// 0° / 120° / 240°. Slice math is parameterized off sectors.length,
+// so the same render path produces 90°-wide or 120°-wide wedges
+// without any further branching.
 const SECTORS_FULL: Sector[] = [
+  {
+    key: "shop",
+    label: "Shop",
+    href: "/shop",
+    fill: "#E8E3FF",
+    textColor: "#4C1D95",
+    centerDeg: 0,
+  },
+  {
+    key: "food",
+    label: "Food",
+    href: "/food",
+    fill: "#FFF3CD",
+    textColor: "#78350F",
+    centerDeg: 90,
+  },
+  {
+    key: "bet",
+    label: "Bet",
+    href: "/bet",
+    fill: "#DBEAFE",
+    textColor: "#1E3A8A",
+    centerDeg: 180,
+  },
+  {
+    key: "tickets",
+    label: "Tickets",
+    href: "/tickets",
+    fill: "#D1FAE5",
+    textColor: "#064E3B",
+    centerDeg: 270,
+  },
+];
+
+const SECTORS_NO_BET: Sector[] = [
   {
     key: "shop",
     label: "Shop",
@@ -35,31 +73,12 @@ const SECTORS_FULL: Sector[] = [
     centerDeg: 120,
   },
   {
-    key: "bet",
-    label: "Bet",
-    href: "/bet",
-    fill: "#DBEAFE",
-    textColor: "#1E3A8A",
+    key: "tickets",
+    label: "Tickets",
+    href: "/tickets",
+    fill: "#D1FAE5",
+    textColor: "#064E3B",
     centerDeg: 240,
-  },
-];
-
-const SECTORS_NO_BET: Sector[] = [
-  {
-    key: "shop",
-    label: "Shop",
-    href: "/shop",
-    fill: "#E8E3FF",
-    textColor: "#4C1D95",
-    centerDeg: 90,
-  },
-  {
-    key: "food",
-    label: "Food",
-    href: "/food",
-    fill: "#FFF3CD",
-    textColor: "#78350F",
-    centerDeg: 270,
   },
 ];
 
@@ -92,10 +111,10 @@ export function DailySpinWheel({
   const [landedIdx, setLandedIdx] = useState<number | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // On iOS, drop the Bet sector and use the two-sector half-disc
-  // variant. Slice math (start = center - half, end = center +
-  // half) is parameterized off sectors.length so both shapes draw
-  // correctly.
+  // On iOS, drop the Bet sector and fall back to the three-wedge
+  // layout (Shop / Food / Tickets). Slice math (start = center -
+  // half, end = center + half) is parameterized off sectors.length
+  // so 90°-wide and 120°-wide wedges both draw correctly.
   const sectors = excludeBet ? SECTORS_NO_BET : SECTORS_FULL;
   const sliceHalfWidth = 360 / sectors.length / 2;
 
