@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Bag, Bowl, Slot, StarFilled } from "@/components/icons";
+import { Bag, Bowl, Slot, StarFilled, Ticket } from "@/components/icons";
 import type { ComponentType, SVGProps } from "react";
 
 const fadeUp = {
@@ -28,6 +28,10 @@ const SIMS: {
   { Icon: Bag, label: "Shop", bg: "#F3E8FF", fg: "#4A148C" },
   { Icon: Bowl, label: "Food", bg: "#FFF9E6", fg: "#5D4037" },
   { Icon: Slot, label: "Bet", bg: "#E8F0FF", fg: "#1A237E" },
+  // Warm peach + terracotta — matches the Streak hero card on
+  // /home and the "Almost gone" SeatMap badge, so the Tickets
+  // accent is consistent across every surface that previews it.
+  { Icon: Ticket, label: "Tickets", bg: "#FFE4D6", fg: "#7C2D12" },
 ];
 
 export function SignInMarketing({
@@ -96,8 +100,12 @@ export function SignInMarketing({
           animate="show"
           variants={fadeUp}
           transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+          // 4 cards on web → 2x2 (3-across would shrink each card
+          // below comfortable tap targets on mobile breakpoints).
+          // 3 cards on iOS (Bet filtered out) → single row of 3.
+          // 2 cards (hypothetical future filter) → tight row of 2.
           className={`mt-8 grid gap-3 ${
-            sims.length === 2 ? "grid-cols-2" : "grid-cols-3"
+            sims.length === 3 ? "grid-cols-3" : "grid-cols-2"
           }`}
         >
           {sims.map((s, i) => {
