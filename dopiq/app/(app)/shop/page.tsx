@@ -7,29 +7,25 @@ import { SimDisclaimer } from "@/components/SimDisclaimer";
 // Auth + subscription gating happen in (app)/layout.tsx; no need
 // to re-check here. Doing so previously doubled the per-nav
 // Prisma roundtrips.
-export default async function ShopPage() {
+export default function ShopPage() {
   const all = products as Product[];
 
-  // Format date on server to avoid hydration mismatch
-  const todayLabel = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
-
   return (
-    <div className="space-y-6 pb-4">
-      <header className="flex items-center justify-between pt-2">
-        <div>
-          <h1 className="text-[26px] font-bold tracking-tight">Shop</h1>
-          <p className="mt-0.5 text-sm text-ink-muted">
-            Today&rsquo;s drops, curated daily.
-          </p>
+    <div className="space-y-8 pb-4">
+      {/* Centered editorial header — serif title, cart button anchored
+          to the far right. The relative+absolute lets the title sit
+          true-center while the cart stays flush-right regardless of
+          how long the title becomes. */}
+      <header className="relative pt-2">
+        <h1 className="text-center font-display text-[30px] font-normal tracking-tight text-ink md:text-[34px]">
+          Shop
+        </h1>
+        <div className="absolute right-0 top-2">
+          <CartButton kind="shop" />
         </div>
-        <CartButton kind="shop" />
       </header>
 
-      <ShopExperience products={all} todayLabel={todayLabel} />
+      <ShopExperience products={all} />
 
       <SimDisclaimer text="All products, prices, and reviews are fictional and for simulation purposes only. Dopiq does not sell or own any items. No real purchase is ever made." />
     </div>

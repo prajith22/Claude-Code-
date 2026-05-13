@@ -1,56 +1,77 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { Product, ProductCategory } from "@/types";
-import { FlashDeals } from "@/components/FlashDeals";
 import { ExploreSection } from "@/components/ExploreSection";
 import {
-  CollectionsGrid,
-  buildCollections,
-  type CollectionId,
-} from "@/components/CollectionsGrid";
-import { DiscoveryFeed, ProductCard } from "@/components/DiscoveryFeed";
+  CuratedShopGrid,
+  type CuratedFilter,
+} from "@/components/CuratedShopGrid";
+import { BrowseSection, ProductCard } from "@/components/DiscoveryFeed";
 import { Bag } from "@/components/icons";
 
 type Filter =
   | { kind: "none" }
   | { kind: "category"; cat: ProductCategory }
-  | { kind: "collection"; id: CollectionId };
+  | { kind: "top-picks" };
 
-export function ShopExperience({
-  products,
-  todayLabel,
-}: {
-  products: Product[];
-  todayLabel: string;
-}) {
+const TOP_PICKS_COUNT = 12;
+
+/**
+ * Magazine-style Shop landing — Anthropologie / Free People inspired.
+ * Order top to bottom: Search → Explore swipe → Curated 2x3 magazine
+ * grid → Browse (filter pills + flat grid). Old FlashDeals and
+ * CollectionsGrid sections were removed in this redesign.
+ */
+export function ShopExperience({ products }: { products: Product[] }) {
   const [filter, setFilter] = useState<Filter>({ kind: "none" });
   const [search, setSearch] = useState("");
+  const browseRef = useRef<HTMLElement>(null);
 
-  const collections = useMemo(() => buildCollections(products), [products]);
+  // Tapping a Curated tile drives both the filter state AND a smooth
+  // scroll to the Browse section so the user sees the filtered grid
+  // without a jarring jump.
+  function selectCurated(f: CuratedFilter) {
+    setFilter(f);
+    // Defer the scroll one frame so the filter state propagates
+    // (and the Browse grid renders the filtered list) before we
+    // anchor — otherwise the scroll-into-view target shifts as
+    // the grid reflows beneath us.
+    requestAnimationFrame(() => {
+      browseRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }
 
-  const { filtered, label } = useMemo(() => {
+  function selectCategory(cat: ProductCategory | null) {
+    setFilter(cat ? { kind: "category", cat } : { kind: "none" });
+  }
+
+  const { browseList, browseSubtitle } = useMemo(() => {
     if (filter.kind === "category") {
+      const list = products.filter((p) => p.category === filter.cat);
       return {
-        filtered: products.filter((p) => p.category === filter.cat),
-        label: filter.cat as string,
+        browseList: list,
+        browseSubtitle: `${list.length} in ${filter.cat}`,
       };
     }
-    if (filter.kind === "collection") {
-      const c = collections.find((c) => c.id === filter.id);
-      const ids = new Set(c?.productIds ?? []);
+    if (filter.kind === "top-picks") {
+      const list = [...products]
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, TOP_PICKS_COUNT);
       return {
-        filtered: products.filter((p) => ids.has(p.id)),
-        label: c?.title ?? null,
+        browseList: list,
+        browseSubtitle: `${list.length} highest-rated`,
       };
     }
-    return { filtered: null as Product[] | null, label: null as string | null };
-  }, [filter, products, collections]);
+    return { browseList: products, browseSubtitle: null as string | null };
+  }, [filter, products]);
 
-  // Search overrides the curated experience — when the user types,
-  // we hide flash deals / explore / collections / themed sections and
-  // surface a flat grid of name-or-category matches. Mirrors how the
-  // Food page collapses to a flat list when searching.
+  // Search overrides the curated experience entirely — when the user
+  // types we hide Explore + Curated and surface a flat grid of
+  // name-or-category matches. Mirrors the Food page's behavior.
   const searchTerm = search.trim();
   const searchResults = useMemo(() => {
     const q = searchTerm.toLowerCase();
@@ -62,28 +83,19 @@ export function ShopExperience({
     );
   }, [searchTerm, products]);
 
-  function selectCategory(cat: ProductCategory | null) {
-    setFilter(cat ? { kind: "category", cat } : { kind: "none" });
-  }
-
-  function selectCollection(id: CollectionId | null) {
-    setFilter(id ? { kind: "collection", id } : { kind: "none" });
-  }
-
   const activeCategory = filter.kind === "category" ? filter.cat : null;
-  const activeCollection = filter.kind === "collection" ? filter.id : null;
 
   return (
-    <div className="space-y-8">
-      {/* Search — mirrors the food page */}
+    <div className="space-y-10">
+      {/* Prominent search bar */}
       <div className="relative">
         <svg
-          width="16"
-          height="16"
+          width="18"
+          height="18"
           viewBox="0 0 20 20"
           fill="none"
           aria-hidden
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-muted"
+          className="absolute left-5 top-1/2 -translate-y-1/2 text-ink-muted"
         >
           <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.8" />
           <path
@@ -98,16 +110,16 @@ export function ShopExperience({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search products or categories..."
-          className="w-full rounded-pill border border-surface-border bg-white py-3 pl-11 pr-11 text-[14px] text-ink placeholder:text-ink-faint shadow-sm transition-all duration-150 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+          className="h-[52px] w-full rounded-pill border border-surface-border bg-white pl-12 pr-12 text-[16px] text-ink placeholder:text-ink-faint shadow-sm transition-all duration-150 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
         />
         {search && (
           <button
             type="button"
             onClick={() => setSearch("")}
             aria-label="Clear search"
-            className="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-surface-alt text-ink-muted transition hover:bg-surface-border"
+            className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-surface-alt text-ink-muted transition hover:bg-surface-border"
           >
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden>
               <path
                 d="M4 4l8 8M12 4l-8 8"
                 stroke="currentColor"
@@ -127,25 +139,17 @@ export function ShopExperience({
         />
       ) : (
         <>
-          {/* Flash Deals */}
-          <FlashDeals products={products} />
-
-          {/* Explore — random shuffled carousel */}
+          {/* Explore swipe — the hero discovery mechanic, now at the top */}
           <ExploreSection products={products} />
 
-          {/* Collections */}
-          <CollectionsGrid
-            products={products}
-            active={activeCollection}
-            onSelect={selectCollection}
-          />
+          {/* Curated 2x3 magazine grid — taps filter + scrolls to Browse */}
+          <CuratedShopGrid products={products} onSelect={selectCurated} />
 
-          {/* Discovery Feed (with category pills under "Today's Finds") */}
-          <DiscoveryFeed
-            products={products}
-            todayLabel={todayLabel}
-            filteredProducts={filtered}
-            filterLabel={label}
+          {/* Browse — filter pills + flat grid */}
+          <BrowseSection
+            ref={browseRef}
+            products={browseList}
+            subtitle={browseSubtitle}
             activeCategory={activeCategory}
             onSelectCategory={selectCategory}
           />

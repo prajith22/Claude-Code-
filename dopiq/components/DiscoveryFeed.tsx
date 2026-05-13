@@ -2,29 +2,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { memo } from "react";
+import { forwardRef, memo } from "react";
 import { motion } from "framer-motion";
 import type { Product, ProductCategory } from "@/types";
 import { useCartStore } from "@/lib/cart-store";
 import { formatUSD, cn } from "@/lib/utils";
 import { cardHover, cardHoverTransition } from "@/lib/card-hover";
 import { Heart, HeartFilled, StarFilled } from "@/components/icons";
-
-const VIBE_LABELS: Record<ProductCategory, string> = {
-  Clothes: "Fits dropping today",
-  Electronics: "Tech you didn't know you needed",
-  "Home Goods": "Make your space better",
-  Beauty: "Your new routine",
-  Sports: "Level up",
-};
-
-const SECTION_ORDER: ProductCategory[] = [
-  "Clothes",
-  "Electronics",
-  "Home Goods",
-  "Beauty",
-  "Sports",
-];
 
 const CATEGORIES: ProductCategory[] = [
   "Clothes",
@@ -34,45 +18,54 @@ const CATEGORIES: ProductCategory[] = [
   "Sports",
 ];
 
-export function DiscoveryFeed({
-  products,
-  todayLabel,
-  filteredProducts,
-  filterLabel,
-  activeCategory,
-  onSelectCategory,
-}: {
-  products: Product[];
-  todayLabel: string;
-  filteredProducts: Product[] | null;
-  filterLabel: string | null;
-  activeCategory: ProductCategory | null;
-  onSelectCategory: (cat: ProductCategory | null) => void;
-}) {
+/**
+ * "Browse" section — formerly the multi-aisle Today's Finds feed.
+ * Now a simpler stack: a small left-aligned section label, the
+ * category filter pills, and a flat 2/3-col grid of ProductCards.
+ *
+ * The parent (ShopExperience) owns the filter + product list and
+ * feeds the already-filtered array in so this component is a pure
+ * presenter. Forwarded ref lets the Curated tiles above smooth-
+ * scroll to the section's top when tapped.
+ */
+export const BrowseSection = forwardRef<
+  HTMLElement,
+  {
+    products: Product[];
+    subtitle: string | null;
+    activeCategory: ProductCategory | null;
+    onSelectCategory: (cat: ProductCategory | null) => void;
+  }
+>(function BrowseSection(
+  { products, subtitle, activeCategory, onSelectCategory },
+  ref,
+) {
   return (
-    <section className="space-y-6">
-      {/* Today's Finds hero */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="pt-2"
-      >
-        <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-brand">
-          {todayLabel}
-        </p>
-        <h2 className="mt-1 text-[34px] font-extrabold leading-tight tracking-tight text-ink md:text-[44px]">
-          Today&rsquo;s Finds
+    <motion.section
+      ref={ref}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      // scroll-mt-20 lifts the section anchor below the sticky TopNav
+      // so a smooth-scroll lands the header in a comfortable spot
+      // rather than pinned right under the nav edge.
+      className="scroll-mt-20"
+      aria-label="Browse all products"
+    >
+      <header className="mb-3 flex items-baseline justify-between gap-3">
+        <h2 className="text-[18px] font-semibold tracking-tight text-ink">
+          Browse
         </h2>
-        <p className="mt-1 text-[14px] text-ink-muted">
-          Hand-picked drops, refreshed daily.
-        </p>
-      </motion.div>
+        {subtitle && (
+          <span className="text-[12px] text-ink-muted">{subtitle}</span>
+        )}
+      </header>
 
-      {/* Category filter pills — under the hero, for old-school browsing */}
-      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0">
+      {/* Category filter pills */}
+      <div className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0">
         <FilterPill
-          active={activeCategory === null && filteredProducts === null}
+          active={activeCategory === null}
           onClick={() => onSelectCategory(null)}
         >
           All
@@ -90,114 +83,15 @@ export function DiscoveryFeed({
         ))}
       </div>
 
-      {filteredProducts ? (
-        <FilteredGrid products={filteredProducts} label={filterLabel} />
-      ) : (
-        <ThemedSections products={products} />
-      )}
-
-      {/* Footer message */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
-        className="pt-4 text-center text-[13px] text-ink-muted"
-      >
-        You&rsquo;ve seen everything for today — check back tomorrow for new drops.
-      </motion.p>
-    </section>
-  );
-}
-
-function ThemedSections({ products }: { products: Product[] }) {
-  return (
-    <div className="space-y-8">
-      {SECTION_ORDER.map((cat) => {
-        const items = products.filter((p) => p.category === cat);
-        if (items.length === 0) return null;
-        return <Aisle key={cat} category={cat} products={items} />;
-      })}
-    </div>
-  );
-}
-
-function Aisle({
-  category,
-  products,
-}: {
-  category: ProductCategory;
-  products: Product[];
-}) {
-  return (
-    <motion.section
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-    >
-      <div className="mb-3 flex items-baseline justify-between gap-3">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-muted">
-            {category}
-          </p>
-          <h3 className="mt-0.5 text-[20px] font-bold tracking-tight">
-            {VIBE_LABELS[category]}
-          </h3>
-        </div>
-        <span className="flex-none text-[12px] text-ink-muted">
-          {products.length} {products.length === 1 ? "item" : "items"}
-        </span>
-      </div>
-
-      {/* Horizontal scroll row — swipe sideways through the aisle */}
-      <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth px-4 pb-2 md:mx-0 md:px-0">
+      {/* Flat 2/3-col grid */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         {products.map((p) => (
-          <ProductCard
-            key={p.id}
-            product={p}
-            className="w-[180px] flex-none snap-start sm:w-[220px]"
-          />
+          <ProductCard key={p.id} product={p} />
         ))}
       </div>
     </motion.section>
   );
-}
-
-function FilteredGrid({
-  products,
-  label,
-}: {
-  products: Product[];
-  label: string | null;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-    >
-      {label && (
-        <p className="mb-3 text-[13px] text-ink-muted">
-          Showing{" "}
-          <span className="font-semibold text-ink">{products.length}</span>{" "}
-          from <span className="font-semibold text-ink">{label}</span>
-        </p>
-      )}
-      {products.length === 0 ? (
-        <div className="card p-8 text-center text-[14px] text-ink-muted">
-          Nothing here yet. Try another filter.
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-      )}
-    </motion.div>
-  );
-}
+});
 
 function ProductCardImpl({
   product,
@@ -212,20 +106,21 @@ function ProductCardImpl({
 
   return (
     <motion.div
-      className={cn("group card relative overflow-hidden", className)}
       whileHover={cardHover}
       transition={cardHoverTransition}
+      className={cn(
+        "relative overflow-hidden rounded-card border border-surface-border bg-white shadow-card",
+        className,
+      )}
     >
       <Link href={`/shop/${product.id}`} className="block">
-        <div className="relative h-[480px] overflow-hidden bg-surface-alt">
-          {/* Next/Image lazy-loads by default + serves the right size
-              for the device — big bandwidth + LCP win over raw <img>. */}
+        <div className="relative aspect-square w-full overflow-hidden bg-surface-alt">
           <Image
             src={product.imageUrl}
             alt={product.name}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 640px) 50vw, 220px"
+            className="object-cover"
           />
         </div>
       </Link>
@@ -264,8 +159,7 @@ function ProductCardImpl({
 }
 
 // Memoized so re-renders of the parent (filter changes, scroll-driven
-// motion) don't ripple through every grid card. Each product object
-// is stable across renders so referential equality is sufficient.
+// motion) don't ripple through every grid card.
 export const ProductCard = memo(ProductCardImpl);
 
 function FilterPill({
@@ -295,8 +189,8 @@ function FilterPill({
 
 function HeartIcon({ filled }: { filled: boolean }) {
   // Saved-state heart: filled in ink (not red — keep the palette quiet),
-  // outline otherwise. Color discipline: brand-green is reserved for
-  // money-saved + bet-won, never decoration.
+  // outline otherwise. Brand-green is reserved for money-saved + bet-won,
+  // never decoration.
   return filled ? (
     <HeartFilled size={18} className="text-ink" />
   ) : (
