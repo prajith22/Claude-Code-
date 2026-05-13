@@ -79,12 +79,13 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
 
   return (
     <div className="grid gap-3 sm:grid-cols-[1.4fr_1fr] sm:gap-4">
-      {/* Saved today — clean white card with green accents */}
+      {/* Saved today — soft mint tint matches the Tickets SimCard
+          below and lets the existing emerald dollar amount pop. */}
       <motion.section
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="rounded-card border border-[#E8E4E0] bg-white p-6"
+        className="rounded-card border border-[#E8E4E0] bg-[#D1FAE5] p-6"
       >
         <p className="text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
           Saved today
@@ -103,12 +104,14 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
         </p>
       </motion.section>
 
-      {/* Streak — clean white card with charcoal accents */}
+      {/* Streak — warm peach tint pairs with the flame emoji and
+          rhymes with the rest of the home palette without
+          colliding with Quick Sim's coral pink. */}
       <motion.section
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.08, ease: "easeOut" }}
-        className="rounded-card border border-[#E8E4E0] bg-white p-6"
+        className="rounded-card border border-[#E8E4E0] bg-[#FFEDD5] p-6"
       >
         <p className="text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
           Streak
