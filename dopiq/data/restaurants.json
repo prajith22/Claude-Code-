@@ -2464,5 +2464,522 @@
         "category": "Desserts"
       }
     ]
+  },
+  {
+    "id": "r-pasta-paradiso",
+    "name": "Pasta Paradiso",
+    "cuisine": "Italian",
+    "rating": 4.7,
+    "deliveryTime": "25-35 min",
+    "deliveryFee": 2.99,
+    "imageUrl": "/restaurants/PastaParadiso.webp",
+    "menu": [
+      {
+        "id": "r-pasta-paradiso-m1",
+        "name": "Spaghetti Carbonara",
+        "description": "Guanciale, egg yolk, pecorino, and cracked black pepper folded through hot spaghetti.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-pasta-paradiso-m2",
+        "name": "Penne alla Vodka",
+        "description": "Penne in a creamy tomato-vodka sauce with fresh basil and a hit of chili.",
+        "price": 13.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-pasta-paradiso-m3",
+        "name": "Chicken Parmigiana",
+        "description": "Breaded chicken cutlet baked under bubbling mozzarella and house marinara, with spaghetti.",
+        "price": 16.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-pasta-paradiso-m4",
+        "name": "Fettuccine Alfredo",
+        "description": "Wide ribbons of fettuccine tossed in a rich parmesan butter cream.",
+        "price": 13.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-pasta-paradiso-m5",
+        "name": "Lasagna Bolognese",
+        "description": "Layered pasta with slow-cooked beef ragu, bechamel, and a golden mozzarella crust.",
+        "price": 15.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-pasta-paradiso-m6",
+        "name": "Wild Mushroom Risotto",
+        "description": "Creamy arborio rice with porcini, cremini, and a finish of truffle oil.",
+        "price": 14.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-pasta-paradiso-m7",
+        "name": "Bruschetta al Pomodoro",
+        "description": "Grilled rustic bread topped with vine-ripe tomato, garlic, and basil.",
+        "price": 6.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-pasta-paradiso-m8",
+        "name": "Caprese Salad",
+        "description": "Fresh mozzarella, heirloom tomato, basil, and a drizzle of aged balsamic.",
+        "price": 7.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-pasta-paradiso-m9",
+        "name": "Garlic Knots",
+        "description": "Hand-twisted knots brushed with roasted garlic butter and parmesan.",
+        "price": 4.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-pasta-paradiso-m10",
+        "name": "House Chianti",
+        "description": "A glass of medium-bodied Tuscan red, smooth and easy to sip.",
+        "price": 6.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-pasta-paradiso-m11",
+        "name": "Espresso",
+        "description": "A short pull of strong Italian-roast espresso, served with a sugar packet.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-pasta-paradiso-m12",
+        "name": "Classic Tiramisu",
+        "description": "Espresso-soaked ladyfingers layered with sweet mascarpone and dusted with cocoa.",
+        "price": 6.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-pasta-paradiso-m13",
+        "name": "Cannoli 2pc",
+        "description": "Crisp shells filled with sweet ricotta cream and mini chocolate chips.",
+        "price": 5.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-brick-oven-brothers",
+    "name": "Brick Oven Brothers",
+    "cuisine": "Pizza",
+    "rating": 4.5,
+    "deliveryTime": "20-30 min",
+    "deliveryFee": 1.99,
+    "imageUrl": "/restaurants/BrickOvenBrothers.webp",
+    "menu": [
+      {
+        "id": "r-brick-oven-brothers-m1",
+        "name": "Classic Margherita Pie",
+        "description": "Wood-fired thin crust with san marzano sauce, fresh mozzarella, and basil.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-brick-oven-brothers-m2",
+        "name": "Pepperoni & Honey",
+        "description": "Cup-and-char pepperoni with mozzarella and a hot honey drizzle.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-brick-oven-brothers-m3",
+        "name": "White Mushroom Pie",
+        "description": "Garlic cream base with three mushrooms, ricotta dollops, and fresh thyme.",
+        "price": 14.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-brick-oven-brothers-m4",
+        "name": "BBQ Chicken Pizza",
+        "description": "Smoky BBQ sauce with grilled chicken, red onion, and cilantro.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-brick-oven-brothers-m5",
+        "name": "Veggie Garden Pie",
+        "description": "Bell pepper, mushroom, olive, red onion, and tomato over mozzarella.",
+        "price": 13.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-brick-oven-brothers-m6",
+        "name": "Meat Lovers Pie",
+        "description": "Pepperoni, sausage, bacon, and ham piled on a hand-tossed crust.",
+        "price": 16.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-brick-oven-brothers-m7",
+        "name": "Spinach & Ricotta Calzone",
+        "description": "Folded pie stuffed with spinach, ricotta, and mozzarella, with a side of marinara.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-brick-oven-brothers-m8",
+        "name": "Garlic Knots 6pc",
+        "description": "Pillowy knots glazed in garlic-parmesan butter, served warm.",
+        "price": 4.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-brick-oven-brothers-m9",
+        "name": "Caesar Salad",
+        "description": "Crisp romaine with parmesan, garlic croutons, and house caesar dressing.",
+        "price": 6.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-brick-oven-brothers-m10",
+        "name": "Mozzarella Sticks",
+        "description": "Six golden-fried sticks served with warm marinara.",
+        "price": 5.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-brick-oven-brothers-m11",
+        "name": "Italian Soda",
+        "description": "Sparkling soda with your choice of cherry, vanilla, or raspberry syrup.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-brick-oven-brothers-m12",
+        "name": "Craft Root Beer",
+        "description": "Small-batch root beer in a chilled glass bottle.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-brick-oven-brothers-m13",
+        "name": "Nutella Pizzetta",
+        "description": "Sweet flatbread baked with nutella, sliced banana, and powdered sugar.",
+        "price": 8.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-bibimbap-house",
+    "name": "Bibimbap House",
+    "cuisine": "Korean",
+    "rating": 4.6,
+    "deliveryTime": "25-40 min",
+    "deliveryFee": 2.49,
+    "imageUrl": "/restaurants/BibimbapHouse.webp",
+    "menu": [
+      {
+        "id": "r-bibimbap-house-m1",
+        "name": "Classic Beef Bibimbap",
+        "description": "Marinated bulgogi over rice with sesame veg, fried egg, and a side of gochujang.",
+        "price": 13.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-bibimbap-house-m2",
+        "name": "Spicy Pork Bibimbap",
+        "description": "Gochujang-marinated pork with rice, seasoned veg, and a runny egg yolk.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-bibimbap-house-m3",
+        "name": "Tofu Veggie Bibimbap",
+        "description": "Crispy tofu with mixed seasonal vegetables over warm short-grain rice.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-bibimbap-house-m4",
+        "name": "Korean Fried Chicken",
+        "description": "Twice-fried wings glazed in a sweet-and-spicy soy garlic sauce.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-bibimbap-house-m5",
+        "name": "Japchae Glass Noodles",
+        "description": "Sweet potato glass noodles stir-fried with beef, spinach, mushrooms, and sesame.",
+        "price": 13.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-bibimbap-house-m6",
+        "name": "Kimchi Fried Rice",
+        "description": "Wok-fried rice with aged kimchi, smoky pork, and a sunny egg on top.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-bibimbap-house-m7",
+        "name": "Galbi Short Ribs",
+        "description": "Soy-marinated grilled short ribs with steamed rice and pickled radish.",
+        "price": 17.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-bibimbap-house-m8",
+        "name": "Kimchi Pancake",
+        "description": "Crispy savory pancake studded with fermented kimchi and scallions.",
+        "price": 7.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-bibimbap-house-m9",
+        "name": "Mandu Dumplings 6pc",
+        "description": "Pan-seared pork and chive dumplings with a soy-vinegar dip.",
+        "price": 6.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-bibimbap-house-m10",
+        "name": "Seaweed Salad",
+        "description": "Refreshing wakame seaweed tossed in sesame vinaigrette.",
+        "price": 4.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-bibimbap-house-m11",
+        "name": "Korean Corn Tea",
+        "description": "Roasted corn tea served cold over ice, lightly nutty and clean.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-bibimbap-house-m12",
+        "name": "Chilled Soju",
+        "description": "A small chilled bottle of clear Korean rice spirit.",
+        "price": 6.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-bibimbap-house-m13",
+        "name": "Red Bean Bingsu",
+        "description": "Shaved milky ice piled with sweet red bean and a condensed milk drizzle.",
+        "price": 6.49,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-lemongrass-thai",
+    "name": "Lemongrass Thai",
+    "cuisine": "Thai",
+    "rating": 4.4,
+    "deliveryTime": "25-35 min",
+    "deliveryFee": 2.49,
+    "imageUrl": "/restaurants/LemongrassThai.webp",
+    "menu": [
+      {
+        "id": "r-lemongrass-thai-m1",
+        "name": "Classic Pad Thai",
+        "description": "Stir-fried rice noodles with shrimp, egg, peanuts, lime, and bean sprouts.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-lemongrass-thai-m2",
+        "name": "Drunken Noodles",
+        "description": "Wide rice noodles tossed with basil, chili, bell pepper, and your choice of protein.",
+        "price": 13.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-lemongrass-thai-m3",
+        "name": "Green Curry",
+        "description": "Aromatic coconut green curry with chicken, Thai eggplant, and basil over jasmine rice.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-lemongrass-thai-m4",
+        "name": "Massaman Curry",
+        "description": "Mild peanut-forward curry with beef, potato, and roasted peanuts over rice.",
+        "price": 14.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-lemongrass-thai-m5",
+        "name": "Pad See Ew",
+        "description": "Wide noodles stir-fried with Chinese broccoli, egg, and sweet dark soy.",
+        "price": 12.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-lemongrass-thai-m6",
+        "name": "Thai Basil Fried Rice",
+        "description": "Wok-tossed jasmine rice with Thai basil, garlic, chili, and your choice of protein.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-lemongrass-thai-m7",
+        "name": "Crispy Garlic Pork",
+        "description": "Twice-cooked pork belly glazed with fried garlic, served over jasmine rice.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-lemongrass-thai-m8",
+        "name": "Tom Yum Soup",
+        "description": "Hot-and-sour shrimp soup with lemongrass, lime leaves, and straw mushrooms.",
+        "price": 7.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-lemongrass-thai-m9",
+        "name": "Chicken Satay 4pc",
+        "description": "Four grilled marinated chicken skewers with a peanut dipping sauce.",
+        "price": 7.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-lemongrass-thai-m10",
+        "name": "Fresh Spring Rolls",
+        "description": "Rice-paper rolls with shrimp, herbs, and rice noodles, with a hoisin-peanut dip.",
+        "price": 6.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-lemongrass-thai-m11",
+        "name": "Thai Iced Tea",
+        "description": "Strong black tea sweetened and cooled, swirled with condensed milk.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-lemongrass-thai-m12",
+        "name": "Fresh Coconut Water",
+        "description": "Young coconut water served chilled over ice, lightly sweet and floral.",
+        "price": 3.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-lemongrass-thai-m13",
+        "name": "Mango Sticky Rice",
+        "description": "Sweet sticky rice with fresh ripe mango and warm coconut cream.",
+        "price": 6.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-sahara-grill",
+    "name": "Sahara Grill",
+    "cuisine": "Mediterranean",
+    "rating": 4.5,
+    "deliveryTime": "20-35 min",
+    "deliveryFee": 1.99,
+    "imageUrl": "/restaurants/SaharaGrill.webp",
+    "menu": [
+      {
+        "id": "r-sahara-grill-m1",
+        "name": "Chicken Shawarma Plate",
+        "description": "Spit-roasted shaved chicken with saffron rice, salad, and garlic toum.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sahara-grill-m2",
+        "name": "Beef Gyro Wrap",
+        "description": "Marinated beef with tomato, red onion, and tzatziki in a warm pita.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sahara-grill-m3",
+        "name": "Lamb Kofta Plate",
+        "description": "Charcoal-grilled spiced lamb skewers over rice with charred vegetables.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sahara-grill-m4",
+        "name": "Falafel Bowl",
+        "description": "Crispy chickpea falafel over greens with hummus, tahini, and house pickles.",
+        "price": 11.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sahara-grill-m5",
+        "name": "Shrimp Souvlaki",
+        "description": "Lemon-oregano grilled shrimp skewers with rice pilaf and warm pita.",
+        "price": 14.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sahara-grill-m6",
+        "name": "Mediterranean Power Bowl",
+        "description": "Quinoa, hummus, tabbouleh, olives, feta, and your choice of grilled protein.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sahara-grill-m7",
+        "name": "Mixed Grill Platter",
+        "description": "Chicken shawarma, beef kofta, and a lamb skewer with rice and salad.",
+        "price": 17.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sahara-grill-m8",
+        "name": "Hummus & Pita",
+        "description": "Creamy chickpea hummus drizzled with olive oil, served with warm pita.",
+        "price": 5.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sahara-grill-m9",
+        "name": "Falafel Bites 5pc",
+        "description": "Five golden-fried falafel served with garlic tahini for dipping.",
+        "price": 5.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sahara-grill-m10",
+        "name": "Tabbouleh Salad",
+        "description": "Parsley, mint, bulgur, tomato, and lemon dressed in olive oil.",
+        "price": 6.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sahara-grill-m11",
+        "name": "Stuffed Grape Leaves",
+        "description": "Rice-and-herb stuffed dolmas served chilled with a lemon wedge.",
+        "price": 6.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sahara-grill-m12",
+        "name": "Mint Lemonade",
+        "description": "Tart lemonade muddled with fresh mint leaves and crushed ice.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sahara-grill-m13",
+        "name": "Turkish Coffee",
+        "description": "Strong finely-ground coffee served with a tiny sweet bite.",
+        "price": 3.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sahara-grill-m14",
+        "name": "Baklava 3pc",
+        "description": "Three diamonds of flaky phyllo with walnuts, pistachios, and honey syrup.",
+        "price": 5.99,
+        "category": "Desserts"
+      }
+    ]
   }
 ]
