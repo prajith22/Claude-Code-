@@ -1,12 +1,13 @@
 import products from "@/data/products.json";
 import type { Product } from "@/types";
-import { requireSubscribedUser } from "@/lib/session-guards";
 import { CartButton } from "@/components/CartButton";
 import { ShopExperience } from "@/components/ShopExperience";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 
+// Auth + subscription gating happen in (app)/layout.tsx; no need
+// to re-check here. Doing so previously doubled the per-nav
+// Prisma roundtrips.
 export default async function ShopPage() {
-  await requireSubscribedUser();
   const all = products as Product[];
 
   // Format date on server to avoid hydration mismatch

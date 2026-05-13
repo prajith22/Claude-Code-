@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { requireUser } from "@/lib/session-guards";
+import { getCurrentUser } from "@/lib/session-guards";
 import { isIOSWebView } from "@/lib/is-ios-webview";
 import { stripe, PLANS, planFromPriceId, type PlanId } from "@/lib/stripe";
 import { SettingsControls } from "@/components/SettingsControls";
@@ -8,9 +8,16 @@ import { SettingsControls } from "@/components/SettingsControls";
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  // Settings page is reachable even when status drifts to past_due, so we
-  // only require a logged-in user — not an active sub.
-  const user = await requireUser();
+  // Auth is enforced upstream by (app)/layout.tsx. We read the user
+  // row via the cached getCurrentUser so this page costs zero extra
+  // Prisma roundtrips on top of the layout's fetch.
+  //
+  // Historical note: this used to call requireUser() (less strict
+  // than requireSubscribedUser) to keep /settings reachable on
+  // past_due. That intent is currently moot because the layout
+  // enforces subscription regardless — past_due users can't reach
+  // here today. Re-loosening that behavior is a separate change.
+  const user = (await getCurrentUser())!;
 
   return (
     <div className="space-y-8 pb-4 pt-4">

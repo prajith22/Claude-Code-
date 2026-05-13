@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireSubscribedUser } from "@/lib/session-guards";
+import { getCurrentUser } from "@/lib/session-guards";
 import { isIOSWebView } from "@/lib/is-ios-webview";
 import { DailySpinWheel } from "@/components/DailySpinWheel";
 import { SimCard } from "@/components/SimCard";
@@ -8,7 +8,12 @@ import { PlanUsageCard } from "@/components/PlanUsageCard";
 import { streakStatus } from "@/lib/streaks";
 
 export default async function HomePage() {
-  const user = await requireSubscribedUser();
+  // Auth + subscription enforced upstream by (app)/layout.tsx. We
+  // still need the user row to render the greeting, streak hero,
+  // and plan-usage card — cached call dedupes with the layout's
+  // requireSubscribedUser fetch so the page costs zero extra
+  // Prisma roundtrips.
+  const user = (await getCurrentUser())!;
   const firstName = user.name?.trim().split(/\s+/)[0] || "there";
   // Apple prohibits gambling features for individual developer
   // accounts, so on iOS we hide the Bet simulator card and tell

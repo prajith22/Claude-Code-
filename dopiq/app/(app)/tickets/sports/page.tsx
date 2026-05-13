@@ -1,13 +1,11 @@
 import Link from "next/link";
-import { requireSubscribedUser } from "@/lib/session-guards";
 import { SPORTS_GAMES, TICKETS_BRAND } from "@/data/tickets";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 
 export const dynamic = "force-dynamic";
 
-export default async function SportsBrowsePage() {
-  await requireSubscribedUser();
-
+// Auth + subscription enforced upstream by (app)/layout.tsx.
+export default function SportsBrowsePage() {
   return (
     <div
       className="-mx-4 -mt-4 px-4 pt-6 pb-10"
