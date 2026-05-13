@@ -2981,5 +2981,522 @@
         "category": "Desserts"
       }
     ]
+  },
+  {
+    "id": "r-stacked-sandwich-bar",
+    "name": "Stacked Sandwich Bar",
+    "cuisine": "Sandwiches",
+    "rating": 4.5,
+    "deliveryTime": "20-30 min",
+    "deliveryFee": 1.99,
+    "imageUrl": "/restaurants/StackedSandwichBar.webp",
+    "menu": [
+      {
+        "id": "r-stacked-sandwich-bar-m1",
+        "name": "Italian Stack Sub",
+        "description": "Genoa salami, capicola, ham, provolone, lettuce, tomato, and Italian dressing on a hoagie roll.",
+        "price": 11.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-stacked-sandwich-bar-m2",
+        "name": "Turkey Club Panini",
+        "description": "Roasted turkey, bacon, swiss, tomato, and herb aioli pressed on sourdough.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-stacked-sandwich-bar-m3",
+        "name": "Roast Beef Melt",
+        "description": "Slow-roasted beef, sharp cheddar, and horseradish mayo on toasted ciabatta.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-stacked-sandwich-bar-m4",
+        "name": "Chicken Pesto Wrap",
+        "description": "Grilled chicken, basil pesto, sun-dried tomato, and mozzarella in a soft flour wrap.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-stacked-sandwich-bar-m5",
+        "name": "Tuna Crunch Sub",
+        "description": "House tuna salad with celery, pickle, and red onion piled on a hoagie roll.",
+        "price": 9.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-stacked-sandwich-bar-m6",
+        "name": "Veggie Caprese Panini",
+        "description": "Tomato, fresh mozzarella, basil, and balsamic glaze pressed on grilled ciabatta.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-stacked-sandwich-bar-m7",
+        "name": "Buffalo Chicken Wrap",
+        "description": "Crispy chicken tossed in buffalo with lettuce, ranch, and blue cheese crumbles.",
+        "price": 10.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-stacked-sandwich-bar-m8",
+        "name": "House Pickle Plate",
+        "description": "Dill, half-sour, and bread-and-butter pickles with sea salt crackers.",
+        "price": 3.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-stacked-sandwich-bar-m9",
+        "name": "Kettle Chips",
+        "description": "Crispy sea-salt kettle chips, the only deli side that matters.",
+        "price": 2.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-stacked-sandwich-bar-m10",
+        "name": "Creamy Coleslaw",
+        "description": "Shredded cabbage and carrot in a tangy buttermilk dressing.",
+        "price": 3.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-stacked-sandwich-bar-m11",
+        "name": "Fountain Soda",
+        "description": "Your choice of fountain soda, served over crisp ice.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-stacked-sandwich-bar-m12",
+        "name": "Brewed Iced Tea",
+        "description": "Freshly brewed unsweetened iced tea with a lemon wedge.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-stacked-sandwich-bar-m13",
+        "name": "Bakery Chocolate Chip Cookie",
+        "description": "A warm, chewy chocolate chip cookie, baked fresh in-house.",
+        "price": 2.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-panda-garden",
+    "name": "Panda Garden",
+    "cuisine": "Chinese",
+    "rating": 4.4,
+    "deliveryTime": "20-35 min",
+    "deliveryFee": 2.49,
+    "imageUrl": "/restaurants/PandaGarden.webp",
+    "menu": [
+      {
+        "id": "r-panda-garden-m1",
+        "name": "Orange Chicken",
+        "description": "Crispy battered chicken tossed in a sweet-tangy orange glaze over steamed white rice.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-panda-garden-m2",
+        "name": "General's Spicy Chicken",
+        "description": "Wok-seared chicken in a savory soy-garlic sauce with red chilies and scallions.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-panda-garden-m3",
+        "name": "Beef & Broccoli",
+        "description": "Tender flank steak stir-fried with broccoli florets in a rich brown garlic sauce.",
+        "price": 12.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-panda-garden-m4",
+        "name": "Mongolian Beef",
+        "description": "Crispy beef tossed with green onion in a sweet soy-ginger glaze.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-panda-garden-m5",
+        "name": "Sesame Chicken Lo Mein",
+        "description": "Soft egg noodles tossed with sesame-glazed chicken and seasonal vegetables.",
+        "price": 11.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-panda-garden-m6",
+        "name": "Vegetable Fried Rice",
+        "description": "Wok-fried jasmine rice with peas, carrots, scallions, and scrambled egg.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-panda-garden-m7",
+        "name": "Honey Walnut Shrimp",
+        "description": "Crispy shrimp glazed with creamy honey mayo and topped with candied walnuts.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-panda-garden-m8",
+        "name": "Pork Egg Rolls 3pc",
+        "description": "Three crispy pork egg rolls served with sweet chili dipping sauce.",
+        "price": 4.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-panda-garden-m9",
+        "name": "Pan-Fried Pork Dumplings 6pc",
+        "description": "Six pan-seared pork dumplings with a soy-vinegar dipping sauce.",
+        "price": 6.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-panda-garden-m10",
+        "name": "Hot & Sour Soup",
+        "description": "Classic hot-and-sour soup with tofu, mushroom, bamboo, and a pepper kick.",
+        "price": 4.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-panda-garden-m11",
+        "name": "Classic Bubble Tea",
+        "description": "Brewed black tea with milk, brown sugar, and chewy tapioca pearls.",
+        "price": 4.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-panda-garden-m12",
+        "name": "Jasmine Iced Tea",
+        "description": "Lightly floral jasmine tea served chilled over ice.",
+        "price": 2.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-panda-garden-m13",
+        "name": "Fortune Cookies 2pc",
+        "description": "Two crisp fortune cookies — your future, baked in.",
+        "price": 2.99,
+        "category": "Desserts"
+      },
+      {
+        "id": "r-panda-garden-m14",
+        "name": "Fried Banana Spring Rolls",
+        "description": "Crispy spring rolls stuffed with sweet banana, dusted with powdered sugar.",
+        "price": 4.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-hook-line",
+    "name": "Hook & Line",
+    "cuisine": "Seafood",
+    "rating": 4.6,
+    "deliveryTime": "30-45 min",
+    "deliveryFee": 3.99,
+    "imageUrl": "/restaurants/Hook&Line.webp",
+    "menu": [
+      {
+        "id": "r-hook-line-m1",
+        "name": "Classic Lobster Roll",
+        "description": "Chunks of warm-buttered lobster piled into a toasted New England split-top roll.",
+        "price": 21.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-hook-line-m2",
+        "name": "Fish & Chips",
+        "description": "Beer-battered Atlantic cod with thick-cut fries, malt vinegar, and tartar sauce.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-hook-line-m3",
+        "name": "Pan-Seared Salmon",
+        "description": "Crisp-skinned salmon over lemon orzo with garlicky greens and brown butter.",
+        "price": 17.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-hook-line-m4",
+        "name": "Shrimp Scampi Linguine",
+        "description": "Linguine tossed with garlic shrimp, white wine, lemon, and a touch of butter.",
+        "price": 16.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-hook-line-m5",
+        "name": "Maryland Crab Cakes",
+        "description": "Two seared lump-crab cakes with remoulade, slaw, and a lemon wedge.",
+        "price": 18.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-hook-line-m6",
+        "name": "Grilled Mahi Tacos 2pc",
+        "description": "Two flame-grilled mahi tacos with chipotle slaw, pickled onion, and lime crema.",
+        "price": 13.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-hook-line-m7",
+        "name": "Blackened Catfish Plate",
+        "description": "Cajun-spiced catfish over dirty rice with a charred lemon half.",
+        "price": 14.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-hook-line-m8",
+        "name": "New England Clam Chowder",
+        "description": "Creamy chowder with potato, salt pork, and tender clams, with oyster crackers.",
+        "price": 7.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-hook-line-m9",
+        "name": "Shrimp Cocktail",
+        "description": "Five chilled jumbo shrimp with cocktail sauce and lemon.",
+        "price": 9.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-hook-line-m10",
+        "name": "Calamari Fritti",
+        "description": "Lightly battered calamari rings with marinara and a squeeze of lemon.",
+        "price": 8.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-hook-line-m11",
+        "name": "House Sauvignon Blanc",
+        "description": "A crisp, citrusy glass of Sauvignon Blanc — pairs with anything on the menu.",
+        "price": 7.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-hook-line-m12",
+        "name": "Mint Sparkling Water",
+        "description": "Sparkling water muddled with fresh mint and a lemon wedge.",
+        "price": 3.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-hook-line-m13",
+        "name": "Key Lime Pie",
+        "description": "Tart-sweet key lime custard in a graham crust, topped with whipped cream.",
+        "price": 6.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-sweetleaf-kitchen",
+    "name": "Sweetleaf Kitchen",
+    "cuisine": "Healthy",
+    "rating": 4.6,
+    "deliveryTime": "20-30 min",
+    "deliveryFee": 2.99,
+    "imageUrl": "/restaurants/SweetleafKitchen.webp",
+    "menu": [
+      {
+        "id": "r-sweetleaf-kitchen-m1",
+        "name": "Power Quinoa Bowl",
+        "description": "Tri-color quinoa with roasted veg, kale, avocado, and lemon-tahini drizzle.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sweetleaf-kitchen-m2",
+        "name": "Mediterranean Chickpea Bowl",
+        "description": "Cumin chickpeas over greens with cucumber, tomato, feta, and tzatziki.",
+        "price": 11.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sweetleaf-kitchen-m3",
+        "name": "Kale Caesar with Grilled Chicken",
+        "description": "Massaged kale tossed with grilled chicken, shaved parmesan, and a lighter caesar.",
+        "price": 12.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sweetleaf-kitchen-m4",
+        "name": "Salmon Poke Bowl",
+        "description": "Fresh salmon with edamame, mango, seaweed, and brown rice with ponzu.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sweetleaf-kitchen-m5",
+        "name": "Avocado Toast Plate",
+        "description": "Two thick slices of multigrain toast with smashed avocado, chili flakes, and lemon.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sweetleaf-kitchen-m6",
+        "name": "Spicy Tuna Bowl",
+        "description": "Sriracha-tossed tuna over sushi rice with cucumber, avocado, and crispy onion.",
+        "price": 13.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sweetleaf-kitchen-m7",
+        "name": "Sweet Potato Buddha Bowl",
+        "description": "Roasted sweet potato, chickpeas, brown rice, kale, and turmeric-tahini sauce.",
+        "price": 11.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sweetleaf-kitchen-m8",
+        "name": "Kale Crunch Salad",
+        "description": "Shredded kale with cranberry, almond, and a creamy apple-cider dressing.",
+        "price": 8.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sweetleaf-kitchen-m9",
+        "name": "Roasted Beet Salad",
+        "description": "Roasted beets with goat cheese, candied walnuts, and arugula.",
+        "price": 8.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sweetleaf-kitchen-m10",
+        "name": "Edamame Hummus & Crudites",
+        "description": "Smooth edamame hummus with crisp seasonal vegetables for dipping.",
+        "price": 6.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sweetleaf-kitchen-m11",
+        "name": "Cold-Pressed Green Juice",
+        "description": "Spinach, cucumber, celery, apple, and ginger pressed cold this morning.",
+        "price": 6.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sweetleaf-kitchen-m12",
+        "name": "Berry Protein Smoothie",
+        "description": "Mixed berries, banana, almond milk, and plant protein blended thick.",
+        "price": 7.49,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sweetleaf-kitchen-m13",
+        "name": "Cacao Almond Energy Balls 3pc",
+        "description": "Three raw-cacao almond energy balls rolled in shredded coconut.",
+        "price": 4.99,
+        "category": "Desserts"
+      }
+    ]
+  },
+  {
+    "id": "r-sunny-side-up",
+    "name": "Sunny Side Up",
+    "cuisine": "Breakfast",
+    "rating": 4.7,
+    "deliveryTime": "15-25 min",
+    "deliveryFee": 2.49,
+    "imageUrl": "/restaurants/SunnySideUp.webp",
+    "menu": [
+      {
+        "id": "r-sunny-side-up-m1",
+        "name": "Buttermilk Pancake Stack",
+        "description": "Three fluffy buttermilk pancakes with warm maple syrup and a pat of butter.",
+        "price": 9.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sunny-side-up-m2",
+        "name": "Brioche French Toast",
+        "description": "Thick-cut brioche dipped in vanilla custard, griddled golden, dusted with powdered sugar.",
+        "price": 10.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sunny-side-up-m3",
+        "name": "Western Omelet",
+        "description": "Three-egg omelet with ham, bell pepper, onion, and sharp cheddar.",
+        "price": 10.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sunny-side-up-m4",
+        "name": "Avocado Eggs Benedict",
+        "description": "Poached eggs over avocado, English muffin, and crispy bacon under a hollandaise blanket.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sunny-side-up-m5",
+        "name": "Loaded Breakfast Burrito",
+        "description": "Scrambled eggs, chorizo, hash browns, cheese, and salsa rolled in a flour tortilla.",
+        "price": 9.49,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sunny-side-up-m6",
+        "name": "Steak & Eggs Plate",
+        "description": "Grilled flat iron steak with two eggs any style, hash browns, and toast.",
+        "price": 14.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sunny-side-up-m7",
+        "name": "Chicken & Waffles",
+        "description": "Crispy buttermilk fried chicken over a Belgian waffle with maple butter.",
+        "price": 12.99,
+        "category": "Mains"
+      },
+      {
+        "id": "r-sunny-side-up-m8",
+        "name": "Hash Brown Patty",
+        "description": "A crispy golden hash brown patty, salted and ready.",
+        "price": 3.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sunny-side-up-m9",
+        "name": "Smoked Bacon 3 Strips",
+        "description": "Three strips of thick-cut applewood-smoked bacon.",
+        "price": 4.49,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sunny-side-up-m10",
+        "name": "Fresh Fruit Cup",
+        "description": "Seasonal cut fruit with mint and a wedge of lime.",
+        "price": 4.99,
+        "category": "Appetizers"
+      },
+      {
+        "id": "r-sunny-side-up-m11",
+        "name": "Vanilla Latte",
+        "description": "Espresso with steamed milk and a swirl of vanilla syrup.",
+        "price": 4.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sunny-side-up-m12",
+        "name": "Bottomless Mimosa",
+        "description": "A glass of bubbly with fresh-squeezed OJ — keep them coming until you stop us.",
+        "price": 8.99,
+        "category": "Drinks"
+      },
+      {
+        "id": "r-sunny-side-up-m13",
+        "name": "Cinnamon Roll",
+        "description": "A warm, sticky cinnamon roll under cream cheese frosting.",
+        "price": 4.99,
+        "category": "Desserts"
+      }
+    ]
   }
 ]
