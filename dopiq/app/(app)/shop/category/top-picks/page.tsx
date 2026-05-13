@@ -1,7 +1,7 @@
 import Link from "next/link";
 import products from "@/data/products.json";
 import type { Product } from "@/types";
-import { ProductCard } from "@/components/DiscoveryFeed";
+import { MasonryProductGrid } from "@/components/MasonryProductGrid";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 
 const TOP_PICKS_COUNT = 24;
@@ -31,11 +31,7 @@ export default function ShopTopPicksPage() {
         </p>
       </header>
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-        {items.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
+      <MasonryProductGrid products={items} />
 
       <SimDisclaimer text="All products, prices, and reviews are fictional and for simulation purposes only. Dopiq does not sell or own any items. No real purchase is ever made." />
     </div>

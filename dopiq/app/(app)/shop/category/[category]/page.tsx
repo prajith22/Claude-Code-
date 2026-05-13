@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import products from "@/data/products.json";
 import type { Product, ProductCategory } from "@/types";
-import { ProductCard } from "@/components/DiscoveryFeed";
+import { MasonryProductGrid } from "@/components/MasonryProductGrid";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 
 // URL slug → canonical category name. Kebab-case for the URL,
@@ -58,11 +58,7 @@ export default function ShopCategoryPage({
         </p>
       </header>
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-        {items.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
+      <MasonryProductGrid products={items} />
 
       <SimDisclaimer text="All products, prices, and reviews are fictional and for simulation purposes only. Dopiq does not sell or own any items. No real purchase is ever made." />
     </div>

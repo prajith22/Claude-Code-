@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import type { Product, ProductCategory } from "@/types";
 import { ExploreSection } from "@/components/ExploreSection";
 import { CuratedShopGrid } from "@/components/CuratedShopGrid";
-import { BrowseSection, ProductCard } from "@/components/DiscoveryFeed";
+import { BrowseSection } from "@/components/DiscoveryFeed";
+import { MasonryProductGrid } from "@/components/MasonryProductGrid";
 import { Bag } from "@/components/icons";
 
 /**
@@ -163,11 +164,7 @@ function SearchResults({
         {products.length === 1 ? "match" : "matches"} for{" "}
         <span className="font-semibold text-ink">&ldquo;{query}&rdquo;</span>
       </p>
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-        {products.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
+      <MasonryProductGrid products={products} />
     </section>
   );
 }
