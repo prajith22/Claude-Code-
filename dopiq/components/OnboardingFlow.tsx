@@ -212,6 +212,13 @@ const SCREEN_1_OPTIONS = [
     response: "Those cravings are real. So is our food simulator.",
   },
   {
+    category: "tickets" as const,
+    bg: "#FFE4D6",
+    fg: "#7C2D12",
+    label: "I doom-scroll Ticketmaster and StubHub for fun.",
+    response: "The hunt is real. The fees aren't. Now sim it.",
+  },
+  {
     category: "bet" as const,
     bg: "#E8F0FF",
     fg: "#1A237E",
