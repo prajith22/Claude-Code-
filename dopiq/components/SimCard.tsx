@@ -1,9 +1,10 @@
 "use client";
 
-import { memo, useId, useState } from "react";
+import { memo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { DotTexture } from "@/components/DotTexture";
 
 function SimCardImpl({
   href,
@@ -23,7 +24,6 @@ function SimCardImpl({
 }) {
   const [entered, setEntered] = useState(false);
   const [hovered, setHovered] = useState(false);
-  const patternId = `sim-dots-${useId()}`;
 
   return (
     <motion.div
@@ -66,12 +66,11 @@ function SimCardImpl({
       }}
     >
       {/* Subtle dotted texture, tinted by the card's title color via
-          currentColor — keeps each card visually unique without hard-coding
-          three different patterns. */}
-      <DotTexture
-        patternId={patternId}
-        className={cn("pointer-events-none absolute inset-0 opacity-[0.07]", title)}
-      />
+          currentColor (the shared DotTexture uses fill="currentColor"
+          and inherits whatever Tailwind text-* class lands on it).
+          Keeps each card visually unique without hard-coding three
+          different patterns. */}
+      <DotTexture className={title} />
 
       <Link
         href={href}
@@ -119,35 +118,3 @@ function SimCardImpl({
 // so the only re-renders should be the entry/hover ones owned by
 // each card's own state.
 export const SimCard = memo(SimCardImpl);
-
-function DotTexture({
-  patternId,
-  className,
-}: {
-  patternId: string;
-  className?: string;
-}) {
-  return (
-    <svg
-      className={className}
-      width="100%"
-      height="100%"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-    >
-      <defs>
-        <pattern
-          id={patternId}
-          x="0"
-          y="0"
-          width="14"
-          height="14"
-          patternUnits="userSpaceOnUse"
-        >
-          <circle cx="2" cy="2" r="1.4" fill="currentColor" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill={`url(#${patternId})`} />
-    </svg>
-  );
-}
