@@ -88,7 +88,7 @@ export function PlanUsageCard({ initial }: { initial: PlanSummary }) {
           Plan usage
         </p>
         <span
-          className="rounded-pill border bg-[#FFF7ED] px-3 py-1 text-[11px] font-bold text-[#7C2D12]"
+          className="rounded-pill border-[1.5px] bg-[#FFF7ED] px-3 py-1 text-[11px] font-bold text-[#7C2D12]"
           style={{ borderColor: "#FDC78A" }}
         >
           {label} plan

@@ -101,7 +101,11 @@ export function TopNav({ excludeBet = false }: { excludeBet?: boolean }) {
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
-            className="flex h-9 items-center gap-2.5 rounded-pill border border-surface-border bg-white px-3 transition-all duration-150 hover:bg-surface-alt"
+            // 1.5px warm-cream border keeps the avatar pill distinct
+            // against the cream nav bg without reading as a cool-grey
+            // Bootstrap default.
+            className="flex h-9 items-center gap-2.5 rounded-pill border-[1.5px] bg-white px-3 transition-all duration-150 hover:bg-surface-alt"
+            style={{ borderColor: "#E5E3DE" }}
           >
             {avatar ? (
               <Image
