@@ -88,7 +88,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="relative overflow-hidden rounded-card border border-[#E8E4E0] bg-[#D1FAE5] p-6"
+        className="relative overflow-hidden rounded-card border-[2.5px] border-[#2A1F18] bg-[#D1FAE5] p-6"
       >
         <DotTexture className="text-[#064E3B]" />
         {/* Content wrapper is `relative` so it sits in the same
@@ -122,7 +122,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.08, ease: "easeOut" }}
-        className="relative overflow-hidden rounded-card border border-[#E8E4E0] bg-[#FFEDD5] p-6"
+        className="relative overflow-hidden rounded-card border-[2.5px] border-[#2A1F18] bg-[#FFEDD5] p-6"
       >
         <DotTexture className="text-[#7C2D12]" />
         <div className="relative">
