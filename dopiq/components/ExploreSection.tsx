@@ -9,6 +9,7 @@ import type { Product, ProductCategory } from "@/types";
 import { cn, formatUSD } from "@/lib/utils";
 import { useCartStore } from "@/lib/cart-store";
 import { Bag, StarFilled } from "@/components/icons";
+import { CartButton } from "@/components/CartButton";
 
 type CategoryKey = "all" | ProductCategory;
 
@@ -145,10 +146,19 @@ export function ExploreSection({ products }: { products: Product[] }) {
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="font-heading text-[20px] font-bold tracking-tight text-ink">
-          Swipe to Explore
-        </h2>
-        <p className="text-[13px] text-ink-muted">Something new every refresh.</p>
+        {/* Section heading + cart button live on one line so the
+            cart stays reachable from /shop without a standalone
+            top-bar row. Subtitle sits on its own line below,
+            still left-aligned. */}
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-heading text-[20px] font-bold tracking-tight text-ink">
+            Swipe to Explore
+          </h2>
+          <CartButton kind="shop" />
+        </div>
+        <p className="mt-1 text-[13px] text-ink-muted">
+          Something new every refresh.
+        </p>
       </div>
 
       {/* Category filter pills — horizontal scroll on mobile, no
