@@ -8,6 +8,7 @@ import {
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
+import { DotTexture } from "@/components/DotTexture";
 import { useSavingsStore } from "@/lib/savings-store";
 
 type Summary = {
@@ -80,53 +81,66 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
   return (
     <div className="grid gap-3 sm:grid-cols-[1.4fr_1fr] sm:gap-4">
       {/* Saved today — soft mint tint matches the Tickets SimCard
-          below and lets the existing emerald dollar amount pop. */}
+          below and lets the existing emerald dollar amount pop.
+          DotTexture inherits currentColor → tinted deep-emerald at
+          7% opacity, reads as darker-mint speckle on the surface. */}
       <motion.section
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="rounded-card border border-[#E8E4E0] bg-[#D1FAE5] p-6"
+        className="relative overflow-hidden rounded-card border border-[#E8E4E0] bg-[#D1FAE5] p-6"
       >
-        <p className="text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
-          Saved today
-        </p>
-        <div className="mt-2 flex items-baseline gap-2.5">
-          <AnimatedSavedAmount
-            value={saved}
-            className="font-heading text-[44px] font-extrabold leading-none text-[#1B5E20] md:text-[56px]"
-          />
-          <ArrowUp className="text-[#1B5E20]" />
+        <DotTexture className="text-[#064E3B]" />
+        {/* Content wrapper is `relative` so it sits in the same
+            stacking context as the absolute DotTexture and DOM
+            order (texture first → content after) decides paint
+            order. Without this the SVG would paint over the text. */}
+        <div className="relative">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
+            Saved today
+          </p>
+          <div className="mt-2 flex items-baseline gap-2.5">
+            <AnimatedSavedAmount
+              value={saved}
+              className="font-heading text-[44px] font-extrabold leading-none text-[#1B5E20] md:text-[56px]"
+            />
+            <ArrowUp className="text-[#1B5E20]" />
+          </div>
+          <p className="mt-2 text-[13px] text-[#1A1A1A]/70">
+            {saved === 0
+              ? "First simulation of the day starts the count."
+              : "That’s real money you didn’t spend on real impulses."}
+          </p>
         </div>
-        <p className="mt-2 text-[13px] text-[#1A1A1A]/70">
-          {saved === 0
-            ? "First simulation of the day starts the count."
-            : "That’s real money you didn’t spend on real impulses."}
-        </p>
       </motion.section>
 
       {/* Streak — warm peach tint pairs with the flame emoji and
-          rhymes with the rest of the home palette without
-          colliding with Quick Sim's coral pink. */}
+          rhymes with the rest of the home palette without colliding
+          with Quick Sim's coral pink. DotTexture tinted deep warm
+          brown at 7% opacity → reads as darker-peach speckle. */}
       <motion.section
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.08, ease: "easeOut" }}
-        className="rounded-card border border-[#E8E4E0] bg-[#FFEDD5] p-6"
+        className="relative overflow-hidden rounded-card border border-[#E8E4E0] bg-[#FFEDD5] p-6"
       >
-        <p className="text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
-          Streak
-        </p>
-        <div className="mt-2 flex items-center gap-3">
-          <span aria-hidden className="text-[40px] leading-none md:text-[48px]">
-            🔥
-          </span>
-          <span className="font-mono text-[44px] font-extrabold leading-none text-[#1A1A1A] tabular-nums md:text-[56px]">
-            {streak}
-          </span>
+        <DotTexture className="text-[#7C2D12]" />
+        <div className="relative">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
+            Streak
+          </p>
+          <div className="mt-2 flex items-center gap-3">
+            <span aria-hidden className="text-[40px] leading-none md:text-[48px]">
+              🔥
+            </span>
+            <span className="font-mono text-[44px] font-extrabold leading-none text-[#1A1A1A] tabular-nums md:text-[56px]">
+              {streak}
+            </span>
+          </div>
+          <p className="mt-2 text-[13px] font-semibold text-[#1A1A1A]/70">
+            {streakMessage(streak, atRisk, longest)}
+          </p>
         </div>
-        <p className="mt-2 text-[13px] font-semibold text-[#1A1A1A]/70">
-          {streakMessage(streak, atRisk, longest)}
-        </p>
       </motion.section>
     </div>
   );

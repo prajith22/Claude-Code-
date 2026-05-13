@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import { DotTexture } from "@/components/DotTexture";
 
 type Sector = {
   key: "shop" | "food" | "bet" | "tickets";
@@ -301,22 +302,26 @@ export function DailySpinWheel({
             exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
             // Card tint shifts with the winning slice — see
-            // RESULT_COLORS above. The internal "Let's go →"
-            // emerald CTA below stays solid (btn-primary) so the
-            // confident "yes" action pops against every tint.
-            className="w-full max-w-xs rounded-card border p-5 text-center shadow-card"
+            // RESULT_COLORS above. DotTexture inherits the same
+            // titleColor (passed via inline `color`) so each slice
+            // gets darker-tone-of-itself speckling. The internal
+            // "Let's go →" emerald CTA below stays solid
+            // (btn-primary) so the confident "yes" action pops
+            // against every tint.
+            className="relative w-full max-w-xs overflow-hidden rounded-card border p-5 text-center shadow-card"
             style={{
               backgroundColor: RESULT_COLORS[landed.key].bg,
               borderColor: RESULT_COLORS[landed.key].border,
             }}
           >
+            <DotTexture style={{ color: RESULT_COLORS[landed.key].titleColor }} />
             <p
-              className="text-[18px] font-bold"
+              className="relative text-[18px] font-bold"
               style={{ color: RESULT_COLORS[landed.key].titleColor }}
             >
               You landed on {landed.label}.
             </p>
-            <Link href={landed.href} className="btn-primary mt-4 w-full">
+            <Link href={landed.href} className="btn-primary relative mt-4 w-full">
               Let&rsquo;s go →
             </Link>
           </motion.div>

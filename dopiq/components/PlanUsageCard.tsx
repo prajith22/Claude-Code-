@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useSavingsStore } from "@/lib/savings-store";
 import { isUnlimited, PLANS, type PlanId } from "@/lib/stripe";
+import { DotTexture } from "@/components/DotTexture";
 
 type PlanSummary = {
   plan: string | null;
@@ -75,10 +76,14 @@ export function PlanUsageCard({ initial }: { initial: PlanSummary }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="rounded-card border bg-[#FFEDD5] p-5"
+      className="relative overflow-hidden rounded-card border bg-[#FFEDD5] p-5"
       style={{ borderColor: "#FDC78A" }}
     >
-      <div className="flex items-center justify-between gap-3">
+      {/* Same peach-on-peach DotTexture as the home Streak card —
+          deep warm brown at 7% opacity reads as darker speckle on
+          the surface. */}
+      <DotTexture className="text-[#7C2D12]" />
+      <div className="relative flex items-center justify-between gap-3">
         <p className="text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
           Plan usage
         </p>
@@ -91,7 +96,7 @@ export function PlanUsageCard({ initial }: { initial: PlanSummary }) {
       </div>
 
       {unlimited ? (
-        <div className="mt-2">
+        <div className="relative mt-2">
           <p className="font-heading text-[20px] font-extrabold leading-tight text-ink md:text-[22px]">
             Unlimited this month
           </p>
@@ -101,7 +106,7 @@ export function PlanUsageCard({ initial }: { initial: PlanSummary }) {
         </div>
       ) : (
         <>
-          <div className="mt-2 flex items-baseline gap-2">
+          <div className="relative mt-2 flex items-baseline gap-2">
             <p className="font-mono text-[28px] font-extrabold leading-none tabular-nums text-brand md:text-[32px]">
               {remaining}
             </p>
@@ -109,7 +114,7 @@ export function PlanUsageCard({ initial }: { initial: PlanSummary }) {
               of {limit} sims left this month
             </p>
           </div>
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface-alt">
+          <div className="relative mt-3 h-1.5 overflow-hidden rounded-full bg-surface-alt">
             <motion.div
               className="h-full bg-brand"
               initial={{ width: 0 }}
@@ -118,7 +123,7 @@ export function PlanUsageCard({ initial }: { initial: PlanSummary }) {
             />
           </div>
           {lowOnSims && (
-            <p className="mt-2 text-[12px] font-semibold text-[#BF360C]">
+            <p className="relative mt-2 text-[12px] font-semibold text-[#BF360C]">
               You&rsquo;re close to your limit.{" "}
               <Link
                 href="/settings"
