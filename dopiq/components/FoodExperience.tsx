@@ -359,7 +359,14 @@ function CompactCard({
 }) {
   return (
     <motion.div
-      className={`relative flex-none ${fullWidth ? "w-full" : "w-[220px]"} card`}
+      // Card frame inlined (was the shared `.card` utility) so we
+      // can swap its 1px surface-border for the 2.5px warm-dark
+      // border without touching .card globally — keeps cart /
+      // checkout / tracking screens on their existing 1px frame.
+      className={`relative flex-none rounded-card border-[2.5px] bg-white shadow-card ${
+        fullWidth ? "w-full" : "w-[220px]"
+      }`}
+      style={{ borderColor: "#2A1F18" }}
       whileHover={cardHover}
       transition={cardHoverTransition}
     >
@@ -393,7 +400,11 @@ function CompactCard({
 function RestaurantRow({ r }: { r: Restaurant }) {
   return (
     <motion.div
-      className="card relative"
+      // Card frame inlined (was the shared `.card` utility) so the
+      // 1px surface-border can be swapped for the 2.5px warm-dark
+      // border without touching .card globally.
+      className="relative rounded-card border-[2.5px] bg-white shadow-card"
+      style={{ borderColor: "#2A1F18" }}
       whileHover={cardHover}
       transition={cardHoverTransition}
     >
