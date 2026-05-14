@@ -122,8 +122,7 @@ export default function FoodCheckoutPage() {
         type="button"
         onClick={() => place("instant")}
         disabled={placing || lines.length === 0}
-        className="inline-flex w-full items-center justify-center rounded-pill border-[2.5px] bg-white px-6 py-3.5 text-[15px] font-semibold tracking-tight text-ink shadow-sm transition-all duration-150 hover:bg-surface-alt active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40"
-        style={{ borderColor: "#2A1F18" }}
+        className="inline-flex w-full items-center justify-center rounded-pill bg-white px-6 py-3.5 text-[15px] font-semibold tracking-tight text-ink shadow-sm transition-all duration-150 hover:bg-surface-alt active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40"
       >
         {placing ? "Placing order…" : `Buy Now · ${formatUSD(total)}`}
       </button>
