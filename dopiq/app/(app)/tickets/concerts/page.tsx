@@ -56,7 +56,7 @@ export default function ConcertsBrowsePage() {
             </div>
             <div className="px-3 pb-3 pt-3">
               <span
-                className="inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-ink"
+                className="block w-full rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-left text-[9px] font-bold uppercase tracking-wider text-ink"
                 style={{ borderColor: "#2A1F18" }}
               >
                 {artist.genre}
@@ -71,7 +71,7 @@ export default function ConcertsBrowsePage() {
                 {artist.tagline}
               </div>
               <div
-                className="mt-2 inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[11px] font-bold text-ink"
+                className="mt-2 block w-full rounded-full border-[1.5px] bg-[#F5F0E6] px-2.5 py-0.5 text-left text-[11px] font-bold text-ink"
                 style={{ borderColor: "#2A1F18" }}
               >
                 From ${Math.round(artist.basePrice * 0.65)}
