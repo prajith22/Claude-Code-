@@ -55,7 +55,12 @@ export default function RestaurantPage({
             {items.map((m) => (
               <li
                 key={m.id}
-                className="card flex items-center justify-between gap-4 p-4"
+                // Card frame inlined (was the shared `.card` utility)
+                // so the menu rows can wear the 2.5px warm-dark
+                // border without affecting cart / checkout / tracking
+                // screens that still use .card's 1px frame.
+                className="flex items-center justify-between gap-4 rounded-card border-[2.5px] bg-white p-4 shadow-card"
+                style={{ borderColor: "#2A1F18" }}
               >
                 <div className="min-w-0 flex-1">
                   <p className="text-[15px] font-bold text-ink">{m.name}</p>

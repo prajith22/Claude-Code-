@@ -119,9 +119,10 @@ function ProductCardImpl({
       whileHover={cardHover}
       transition={cardHoverTransition}
       className={cn(
-        "relative overflow-hidden rounded-card border border-surface-border bg-white shadow-card",
+        "relative overflow-hidden rounded-card border-[2.5px] bg-white shadow-card",
         className,
       )}
+      style={{ borderColor: "#2A1F18" }}
     >
       <Link href={`/shop/${product.id}`} className="block">
         <div className="relative aspect-square w-full overflow-hidden bg-surface-alt">
