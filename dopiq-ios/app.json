@@ -2,14 +2,14 @@
   "expo": {
     "name": "Dopiq",
     "slug": "dopiq",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FAFAF8"
+      "backgroundColor": "#F5F0E6"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.dopiq.app",
-      "buildNumber": "1",
+      "buildNumber": "14",
       "associatedDomains": [
         "applinks:dopiqapp.com",
         "applinks:www.dopiqapp.com"
