@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import * as Linking from "expo-linking";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import {
   WebView,
@@ -26,7 +27,22 @@ import { restoreLatestPurchase } from "./lib/iap";
 
 const TARGET_URL = "https://dopiqapp.com";
 const BRAND_GREEN = "#00C853";
-const BRAND_BG = "#FAFAF8";
+// Tickets-cream — also the splash backgroundColor in app.json. Used
+// as a full-bleed fallback layer behind the (now transparent)
+// WebView so a transient blank/dropped paint reads as the brand
+// background, not a white screen.
+const BRAND_BG = "#F5F0E6";
+
+// Hold the Expo splash on screen until the WebView has actually
+// painted. Without this, the splash auto-hides at module-init time —
+// well before the first WebView frame — and the user briefly sees
+// a white screen during cold launch. hideAsync() is called from
+// onLoad, with an 8s safety timeout as a backstop.
+SplashScreen.preventAutoHideAsync().catch(() => {});
+
+// Safety timeout for splash hide — never let the splash linger past
+// this even if the WebView never fires onLoad.
+const SPLASH_TIMEOUT_MS = 8_000;
 
 // Tag the WebView's User-Agent string so the Next.js server can
 // detect requests coming from inside the iOS shell. The web app's
@@ -218,6 +234,18 @@ export default function App() {
     };
   }, []);
 
+  // Backstop for the splash hold above. If the WebView's onLoad
+  // never fires (deep CDN failure, fatal JS crash on the page) the
+  // splash would otherwise sit forever. Force-hide after 8s so the
+  // user lands on the cream fallback + reload button instead of a
+  // permanent splash.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      SplashScreen.hideAsync().catch(() => {});
+    }, SPLASH_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
   function onShouldStartLoadWithRequest(req: ShouldStartLoadRequest): boolean {
     // Intercept the paywall URL family BEFORE the WebView starts
     // loading anything, so the user never sees a flash of the web
@@ -365,6 +393,10 @@ export default function App() {
     setHadError(false);
     clearWatchdog();
     clearRetry();
+    // First real frame is on screen — drop the splash. Safe to
+    // call repeatedly; subsequent navigations are no-ops because
+    // the splash is already hidden.
+    SplashScreen.hideAsync().catch(() => {});
   }
 
   function onError(_e: WebViewErrorEvent) {
@@ -379,7 +411,12 @@ export default function App() {
     // 4xx (e.g., a missing image) shouldn't blank the app.
     const status = e.nativeEvent.statusCode;
     if (status < 400) return;
-    if (e.nativeEvent.url !== TARGET_URL) return;
+    // Permissive match: any document load under dopiqapp.com that
+    // 4xx/5xx's is treated as a main-doc failure. The previous strict
+    // `!== TARGET_URL` check skipped retries when the cold-launch URL
+    // was a subpath (Universal Link target, /home, etc.), letting the
+    // app sit on a white screen.
+    if (!e.nativeEvent.url?.includes("dopiqapp.com")) return;
     setIsLoading(false);
     setHadError(true);
     clearWatchdog();
@@ -399,6 +436,14 @@ export default function App() {
     // and home indicator.
     <View style={styles.root}>
       <StatusBar style="dark" translucent backgroundColor="transparent" />
+
+      {/* Cream fallback layer behind the WebView. The WebView itself
+          renders with a transparent background so any brief blank
+          frame (cold-launch first paint, content-process death,
+          mid-navigation flash) reveals brand cream instead of pure
+          white. pointerEvents="none" keeps it from intercepting
+          touches meant for the WebView. */}
+      <View style={styles.fallbackBackground} pointerEvents="none" />
 
       <WebView
         ref={webRef}
@@ -433,6 +478,11 @@ export default function App() {
         onLoad={onLoad}
         onError={onError}
         onHttpError={onHttpError}
+        // iOS-only: WKWebView's content process can be killed by the
+        // OS under memory pressure, surfacing as a permanent white
+        // screen on next foreground. Reload via the ref to bring the
+        // page back instead of leaving the user stranded.
+        onContentProcessDidTerminate={() => webRef.current?.reload()}
       />
 
       {/* Native StoreKit paywall — rendered on top of the WebView
@@ -480,9 +530,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: BRAND_BG,
   },
+  fallbackBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: BRAND_BG,
+  },
   webview: {
     flex: 1,
-    backgroundColor: BRAND_BG,
+    // Transparent so the cream fallback layer behind shows through
+    // any blank/dropped frame — see fallbackBackground above.
+    backgroundColor: "transparent",
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
