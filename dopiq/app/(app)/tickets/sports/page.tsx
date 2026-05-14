@@ -33,7 +33,7 @@ export default function SportsBrowsePage() {
         </p>
       </header>
 
-      <div className="mx-auto mt-6 grid max-w-3xl gap-3 md:grid-cols-2">
+      <div className="mx-auto mt-6 grid max-w-3xl grid-cols-2 gap-3 md:grid-cols-3">
         {SPORTS_GAMES.map((game) => (
           <Link
             key={game.id}
@@ -44,51 +44,48 @@ export default function SportsBrowsePage() {
               boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             }}
           >
-            <div className="flex items-start gap-4 p-4">
-              <div
-                className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-[1.5px] text-4xl"
-                style={{
-                  backgroundColor: TICKETS_BRAND.cream,
-                  borderColor: "#2A1F18",
-                }}
-                aria-hidden
+            {/* Vertical tile to match concerts + travel: emoji
+                anchored to a 4:3 zone on top, ALL pills + text
+                stacked in a single column below. The previous
+                horizontal layout sat the emoji chip immediately
+                to the left of the sport pill — visually two
+                chip-shaped elements side-by-side. Moving the
+                emoji above the info column eliminates every
+                horizontal pill adjacency on the card. */}
+            <div
+              className="flex aspect-[4/3] items-center justify-center text-6xl"
+              style={{ backgroundColor: TICKETS_BRAND.cream }}
+              aria-hidden
+            >
+              {game.emoji}
+            </div>
+            <div className="px-3 pb-3 pt-3">
+              <span
+                className="inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-ink"
+                style={{ borderColor: "#2A1F18" }}
               >
-                {game.emoji}
+                {game.sport}
+              </span>
+              <div className="mt-1.5 text-[15px] font-extrabold leading-tight text-ink">
+                {game.homeTeam}
               </div>
-              {/* Pills + text stack vertically — the price chip used
-                  to live on the far right of the row, parallel with
-                  the sport pill. Now it sits below the date/venue
-                  line so all pills stack on top of each other. */}
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className="rounded-full border-[1.5px] bg-[#F5F0E6] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-ink"
-                    style={{ borderColor: "#2A1F18" }}
-                  >
-                    {game.sport}
-                  </span>
-                </div>
-                <div className="mt-1 text-[15px] font-extrabold leading-tight text-ink">
-                  {game.homeTeam}
-                </div>
-                <div
-                  className="text-[12px] font-semibold"
-                  style={{ color: TICKETS_BRAND.inkSoft }}
-                >
-                  vs {game.awayTeam}
-                </div>
-                <div
-                  className="mt-1.5 text-[11px]"
-                  style={{ color: TICKETS_BRAND.inkSoft }}
-                >
-                  {game.date} · {game.venue}
-                </div>
-                <div
-                  className="mt-2 inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[12px] font-bold text-ink"
-                  style={{ borderColor: "#2A1F18" }}
-                >
-                  From ${Math.round(game.basePrice * 0.65)}
-                </div>
+              <div
+                className="text-[12px] font-semibold"
+                style={{ color: TICKETS_BRAND.inkSoft }}
+              >
+                vs {game.awayTeam}
+              </div>
+              <div
+                className="mt-1.5 text-[11px]"
+                style={{ color: TICKETS_BRAND.inkSoft }}
+              >
+                {game.date} · {game.venue}
+              </div>
+              <div
+                className="mt-2 inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[12px] font-bold text-ink"
+                style={{ borderColor: "#2A1F18" }}
+              >
+                From ${Math.round(game.basePrice * 0.65)}
               </div>
             </div>
           </Link>

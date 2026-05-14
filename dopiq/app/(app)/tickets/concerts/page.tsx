@@ -55,14 +55,12 @@ export default function ConcertsBrowsePage() {
               {artist.emoji}
             </div>
             <div className="px-3 pb-3 pt-3">
-              <div className="flex items-center gap-1.5">
-                <span
-                  className="rounded-full border-[1.5px] bg-[#F5F0E6] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-ink"
-                  style={{ borderColor: "#2A1F18" }}
-                >
-                  {artist.genre}
-                </span>
-              </div>
+              <span
+                className="inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-ink"
+                style={{ borderColor: "#2A1F18" }}
+              >
+                {artist.genre}
+              </span>
               <div className="mt-1.5 text-[15px] font-extrabold leading-tight text-ink">
                 {artist.name}
               </div>
