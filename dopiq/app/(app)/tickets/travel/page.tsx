@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { TRAVEL_DESTINATIONS, TICKETS_BRAND } from "@/data/tickets";
+import { DotTexture } from "@/components/DotTexture";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 
 export const dynamic = "force-dynamic";
 
 // Auth + subscription enforced upstream by (app)/layout.tsx.
+// Restraint pass — destinations now share the same neutral-white +
+// warm-dark + dot-texture card treatment as concerts. The
+// per-entry bgColor / fgColor live on in the detail-page hero.
 export default function TravelBrowsePage() {
   return (
     <div
@@ -19,14 +23,11 @@ export default function TravelBrowsePage() {
         >
           ← Tickets
         </Link>
-        <h1
-          className="mt-2 text-[32px] font-extrabold leading-tight tracking-tight"
-          style={{ color: TICKETS_BRAND.ink }}
-        >
+        <h1 className="mt-4 text-center font-display text-[34px] font-normal tracking-tight text-ink md:text-[44px]">
           Travel
         </h1>
         <p
-          className="mt-1 text-[15px]"
+          className="mt-1 text-center text-[15px]"
           style={{ color: TICKETS_BRAND.inkSoft }}
         >
           Twelve cities you keep telling people you&rsquo;ll visit.
@@ -40,42 +41,43 @@ export default function TravelBrowsePage() {
             <Link
               key={dest.id}
               href={`/tickets/travel/${dest.id}`}
-              className="group block overflow-hidden rounded-2xl transition active:scale-[0.99]"
+              className="group relative block overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
               style={{
-                backgroundColor: dest.bgColor,
+                borderColor: "#2A1F18",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
               }}
             >
-              <div
-                className="flex aspect-[4/3] items-center justify-center text-6xl"
-                aria-hidden
-              >
-                {dest.emoji}
-              </div>
-              <div className="px-3 pb-3">
+              <DotTexture className="text-[#2A1F18]" />
+              <div className="relative">
                 <div
-                  className="text-[15px] font-extrabold leading-tight"
-                  style={{ color: dest.fgColor }}
+                  className="flex aspect-[4/3] items-center justify-center text-6xl"
+                  style={{ backgroundColor: TICKETS_BRAND.cream }}
+                  aria-hidden
                 >
-                  {dest.city}
+                  {dest.emoji}
                 </div>
-                <div
-                  className="text-[11px] font-semibold"
-                  style={{ color: dest.fgColor, opacity: 0.8 }}
-                >
-                  {dest.country}
-                </div>
-                <div
-                  className="mt-1 line-clamp-1 text-[11px] italic"
-                  style={{ color: dest.fgColor, opacity: 0.7 }}
-                >
-                  {dest.tagline}
-                </div>
-                <div
-                  className="mt-1.5 inline-block rounded-full bg-white/70 px-2 py-0.5 text-[11px] font-bold backdrop-blur-sm"
-                  style={{ color: dest.fgColor }}
-                >
-                  From ${cheapest}
+                <div className="px-3 pb-3 pt-3">
+                  <div className="text-[15px] font-extrabold leading-tight text-ink">
+                    {dest.city}
+                  </div>
+                  <div
+                    className="text-[11px] font-semibold"
+                    style={{ color: TICKETS_BRAND.inkSoft }}
+                  >
+                    {dest.country}
+                  </div>
+                  <div
+                    className="mt-1 line-clamp-1 text-[11px] italic"
+                    style={{ color: TICKETS_BRAND.inkSoft }}
+                  >
+                    {dest.tagline}
+                  </div>
+                  <div
+                    className="mt-1.5 inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[11px] font-bold text-ink"
+                    style={{ borderColor: "#2A1F18" }}
+                  >
+                    From ${cheapest}
+                  </div>
                 </div>
               </div>
             </Link>
