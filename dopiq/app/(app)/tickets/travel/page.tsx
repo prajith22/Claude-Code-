@@ -70,7 +70,7 @@ export default function TravelBrowsePage() {
                   {dest.tagline}
                 </div>
                 <div
-                  className="mt-1.5 inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[11px] font-bold text-ink"
+                  className="mt-1.5 block w-full rounded-full border-[1.5px] bg-[#F5F0E6] px-2.5 py-0.5 text-left text-[11px] font-bold text-ink"
                   style={{ borderColor: "#2A1F18" }}
                 >
                   From ${cheapest}
