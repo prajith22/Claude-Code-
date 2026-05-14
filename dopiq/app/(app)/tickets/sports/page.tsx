@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { SPORTS_GAMES, TICKETS_BRAND } from "@/data/tickets";
+import { DotTexture } from "@/components/DotTexture";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 
 export const dynamic = "force-dynamic";
 
 // Auth + subscription enforced upstream by (app)/layout.tsx.
+// Restraint pass — cards drop per-entry bgColor/fgColor for a
+// neutral white + warm-dark border + dot-texture treatment. The
+// game/team identity color survives on the detail-page hero.
 export default function SportsBrowsePage() {
   return (
     <div
@@ -19,14 +23,11 @@ export default function SportsBrowsePage() {
         >
           ← Tickets
         </Link>
-        <h1
-          className="mt-2 text-[32px] font-extrabold leading-tight tracking-tight"
-          style={{ color: TICKETS_BRAND.ink }}
-        >
+        <h1 className="mt-4 text-center font-display text-[34px] font-normal tracking-tight text-ink md:text-[44px]">
           Sports
         </h1>
         <p
-          className="mt-1 text-[15px]"
+          className="mt-1 text-center text-[15px]"
           style={{ color: TICKETS_BRAND.inkSoft }}
         >
           Twelve games. Twelve excuses to wear a foam finger.
@@ -38,15 +39,20 @@ export default function SportsBrowsePage() {
           <Link
             key={game.id}
             href={`/tickets/sports/${game.id}`}
-            className="group block overflow-hidden rounded-2xl transition active:scale-[0.99]"
+            className="group relative block overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
             style={{
-              backgroundColor: game.bgColor,
+              borderColor: "#2A1F18",
               boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             }}
           >
-            <div className="flex items-center gap-4 p-4">
+            <DotTexture className="text-[#2A1F18]" />
+            <div className="relative flex items-center gap-4 p-4">
               <div
-                className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white/60 text-4xl backdrop-blur-sm"
+                className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-[1.5px] text-4xl"
+                style={{
+                  backgroundColor: TICKETS_BRAND.cream,
+                  borderColor: "#2A1F18",
+                }}
                 aria-hidden
               >
                 {game.emoji}
@@ -54,34 +60,31 @@ export default function SportsBrowsePage() {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5">
                   <span
-                    className="rounded-full bg-white/70 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider backdrop-blur-sm"
-                    style={{ color: game.fgColor }}
+                    className="rounded-full border-[1.5px] bg-[#F5F0E6] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-ink"
+                    style={{ borderColor: "#2A1F18" }}
                   >
                     {game.sport}
                   </span>
                 </div>
-                <div
-                  className="mt-1 text-[15px] font-extrabold leading-tight"
-                  style={{ color: game.fgColor }}
-                >
+                <div className="mt-1 text-[15px] font-extrabold leading-tight text-ink">
                   {game.homeTeam}
                 </div>
                 <div
                   className="text-[12px] font-semibold"
-                  style={{ color: game.fgColor, opacity: 0.85 }}
+                  style={{ color: TICKETS_BRAND.inkSoft }}
                 >
                   vs {game.awayTeam}
                 </div>
                 <div
                   className="mt-1.5 text-[11px]"
-                  style={{ color: game.fgColor, opacity: 0.7 }}
+                  style={{ color: TICKETS_BRAND.inkSoft }}
                 >
                   {game.date} · {game.venue}
                 </div>
               </div>
               <div
-                className="rounded-full bg-white/70 px-2 py-1 text-[12px] font-bold backdrop-blur-sm"
-                style={{ color: game.fgColor }}
+                className="rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-1 text-[12px] font-bold text-ink"
+                style={{ borderColor: "#2A1F18" }}
               >
                 From ${Math.round(game.basePrice * 0.65)}
               </div>
