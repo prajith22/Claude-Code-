@@ -60,27 +60,49 @@ type LastOrder = {
   total: number;
   restaurant: string;
   itemCount: number;
+  /** Set by the checkout page. "instant" skips the 5-stage
+   *  animation and jumps straight to the delivered summary;
+   *  "delivery" (or missing — back-compat with any older
+   *  sessionStorage payloads) plays the existing 12-second
+   *  tracker. */
+  mode?: "delivery" | "instant";
 };
 
 export default function FoodTrackingPage() {
   const [stage, setStage] = useState(0);
   const [order, setOrder] = useState<LastOrder | null>(null);
+  // Default to "delivery" so the existing tracker UI renders on
+  // the first frame unchanged for users coming from the Order
+  // Delivery button. The useEffect below flips to "instant" only
+  // if the sessionStorage payload says so.
+  const [mode, setMode] = useState<"delivery" | "instant">("delivery");
   const celebrated = useRef(false);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("dopiq-last-food-order");
-    if (raw) {
-      try {
-        setOrder(JSON.parse(raw));
-      } catch {}
-    }
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw) as LastOrder;
+      setOrder(parsed);
+      if (parsed.mode === "instant") {
+        setMode("instant");
+        // Jump straight to the final stage so `delivered` flips
+        // true on the next render — that triggers the confetti +
+        // ding effect below and renders the summary card.
+        setStage(STAGES.length - 1);
+      }
+    } catch {}
   }, []);
 
   useEffect(() => {
+    // Auto-advance only applies to the delivery path. Instant mode
+    // mounted with stage already set to the final index, so this
+    // effect's guard returns early and no timer is scheduled.
+    if (mode !== "delivery") return;
     if (stage >= STAGES.length - 1) return;
     const t = setTimeout(() => setStage((s) => s + 1), STAGE_MS);
     return () => clearTimeout(t);
-  }, [stage]);
+  }, [stage, mode]);
 
   useEffect(() => {
     if (stage !== STAGES.length - 1 || celebrated.current) return;
@@ -124,62 +146,70 @@ export default function FoodTrackingPage() {
         </h1>
       </div>
 
-      <div className="card p-5">
-        <div className="flex items-center gap-4">
-          <motion.div
-            key={current.key}
-            initial={{ scale: 0.7, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 220, damping: 16 }}
-            className={cn(
-              "flex h-14 w-14 items-center justify-center rounded-full",
-              delivered ? "bg-brand text-white" : "bg-brand-light text-brand",
-            )}
-          >
-            {current.icon}
-          </motion.div>
-          <div className="flex-1">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={current.key}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.25 }}
-              >
-                <p className="text-[17px] font-semibold">{current.label}</p>
-                <p className="mt-0.5 text-sm text-ink-muted">
-                  {current.caption}
-                </p>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-          <span className="pill">{current.eta}</span>
-        </div>
-
-        <div className="mt-5 h-2 w-full overflow-hidden rounded-full bg-surface-alt">
-          <motion.div
-            className="h-full bg-brand"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          />
-        </div>
-
-        <ol className="mt-5 grid grid-cols-5 gap-1 text-[10px] font-medium">
-          {STAGES.map((s, i) => (
-            <li
-              key={s.key}
+      {/* Tracker card — only rendered for the delivery path. The
+          instant path never creates this JSX at all (not just
+          hidden), so its 5-stage legend + progress bar + animated
+          stage icon don't run. The summary card below still fires
+          via the `delivered` flag because instant mode mounts with
+          stage already at the final index. */}
+      {mode === "delivery" && (
+        <div className="card p-5">
+          <div className="flex items-center gap-4">
+            <motion.div
+              key={current.key}
+              initial={{ scale: 0.7, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 220, damping: 16 }}
               className={cn(
-                "text-center leading-tight",
-                i <= stage ? "text-ink" : "text-ink-muted",
+                "flex h-14 w-14 items-center justify-center rounded-full",
+                delivered ? "bg-brand text-white" : "bg-brand-light text-brand",
               )}
             >
-              {s.label.split(" ")[0]}
-            </li>
-          ))}
-        </ol>
-      </div>
+              {current.icon}
+            </motion.div>
+            <div className="flex-1">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={current.key}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <p className="text-[17px] font-semibold">{current.label}</p>
+                  <p className="mt-0.5 text-sm text-ink-muted">
+                    {current.caption}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <span className="pill">{current.eta}</span>
+          </div>
+
+          <div className="mt-5 h-2 w-full overflow-hidden rounded-full bg-surface-alt">
+            <motion.div
+              className="h-full bg-brand"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            />
+          </div>
+
+          <ol className="mt-5 grid grid-cols-5 gap-1 text-[10px] font-medium">
+            {STAGES.map((s, i) => (
+              <li
+                key={s.key}
+                className={cn(
+                  "text-center leading-tight",
+                  i <= stage ? "text-ink" : "text-ink-muted",
+                )}
+              >
+                {s.label.split(" ")[0]}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
 
       {delivered && (
         <motion.div

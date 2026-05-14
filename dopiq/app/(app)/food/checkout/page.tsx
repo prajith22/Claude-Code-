@@ -30,14 +30,25 @@ export default function FoodCheckoutPage() {
   const subtotal = cartSubtotal(lines);
   const total = subtotal + DELIVERY_FEE + SERVICE_FEE;
 
-  async function place() {
+  async function place(mode: "delivery" | "instant") {
     setPlacing(true);
     const allowed = await tryRun(async () => {
       const orderNumber = `DPQ-F-${Math.floor(Math.random() * 900_000 + 100_000)}`;
       const restaurant = lines[0]?.meta ?? "your spot";
       sessionStorage.setItem(
         "dopiq-last-food-order",
-        JSON.stringify({ orderNumber, total, restaurant, itemCount: lines.length }),
+        JSON.stringify({
+          orderNumber,
+          total,
+          restaurant,
+          itemCount: lines.length,
+          // `mode` rides on the sessionStorage payload only — the
+          // /api/savings/record body stays unchanged across both
+          // paths. The tracking page reads this field on mount to
+          // decide whether to play the 12-second 5-stage animation
+          // or jump straight to the delivered summary.
+          mode,
+        }),
       );
 
       fetch("/api/savings/record", {
@@ -90,13 +101,31 @@ export default function FoodCheckoutPage() {
         </div>
       </Section>
 
+      {/* Two-path commit — same savings record, same summary, same
+          cart clear. Only the post-commit experience differs:
+          Delivery plays the 12-second tracker, Buy Now jumps
+          straight to the delivered state. Label sits above so the
+          user reads "I'm picking between two paths," not "the
+          second button is a skip / advanced option." */}
+      <p className="pt-2 text-center text-[13px] italic text-ink-muted">
+        Take your time, or skip the wait.
+      </p>
       <button
         type="button"
-        onClick={place}
+        onClick={() => place("delivery")}
         disabled={placing || lines.length === 0}
         className="btn-primary w-full"
       >
-        {placing ? "Placing order…" : `Place order · ${formatUSD(total)}`}
+        {placing ? "Placing order…" : `Order Delivery · ${formatUSD(total)}`}
+      </button>
+      <button
+        type="button"
+        onClick={() => place("instant")}
+        disabled={placing || lines.length === 0}
+        className="inline-flex w-full items-center justify-center rounded-pill border-[2.5px] bg-white px-6 py-3.5 text-[15px] font-semibold tracking-tight text-ink shadow-sm transition-all duration-150 hover:bg-surface-alt active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40"
+        style={{ borderColor: "#2A1F18" }}
+      >
+        {placing ? "Placing order…" : `Buy Now · ${formatUSD(total)}`}
       </button>
       <p className="pb-2 text-center text-xs text-ink-muted">
         Simulated order. No real food, no real charge.
