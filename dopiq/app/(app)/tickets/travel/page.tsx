@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { TRAVEL_DESTINATIONS, TICKETS_BRAND } from "@/data/tickets";
-import { DotTexture } from "@/components/DotTexture";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 
 export const dynamic = "force-dynamic";
@@ -23,11 +22,11 @@ export default function TravelBrowsePage() {
         >
           ← Tickets
         </Link>
-        <h1 className="mt-4 text-center font-display text-[34px] font-normal tracking-tight text-ink md:text-[44px]">
+        <h1 className="mt-4 font-heading text-[28px] font-bold leading-tight tracking-tight text-ink">
           Travel
         </h1>
         <p
-          className="mt-1 text-center text-[15px]"
+          className="mt-1 text-[15px]"
           style={{ color: TICKETS_BRAND.inkSoft }}
         >
           Twelve cities you keep telling people you&rsquo;ll visit.
@@ -41,43 +40,40 @@ export default function TravelBrowsePage() {
             <Link
               key={dest.id}
               href={`/tickets/travel/${dest.id}`}
-              className="group relative block overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
+              className="group block overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
               style={{
                 borderColor: "#2A1F18",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
               }}
             >
-              <DotTexture className="text-[#2A1F18]" />
-              <div className="relative">
-                <div
-                  className="flex aspect-[4/3] items-center justify-center text-6xl"
-                  style={{ backgroundColor: TICKETS_BRAND.cream }}
-                  aria-hidden
-                >
-                  {dest.emoji}
+              <div
+                className="flex aspect-[4/3] items-center justify-center text-6xl"
+                style={{ backgroundColor: TICKETS_BRAND.cream }}
+                aria-hidden
+              >
+                {dest.emoji}
+              </div>
+              <div className="px-3 pb-3 pt-3">
+                <div className="text-[15px] font-extrabold leading-tight text-ink">
+                  {dest.city}
                 </div>
-                <div className="px-3 pb-3 pt-3">
-                  <div className="text-[15px] font-extrabold leading-tight text-ink">
-                    {dest.city}
-                  </div>
-                  <div
-                    className="text-[11px] font-semibold"
-                    style={{ color: TICKETS_BRAND.inkSoft }}
-                  >
-                    {dest.country}
-                  </div>
-                  <div
-                    className="mt-1 line-clamp-1 text-[11px] italic"
-                    style={{ color: TICKETS_BRAND.inkSoft }}
-                  >
-                    {dest.tagline}
-                  </div>
-                  <div
-                    className="mt-1.5 inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[11px] font-bold text-ink"
-                    style={{ borderColor: "#2A1F18" }}
-                  >
-                    From ${cheapest}
-                  </div>
+                <div
+                  className="text-[11px] font-semibold"
+                  style={{ color: TICKETS_BRAND.inkSoft }}
+                >
+                  {dest.country}
+                </div>
+                <div
+                  className="mt-1 line-clamp-1 text-[11px] italic"
+                  style={{ color: TICKETS_BRAND.inkSoft }}
+                >
+                  {dest.tagline}
+                </div>
+                <div
+                  className="mt-1.5 inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[11px] font-bold text-ink"
+                  style={{ borderColor: "#2A1F18" }}
+                >
+                  From ${cheapest}
                 </div>
               </div>
             </Link>

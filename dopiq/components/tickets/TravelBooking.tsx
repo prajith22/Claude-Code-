@@ -9,7 +9,6 @@ import {
 } from "@/data/tickets";
 import { PlaneSeatMap } from "@/components/tickets/PlaneSeatMap";
 import type { Seat } from "@/components/tickets/SeatMap";
-import { DotTexture } from "@/components/DotTexture";
 import { formatUSD } from "@/lib/utils";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
 import type { PendingPurchase } from "@/components/tickets/TicketsCheckout";
@@ -78,16 +77,15 @@ export function TravelBooking({
       <div className="mx-auto max-w-3xl">
         {/* Header — per-entry pastel as the one place each
             destination's color identity lives, anchored by the
-            warm-dark border + matching darker dot texture. */}
+            warm-dark border. */}
         <header
-          className="relative overflow-hidden rounded-2xl border-[2.5px]"
+          className="overflow-hidden rounded-2xl border-[2.5px]"
           style={{
             backgroundColor: destination.bgColor,
             borderColor: "#2A1F18",
           }}
         >
-          <DotTexture style={{ color: destination.fgColor }} />
-          <div className="relative flex items-center gap-4 px-5 py-6">
+          <div className="flex items-center gap-4 px-5 py-6">
             <div className="text-6xl" aria-hidden>
               {destination.emoji}
             </div>
