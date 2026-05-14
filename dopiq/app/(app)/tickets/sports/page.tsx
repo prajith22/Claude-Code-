@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { SPORTS_GAMES, TICKETS_BRAND } from "@/data/tickets";
-import { DotTexture } from "@/components/DotTexture";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 
 export const dynamic = "force-dynamic";
@@ -23,11 +22,11 @@ export default function SportsBrowsePage() {
         >
           ← Tickets
         </Link>
-        <h1 className="mt-4 text-center font-display text-[34px] font-normal tracking-tight text-ink md:text-[44px]">
+        <h1 className="mt-4 font-heading text-[28px] font-bold leading-tight tracking-tight text-ink">
           Sports
         </h1>
         <p
-          className="mt-1 text-center text-[15px]"
+          className="mt-1 text-[15px]"
           style={{ color: TICKETS_BRAND.inkSoft }}
         >
           Twelve games. Twelve excuses to wear a foam finger.
@@ -39,14 +38,13 @@ export default function SportsBrowsePage() {
           <Link
             key={game.id}
             href={`/tickets/sports/${game.id}`}
-            className="group relative block overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
+            className="group block overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
             style={{
               borderColor: "#2A1F18",
               boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             }}
           >
-            <DotTexture className="text-[#2A1F18]" />
-            <div className="relative flex items-center gap-4 p-4">
+            <div className="flex items-start gap-4 p-4">
               <div
                 className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-[1.5px] text-4xl"
                 style={{
@@ -57,6 +55,10 @@ export default function SportsBrowsePage() {
               >
                 {game.emoji}
               </div>
+              {/* Pills + text stack vertically — the price chip used
+                  to live on the far right of the row, parallel with
+                  the sport pill. Now it sits below the date/venue
+                  line so all pills stack on top of each other. */}
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5">
                   <span
@@ -81,12 +83,12 @@ export default function SportsBrowsePage() {
                 >
                   {game.date} · {game.venue}
                 </div>
-              </div>
-              <div
-                className="rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-1 text-[12px] font-bold text-ink"
-                style={{ borderColor: "#2A1F18" }}
-              >
-                From ${Math.round(game.basePrice * 0.65)}
+                <div
+                  className="mt-2 inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[12px] font-bold text-ink"
+                  style={{ borderColor: "#2A1F18" }}
+                >
+                  From ${Math.round(game.basePrice * 0.65)}
+                </div>
               </div>
             </div>
           </Link>

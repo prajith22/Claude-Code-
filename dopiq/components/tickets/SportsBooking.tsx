@@ -12,7 +12,6 @@ import {
   type Seat,
   type SeatMapSurfaceLabel,
 } from "@/components/tickets/SeatMap";
-import { DotTexture } from "@/components/DotTexture";
 import { formatUSD } from "@/lib/utils";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
 import type { PendingPurchase } from "@/components/tickets/TicketsCheckout";
@@ -76,17 +75,15 @@ export function SportsBooking({ game }: { game: SportsGame }) {
       <div className="mx-auto max-w-3xl">
         {/* Header — keeps the per-entry pastel as the one place each
             matchup's color identity lives, anchored by the warm-dark
-            border + a matching darker dot texture so it reads as
-            part of the bordered-card system used elsewhere. */}
+            border. */}
         <header
-          className="relative overflow-hidden rounded-2xl border-[2.5px]"
+          className="overflow-hidden rounded-2xl border-[2.5px]"
           style={{
             backgroundColor: game.bgColor,
             borderColor: "#2A1F18",
           }}
         >
-          <DotTexture style={{ color: game.fgColor }} />
-          <div className="relative px-5 py-6">
+          <div className="px-5 py-6">
             <div
               className="text-[11px] font-bold uppercase tracking-wider"
               style={{ color: game.fgColor }}

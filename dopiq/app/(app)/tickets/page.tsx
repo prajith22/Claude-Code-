@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { TICKETS_BRAND } from "@/data/tickets";
-import { DotTexture } from "@/components/DotTexture";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 
 export const dynamic = "force-dynamic";
@@ -47,7 +46,7 @@ export default function TicketsLandingPage() {
       style={{ backgroundColor: TICKETS_BRAND.cream }}
     >
       <header className="mx-auto max-w-2xl pt-2">
-        <h1 className="font-display text-[34px] font-normal tracking-tight text-ink md:text-[44px]">
+        <h1 className="font-heading text-[28px] font-bold leading-tight tracking-tight text-ink">
           Tickets
         </h1>
         <p
@@ -63,14 +62,13 @@ export default function TicketsLandingPage() {
           <Link
             key={cat.href}
             href={cat.href}
-            className="group relative block overflow-hidden rounded-2xl border-[2.5px] bg-white p-5 transition active:scale-[0.99]"
+            className="group block rounded-2xl border-[2.5px] bg-white p-5 transition active:scale-[0.99]"
             style={{
               borderColor: "#2A1F18",
               boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             }}
           >
-            <DotTexture className="text-[#2A1F18]" />
-            <div className="relative flex items-center gap-4">
+            <div className="flex items-center gap-4">
               <div
                 className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-3xl"
                 style={{ backgroundColor: TICKETS_BRAND.cream }}

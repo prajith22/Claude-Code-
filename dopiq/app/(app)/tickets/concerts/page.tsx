@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { CONCERTS, TICKETS_BRAND } from "@/data/tickets";
-import { DotTexture } from "@/components/DotTexture";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 
 export const dynamic = "force-dynamic";
@@ -25,11 +24,11 @@ export default function ConcertsBrowsePage() {
         >
           ← Tickets
         </Link>
-        <h1 className="mt-4 text-center font-display text-[34px] font-normal tracking-tight text-ink md:text-[44px]">
+        <h1 className="mt-4 font-heading text-[28px] font-bold leading-tight tracking-tight text-ink">
           Concerts
         </h1>
         <p
-          className="mt-1 text-center text-[15px]"
+          className="mt-1 text-[15px]"
           style={{ color: TICKETS_BRAND.inkSoft }}
         >
           Tickets selling fast for shows you&rsquo;d only attend in a parallel
@@ -42,45 +41,42 @@ export default function ConcertsBrowsePage() {
           <Link
             key={artist.id}
             href={`/tickets/concerts/${artist.id}`}
-            className="group relative block overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
+            className="group block overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
             style={{
               borderColor: "#2A1F18",
               boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             }}
           >
-            <DotTexture className="text-[#2A1F18]" />
-            <div className="relative">
-              <div
-                className="flex aspect-[4/3] items-center justify-center text-6xl"
-                style={{ backgroundColor: TICKETS_BRAND.cream }}
-                aria-hidden
-              >
-                {artist.emoji}
-              </div>
-              <div className="px-3 pb-3 pt-3">
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className="rounded-full border-[1.5px] bg-[#F5F0E6] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-ink"
-                    style={{ borderColor: "#2A1F18" }}
-                  >
-                    {artist.genre}
-                  </span>
-                </div>
-                <div className="mt-1.5 text-[15px] font-extrabold leading-tight text-ink">
-                  {artist.name}
-                </div>
-                <div
-                  className="mt-0.5 line-clamp-1 text-[11px]"
-                  style={{ color: TICKETS_BRAND.inkSoft }}
-                >
-                  {artist.tagline}
-                </div>
-                <div
-                  className="mt-2 inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[11px] font-bold text-ink"
+            <div
+              className="flex aspect-[4/3] items-center justify-center text-6xl"
+              style={{ backgroundColor: TICKETS_BRAND.cream }}
+              aria-hidden
+            >
+              {artist.emoji}
+            </div>
+            <div className="px-3 pb-3 pt-3">
+              <div className="flex items-center gap-1.5">
+                <span
+                  className="rounded-full border-[1.5px] bg-[#F5F0E6] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-ink"
                   style={{ borderColor: "#2A1F18" }}
                 >
-                  From ${Math.round(artist.basePrice * 0.65)}
-                </div>
+                  {artist.genre}
+                </span>
+              </div>
+              <div className="mt-1.5 text-[15px] font-extrabold leading-tight text-ink">
+                {artist.name}
+              </div>
+              <div
+                className="mt-0.5 line-clamp-1 text-[11px]"
+                style={{ color: TICKETS_BRAND.inkSoft }}
+              >
+                {artist.tagline}
+              </div>
+              <div
+                className="mt-2 inline-block rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[11px] font-bold text-ink"
+                style={{ borderColor: "#2A1F18" }}
+              >
+                From ${Math.round(artist.basePrice * 0.65)}
               </div>
             </div>
           </Link>
