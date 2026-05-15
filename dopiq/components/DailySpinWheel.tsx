@@ -261,23 +261,25 @@ export function DailySpinWheel() {
                     opacity={0.07}
                     pointerEvents="none"
                   />
-                  <g
-                    transform={`translate(${labelX}, ${labelY}) rotate(${w.centerDeg})`}
+                  {/* Label stays upright. It still lives inside the
+                      rotating <svg> so it sweeps with the wheel
+                      during a spin, but carries no per-label
+                      rotation transform — so at rest every amount
+                      reads horizontally regardless of wedge
+                      position. */}
+                  <text
+                    x={labelX}
+                    y={labelY}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontSize={17}
+                    fontWeight={800}
+                    letterSpacing={0.2}
+                    fill={w.text}
+                    style={{ fontFamily: "var(--font-sora)" }}
                   >
-                    <text
-                      x={0}
-                      y={5}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      fontSize={17}
-                      fontWeight={800}
-                      letterSpacing={0.2}
-                      fill={w.text}
-                      style={{ fontFamily: "var(--font-sora)" }}
-                    >
-                      ${w.amount}
-                    </text>
-                  </g>
+                    ${w.amount}
+                  </text>
                 </g>
               );
             })}
@@ -345,12 +347,6 @@ export function DailySpinWheel() {
             >
               Your Dopiq Challenge: don&rsquo;t spend more than $
               {landed.amount} on impulse buys today.
-            </p>
-            <p
-              className="relative mt-2 text-[12px] italic"
-              style={{ color: landed.text, opacity: 0.65 }}
-            >
-              Save it. We&rsquo;re watching.
             </p>
           </motion.div>
         )}
