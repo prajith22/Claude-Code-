@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import type { Product, ProductCategory } from "@/types";
 import { cn, formatUSD } from "@/lib/utils";
-import { useCartStore } from "@/lib/cart-store";
 import { Bag, StarFilled } from "@/components/icons";
 import { CartButton } from "@/components/CartButton";
 
@@ -62,24 +61,20 @@ const variants = {
 
 export function ExploreSection({ products }: { products: Product[] }) {
   const router = useRouter();
-  const addToCart = useCartStore((s) => s.add);
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("all");
   const [shuffled, setShuffled] = useState<Product[]>(products);
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
 
-  // Drop the visible product into the shop cart and jump straight
-  // to checkout. The checkout page reads from the cart store, so a
-  // single-line cart is enough to render the full flow.
+  // Carry the single product to the isolated /shop/buy-now express
+  // checkout via sessionStorage — deliberately NOT through
+  // useCartStore.shop, so a user's real cart is never touched. The
+  // old behavior added the product to the shared cart and routed
+  // through /shop/checkout, which then showed unrelated cart lines
+  // ("4 items" when they meant to buy 1).
   function purchaseNow(product: Product) {
-    addToCart("shop", {
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      imageUrl: product.imageUrl,
-      qty: 1,
-    });
-    router.push("/shop/checkout");
+    sessionStorage.setItem("dopiq-buy-now-shop", JSON.stringify(product));
+    router.push("/shop/buy-now");
   }
 
   // Re-filter + re-shuffle every time the products prop or the
