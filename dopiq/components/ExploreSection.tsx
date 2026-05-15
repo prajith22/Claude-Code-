@@ -226,7 +226,7 @@ export function ExploreSection({ products }: { products: Product[] }) {
                 dragElastic={0.2}
                 whileDrag={{ scale: 0.97 }}
                 onDragEnd={handleDragEnd}
-                className="card cursor-grab touch-pan-y overflow-hidden active:cursor-grabbing"
+                className="card border-[2.5px] border-[#2A1F18] cursor-grab touch-pan-y overflow-hidden active:cursor-grabbing"
               >
                 <CardImage product={current} priority={index < 3} />
                 <div className="space-y-1.5 p-5">
