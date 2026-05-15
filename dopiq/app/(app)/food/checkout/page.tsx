@@ -93,6 +93,32 @@ export default function FoodCheckoutPage() {
 
       <Section title="Order summary">
         <div className="space-y-2 text-[15px]">
+          {/* Itemized lines — qty + name on the left, line total on
+              the right. Restaurant (l.meta) is intentionally omitted:
+              it's already implied by the checkout context. Guarded on
+              lines.length so an edge-case empty cart skips straight
+              to the fee breakdown instead of rendering an empty list
+              + dangling divider. */}
+          {lines.length > 0 && (
+            <>
+              <ul className="space-y-1.5">
+                {lines.map((l) => (
+                  <li
+                    key={l.id}
+                    className="flex items-center justify-between gap-3 text-[14px] font-medium"
+                  >
+                    <span className="min-w-0 truncate text-ink-muted">
+                      {l.qty}x {l.name}
+                    </span>
+                    <span className="flex-none text-ink">
+                      {formatUSD(l.price * l.qty)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <div className="my-2 border-t border-surface-border" />
+            </>
+          )}
           <Row label={`Items (${lines.reduce((n, l) => n + l.qty, 0)})`} value={formatUSD(subtotal)} />
           <Row label="Delivery fee" value={formatUSD(DELIVERY_FEE)} />
           <Row label="Service fee" value={formatUSD(SERVICE_FEE)} />
