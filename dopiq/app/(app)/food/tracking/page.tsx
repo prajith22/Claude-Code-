@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { cn, formatUSD } from "@/lib/utils";
 import { playDing } from "@/lib/sounds";
+import DeliveryMap from "@/components/food/DeliveryMap";
 
 type Stage = {
   key: string;
@@ -153,7 +154,9 @@ export default function FoodTrackingPage() {
           via the `delivered` flag because instant mode mounts with
           stage already at the final index. */}
       {mode === "delivery" && (
-        <div className="card p-5">
+        <>
+          <DeliveryMap stage={stage} />
+          <div className="card p-5">
           <div className="flex items-center gap-4">
             <motion.div
               key={current.key}
@@ -208,7 +211,8 @@ export default function FoodTrackingPage() {
               </li>
             ))}
           </ol>
-        </div>
+          </div>
+        </>
       )}
 
       {delivered && (
