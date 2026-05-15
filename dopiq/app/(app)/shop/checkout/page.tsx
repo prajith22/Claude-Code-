@@ -108,7 +108,7 @@ function Section({
       <h2 className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
         {title}
       </h2>
-      <div className="card p-4">{children}</div>
+      <div className="card-subtle p-4">{children}</div>
     </section>
   );
 }

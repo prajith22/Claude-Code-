@@ -221,7 +221,7 @@ export default function FoodTrackingPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.4 }}
-          className="card space-y-4 p-5"
+          className="card-subtle space-y-4 p-5"
         >
           <p className="text-[15px] font-semibold">Order summary</p>
           {order && (

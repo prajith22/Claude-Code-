@@ -203,7 +203,7 @@ function FilterPill({
         "flex-none whitespace-nowrap rounded-pill px-4 py-2 text-[13px] font-semibold transition-all duration-150",
         active
           ? "bg-navy text-white shadow-navy"
-          : "border border-surface-border bg-white text-ink-muted hover:bg-surface-alt",
+          : "pill-subtle text-ink-muted hover:bg-surface-alt",
       )}
     >
       {children}

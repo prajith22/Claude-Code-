@@ -30,7 +30,7 @@ export default function FoodCartPage() {
         <>
           <ul className="space-y-3">
             {lines.map((l) => (
-              <li key={l.id} className="card flex items-center justify-between gap-3 p-4">
+              <li key={l.id} className="card-subtle flex items-center justify-between gap-3 p-4">
                 <div className="min-w-0">
                   <p className="line-clamp-1 text-[15px] font-medium">{l.name}</p>
                   {l.meta && (

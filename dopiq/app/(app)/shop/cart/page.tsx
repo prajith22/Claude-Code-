@@ -32,7 +32,7 @@ export default function ShopCartPage() {
         <>
           <ul className="space-y-3">
             {lines.map((l) => (
-              <li key={l.id} className="card flex gap-4 p-4">
+              <li key={l.id} className="card-subtle flex gap-4 p-4">
                 {l.imageUrl && (
                   <div className="relative h-20 w-20 flex-none overflow-hidden rounded-xl bg-surface-alt">
                     <Image

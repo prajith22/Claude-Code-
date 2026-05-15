@@ -207,10 +207,10 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
             type="button"
             onClick={() => setActivePill(null)}
             aria-pressed={activePill === null}
-            className={`flex flex-none items-center rounded-pill border px-4 py-2 text-[13px] font-semibold shadow-sm transition ${
+            className={`flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-semibold transition ${
               activePill === null
-                ? "border-navy bg-navy text-white"
-                : "border-surface-border bg-white text-ink hover:bg-surface-alt"
+                ? "border border-navy bg-navy text-white shadow-sm"
+                : "pill-subtle text-ink hover:bg-surface-alt"
             }`}
           >
             All
@@ -223,10 +223,10 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
                 type="button"
                 onClick={() => setActivePill(selected ? null : p.key)}
                 aria-pressed={selected}
-                className={`flex flex-none items-center rounded-pill border px-4 py-2 text-[13px] font-semibold shadow-sm transition ${
+                className={`flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-semibold transition ${
                   selected
-                    ? "border-navy bg-navy text-white"
-                    : "border-surface-border bg-white text-ink hover:bg-surface-alt"
+                    ? "border border-navy bg-navy text-white shadow-sm"
+                    : "pill-subtle text-ink hover:bg-surface-alt"
                 }`}
               >
                 {p.label}
