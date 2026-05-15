@@ -155,7 +155,6 @@ export default function FoodTrackingPage() {
           stage already at the final index. */}
       {mode === "delivery" && (
         <>
-          <DeliveryMap stage={stage} />
           <div className="card p-5">
           <div className="flex items-center gap-4">
             <motion.div
@@ -212,6 +211,7 @@ export default function FoodTrackingPage() {
             ))}
           </ol>
           </div>
+          <DeliveryMap stage={stage} />
         </>
       )}
 

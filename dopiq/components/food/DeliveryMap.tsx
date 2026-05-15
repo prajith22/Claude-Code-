@@ -93,63 +93,13 @@ export default function DeliveryMap({ stage }: DeliveryMapProps) {
           strokeLinecap="round"
         />
 
-        {/* Restaurant marker (start) — top-left */}
-        <g>
-          <polygon
-            points="58,26 44,42 72,42"
-            fill="#FFEDD5"
-            stroke="#2A1F18"
-            strokeWidth="2"
-            strokeLinejoin="round"
-          />
-          <rect
-            x="46"
-            y="42"
-            width="24"
-            height="22"
-            fill="#FFEDD5"
-            stroke="#2A1F18"
-            strokeWidth="2"
-          />
-          <rect x="54" y="50" width="8" height="14" fill="#2A1F18" />
-          <text
-            x="58"
-            y="78"
-            textAnchor="middle"
-            fontSize="10"
-            fontWeight="700"
-            fill="#2A1F18"
-            style={{ fontFamily: "var(--font-sora)" }}
-          >
-            Restaurant
-          </text>
-        </g>
-
-        {/* Home marker (end) — bottom-right. Pin shape mirrors the
-            shared icons.tsx Pin (teardrop + center dot). */}
-        <g>
-          <g transform="translate(331 212) scale(1.2)">
-            <path
-              d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"
-              fill="#10B981"
-              stroke="#2A1F18"
-              strokeWidth="1.6"
-              strokeLinejoin="round"
-            />
-            <circle cx="12" cy="10" r="2.5" fill="#F5F0E6" />
-          </g>
-          <text
-            x="345"
-            y="268"
-            textAnchor="middle"
-            fontSize="10"
-            fontWeight="700"
-            fill="#2A1F18"
-            style={{ fontFamily: "var(--font-sora)" }}
-          >
-            You
-          </text>
-        </g>
+        {/* Both endpoints use the same Pin shape (mirrors
+            icons.tsx's Pin) at the same size — only the fill
+            differs: coral = food/restaurant, emerald = brand/home.
+            Same shape + size reads as "these are both endpoints";
+            color tells them apart at a glance. */}
+        <MapPin x={58} y={62} fill="#FFE4E1" label="Restaurant" />
+        <MapPin x={345} y={238} fill="#10B981" label="Home" />
 
         {/* The car. Outer group tweens to the stage position; inner
             group carries the optional idle wiggle; innermost group
@@ -216,5 +166,52 @@ export default function DeliveryMap({ stage }: DeliveryMapProps) {
         </motion.g>
       </svg>
     </motion.div>
+  );
+}
+
+// Shared endpoint marker. The Pin path is lifted inline from
+// components/icons.tsx (same teardrop + center dot) so fill and
+// stroke can be controlled independently per marker. The path's
+// local tip is (12,22); we anchor that point at (x,y) so the pin
+// "points at" its map location. strokeWidth is pre-divided by the
+// scale so the rendered outline stays ~2px regardless of S.
+function MapPin({
+  x,
+  y,
+  fill,
+  label,
+}: {
+  x: number;
+  y: number;
+  fill: string;
+  label: string;
+}) {
+  const S = 1.8; // ~25 SVG units wide — matched across both pins
+  return (
+    <g>
+      <g
+        transform={`translate(${x - 12 * S} ${y - 22 * S}) scale(${S})`}
+      >
+        <path
+          d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"
+          fill={fill}
+          stroke="#2A1F18"
+          strokeWidth={2 / S}
+          strokeLinejoin="round"
+        />
+        <circle cx="12" cy="10" r="2.5" fill="#2A1F18" />
+      </g>
+      <text
+        x={x}
+        y={y + 16}
+        textAnchor="middle"
+        fontSize="11"
+        fontWeight="700"
+        fill="#2A1F18"
+        style={{ fontFamily: "var(--font-sora)" }}
+      >
+        {label}
+      </text>
+    </g>
   );
 }
