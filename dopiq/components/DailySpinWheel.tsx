@@ -1,103 +1,39 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { DotTexture } from "@/components/DotTexture";
 
-type Sector = {
-  key: "shop" | "food" | "bet" | "tickets";
-  label: string;
-  href: string;
-  fill: string;
-  textColor: string;
+// The wheel no longer routes to a simulator — it hands the user a
+// dollar-amount commitment for the day ("don't spend more than $X
+// on impulse buys today"). Pure honor system: no in-app reporting,
+// no streak coupling, no server-side state. The landed amount is
+// persisted to localStorage so the wheel locks for 24h.
+
+type Wedge = {
+  amount: number;
+  bg: string;
+  text: string;
   centerDeg: number; // measured clockwise from the top
 };
 
-// Result-card palette keyed by the winning slice. Each entry tints
-// the "You landed on X" card to match the home-grid SimCard for
-// that sim — Shop → lavender, Food → soft yellow, Tickets → mint,
-// Bet → sky blue. Creates a "this is YOUR result" moment instead
-// of a generic white card every spin. The internal "Let's go →"
-// CTA stays solid emerald (the one confident action on the screen)
-// so it pops against whichever tint won.
-const RESULT_COLORS: Record<
-  Sector["key"],
-  { bg: string; border: string; titleColor: string }
-> = {
-  shop: { bg: "#E8E3FF", border: "#C8BFFF", titleColor: "#4C1D95" },
-  food: { bg: "#FFF3CD", border: "#F5E6A3", titleColor: "#92400E" },
-  tickets: { bg: "#D1FAE5", border: "#A7E8C1", titleColor: "#064E3B" },
-  bet: { bg: "#DBEAFE", border: "#B5D5F7", titleColor: "#1E3A8A" },
-};
-
-// Four sectors at 0° / 90° / 180° / 270° — used on web where every
-// simulator (Shop / Food / Bet / Tickets) is in play. The no-Bet
-// variant below drops Bet (Apple prohibits gambling on individual
-// developer accounts) and falls back to a three-wedge layout at
-// 0° / 120° / 240°. Slice math is parameterized off sectors.length,
-// so the same render path produces 90°-wide or 120°-wide wedges
-// without any further branching.
-const SECTORS_FULL: Sector[] = [
-  {
-    key: "shop",
-    label: "Shop",
-    href: "/shop",
-    fill: "#E8E3FF",
-    textColor: "#4C1D95",
-    centerDeg: 0,
-  },
-  {
-    key: "food",
-    label: "Food",
-    href: "/food",
-    fill: "#FFF3CD",
-    textColor: "#78350F",
-    centerDeg: 90,
-  },
-  {
-    key: "bet",
-    label: "Bet",
-    href: "/bet",
-    fill: "#DBEAFE",
-    textColor: "#1E3A8A",
-    centerDeg: 180,
-  },
-  {
-    key: "tickets",
-    label: "Tickets",
-    href: "/tickets",
-    fill: "#D1FAE5",
-    textColor: "#064E3B",
-    centerDeg: 270,
-  },
-];
-
-const SECTORS_NO_BET: Sector[] = [
-  {
-    key: "shop",
-    label: "Shop",
-    href: "/shop",
-    fill: "#E8E3FF",
-    textColor: "#4C1D95",
-    centerDeg: 0,
-  },
-  {
-    key: "food",
-    label: "Food",
-    href: "/food",
-    fill: "#FFF3CD",
-    textColor: "#78350F",
-    centerDeg: 120,
-  },
-  {
-    key: "tickets",
-    label: "Tickets",
-    href: "/tickets",
-    fill: "#D1FAE5",
-    textColor: "#064E3B",
-    centerDeg: 240,
-  },
+// 8 wedges, equal 45° distribution. Pastel palette is arranged so
+// no two adjacent wedges share a hue family — read counter-clockwise
+// the order is lavender → yellow → mint → coral → sky → peach →
+// lavender-variant → mint-variant, with the loop closing back on
+// lavender from mint-variant (still different families). The `text`
+// color also doubles as the dot-pattern fill so each slice gets
+// "darker tone of itself" speckling, matching every other pastel
+// surface in the app.
+const WEDGES: Wedge[] = [
+  { amount: 5, bg: "#E8E3FF", text: "#4C1D95", centerDeg: 0 }, // lavender
+  { amount: 6, bg: "#FFF3CD", text: "#78350F", centerDeg: 45 }, // soft yellow
+  { amount: 7, bg: "#D1FAE5", text: "#064E3B", centerDeg: 90 }, // mint
+  { amount: 8, bg: "#FFE4E1", text: "#8B2500", centerDeg: 135 }, // coral
+  { amount: 10, bg: "#DBEAFE", text: "#1E3A8A", centerDeg: 180 }, // sky blue
+  { amount: 11, bg: "#FFE4D1", text: "#9A3412", centerDeg: 225 }, // peach
+  { amount: 12, bg: "#F3E8FF", text: "#6B21A8", centerDeg: 270 }, // lavender variant
+  { amount: 13, bg: "#ECFDF5", text: "#047857", centerDeg: 315 }, // mint variant
 ];
 
 const CX = 100;
@@ -106,6 +42,24 @@ const R = 92;
 const SPIN_MS = 2800;
 const TURNS = 6;
 const EASING = "cubic-bezier(0.17, 0.67, 0.15, 1)";
+const SLICE_HALF = 360 / WEDGES.length / 2; // 22.5°
+
+// Persistence — the wheel is locked for 24h after each spin. Stored
+// shape: { date: "YYYY-MM-DD", amount: number }. The date is
+// compared against the user's local midnight on mount, so the lock
+// naturally releases when the date rolls over. Intentionally
+// client-only: no API call, no DB write.
+const STORAGE_KEY = "dopiq-daily-challenge";
+
+type StoredChallenge = { date: string; amount: number };
+
+function todayLocal(): string {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
 
 function slicePath(startDeg: number, endDeg: number): string {
   const toRad = (d: number) => ((d - 90) * Math.PI) / 180;
@@ -119,22 +73,40 @@ function slicePath(startDeg: number, endDeg: number): string {
   return `M${CX},${CY} L${x1},${y1} A${R},${R} 0 ${largeArc} 1 ${x2},${y2} Z`;
 }
 
-export function DailySpinWheel({
-  excludeBet = false,
-}: {
-  excludeBet?: boolean;
-}) {
+export function DailySpinWheel() {
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [landedIdx, setLandedIdx] = useState<number | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // On iOS, drop the Bet sector and fall back to the three-wedge
-  // layout (Shop / Food / Tickets). Slice math (start = center -
-  // half, end = center + half) is parameterized off sectors.length
-  // so 90°-wide and 120°-wide wedges both draw correctly.
-  const sectors = excludeBet ? SECTORS_NO_BET : SECTORS_FULL;
-  const sliceHalfWidth = 360 / sectors.length / 2;
+  // Hydrate from localStorage. If the user already spun today, snap
+  // the wheel to that wedge without animating (the spin already
+  // happened earlier today) and lock the button. The SSR pass
+  // renders rotation=0 / landedIdx=null; this effect runs after
+  // first paint and either confirms that state or jumps to the
+  // landed position.
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as StoredChallenge | null;
+      if (
+        !parsed ||
+        typeof parsed.amount !== "number" ||
+        typeof parsed.date !== "string"
+      ) {
+        return;
+      }
+      if (parsed.date !== todayLocal()) return;
+      const idx = WEDGES.findIndex((w) => w.amount === parsed.amount);
+      if (idx < 0) return;
+      setRotation((360 - WEDGES[idx].centerDeg) % 360);
+      setLandedIdx(idx);
+    } catch {
+      // Malformed JSON / unavailable storage — leave the wheel
+      // spinnable and don't surface the error.
+    }
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -143,17 +115,16 @@ export function DailySpinWheel({
   }, []);
 
   function spin() {
-    if (spinning) return;
-    setLandedIdx(null);
+    if (spinning || landedIdx !== null) return;
     setSpinning(true);
 
-    const idx = Math.floor(Math.random() * sectors.length);
-    const sectorCenter = sectors[idx].centerDeg;
+    const idx = Math.floor(Math.random() * WEDGES.length);
+    const centerDeg = WEDGES[idx].centerDeg;
 
-    // For sector N's center to land at the top (0°), total rotation modulo
-    // 360 must equal (360 - centerDeg) % 360. Compute how far to travel
-    // clockwise from the current visual position, add TURNS full turns.
-    const targetMod = (360 - sectorCenter) % 360;
+    // For wedge N's center to land at the top (0°), total rotation
+    // modulo 360 must equal (360 - centerDeg) % 360. Travel clockwise
+    // from the current visual position, add TURNS full turns.
+    const targetMod = (360 - centerDeg) % 360;
     const currentMod = ((rotation % 360) + 360) % 360;
     let travel = targetMod - currentMod;
     if (travel <= 0) travel += 360;
@@ -165,10 +136,21 @@ export function DailySpinWheel({
     timerRef.current = setTimeout(() => {
       setSpinning(false);
       setLandedIdx(idx);
+      try {
+        const payload: StoredChallenge = {
+          date: todayLocal(),
+          amount: WEDGES[idx].amount,
+        };
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch {
+        // Private mode / quota exhausted — accept a one-session
+        // result instead of a 24h lock.
+      }
     }, SPIN_MS);
   }
 
-  const landed = landedIdx !== null ? sectors[landedIdx] : null;
+  const landed = landedIdx !== null ? WEDGES[landedIdx] : null;
+  const locked = landedIdx !== null;
 
   return (
     <div className="flex flex-col items-center gap-5">
@@ -176,14 +158,19 @@ export function DailySpinWheel({
       <motion.button
         type="button"
         onClick={spin}
-        disabled={spinning}
-        aria-label={spinning ? "Spinning" : "Tap to spin"}
-        whileHover={!spinning ? { scale: 1.03 } : undefined}
-        whileTap={!spinning ? { scale: 0.97 } : undefined}
+        disabled={spinning || locked}
+        aria-label={
+          spinning
+            ? "Spinning"
+            : locked
+              ? "Already spun today"
+              : "Tap to spin the daily challenge wheel"
+        }
+        whileHover={!spinning && !locked ? { scale: 1.03 } : undefined}
+        whileTap={!spinning && !locked ? { scale: 0.97 } : undefined}
         transition={{ duration: 0.15, ease: "easeOut" }}
         className="relative h-[240px] w-[240px] cursor-pointer rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-brand/30 disabled:cursor-default md:h-[280px] md:w-[280px]"
         style={{
-          // Brand-green glow appears only while spinning — fades out when settled.
           boxShadow: spinning
             ? "0 0 60px rgba(0, 200, 83, 0.35), 0 0 24px rgba(0, 200, 83, 0.25)"
             : "0 8px 28px rgba(10, 15, 30, 0.12)",
@@ -201,12 +188,17 @@ export function DailySpinWheel({
           <path d="M16 26 L2 2 L30 2 Z" fill="#0A0F1E" />
         </svg>
 
-        {/* Rotating wheel — plain CSS transform + transition */}
+        {/* Rotating wheel — plain CSS transform + transition. The
+            transition is suppressed when we snap on hydrate so the
+            wheel doesn't ease from 0° into the stored landed
+            position on already-spun mounts. */}
         <div
           className="h-full w-full"
           style={{
             transform: `rotate(${rotation}deg)`,
-            transition: `transform ${SPIN_MS}ms ${EASING}`,
+            transition: spinning
+              ? `transform ${SPIN_MS}ms ${EASING}`
+              : "none",
             willChange: "transform",
           }}
         >
@@ -214,31 +206,25 @@ export function DailySpinWheel({
             viewBox="0 0 200 200"
             className="h-full w-full"
             role="img"
-            aria-label="Spin wheel"
+            aria-label="Daily challenge wheel"
           >
-            {/* Per-slice dot patterns — reuse RESULT_COLORS' titleColor
-                so the wheel uses the same darker-tone-of-itself dot
-                system every other pastel surface in the app uses.
-                Patterns live inside the same SVG that lives inside
-                the rotating <div>, so the dots rotate with the
-                slices instead of staying static. */}
+            {/* Per-wedge dot patterns — fill keyed off each wedge's
+                deep text color so the speckle matches the existing
+                pastel-card vocabulary. Lives inside the rotating
+                <svg> so the dots rotate with the wedges instead of
+                staying static. */}
             <defs>
-              {(["shop", "food", "tickets", "bet"] as const).map((key) => (
+              {WEDGES.map((w) => (
                 <pattern
-                  key={key}
-                  id={`wheel-dots-${key}`}
+                  key={w.amount}
+                  id={`wheel-dots-${w.amount}`}
                   x="0"
                   y="0"
                   width="14"
                   height="14"
                   patternUnits="userSpaceOnUse"
                 >
-                  <circle
-                    cx="2"
-                    cy="2"
-                    r="1.4"
-                    fill={RESULT_COLORS[key].titleColor}
-                  />
+                  <circle cx="2" cy="2" r="1.4" fill={w.text} />
                 </pattern>
               ))}
             </defs>
@@ -246,53 +232,50 @@ export function DailySpinWheel({
             {/* Outer dark-navy ring */}
             <circle cx={CX} cy={CY} r={R + 4} fill="#0A0F1E" />
 
-            {sectors.map((sector, i) => {
-              const start = sector.centerDeg - sliceHalfWidth;
-              const end = sector.centerDeg + sliceHalfWidth;
+            {WEDGES.map((w, i) => {
+              const start = w.centerDeg - SLICE_HALF;
+              const end = w.centerDeg + SLICE_HALF;
               const isWinner = landedIdx === i;
-              const labelAngle = ((sector.centerDeg - 90) * Math.PI) / 180;
-              const labelRadius = R * 0.58;
+              const labelAngle = ((w.centerDeg - 90) * Math.PI) / 180;
+              const labelRadius = R * 0.62;
               const labelX = CX + labelRadius * Math.cos(labelAngle);
               const labelY = CY + labelRadius * Math.sin(labelAngle);
               const d = slicePath(start, end);
               return (
-                <g key={sector.key}>
+                <g key={w.amount}>
                   <path
                     d={d}
-                    fill={sector.fill}
+                    fill={w.bg}
                     stroke="#FBF3E5"
                     strokeWidth={2}
                     style={{
                       filter: isWinner
-                        ? `drop-shadow(0 0 12px ${sector.fill}) drop-shadow(0 0 22px ${sector.fill})`
+                        ? `drop-shadow(0 0 12px ${w.bg}) drop-shadow(0 0 22px ${w.bg})`
                         : "none",
                       transition: "filter 0.35s ease",
                     }}
                   />
-                  {/* Dot-texture overlay — same path, pattern fill at
-                      7% opacity. Matches the DotTexture intensity
-                      used on every pastel card. */}
                   <path
                     d={d}
-                    fill={`url(#wheel-dots-${sector.key})`}
+                    fill={`url(#wheel-dots-${w.amount})`}
                     opacity={0.07}
                     pointerEvents="none"
                   />
                   <g
-                    transform={`translate(${labelX}, ${labelY}) rotate(${sector.centerDeg})`}
+                    transform={`translate(${labelX}, ${labelY}) rotate(${w.centerDeg})`}
                   >
                     <text
                       x={0}
-                      y={4}
+                      y={5}
                       textAnchor="middle"
                       dominantBaseline="middle"
-                      fontSize={15}
+                      fontSize={17}
                       fontWeight={800}
-                      letterSpacing={0.5}
-                      fill={sector.textColor}
+                      letterSpacing={0.2}
+                      fill={w.text}
                       style={{ fontFamily: "var(--font-sora)" }}
                     >
-                      {sector.label}
+                      ${w.amount}
                     </text>
                   </g>
                 </g>
@@ -306,36 +289,38 @@ export function DailySpinWheel({
         </div>
       </motion.button>
 
-      {/* Spin button */}
+      {/* Take the Dopiq Challenge button */}
       <motion.button
         type="button"
         onClick={spin}
-        disabled={spinning}
-        whileTap={!spinning ? { scale: 0.94 } : undefined}
-        whileHover={!spinning ? { scale: 1.03 } : undefined}
-        animate={!spinning && !landed ? { y: [0, -3, 0] } : { y: 0 }}
+        disabled={spinning || locked}
+        whileTap={!spinning && !locked ? { scale: 0.94 } : undefined}
+        whileHover={!spinning && !locked ? { scale: 1.03 } : undefined}
+        animate={!spinning && !locked ? { y: [0, -3, 0] } : { y: 0 }}
         transition={
-          !spinning && !landed
+          !spinning && !locked
             ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
             : { duration: 0.2 }
         }
         // Pastel lavender outlined pill with the shared DotTexture
-        // baked in — matches the wheel slices' speckle so the
-        // button visually pairs with the wheel above. relative +
-        // overflow-hidden so the SVG texture clips to the pill
-        // shape. 2.5px warm-dark border (#2A1F18) matches the
-        // editorial frame applied to every other card on /home
-        // and the wheel result page.
+        // baked in — same treatment as the previous "Can't Decide"
+        // pill so the visual rhythm of the home page stays put. The
+        // disabled state (already-spun-today) drops to 0.6 opacity
+        // via the disabled: utility.
         className="relative inline-flex w-full max-w-xs items-center justify-center overflow-hidden rounded-pill border-[2.5px] bg-[#E8E3FF] px-6 py-3.5 text-[15px] font-semibold tracking-tight text-[#4C1D95] shadow-sm transition-colors duration-150 active:bg-[#D8CFFF] disabled:pointer-events-none disabled:opacity-60"
         style={{ borderColor: "#2A1F18" }}
       >
         <DotTexture className="text-[#4C1D95]" />
         <span className="relative">
-          {spinning ? "Spinning…" : landed ? "Spin again" : "Can't Decide"}
+          {spinning
+            ? "Spinning…"
+            : locked
+              ? "Already spun today"
+              : "Take the Dopiq Challenge"}
         </span>
       </motion.button>
 
-      {/* Result card */}
+      {/* Result card — pure commitment moment. No CTA, no nav. */}
       <AnimatePresence>
         {landed && !spinning && (
           <motion.div
@@ -344,29 +329,29 @@ export function DailySpinWheel({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            // Card tint shifts with the winning slice — see
-            // RESULT_COLORS above. DotTexture inherits the same
-            // titleColor (passed via inline `color`) so each slice
-            // gets darker-tone-of-itself speckling. The internal
-            // "Let's go →" emerald CTA below stays solid
-            // (btn-primary) so the confident "yes" action pops
-            // against every tint.
+            // Card tint follows the winning wedge — DotTexture
+            // inherits the same deep text color (passed via inline
+            // `color`) for darker-tone-of-itself speckling.
             className="relative w-full max-w-xs overflow-hidden rounded-card border-[2.5px] p-5 text-center shadow-card"
             style={{
-              backgroundColor: RESULT_COLORS[landed.key].bg,
+              backgroundColor: landed.bg,
               borderColor: "#2A1F18",
             }}
           >
-            <DotTexture style={{ color: RESULT_COLORS[landed.key].titleColor }} />
+            <DotTexture style={{ color: landed.text }} />
             <p
-              className="relative text-[18px] font-bold"
-              style={{ color: RESULT_COLORS[landed.key].titleColor }}
+              className="relative text-[16px] font-bold leading-snug"
+              style={{ color: landed.text }}
             >
-              You landed on {landed.label}.
+              Your Dopiq Challenge: don&rsquo;t spend more than $
+              {landed.amount} on impulse buys today.
             </p>
-            <Link href={landed.href} className="btn-primary relative mt-4 w-full">
-              Let&rsquo;s go →
-            </Link>
+            <p
+              className="relative mt-2 text-[12px] italic"
+              style={{ color: landed.text, opacity: 0.65 }}
+            >
+              Save it. We&rsquo;re watching.
+            </p>
           </motion.div>
         )}
       </AnimatePresence>

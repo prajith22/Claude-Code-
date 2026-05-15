@@ -162,8 +162,16 @@ export default async function HomePage() {
           />
         </div>
 
-        {/* Daily spin wheel */}
-        <DailySpinWheel excludeBet={excludeBet} />
+        {/* Daily Challenge wheel — lands on a dollar amount the user
+            commits to staying under for impulse buys today. Pure
+            honor system, client-only persistence (localStorage),
+            no streak coupling. */}
+        <section aria-label="Daily Challenge">
+          <h2 className="mb-4 text-center font-heading text-[18px] font-bold tracking-tight text-ink">
+            Daily Challenge
+          </h2>
+          <DailySpinWheel />
+        </section>
 
         {/* Plan usage — sits at the bottom as a quiet reference card.
             Server-renders the initial values straight off the User

@@ -26,9 +26,9 @@ export function DotTexture({
 }: {
   className?: string;
   /** Inline color override — handy when the dot color is
-   *  computed (e.g. wheel result card keying off RESULT_COLORS).
-   *  Most surfaces should set color via Tailwind text-* in
-   *  className instead. */
+   *  computed at render time (e.g. the wheel result card tints
+   *  its speckle to match the winning wedge). Most surfaces
+   *  should set color via Tailwind text-* in className instead. */
   style?: React.CSSProperties;
 }) {
   const patternId = `dot-pattern-${useId()}`;
