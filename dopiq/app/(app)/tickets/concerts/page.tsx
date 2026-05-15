@@ -36,46 +36,49 @@ export default function ConcertsBrowsePage() {
         </p>
       </header>
 
-      <div className="mx-auto mt-6 grid max-w-3xl grid-cols-2 gap-3 md:grid-cols-3">
+      <div className="mx-auto mt-6 max-w-3xl space-y-3">
         {CONCERTS.map((artist) => (
           <Link
             key={artist.id}
             href={`/tickets/concerts/${artist.id}`}
-            className="group block overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
+            className="group flex w-full items-stretch overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
             style={{
               borderColor: "#2A1F18",
               boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             }}
           >
+            {/* Per-entry pastel bgColor lives here — the one place
+                each artist's color identity survives on the browse
+                list. */}
             <div
-              className="flex aspect-[4/3] items-center justify-center text-6xl"
-              style={{ backgroundColor: TICKETS_BRAND.cream }}
+              className="flex w-[120px] flex-none items-center justify-center text-5xl"
+              style={{ backgroundColor: artist.bgColor }}
               aria-hidden
             >
               {artist.emoji}
             </div>
-            <div className="px-3 pb-3 pt-3">
+            <div className="flex flex-1 flex-col justify-center gap-1.5 py-3 pl-3 pr-3">
               <span
-                className="block w-full rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-left text-[9px] font-bold uppercase tracking-wider text-ink"
+                className="inline-flex w-fit rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ink"
                 style={{ borderColor: "#2A1F18" }}
               >
                 {artist.genre}
               </span>
-              <div className="mt-1.5 text-[15px] font-extrabold leading-tight text-ink">
+              <div className="font-heading text-[18px] font-bold leading-tight text-ink">
                 {artist.name}
               </div>
               <div
-                className="mt-0.5 line-clamp-1 text-[11px]"
+                className="line-clamp-2 text-sm leading-snug"
                 style={{ color: TICKETS_BRAND.inkSoft }}
               >
                 {artist.tagline}
               </div>
-              <div
-                className="mt-2 block w-full rounded-full border-[1.5px] bg-[#F5F0E6] px-2.5 py-0.5 text-left text-[11px] font-bold text-ink"
+              <span
+                className="inline-flex w-fit rounded-full border-[1.5px] bg-[#F5F0E6] px-2.5 py-0.5 text-[12px] font-bold text-ink"
                 style={{ borderColor: "#2A1F18" }}
               >
                 From ${Math.round(artist.basePrice * 0.65)}
-              </div>
+              </span>
             </div>
           </Link>
         ))}
