@@ -62,7 +62,8 @@ export function AddMenuItemButton({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.85, opacity: 0 }}
           transition={{ type: "spring", stiffness: 360, damping: 24 }}
-          className="flex h-10 flex-none items-center rounded-full bg-brand shadow-sm"
+          whileTap={{ scale: 0.97 }}
+          className="btn-stepper flex h-10 flex-none items-center rounded-full"
         >
           <button
             type="button"
