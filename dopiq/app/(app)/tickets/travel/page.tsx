@@ -33,48 +33,51 @@ export default function TravelBrowsePage() {
         </p>
       </header>
 
-      <div className="mx-auto mt-6 grid max-w-3xl grid-cols-2 gap-3 md:grid-cols-3">
+      <div className="mx-auto mt-6 max-w-3xl space-y-3">
         {TRAVEL_DESTINATIONS.map((dest) => {
           const cheapest = Math.min(...dest.airlines.map((a) => a.basePrice));
           return (
             <Link
               key={dest.id}
               href={`/tickets/travel/${dest.id}`}
-              className="group block overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
+              className="group flex w-full items-stretch overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
               style={{
                 borderColor: "#2A1F18",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
               }}
             >
+              {/* Per-entry pastel bgColor lives here — the one place
+                  each destination's color identity survives on the
+                  browse list. */}
               <div
-                className="flex aspect-[4/3] items-center justify-center text-6xl"
-                style={{ backgroundColor: TICKETS_BRAND.cream }}
+                className="flex w-[120px] flex-none items-center justify-center text-5xl"
+                style={{ backgroundColor: dest.bgColor }}
                 aria-hidden
               >
                 {dest.emoji}
               </div>
-              <div className="px-3 pb-3 pt-3">
-                <div className="text-[15px] font-extrabold leading-tight text-ink">
+              <div className="flex flex-1 flex-col justify-center gap-1.5 py-3 pl-3 pr-3">
+                <div className="font-heading text-[18px] font-bold leading-tight text-ink">
                   {dest.city}
                 </div>
                 <div
-                  className="text-[11px] font-semibold"
+                  className="text-[13px] font-semibold leading-snug"
                   style={{ color: TICKETS_BRAND.inkSoft }}
                 >
                   {dest.country}
                 </div>
                 <div
-                  className="mt-1 line-clamp-1 text-[11px] italic"
+                  className="line-clamp-2 text-[12px] italic leading-snug"
                   style={{ color: TICKETS_BRAND.inkSoft }}
                 >
                   {dest.tagline}
                 </div>
-                <div
-                  className="mt-1.5 block w-full rounded-full border-[1.5px] bg-[#F5F0E6] px-2.5 py-0.5 text-left text-[11px] font-bold text-ink"
+                <span
+                  className="inline-flex w-fit rounded-full border-[1.5px] bg-[#F5F0E6] px-2.5 py-0.5 text-[12px] font-bold text-ink"
                   style={{ borderColor: "#2A1F18" }}
                 >
                   From ${cheapest}
-                </div>
+                </span>
               </div>
             </Link>
           );

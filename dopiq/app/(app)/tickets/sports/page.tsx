@@ -33,60 +33,55 @@ export default function SportsBrowsePage() {
         </p>
       </header>
 
-      <div className="mx-auto mt-6 grid max-w-3xl grid-cols-2 gap-3 md:grid-cols-3">
+      <div className="mx-auto mt-6 max-w-3xl space-y-3">
         {SPORTS_GAMES.map((game) => (
           <Link
             key={game.id}
             href={`/tickets/sports/${game.id}`}
-            className="group block overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
+            className="group flex w-full items-stretch overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
             style={{
               borderColor: "#2A1F18",
               boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             }}
           >
-            {/* Vertical tile to match concerts + travel: emoji
-                anchored to a 4:3 zone on top, ALL pills + text
-                stacked in a single column below. The previous
-                horizontal layout sat the emoji chip immediately
-                to the left of the sport pill — visually two
-                chip-shaped elements side-by-side. Moving the
-                emoji above the info column eliminates every
-                horizontal pill adjacency on the card. */}
+            {/* Per-entry pastel bgColor lives here — the one place
+                each game's color identity survives on the browse
+                list. */}
             <div
-              className="flex aspect-[4/3] items-center justify-center text-6xl"
-              style={{ backgroundColor: TICKETS_BRAND.cream }}
+              className="flex w-[120px] flex-none items-center justify-center text-5xl"
+              style={{ backgroundColor: game.bgColor }}
               aria-hidden
             >
               {game.emoji}
             </div>
-            <div className="px-3 pb-3 pt-3">
+            <div className="flex flex-1 flex-col justify-center gap-1.5 py-3 pl-3 pr-3">
               <span
-                className="block w-full rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-left text-[9px] font-bold uppercase tracking-wider text-ink"
+                className="inline-flex w-fit rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ink"
                 style={{ borderColor: "#2A1F18" }}
               >
                 {game.sport}
               </span>
-              <div className="mt-1.5 text-[15px] font-extrabold leading-tight text-ink">
+              <div className="font-heading text-[18px] font-bold leading-tight text-ink">
                 {game.homeTeam}
               </div>
               <div
-                className="text-[12px] font-semibold"
+                className="text-[13px] font-semibold leading-snug"
                 style={{ color: TICKETS_BRAND.inkSoft }}
               >
                 vs {game.awayTeam}
               </div>
               <div
-                className="mt-1.5 text-[11px]"
+                className="line-clamp-1 text-[12px] leading-snug"
                 style={{ color: TICKETS_BRAND.inkSoft }}
               >
                 {game.date} · {game.venue}
               </div>
-              <div
-                className="mt-2 block w-full rounded-full border-[1.5px] bg-[#F5F0E6] px-2.5 py-0.5 text-left text-[12px] font-bold text-ink"
+              <span
+                className="inline-flex w-fit rounded-full border-[1.5px] bg-[#F5F0E6] px-2.5 py-0.5 text-[12px] font-bold text-ink"
                 style={{ borderColor: "#2A1F18" }}
               >
                 From ${Math.round(game.basePrice * 0.65)}
-              </div>
+              </span>
             </div>
           </Link>
         ))}
