@@ -237,7 +237,11 @@ export function DailySpinWheel() {
               const end = w.centerDeg + SLICE_HALF;
               const isWinner = landedIdx === i;
               const labelAngle = ((w.centerDeg - 90) * Math.PI) / 180;
-              const labelRadius = R * 0.62;
+              // Outer-rim placement (0.75R). Wedges fan wider toward
+              // the rim, so a label here has more arc room than at
+              // the old 0.62R — $13 in particular stops crowding its
+              // wedge edges.
+              const labelRadius = R * 0.75;
               const labelX = CX + labelRadius * Math.cos(labelAngle);
               const labelY = CY + labelRadius * Math.sin(labelAngle);
               const d = slicePath(start, end);
@@ -261,25 +265,30 @@ export function DailySpinWheel() {
                     opacity={0.07}
                     pointerEvents="none"
                   />
-                  {/* Label stays upright. It still lives inside the
-                      rotating <svg> so it sweeps with the wheel
-                      during a spin, but carries no per-label
-                      rotation transform — so at rest every amount
-                      reads horizontally regardless of wedge
-                      position. */}
-                  <text
-                    x={labelX}
-                    y={labelY}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    fontSize={17}
-                    fontWeight={800}
-                    letterSpacing={0.2}
-                    fill={w.text}
-                    style={{ fontFamily: "var(--font-sora)" }}
+                  {/* Carnival-wheel labels: rotated to follow their
+                      wedge's center ray (centerDeg). Top reads
+                      upright, sides sideways, bottom upside-down —
+                      the classic wheel-of-fortune look. centerDeg
+                      is the true wedge midpoint (slicePath draws
+                      centerDeg ± SLICE_HALF) so the label sits dead
+                      center of its wedge. */}
+                  <g
+                    transform={`translate(${labelX}, ${labelY}) rotate(${w.centerDeg})`}
                   >
-                    ${w.amount}
-                  </text>
+                    <text
+                      x={0}
+                      y={5}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fontSize={17}
+                      fontWeight={800}
+                      letterSpacing={0.2}
+                      fill={w.text}
+                      style={{ fontFamily: "var(--font-sora)" }}
+                    >
+                      ${w.amount}
+                    </text>
+                  </g>
                 </g>
               );
             })}
