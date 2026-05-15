@@ -7,6 +7,7 @@ import type { Product } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
 import { useSavingsStore } from "@/lib/savings-store";
+import { AnimatedAmount } from "@/components/AnimatedAmount";
 
 const BUY_NOW_KEY = "dopiq-buy-now-shop";
 
@@ -189,7 +190,11 @@ export default function ShopBuyNowPage() {
           <Row label="Shipping" value="Free" />
           <Row label="Tax" value="$0.00" />
           <div className="my-2 border-t border-surface-border" />
-          <Row label="Order total" value={formatUSD(total)} bold />
+          <Row
+            label="Order total"
+            value={<AnimatedAmount amount={total} />}
+            bold
+          />
         </div>
       </Section>
 
@@ -241,7 +246,7 @@ function Row({
   bold,
 }: {
   label: string;
-  value: string;
+  value: React.ReactNode;
   bold?: boolean;
 }) {
   return (
