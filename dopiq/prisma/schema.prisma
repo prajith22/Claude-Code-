@@ -20,6 +20,17 @@ model User {
   // once the user clicks the link in the email. The 24-hour expiry
   // is enforced by checking createdAt at /api/auth/verify time.
   emailVerificationToken String? @unique
+  // "Set a password for your Google account" recovery flow. A
+  // Google-registered user (passwordHash == null) can't sign in
+  // inside the iOS app (no Google OAuth there), so they request a
+  // one-time link to add a password. Separate from the signup
+  // verification token above: this one carries its own per-token
+  // expiry (1h) instead of leaning on createdAt, and
+  // requestedAt drives a 60s resend cooldown. All three are nulled
+  // / left dormant after the password is set.
+  passwordSetupToken        String?   @unique
+  passwordSetupTokenExpires DateTime?
+  passwordSetupRequestedAt  DateTime?
   plan                 String?
   simulationsUsed      Int      @default(0)
   simulationsLimit     Int      @default(0)

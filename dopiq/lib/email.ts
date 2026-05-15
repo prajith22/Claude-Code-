@@ -85,6 +85,79 @@ function verificationEmailHtml(verifyUrl: string): string {
 </html>`;
 }
 
+function passwordSetupEmailHtml(setupUrl: string): string {
+  // Structurally identical to verificationEmailHtml — same cream
+  // page bg, 560px white card, dopiq wordmark, navy h1, pill CTA,
+  // muted footer. Only the heading, body copy, and CTA URL differ.
+  return `<!doctype html>
+<html>
+  <body style="margin:0;padding:0;background-color:${BRAND.bg};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BRAND.bg};padding:32px 16px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;background-color:#ffffff;border-radius:16px;padding:40px 32px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+            <tr>
+              <td style="padding-bottom:24px;">
+                <span style="font-size:28px;font-weight:800;color:${BRAND.green};letter-spacing:-0.02em;">dopiq</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <h1 style="margin:0 0 12px 0;font-size:24px;line-height:1.3;font-weight:700;color:${BRAND.navy};">Set up email login</h1>
+                <p style="margin:0 0 16px 0;font-size:16px;line-height:1.6;color:${BRAND.ink};">Hey — your Dopiq account was created with Google. The iOS app doesn&rsquo;t support Google sign-in, so here&rsquo;s a link to set a password and get in on your iPhone too.</p>
+                <p style="margin:0 0 24px 0;font-size:16px;line-height:1.6;color:${BRAND.ink};">Your Google login keeps working on the web. This just adds a second way in.</p>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 24px 0;">
+                  <tr>
+                    <td align="center" bgcolor="${BRAND.green}" style="border-radius:9999px;">
+                      <a href="${setupUrl}" style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:9999px;background-color:${BRAND.green};">Set your password</a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:0 0 8px 0;font-size:13px;line-height:1.5;color:${BRAND.inkMuted};">Or paste this link into your browser:</p>
+                <p style="margin:0 0 24px 0;font-size:13px;line-height:1.5;word-break:break-all;"><a href="${setupUrl}" style="color:${BRAND.green};text-decoration:underline;">${setupUrl}</a></p>
+                <hr style="border:none;border-top:1px solid #E5E7EB;margin:24px 0;" />
+                <p style="margin:0;font-size:12px;line-height:1.5;color:${BRAND.inkMuted};">This link expires in 1 hour. If you didn&rsquo;t request it, ignore this email — nothing will change.</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`;
+}
+
+export async function sendPasswordSetupEmail(to: string, token: string) {
+  const setupUrl = `${appUrl()}/set-password?token=${encodeURIComponent(token)}`;
+  const html = passwordSetupEmailHtml(setupUrl);
+  const c = client();
+  if (!c) {
+    console.warn(
+      `[email] RESEND_API_KEY not set — would have sent password-setup to ${to}. Setup URL:\n${setupUrl}`,
+    );
+    return { ok: true as const, dev: true as const };
+  }
+  try {
+    const result = await c.emails.send({
+      from: fromAddress(),
+      to,
+      subject: "Set up email login for Dopiq",
+      html,
+    });
+    if (result.error) {
+      console.error("[email] resend error:", result.error);
+      return { ok: false as const, error: result.error.message };
+    }
+    return { ok: true as const, dev: false as const };
+  } catch (err) {
+    console.error("[email] send failed:", err);
+    return {
+      ok: false as const,
+      error: err instanceof Error ? err.message : "Send failed",
+    };
+  }
+}
+
 export async function sendVerificationEmail(to: string, token: string) {
   const verifyUrl = `${appUrl()}/api/auth/verify?token=${encodeURIComponent(token)}`;
   const html = verificationEmailHtml(verifyUrl);

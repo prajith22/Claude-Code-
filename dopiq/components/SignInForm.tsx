@@ -74,6 +74,34 @@ export function SignInForm({
   const [password, setPassword] = useState("");
   const [credSubmitting, setCredSubmitting] = useState(false);
   const [credError, setCredError] = useState<string | null>(null);
+  const [passwordSetupSent, setPasswordSetupSent] = useState(false);
+
+  // True only inside the iOS WebView (excludeGoogle, set server-side
+  // from isIOSWebView()) AND for the Google-only sign-in failure.
+  // On web excludeGoogle is false, so this is always false and the
+  // original message + visible Google button flow is untouched.
+  function isIOSAndGoogleError(msg: string): boolean {
+    return excludeGoogle && msg.includes("Google");
+  }
+
+  // Fire-and-forget the password-setup link request. The endpoint
+  // always returns { ok: true } (no account-existence oracle), so
+  // we optimistically flip to the "check your email" state without
+  // branching on the response.
+  async function handleRequestPasswordSetup() {
+    if (passwordSetupSent) return;
+    setPasswordSetupSent(true);
+    try {
+      await fetch("/api/auth/password-setup/request", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+    } catch {
+      // Intentionally swallowed — the UI already says "check your
+      // email"; surfacing a network error here would just confuse.
+    }
+  }
 
   async function onCredentialsSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -257,9 +285,25 @@ export function SignInForm({
         </motion.button>
 
         {credError && (
-          <p className="rounded-xl bg-red-50 px-4 py-2 text-center text-[12px] font-medium text-red-700">
-            {credError}
-          </p>
+          <div className="rounded-xl bg-red-50 px-4 py-3 text-center">
+            <p className="text-[12px] font-medium text-red-700">
+              {isIOSAndGoogleError(credError)
+                ? "This email is linked to Google. Set up email login to sign in on iPhone."
+                : credError}
+            </p>
+            {isIOSAndGoogleError(credError) && (
+              <button
+                type="button"
+                onClick={handleRequestPasswordSetup}
+                disabled={passwordSetupSent}
+                className="mt-2 text-[12px] font-bold text-brand underline disabled:opacity-50"
+              >
+                {passwordSetupSent
+                  ? "Check your email ✓"
+                  : "Set up email login"}
+              </button>
+            )}
+          </div>
         )}
       </motion.form>
 
