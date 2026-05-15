@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import confetti from "canvas-confetti";
-import { cn, formatUSD } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { playDing } from "@/lib/sounds";
 import DeliveryMap from "@/components/food/DeliveryMap";
+import { AnimatedAmount } from "@/components/AnimatedAmount";
 
 type Stage = {
   key: string;
@@ -235,7 +236,9 @@ export default function FoodTrackingPage() {
               </div>
               <div className="flex justify-between">
                 <dt className="text-ink-muted">Total</dt>
-                <dd className="font-semibold">{formatUSD(order.total)}</dd>
+                <dd className="font-semibold">
+                  <AnimatedAmount amount={order.total} />
+                </dd>
               </div>
             </dl>
           )}

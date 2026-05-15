@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
-import { formatUSD } from "@/lib/utils";
 import { playDing } from "@/lib/sounds";
+import { AnimatedAmount } from "@/components/AnimatedAmount";
 
 type LastOrder = { orderNumber: string; total: number; count: number };
 
@@ -108,7 +108,7 @@ export default function ShopConfirmedPage() {
           </div>
           <div className="mt-2 flex items-center justify-between">
             <span className="text-ink-muted">Total</span>
-            <span className="font-semibold">{formatUSD(order.total)}</span>
+            <AnimatedAmount amount={order.total} className="font-semibold" />
           </div>
           <div className="mt-4 rounded-xl bg-brand-light px-3 py-2 text-center text-xs font-medium text-brand">
             Simulated order · no charge
