@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+} from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const TABS = [
@@ -19,6 +25,33 @@ export function TopNav({ excludeBet = false }: { excludeBet?: boolean }) {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  // Auto-hide on scroll-down, reveal on scroll-up. Direction-based,
+  // not position-based: a >=5px move down hides, >=5px up reveals;
+  // always shown within 10px of the top (so pull-to-refresh /
+  // overscroll bounce can't flash it away). Reduced-motion users
+  // keep it permanently visible with no slide.
+  const reduce = useReducedMotion();
+  const [isHidden, setIsHidden] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (current) => {
+    if (reduce) return;
+    const previous = scrollY.getPrevious() ?? 0;
+    const diff = current - previous;
+    if (current < 10) {
+      setIsHidden(false);
+      return;
+    }
+    if (Math.abs(diff) < 5) return;
+    setIsHidden(diff > 0);
+  });
+
+  // Always reveal on route change — covers short / non-scrollable
+  // pages where no scroll event fires to reset the flag.
+  useEffect(() => {
+    setIsHidden(false);
+  }, [pathname]);
   // iOS users never see the Bet tab — Apple prohibits gambling
   // features for individual developer accounts.
   const tabs = excludeBet ? TABS.filter((t) => t.href !== "/bet") : TABS;
@@ -29,7 +62,13 @@ export function TopNav({ excludeBet = false }: { excludeBet?: boolean }) {
   const name = session?.user?.name ?? "Guest";
 
   return (
-    <header className="sticky top-0 z-40 bg-[#F5EFE4]/90 backdrop-blur-sm safe-top">
+    <motion.header
+      animate={{ y: isHidden ? "-100%" : 0 }}
+      transition={
+        reduce ? { duration: 0 } : { duration: 0.2, ease: "easeInOut" }
+      }
+      className="sticky top-0 z-40 bg-[#F5EFE4]/90 backdrop-blur-sm safe-top"
+    >
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
 
         {/* Logo */}
@@ -178,7 +217,7 @@ export function TopNav({ excludeBet = false }: { excludeBet?: boolean }) {
           )}
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }
 
