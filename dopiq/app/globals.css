@@ -332,6 +332,30 @@ button, a { -webkit-tap-highlight-color: transparent; }
     color: transparent;
     text-shadow: 0 0 30px rgba(232, 85, 85, 0.2);
   }
+  /* Onboarding stat heroes — gradient-clipped count-up numbers,
+     one tint per stat card (lavender / amber / blue). No glow
+     shadow (kept flat against the pale onboarding card fills). */
+  .type-hero-amount-lavender {
+    @apply font-heading font-extrabold;
+    background: linear-gradient(180deg, #c7b8ff 0%, #8b6fe8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .type-hero-amount-amber {
+    @apply font-heading font-extrabold;
+    background: linear-gradient(180deg, #f5c77a 0%, #d89b3f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .type-hero-amount-blue {
+    @apply font-heading font-extrabold;
+    background: linear-gradient(180deg, #a8c5e8 0%, #5a8fc8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
   .type-magnetic {
     letter-spacing: -0.01em;
     transition: letter-spacing 0.2s ease-out;

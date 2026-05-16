@@ -2,8 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion, type Variants } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  type Variants,
+} from "framer-motion";
+import AmbientBreath from "@/components/motion/AmbientBreath";
 
 type Stage = 1 | 2 | 3 | 4;
 
@@ -251,6 +258,7 @@ function Screen1({
   const [selected, setSelected] = useState<number | null>(null);
   const [nextVisible, setNextVisible] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reduce = useReducedMotion();
 
   useEffect(() => {
     if (selected === null) return;
@@ -294,6 +302,11 @@ function Screen1({
       >
         {options.map((opt, i) => {
           const isSelected = selected === i;
+          const restShadow = "0 2px 12px rgba(0,0,0,0.08)";
+          // Glow matches the option's own colour identity (lavender
+          // card → lavender glow, amber → amber, etc.) via the fg
+          // hue at low alpha.
+          const glowShadow = `${restShadow}, 0 0 0 1px ${opt.fg}33, 0 12px 30px -8px ${opt.fg}66`;
           return (
             <motion.li
               key={i}
@@ -306,10 +319,15 @@ function Screen1({
               <motion.button
                 type="button"
                 onClick={() => setSelected(i)}
-                animate={{ scale: isSelected ? 1.02 : 1 }}
+                animate={{
+                  scale: isSelected ? (reduce ? 1.02 : [1, 1.04, 1.02]) : 1,
+                  boxShadow: isSelected ? glowShadow : restShadow,
+                }}
                 whileTap={{ scale: 0.99 }}
-                transition={{ type: "spring", stiffness: 320, damping: 22 }}
-                className="w-full rounded-card border-2 px-5 py-4 text-left shadow-card transition-colors duration-200"
+                transition={
+                  reduce ? { duration: 0 } : { duration: 0.25, ease: "easeOut" }
+                }
+                className="w-full rounded-card border-2 px-5 py-4 text-left transition-colors duration-200"
                 style={{
                   backgroundColor: opt.bg,
                   color: opt.fg,
@@ -324,6 +342,21 @@ function Screen1({
           );
         })}
       </motion.ul>
+
+      <AnimatePresence>
+        {selected !== null && (
+          <motion.p
+            key="seeyou"
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
+            animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduce ? 0 : 0.2 }}
+            className="font-playful mt-5 text-center text-[14px] italic text-ink-muted"
+          >
+            Yeah, we see you.
+          </motion.p>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {response && (
@@ -356,13 +389,13 @@ const SCREEN_2_FEATURES = [
     category: "shop" as const,
     bg: "#F3E8FF",
     title: "Shop Simulator",
-    body: "Browse hundreds of real products, add to cart and checkout. Your bank account never moves.",
+    body: "Fill the cart. Scratch the itch. Close the app richer.",
   },
   {
     category: "food" as const,
     bg: "#FFF9E6",
     title: "Food Simulator",
-    body: "Pick your restaurant, build your order and watch a fake delivery tracker. Zero dollars charged.",
+    body: "Build the order. Watch the driver. Skip the charge.",
   },
   {
     category: "bet" as const,
@@ -374,13 +407,13 @@ const SCREEN_2_FEATURES = [
     category: "tickets" as const,
     bg: "#D1FAE5",
     title: "Tickets Simulator",
-    body: "Concerts, games, flights. Service fees, surge pricing, the works — without ever burning the cash.",
+    body: "Feel the rush. Beat the queue. Keep the cash.",
   },
   {
     category: "quick-sim" as const,
     bg: "#E8F5E9",
     title: "Quick Sim",
-    body: "Standing in a store feeling the pull? Simulate your impulse purchase in under 30 seconds.",
+    body: "Impulse hitting? Sim it. Walk away.",
   },
 ];
 
@@ -412,21 +445,7 @@ function Screen2({
         transition={{ delay: 0.12, duration: 0.4 }}
         className="mt-3 text-[15px] leading-relaxed text-ink-muted md:text-[16px]"
       >
-        A behavioral wellness app designed to help you manage the urge
-        to impulse spend — without willpower, without guilt, and without
-        giving anything up.
-      </motion.p>
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.22, duration: 0.4 }}
-        className="mt-3 text-[14px] leading-relaxed text-ink-muted"
-      >
-        Your brain is wired to seek dopamine. Every notification, every
-        deal, every just-one-more order is designed to trigger that
-        exact response. You were never meant to resist it through sheer
-        willpower alone. Dopiq does not ask you to resist. It gives the
-        urge somewhere safe to go.
+        Your brain wants the hit. Dopiq gives it somewhere safe to go.
       </motion.p>
 
       <motion.ul
@@ -480,6 +499,7 @@ function Screen2({
 const SCREEN_3_STATS = [
   {
     bg: "#F3E8FF",
+    heroClass: "type-hero-amount-lavender",
     target: 89,
     format: (v: number) => `${Math.round(v)}%`,
     description: "of Gen Z regret at least one impulse purchase.",
@@ -487,6 +507,7 @@ const SCREEN_3_STATS = [
   },
   {
     bg: "#FFF9E6",
+    heroClass: "type-hero-amount-amber",
     target: 60,
     format: (v: number) => `${Math.round(v)}%`,
     description:
@@ -495,6 +516,7 @@ const SCREEN_3_STATS = [
   },
   {
     bg: "#E8F0FF",
+    heroClass: "type-hero-amount-blue",
     target: 2,
     format: (v: number) => `${Math.round(v)}x`,
     description: "Gen Z spends nearly twice as much as they have in savings.",
@@ -527,6 +549,7 @@ function Screen3({ onAdvance }: { onAdvance: () => void }) {
           <StatCard
             key={i}
             bg={s.bg}
+            heroClass={s.heroClass}
             target={s.target}
             format={s.format}
             description={s.description}
@@ -554,6 +577,7 @@ function Screen3({ onAdvance }: { onAdvance: () => void }) {
 
 function StatCard({
   bg,
+  heroClass,
   target,
   format,
   description,
@@ -561,6 +585,7 @@ function StatCard({
   delay,
 }: {
   bg: string;
+  heroClass: string;
   target: number;
   format: (v: number) => string;
   description: string;
@@ -578,6 +603,7 @@ function StatCard({
       <CountUpNumber
         target={target}
         format={format}
+        heroClass={heroClass}
         durationMs={1000}
         startDelayMs={Math.round(delay * 1000)}
       />
@@ -592,17 +618,26 @@ function StatCard({
 function CountUpNumber({
   target,
   format,
+  heroClass,
   durationMs,
   startDelayMs,
 }: {
   target: number;
   format: (v: number) => string;
+  heroClass: string;
   durationMs: number;
   startDelayMs: number;
 }) {
   const ref = useRef<HTMLParagraphElement>(null);
+  const reduce = useReducedMotion();
 
   useEffect(() => {
+    // Reduced motion: skip the count-up entirely and paint the
+    // final value on first frame.
+    if (reduce) {
+      if (ref.current) ref.current.textContent = format(target);
+      return;
+    }
     // Wait until the card has slid in before kicking off the count-up.
     // Writing directly to textContent via a ref keeps React out of
     // the per-frame loop.
@@ -627,12 +662,12 @@ function CountUpNumber({
       window.clearTimeout(startTimer);
       cancelAnimationFrame(raf);
     };
-  }, [target, format, durationMs, startDelayMs]);
+  }, [target, format, durationMs, startDelayMs, reduce]);
 
   return (
     <p
       ref={ref}
-      className="font-heading text-[56px] font-extrabold leading-none tracking-tight text-[#0A0F1E] md:text-[64px]"
+      className={`${heroClass} text-[56px] leading-none tracking-tight md:text-[64px]`}
     >
       {format(0)}
     </p>
@@ -641,10 +676,22 @@ function CountUpNumber({
 
 // ---------- Screen 4: Closer ----------
 
-const REASSURANCE_LINES = [
-  "7 days completely free — no charge until your trial ends.",
-  "Cancel anytime, no questions asked.",
-  "Your impulses finally have somewhere to go.",
+const PREVIEW_CARDS = [
+  {
+    surface: "surface-shop",
+    title: "Simulate the urge",
+    sub: "Fake checkouts. Real relief.",
+  },
+  {
+    surface: "surface-food",
+    title: "Watch the relief land",
+    sub: "Tracker, ding, payoff — no charge.",
+  },
+  {
+    surface: "surface-quicksim",
+    title: "Keep the money",
+    sub: "Your savings counter goes up. Nothing else does.",
+  },
 ];
 
 function Screen4({
@@ -654,8 +701,33 @@ function Screen4({
   onComplete: () => void;
   submitting: boolean;
 }) {
+  const reduce = useReducedMotion();
   return (
     <div className="flex flex-1 flex-col items-stretch justify-center px-5 pb-8 pt-2">
+      <motion.div
+        initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
+        animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        className="mx-auto mb-7"
+      >
+        <motion.div
+          animate={reduce ? undefined : { scale: [1, 1.03, 1] }}
+          transition={
+            reduce
+              ? undefined
+              : { duration: 3, repeat: Infinity, ease: "easeInOut" }
+          }
+        >
+          <Image
+            src="/onboarding/dopiq-mascot.png"
+            alt="Dopiq mascot"
+            width={200}
+            height={200}
+            priority
+            className="h-[160px] w-[160px] md:h-[200px] md:w-[200px]"
+          />
+        </motion.div>
+      </motion.div>
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -687,24 +759,29 @@ function Screen4({
           hidden: {},
           show: { transition: { staggerChildren: 0.15, delayChildren: 0.4 } },
         }}
-        className="mt-6 rounded-card bg-[#E8F5E9] p-5"
+        className="mt-6 flex flex-col gap-3"
       >
-        <ul className="space-y-2.5">
-          {REASSURANCE_LINES.map((line, i) => (
-            <motion.li
-              key={i}
-              variants={{
-                hidden: { opacity: 0, y: 8 },
-                show: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 0.35 }}
-              className="flex items-start gap-2.5 text-[14px] font-semibold leading-snug text-[#1B5E20] md:text-[15px]"
-            >
-              <Tick />
-              <span>{line}</span>
-            </motion.li>
-          ))}
-        </ul>
+        {PREVIEW_CARDS.map((c, i) => (
+          <motion.div
+            key={i}
+            variants={{
+              hidden: { opacity: 0, y: 8 },
+              show: { opacity: 1, y: 0 },
+            }}
+            transition={{ duration: 0.35 }}
+          >
+            <AmbientBreath duration={3.4 + i * 0.5} amplitude={1.5}>
+              <div className={`${c.surface} px-5 py-4`}>
+                <p className="font-heading text-[16px] font-bold text-[#0A0F1E]">
+                  {c.title}
+                </p>
+                <p className="mt-1 text-[14px] leading-snug text-[#0A0F1E]/70">
+                  {c.sub}
+                </p>
+              </div>
+            </AmbientBreath>
+          </motion.div>
+        ))}
       </motion.div>
 
       <NextButton
@@ -738,24 +815,5 @@ function Screen4({
         .
       </motion.p>
     </div>
-  );
-}
-
-function Tick() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#1B5E20"
-      strokeWidth={2.4}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className="mt-0.5 flex-none"
-    >
-      <path d="m5 12.5 5 5 9-10" />
-    </svg>
   );
 }
