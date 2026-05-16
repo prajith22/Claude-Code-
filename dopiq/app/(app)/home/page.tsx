@@ -9,12 +9,11 @@ import { streakStatus } from "@/lib/streaks";
 
 export default async function HomePage() {
   // Auth + subscription enforced upstream by (app)/layout.tsx. We
-  // still need the user row to render the greeting, streak hero,
-  // and plan-usage card — cached call dedupes with the layout's
+  // still need the user row to render the streak hero and plan-
+  // usage card — cached call dedupes with the layout's
   // requireSubscribedUser fetch so the page costs zero extra
   // Prisma roundtrips.
   const user = (await getCurrentUser())!;
-  const firstName = user.name?.trim().split(/\s+/)[0] || "there";
   // Apple prohibits gambling features for individual developer
   // accounts, so on iOS we hide the Bet simulator card and tell
   // the spin wheel to randomize over Shop / Food only. Web users
@@ -64,11 +63,6 @@ export default async function HomePage() {
       />
 
       <div className="space-y-8 pb-4 pt-4 md:space-y-10">
-        {/* Personalized greeting — confident dark navy. */}
-        <h1 className="text-[44px] font-extrabold leading-[1.05] tracking-tight text-[#0A0F1E] md:text-[64px]">
-          Hey, {firstName}.
-        </h1>
-
         {/* Money saved + streak hero */}
         <HomeStreakHero initial={initialSummary} />
 
