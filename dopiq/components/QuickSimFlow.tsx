@@ -396,7 +396,7 @@ function LocationGrid({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="font-heading text-[36px] font-extrabold leading-tight tracking-tight text-ink md:text-[44px]"
+        className="type-hero-quicksim text-[48px] leading-tight tracking-tight md:text-[64px]"
       >
         Where are you?
       </motion.h1>
