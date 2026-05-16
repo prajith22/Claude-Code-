@@ -94,7 +94,7 @@ export default function ShopConfirmedPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.45, duration: 0.4 }}
-          className="card-subtle mt-8 w-full max-w-sm p-5 text-left"
+          className="surface-shop mt-8 w-full max-w-sm p-5 text-left"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wide text-ink-muted">

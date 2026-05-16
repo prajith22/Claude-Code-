@@ -6,6 +6,7 @@ import {
   AnimatePresence,
   motion,
   useMotionValue,
+  useReducedMotion,
   useTransform,
 } from "framer-motion";
 import {
@@ -61,6 +62,7 @@ export function QuickSimFlow() {
   const [stage, setStage] = useState<Stage>({ kind: "location" });
   const { tryRun, modal } = useSimulationGuard();
   const bumpSavings = useSavingsStore((s) => s.bump);
+  const reducedMotion = useReducedMotion();
 
   function selectLocation(location: QuickSimLocation) {
     // Pick a fresh random 5 from the location's full 10 every time
@@ -161,15 +163,34 @@ export function QuickSimFlow() {
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-[#F5EFE4] safe-top">
+      {/* Quick Sim atmosphere — two stacked emerald radial washes
+          (top + bottom) behind all content. pointer-events-none +
+          z-0 so it never blocks the close/back buttons; the Header,
+          main, and flash layers are lifted to a higher z. Fades in
+          once on mount; static at full opacity under reduced motion. */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at top, rgba(16,185,129,0.08) 0%, transparent 50%), radial-gradient(ellipse at bottom, rgba(16,185,129,0.05) 0%, transparent 50%)",
+        }}
+        initial={reducedMotion ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={reducedMotion ? { duration: 0 } : { duration: 0.4 }}
+      />
+
       {stage.kind !== "flash" && (
-        <Header
-          showBack={stage.kind !== "location"}
-          onBack={back}
-          onClose={close}
-        />
+        <div className="relative z-10">
+          <Header
+            showBack={stage.kind !== "location"}
+            onBack={back}
+            onClose={close}
+          />
+        </div>
       )}
 
-      <main className="relative flex flex-1 flex-col overflow-hidden">
+      <main className="relative z-10 flex flex-1 flex-col overflow-hidden">
         {stage.kind === "location" && (
           <LocationGrid onPick={selectLocation} />
         )}
@@ -431,7 +452,7 @@ function ItemSelectionGrid({
   return (
     <div className="flex min-h-0 flex-1 flex-col px-5 pt-2 safe-bottom">
       {/* Store header — preserved from the receipt design. */}
-      <section className="rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card">
+      <section className="surface-quicksim p-4">
         <p className="font-heading text-[16px] font-bold leading-tight text-ink">
           {stage.location.name}
         </p>
@@ -627,7 +648,7 @@ function CheckoutSummary({
     <div className="absolute inset-0 overflow-y-auto px-5 pt-2 safe-bottom">
       {/* Store header — same card as the item selection screen so
           the user sees continuity through the flow. */}
-      <section className="rounded-card border border-[#E8E4E0] bg-white p-4 shadow-card">
+      <section className="surface-quicksim p-4">
         <p className="font-heading text-[16px] font-bold leading-tight text-ink">
           {stage.location.name}
         </p>
@@ -639,7 +660,7 @@ function CheckoutSummary({
 
       {/* Receipt block — selected items with dividers between rows.
           Empty cart shows a single muted-italic placeholder. */}
-      <section className="mt-3 overflow-hidden rounded-card bg-white shadow-card">
+      <section className="surface-quicksim mt-3 overflow-hidden rounded-card">
         {stage.selected.length === 0 ? (
           <p className="px-4 py-4 font-sans text-[14px] italic text-ink-muted">
             No items selected
@@ -669,7 +690,7 @@ function CheckoutSummary({
       {/* Fake payment method — Visa ••FAKE with a "Saved" pill
           badge. Just dressing for the receipt feel; nothing real
           gets charged. */}
-      <section className="mt-3 flex items-center gap-3 rounded-card bg-white p-4 shadow-card">
+      <section className="surface-quicksim mt-3 flex items-center gap-3 rounded-card p-4">
         <span className="flex h-9 w-9 flex-none items-center justify-center text-ink">
           <Card size={22} />
         </span>
@@ -684,7 +705,7 @@ function CheckoutSummary({
       {/* Totals — subtotal + tax + divider + grand total. The grand
           total is the same number that gets credited to savings
           when the user slides up to confirm. */}
-      <section className="mt-3 rounded-card bg-white p-4 shadow-card">
+      <section className="surface-quicksim mt-3 rounded-card p-4">
         <div className="flex items-baseline justify-between">
           <p className="text-[13px] text-ink-muted">Subtotal</p>
           <p className="font-mono text-[15px] font-bold text-ink">

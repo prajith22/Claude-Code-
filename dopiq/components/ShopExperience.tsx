@@ -137,7 +137,7 @@ function SearchResults({
 }) {
   if (products.length === 0) {
     return (
-      <div className="card flex flex-col items-center gap-2 p-10 text-center">
+      <div className="surface-shop flex flex-col items-center gap-2 p-10 text-center">
         <Bag size={32} className="text-ink-faint" />
         <p className="text-[15px] font-semibold text-ink">
           No products for &ldquo;{query}&rdquo;.

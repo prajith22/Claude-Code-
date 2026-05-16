@@ -19,7 +19,7 @@ export default function FoodCartPage() {
       <h1 className="pt-2 text-[24px] font-semibold tracking-tight">Your order</h1>
 
       {lines.length === 0 ? (
-        <div className="card flex flex-col items-center gap-3 px-6 py-12 text-center">
+        <div className="surface-food flex flex-col items-center gap-3 px-6 py-12 text-center">
           <p className="text-[17px] font-semibold">Order&apos;s empty.</p>
           <p className="text-sm text-ink-muted">Pick a spot and add something.</p>
           <Link href="/food" className="btn-primary mt-2">
@@ -30,7 +30,7 @@ export default function FoodCartPage() {
         <>
           <ul className="space-y-3">
             {lines.map((l) => (
-              <li key={l.id} className="card-subtle flex items-center justify-between gap-3 p-4">
+              <li key={l.id} className="surface-food flex items-center justify-between gap-3 p-4">
                 <div className="min-w-0">
                   <p className="line-clamp-1 text-[15px] font-medium">{l.name}</p>
                   {l.meta && (
@@ -74,7 +74,7 @@ export default function FoodCartPage() {
             ))}
           </ul>
 
-          <div className="card space-y-2 p-4 text-[15px]">
+          <div className="surface-food space-y-2 p-4 text-[15px]">
             <Row label="Subtotal" value={formatUSD(subtotal)} />
             <Row label="Delivery fee" value={formatUSD(DELIVERY_FEE)} />
             <Row label="Service fee" value={formatUSD(SERVICE_FEE)} />

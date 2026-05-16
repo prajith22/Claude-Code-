@@ -162,7 +162,7 @@ export function SignUpForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="input"
+          className="input input-glass"
         />
         <input
           type="password"
@@ -172,7 +172,7 @@ export function SignUpForm({
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password (8+ characters)"
-          className="input"
+          className="input input-glass"
         />
         <input
           type="password"
@@ -182,7 +182,7 @@ export function SignUpForm({
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
           placeholder="Confirm password"
-          className="input"
+          className="input input-glass"
         />
 
         <motion.button

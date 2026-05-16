@@ -127,9 +127,8 @@ export function TravelBooking({
                   key={al.name}
                   type="button"
                   onClick={() => setAirline(al)}
-                  className="rounded-xl border px-4 py-3 text-left transition"
+                  className={`${active ? "pill-glass-active" : "pill-glass"} rounded-xl border px-4 py-3 text-left transition`}
                   style={{
-                    backgroundColor: active ? TICKETS_BRAND.emerald : "#fff",
                     color: active ? "#fff" : TICKETS_BRAND.ink,
                     borderColor: active
                       ? TICKETS_BRAND.emerald

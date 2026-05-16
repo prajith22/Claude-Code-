@@ -45,6 +45,23 @@ function formatAnimatedMoney(v: number): string {
   return `${sign}$${abs}`;
 }
 
+// Rotates daily (by date) so the hero says something slightly
+// different each day without being random per render.
+const WELLNESS_COPY = [
+  "Impulse avoided.",
+  "Still yours.",
+  "Simulated. Not spent.",
+  "Your wallet survived today.",
+];
+
+function dailyWellnessCopy(): string {
+  const d = new Date();
+  const dayOfYear = Math.floor(
+    (d.getTime() - new Date(d.getFullYear(), 0, 0).getTime()) / 86_400_000,
+  );
+  return WELLNESS_COPY[dayOfYear % WELLNESS_COPY.length];
+}
+
 function streakMessage(streak: number, atRisk: boolean, longest: number): string {
   if (streak === 0) return "Start your streak today.";
   if (atRisk) return "Don’t break it.";
@@ -83,6 +100,12 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
   const longest = summary?.longestStreak ?? 0;
   const atRisk = summary?.streakStatus === "at_risk";
   const reduce = useReducedMotion();
+  // Picked post-mount so the line genuinely "fades in after mount"
+  // and there's no SSR/client date mismatch.
+  const [wellnessCopy, setWellnessCopy] = useState<string | null>(null);
+  useEffect(() => {
+    setWellnessCopy(dailyWellnessCopy());
+  }, []);
 
   return (
     <div className="grid gap-3 sm:grid-cols-[1.4fr_1fr] sm:gap-4">
@@ -92,7 +115,20 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
           motion is reduced-motion-gated. (No WEEK column — the
           savings API exposes today + lifetime only; a weekly sum
           would need a backend change, out of scope here.) */}
-      <motion.section
+      <div className="relative">
+        {/* Ambient emerald lighting — bleeds ~80px beyond the hero
+            card. Sits OUTSIDE the card's overflow-hidden so it
+            isn't clipped; pointer-events-none, behind the card.
+            Static (no motion) so no reduced-motion gate needed. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -inset-[80px] -z-10"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(16,185,129,0.10) 0%, transparent 60%)",
+          }}
+        />
+        <motion.section
         initial={reduce ? { opacity: 1 } : { opacity: 0 }}
         animate={
           reduce ? { opacity: 1, y: 0 } : { opacity: 1, y: [0, -2, 0] }
@@ -138,11 +174,21 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
               />
             </motion.div>
           </div>
-          <p className="relative mt-3 max-w-[16rem] text-[13px] text-[#1A1A1A]/70">
-            {saved === 0
-              ? "First simulation of the day starts the count."
-              : "Simulated. Not spent."}
-          </p>
+          {saved === 0 ? (
+            <p className="relative mt-3 max-w-[16rem] text-[13px] text-[#1A1A1A]/70">
+              First simulation of the day starts the count.
+            </p>
+          ) : (
+            <motion.p
+              key={wellnessCopy ?? "pending"}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: wellnessCopy ? 1 : 0 }}
+              transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
+              className="relative mt-3 max-w-[16rem] text-[13px] italic text-[#1A1A1A]/70"
+            >
+              {wellnessCopy ?? " "}
+            </motion.p>
+          )}
 
           {/* Accumulation strip — TODAY vs LIFETIME (real fields
               from /api/savings/me). No WEEK column: the API doesn't
@@ -170,7 +216,8 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
             </div>
           </div>
         </div>
-      </motion.section>
+        </motion.section>
+      </div>
 
       {/* Streak — warm peach tint pairs with the flame emoji and
           rhymes with the rest of the home palette without colliding

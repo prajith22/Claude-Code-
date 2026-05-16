@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { TICKETS_BRAND } from "@/data/tickets";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
+import AmbientBreath from "@/components/motion/AmbientBreath";
 
 export const dynamic = "force-dynamic";
 
@@ -57,18 +58,23 @@ export default function TicketsLandingPage() {
         </p>
       </header>
 
-      <div className="mx-auto mt-6 grid max-w-2xl gap-4">
-        {CATEGORIES.map((cat) => (
-          <Link
+      <div className="relative z-10 mx-auto mt-6 grid max-w-2xl gap-4">
+        {CATEGORIES.map((cat, i) => (
+          <AmbientBreath
             key={cat.href}
-            href={cat.href}
-            className="group block rounded-2xl border-[2.5px] bg-white p-5 transition active:scale-[0.99]"
-            style={{
-              borderColor: "#2A1F18",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-            }}
+            duration={3.6 + i * 0.4}
+            amplitude={1}
+            className="block"
           >
-            <div className="flex items-center gap-4">
+            <Link
+              href={cat.href}
+              className="surface-tickets-fill group block rounded-2xl border-[2.5px] p-5 transition hover:scale-[1.01] active:scale-[0.98]"
+              style={{
+                borderColor: "#2A1F18",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+              }}
+            >
+              <div className="flex items-center gap-4">
               <div
                 className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-3xl"
                 style={{ backgroundColor: TICKETS_BRAND.cream }}
@@ -87,14 +93,15 @@ export default function TicketsLandingPage() {
                   {cat.subtitle}
                 </div>
               </div>
-              <div
-                className="text-2xl text-ink transition group-hover:translate-x-0.5"
-                aria-hidden
-              >
-                →
+                <div
+                  className="text-2xl text-ink transition group-hover:translate-x-0.5"
+                  aria-hidden
+                >
+                  →
+                </div>
               </div>
-            </div>
-          </Link>
+            </Link>
+          </AmbientBreath>
         ))}
       </div>
 

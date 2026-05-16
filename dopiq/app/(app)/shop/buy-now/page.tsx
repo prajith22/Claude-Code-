@@ -159,7 +159,7 @@ export default function ShopBuyNowPage() {
           per the brief, so the one thing being bought reads as the
           hero of the page. */}
       <div
-        className="overflow-hidden rounded-card border-[2.5px] bg-white shadow-card"
+        className="surface-shop-fill overflow-hidden rounded-card border-[2.5px] shadow-card"
         style={{ borderColor: "#2A1F18" }}
       >
         <div className="relative aspect-[4/3] w-full bg-surface-alt">
@@ -314,7 +314,7 @@ function Section({
       <h2 className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
         {title}
       </h2>
-      <div className="card-subtle p-4">{children}</div>
+      <div className="surface-shop p-4">{children}</div>
     </section>
   );
 }

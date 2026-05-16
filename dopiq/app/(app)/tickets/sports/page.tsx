@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SPORTS_GAMES, TICKETS_BRAND } from "@/data/tickets";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
+import AmbientBreath from "@/components/motion/AmbientBreath";
 
 export const dynamic = "force-dynamic";
 
@@ -33,57 +34,62 @@ export default function SportsBrowsePage() {
         </p>
       </header>
 
-      <div className="mx-auto mt-6 max-w-3xl space-y-3">
-        {SPORTS_GAMES.map((game) => (
-          <Link
+      <div className="relative z-10 mx-auto mt-6 max-w-3xl space-y-3">
+        {SPORTS_GAMES.map((game, i) => (
+          <AmbientBreath
             key={game.id}
-            href={`/tickets/sports/${game.id}`}
-            className="group flex w-full items-stretch overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
-            style={{
-              borderColor: "#2A1F18",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-            }}
+            duration={3.6 + (i % 5) * 0.2}
+            amplitude={1}
           >
-            {/* Per-entry pastel bgColor lives here — the one place
-                each game's color identity survives on the browse
-                list. */}
-            <div
-              className="flex w-[120px] flex-none items-center justify-center text-5xl"
-              style={{ backgroundColor: game.bgColor }}
-              aria-hidden
+            <Link
+              href={`/tickets/sports/${game.id}`}
+              className="surface-tickets-fill group flex w-full items-stretch overflow-hidden rounded-2xl border-[2.5px] transition hover:scale-[1.01] active:scale-[0.98]"
+              style={{
+                borderColor: "#2A1F18",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+              }}
             >
-              {game.emoji}
-            </div>
-            <div className="flex flex-1 flex-col justify-center gap-1.5 py-3 pl-3 pr-3">
-              <span
-                className="inline-flex w-fit rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ink"
-                style={{ borderColor: "#2A1F18" }}
-              >
-                {game.sport}
-              </span>
-              <div className="font-heading text-[18px] font-bold leading-tight text-ink">
-                {game.homeTeam}
-              </div>
+              {/* Per-entry pastel bgColor lives here — the one place
+                  each game's color identity survives on the browse
+                  list. */}
               <div
-                className="text-[13px] font-semibold leading-snug"
-                style={{ color: TICKETS_BRAND.inkSoft }}
+                className="flex w-[120px] flex-none items-center justify-center text-5xl"
+                style={{ backgroundColor: game.bgColor }}
+                aria-hidden
               >
-                vs {game.awayTeam}
+                {game.emoji}
               </div>
-              <div
-                className="line-clamp-1 text-[12px] leading-snug"
-                style={{ color: TICKETS_BRAND.inkSoft }}
-              >
-                {game.date} · {game.venue}
+              <div className="flex flex-1 flex-col justify-center gap-1.5 py-3 pl-3 pr-3">
+                <span
+                  className="pill-glass inline-flex w-fit rounded-full border-[1.5px] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ink"
+                  style={{ borderColor: "#2A1F18" }}
+                >
+                  {game.sport}
+                </span>
+                <div className="font-heading text-[18px] font-bold leading-tight text-ink">
+                  {game.homeTeam}
+                </div>
+                <div
+                  className="text-[13px] font-semibold leading-snug"
+                  style={{ color: TICKETS_BRAND.inkSoft }}
+                >
+                  vs {game.awayTeam}
+                </div>
+                <div
+                  className="line-clamp-1 text-[12px] leading-snug"
+                  style={{ color: TICKETS_BRAND.inkSoft }}
+                >
+                  {game.date} · {game.venue}
+                </div>
+                <span
+                  className="pill-glass inline-flex w-fit rounded-full border-[1.5px] px-2.5 py-0.5 text-[12px] font-bold text-ink"
+                  style={{ borderColor: "#2A1F18" }}
+                >
+                  From ${Math.round(game.basePrice * 0.65)}
+                </span>
               </div>
-              <span
-                className="inline-flex w-fit rounded-full border-[1.5px] bg-[#F5F0E6] px-2.5 py-0.5 text-[12px] font-bold text-ink"
-                style={{ borderColor: "#2A1F18" }}
-              >
-                From ${Math.round(game.basePrice * 0.65)}
-              </span>
-            </div>
-          </Link>
+            </Link>
+          </AmbientBreath>
         ))}
       </div>
 

@@ -263,7 +263,7 @@ export function SignInForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="input"
+          className="input input-glass"
         />
         <input
           type="password"
@@ -272,7 +272,7 @@ export function SignInForm({
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="input"
+          className="input input-glass"
         />
         <motion.button
           whileHover={{ y: -1 }}

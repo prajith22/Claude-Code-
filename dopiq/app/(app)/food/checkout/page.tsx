@@ -216,7 +216,7 @@ export default function FoodCheckoutPage() {
         type="button"
         onClick={() => place("instant")}
         disabled={placing || lines.length === 0}
-        className="inline-flex w-full items-center justify-center rounded-pill bg-white px-6 py-3.5 text-[15px] font-semibold tracking-tight text-ink shadow-sm transition-all duration-150 hover:bg-surface-alt active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40"
+        className="pill-glass inline-flex w-full items-center justify-center rounded-pill px-6 py-3.5 text-[15px] font-semibold tracking-tight text-ink transition-all duration-150 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40"
       >
         {placing ? "Placing order…" : `Buy Now · ${formatUSD(total)}`}
       </button>
@@ -254,7 +254,7 @@ function Section({
       <h2 className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
         {title}
       </h2>
-      <div className="card-subtle p-4">{children}</div>
+      <div className="surface-food p-4">{children}</div>
     </section>
   );
 }

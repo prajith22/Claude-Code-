@@ -155,7 +155,7 @@ export function TicketsCheckout({ pending }: { pending: PendingPurchase }) {
 
         {/* Tiny purchase summary above the breakdown */}
         <div
-          className="mt-4 rounded-2xl bg-white p-4 text-[13px]"
+          className="surface-tickets mt-4 p-4 text-[13px]"
           style={{
             boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             color: TICKETS_BRAND.inkSoft,

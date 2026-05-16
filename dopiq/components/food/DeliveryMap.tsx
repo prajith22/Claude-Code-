@@ -48,7 +48,7 @@ export default function DeliveryMap({ stage }: DeliveryMapProps) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="overflow-hidden rounded-card border-[2.5px] bg-white p-5 shadow-card"
+      className="surface-food-fill overflow-hidden rounded-card border-[2.5px] p-5 shadow-card"
       style={{ borderColor: "#2A1F18" }}
     >
       <svg

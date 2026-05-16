@@ -51,7 +51,7 @@ export function AddMenuItemButton({
           exit={{ scale: 0.85, opacity: 0 }}
           transition={{ duration: 0.18 }}
           whileTap={{ scale: 1.12 }}
-          className="h-10 flex-none rounded-full border border-surface-border bg-white px-4 text-sm font-semibold text-ink transition-colors hover:bg-surface-alt"
+          className="surface-food-fill h-10 flex-none rounded-full border border-surface-border px-4 text-sm font-semibold text-ink transition-colors hover:bg-surface-alt"
         >
           + Add
         </motion.button>

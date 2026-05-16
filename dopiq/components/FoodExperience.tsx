@@ -10,6 +10,7 @@ import { CartButton } from "@/components/CartButton";
 import { RestaurantLogo } from "@/components/RestaurantLogo";
 import { cardHover, cardHoverTransition } from "@/lib/card-hover";
 import { Plate, StarFilled } from "@/components/icons";
+import AmbientBreath from "@/components/motion/AmbientBreath";
 
 type Pill = { key: string; label: string };
 
@@ -115,7 +116,7 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
           </h1>
           <button
             type="button"
-            className="mt-2 inline-flex items-center gap-1.5 rounded-pill border border-surface-border bg-white px-3 py-1.5 text-[13px] font-semibold text-ink shadow-sm transition active:scale-[0.98]"
+            className="pill-glass mt-2 inline-flex items-center gap-1.5 rounded-pill px-3 py-1.5 text-[13px] font-semibold text-ink transition active:scale-[0.98]"
           >
             <svg
               width="14"
@@ -173,7 +174,7 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search restaurants or cuisines..."
-          className="w-full rounded-pill border border-surface-border bg-white py-3 pl-11 pr-11 text-[14px] text-ink placeholder:text-ink-faint shadow-sm transition-all duration-150 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+          className="input-glass w-full rounded-pill py-3 pl-11 pr-11 text-[14px] text-ink placeholder:text-ink-faint transition-all duration-150 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
         />
         {search && (
           <button
@@ -209,8 +210,8 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
             aria-pressed={activePill === null}
             className={`flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-semibold transition ${
               activePill === null
-                ? "border border-navy bg-navy text-white shadow-sm"
-                : "pill-subtle text-ink hover:bg-surface-alt"
+                ? "pill-glass-active"
+                : "pill-glass text-ink"
             }`}
           >
             All
@@ -225,8 +226,8 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
                 aria-pressed={selected}
                 className={`flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-semibold transition ${
                   selected
-                    ? "border border-navy bg-navy text-white shadow-sm"
-                    : "pill-subtle text-ink hover:bg-surface-alt"
+                    ? "pill-glass-active"
+                    : "pill-glass text-ink"
                 }`}
               >
                 {p.label}
@@ -237,7 +238,7 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
       </div>
 
       {!hasResults ? (
-        <div className="card flex flex-col items-center gap-2 p-10 text-center">
+        <div className="surface-food flex flex-col items-center gap-2 p-10 text-center">
           <Plate size={32} className="text-ink-faint" />
           <p className="text-[15px] font-semibold text-ink">
             No restaurants for &ldquo;{emptyLabel || "your search"}&rdquo;.
@@ -283,9 +284,11 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
               All Restaurants
             </h2>
             <ul className="space-y-4">
-              {filtered.map((r) => (
+              {filtered.map((r, i) => (
                 <li key={r.id}>
-                  <RestaurantRow r={r} />
+                  <AmbientBreath duration={4 + ((i % 5) * 0.08)} amplitude={1}>
+                    <RestaurantRow r={r} />
+                  </AmbientBreath>
                 </li>
               ))}
             </ul>
@@ -330,8 +333,14 @@ function CategorySection({
 
       {expanded ? (
         <div className="grid grid-cols-2 gap-3">
-          {display.map((r) => (
-            <CompactCard key={r.id} r={r} fullWidth />
+          {display.map((r, i) => (
+            <AmbientBreath
+              key={r.id}
+              duration={3.6 + ((i % 5) * 0.2)}
+              amplitude={1}
+            >
+              <CompactCard r={r} fullWidth />
+            </AmbientBreath>
           ))}
         </div>
       ) : (
@@ -340,8 +349,15 @@ function CategorySection({
           style={{ scrollbarWidth: "none" }}
         >
           <div className="flex gap-3 px-4 pb-4 pt-3">
-            {display.map((r) => (
-              <CompactCard key={r.id} r={r} />
+            {display.map((r, i) => (
+              <AmbientBreath
+                key={r.id}
+                duration={3.8 + ((i % 4) * 0.2)}
+                amplitude={1}
+                className="flex-none"
+              >
+                <CompactCard r={r} />
+              </AmbientBreath>
             ))}
           </div>
         </div>
@@ -363,11 +379,12 @@ function CompactCard({
       // can swap its 1px surface-border for the 2.5px warm-dark
       // border without touching .card globally — keeps cart /
       // checkout / tracking screens on their existing 1px frame.
-      className={`relative flex-none rounded-card border-[2.5px] bg-white shadow-card ${
+      className={`surface-food-fill relative flex-none rounded-card border-[2.5px] shadow-card ${
         fullWidth ? "w-full" : "w-[220px]"
       }`}
       style={{ borderColor: "#2A1F18" }}
       whileHover={cardHover}
+      whileTap={{ scale: 0.98 }}
       transition={cardHoverTransition}
     >
       <Link
@@ -379,6 +396,14 @@ function CompactCard({
             name={r.name}
             imageUrl={r.imageUrl}
             className="h-full w-full"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, transparent 60%, rgba(245,158,11,0.08) 100%)",
+            }}
           />
         </div>
         <div className="p-3">
@@ -403,9 +428,10 @@ function RestaurantRow({ r }: { r: Restaurant }) {
       // Card frame inlined (was the shared `.card` utility) so the
       // 1px surface-border can be swapped for the 2.5px warm-dark
       // border without touching .card globally.
-      className="relative rounded-card border-[2.5px] bg-white shadow-card"
+      className="surface-food-fill relative rounded-card border-[2.5px] shadow-card"
       style={{ borderColor: "#2A1F18" }}
       whileHover={cardHover}
+      whileTap={{ scale: 0.98 }}
       transition={cardHoverTransition}
     >
       <Link
@@ -418,6 +444,14 @@ function RestaurantRow({ r }: { r: Restaurant }) {
             imageUrl={r.imageUrl}
             variant="banner"
             className="flex h-full w-full items-center justify-center"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, transparent 60%, rgba(245,158,11,0.08) 100%)",
+            }}
           />
           <span className="absolute left-3 top-3 flex items-center gap-1.5 rounded-pill bg-navy/80 px-3 py-1.5 backdrop-blur-sm">
             <span className="relative flex h-2 w-2">

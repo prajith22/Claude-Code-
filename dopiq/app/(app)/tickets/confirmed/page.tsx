@@ -139,7 +139,7 @@ export default function TicketsConfirmedPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-6 rounded-2xl bg-white p-5"
+          className="surface-tickets mt-6 p-5"
           style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
         >
           {purchase ? (
