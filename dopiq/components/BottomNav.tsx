@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { DopaminePulse } from "@/components/DopaminePulse";
@@ -50,7 +51,28 @@ export function BottomNav({ excludeBet = false }: { excludeBet?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const reduce = useReducedMotion();
-  const hideQuickSim = shouldHideQuickSim(pathname);
+  // Hide the floating button the instant it's tapped — not after
+  // usePathname() flips — so the continuously-animating circle
+  // never renders uncovered during the route transition (the "ball
+  // moving up" glitch). The effect clears the flag once the route
+  // has stabilized (landed on /quick-sim, or navigated elsewhere
+  // so the button can reappear on return).
+  const [isNavigatingToQuickSim, setIsNavigatingToQuickSim] =
+    useState(false);
+
+  useEffect(() => {
+    if (pathname === "/quick-sim" || !pathname.startsWith("/quick-sim")) {
+      setIsNavigatingToQuickSim(false);
+    }
+  }, [pathname]);
+
+  function handleQuickSimTap() {
+    setIsNavigatingToQuickSim(true);
+    router.push("/quick-sim");
+  }
+
+  const hideQuickSim =
+    isNavigatingToQuickSim || shouldHideQuickSim(pathname);
   // iOS users never see the Bet tab — Apple prohibits gambling
   // features for individual developer accounts. Filtering rather
   // than rendering-and-hiding so the remaining tabs distribute
@@ -130,16 +152,26 @@ export function BottomNav({ excludeBet = false }: { excludeBet?: boolean }) {
             reduced-motion-gated (DopaminePulse self-gates). */}
         <motion.div
           className="relative flex items-center justify-center"
-          animate={reduce ? undefined : { scale: [1, 1.02, 1] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          animate={
+            reduce || isNavigatingToQuickSim
+              ? undefined
+              : { scale: [1, 1.02, 1] }
+          }
+          transition={
+            reduce || isNavigatingToQuickSim
+              ? undefined
+              : { duration: 3, repeat: Infinity, ease: "easeInOut" }
+          }
         >
-          <DopaminePulse
-            color="rgba(16,185,129,0.35)"
-            className="inset-[-40%]"
-          />
+          {!isNavigatingToQuickSim && (
+            <DopaminePulse
+              color="rgba(16,185,129,0.35)"
+              className="inset-[-40%]"
+            />
+          )}
           <motion.button
             type="button"
-            onClick={() => router.push("/quick-sim")}
+            onClick={handleQuickSimTap}
             aria-label="Quick Sim"
             whileTap={{ scale: 0.94 }}
             whileHover={{ scale: 1.02 }}
