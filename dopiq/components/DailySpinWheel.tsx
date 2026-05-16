@@ -284,7 +284,7 @@ export function DailySpinWheel() {
                       fontWeight={800}
                       letterSpacing={0.2}
                       fill={w.text}
-                      style={{ fontFamily: "var(--font-sniglet)" }}
+                      style={{ fontFamily: "var(--font-sora)" }}
                     >
                       ${w.amount}
                     </text>
@@ -351,7 +351,7 @@ export function DailySpinWheel() {
           >
             <DotTexture style={{ color: landed.text }} />
             <p
-              className="font-playful type-glow-emerald relative text-[16px] font-bold leading-snug"
+              className="font-heading type-glow-emerald relative text-[16px] font-bold leading-snug"
               style={{ color: landed.text }}
             >
               Don&rsquo;t spend ${landed.amount} in real life today
