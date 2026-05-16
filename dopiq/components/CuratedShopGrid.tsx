@@ -99,7 +99,7 @@ export function CuratedShopGrid({ products }: { products: Product[] }) {
             <Link
               href={tile.href}
               aria-label={`Browse ${tile.label}`}
-              className="group relative block aspect-[4/5] overflow-hidden rounded-[20px] bg-surface-alt shadow-card transition-shadow duration-200 hover:shadow-cardHover"
+              className="group relative block aspect-[4/5] overflow-hidden rounded-[20px] border-[2.5px] border-[#2A1F18] bg-surface-alt shadow-card transition-shadow duration-200 hover:shadow-cardHover"
             >
               {tile.imageUrl && (
                 <Image

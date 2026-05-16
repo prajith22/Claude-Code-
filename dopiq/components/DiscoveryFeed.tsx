@@ -5,10 +5,9 @@ import Image from "next/image";
 import { forwardRef, memo } from "react";
 import { motion } from "framer-motion";
 import type { Product, ProductCategory } from "@/types";
-import { useCartStore } from "@/lib/cart-store";
 import { formatUSD, cn } from "@/lib/utils";
 import { cardHover, cardHoverTransition } from "@/lib/card-hover";
-import { Heart, HeartFilled, StarFilled } from "@/components/icons";
+import { StarFilled } from "@/components/icons";
 import { MasonryProductGrid } from "@/components/MasonryProductGrid";
 import AmbientBreath from "@/components/motion/AmbientBreath";
 
@@ -92,10 +91,6 @@ function ProductCardImpl({
   product: Product;
   className?: string;
 }) {
-  const wishlist = useCartStore((s) => s.wishlist);
-  const toggle = useCartStore((s) => s.toggleWishlist);
-  const saved = wishlist.includes(product.id);
-
   // Deterministic metadata variation — drives masonry rhythm without
   // any randomness, so server and client render identical heights.
   // All knobs key off stable product fields:
@@ -146,22 +141,6 @@ function ProductCardImpl({
           />
         </div>
       </Link>
-      <button
-        type="button"
-        aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
-        aria-pressed={saved}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          toggle(product.id);
-        }}
-        className={cn(
-          "absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full border border-surface-border bg-white/90 backdrop-blur-sm transition-all duration-150 hover:scale-110 active:scale-95",
-          saved && "border-ink bg-white",
-        )}
-      >
-        <HeartIcon filled={saved} />
-      </button>
       <Link href={`/shop/${product.id}`} className="block space-y-1.5 p-3">
         <p className={cn("text-[13px] font-bold leading-snug text-ink", nameClamp)}>
           {product.name}
@@ -221,13 +200,5 @@ function FilterPill({
     >
       {children}
     </motion.button>
-  );
-}
-
-function HeartIcon({ filled }: { filled: boolean }) {
-  return filled ? (
-    <HeartFilled size={18} className="text-ink" />
-  ) : (
-    <Heart size={18} className="text-ink" />
   );
 }
