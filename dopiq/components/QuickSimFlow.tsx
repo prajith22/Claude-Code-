@@ -21,6 +21,7 @@ import { useSimulationGuard } from "@/lib/use-simulation-guard";
 import { useSavingsStore } from "@/lib/savings-store";
 import { playDing } from "@/lib/sounds";
 import { formatUSD } from "@/lib/utils";
+import { AnimatedAmount } from "@/components/AnimatedAmount";
 
 const STORE_ADDRESSES: Record<QuickSimLocation["key"], string> = {
   gas: "2847 Highway Blvd, Austin TX 78701",
@@ -359,8 +360,16 @@ function ItemSelectionGrid({
         </p>
       </section>
 
-      {/* Running total — selection count + subtotal updating live. */}
-      <div className="mt-3 flex items-baseline justify-between">
+      {/* Wellness framing — reminds the user this is a simulation,
+          not a store. */}
+      <p className="mt-2 text-center text-[12px] italic text-ink-muted">
+        Browse like it&rsquo;s real. Walk away like it&rsquo;s not.
+      </p>
+
+      {/* Running total — the hero of the screen. Counts up via the
+          shared AnimatedAmount; emerald glow makes it the dominant
+          element. */}
+      <div className="mt-3 flex items-center justify-between">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-widest text-ink-muted">
             Cart
@@ -369,9 +378,10 @@ function ItemSelectionGrid({
             {stage.selected.length} of {stage.queue.length} selected
           </p>
         </div>
-        <p className="font-mono text-[24px] font-extrabold leading-none text-brand">
-          {formatUSD(subtotalCents / 100)}
-        </p>
+        <AnimatedAmount
+          amount={subtotalCents / 100}
+          className="font-mono text-5xl font-extrabold leading-none text-brand [text-shadow:0_0_24px_rgba(16,185,129,0.3)]"
+        />
       </div>
 
       {/* Item cards — tap to toggle. All five visible at once. */}
@@ -389,16 +399,52 @@ function ItemSelectionGrid({
       {/* Review-Order CTA — full-width navy button at the bottom
           of the column. Always tappable; empty cart still routes to
           the checkout summary so the user can see the "No items
-          selected" state. */}
+          selected" state. Outer wrapper carries the heartbeat pulse
+          so it never fights the button's whileTap scale-down. */}
       <div className="mt-auto pt-6">
-        <motion.button
-          type="button"
-          onClick={onReview}
-          whileTap={{ scale: 0.98 }}
-          className="w-full rounded-pill bg-[#0A0F1E] py-4 font-heading text-[16px] font-bold text-white shadow-cardHover"
+        <motion.div
+          animate={{ scale: [1, 1.015, 1] }}
+          transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity }}
         >
-          Review Order
-        </motion.button>
+          <motion.button
+            type="button"
+            onClick={onReview}
+            whileTap={{ scale: 0.97 }}
+            className="relative w-full overflow-hidden rounded-pill py-4 font-heading text-[16px] font-bold text-white"
+            style={{
+              background:
+                "linear-gradient(180deg, #1A2235 0%, #0A0F1E 60%, #050810 100%)",
+              boxShadow:
+                "inset 0 1px 0 rgba(255,255,255,0.15), 0 8px 20px -8px rgba(10,15,30,0.5), 0 4px 8px -4px rgba(10,15,30,0.3)",
+            }}
+          >
+            <span className="relative z-10">Review Order</span>
+            {/* Diagonal shine sweep — every ~5s (3s sweep + 2s
+                delay). pointer-events-none + clipped to the pill. */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 overflow-hidden rounded-pill"
+            >
+              <motion.span
+                className="absolute top-0 h-full w-1/3"
+                style={{
+                  background:
+                    "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%)",
+                }}
+                animate={{ x: ["-100%", "300%"] }}
+                transition={{
+                  duration: 3,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                  repeatDelay: 2,
+                }}
+              />
+            </span>
+          </motion.button>
+        </motion.div>
+        <p className="mt-2 text-center text-[12px] italic text-ink-muted">
+          Simulated cart · No real charge
+        </p>
       </div>
     </div>
   );
@@ -417,13 +463,20 @@ function ItemSelectCard({
     <motion.button
       type="button"
       onClick={onClick}
-      whileTap={{ scale: 0.98 }}
-      animate={{
-        backgroundColor: selected ? "#E8F5E9" : "#FFF8E7",
-        color: selected ? "#1B5E20" : "#5D4037",
-      }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
+      whileTap={{ scale: 0.97 }}
       className="flex w-full items-center gap-3 rounded-card px-4 py-3 text-left"
+      style={{
+        background: selected
+          ? "linear-gradient(180deg, #D1FAE5 0%, #A7F3D0 100%)"
+          : "linear-gradient(180deg, #FEF3C7 0%, #FDE68A 100%)",
+        border: selected ? "1.5px solid #6EE7B7" : "1.5px solid #F3D88C",
+        boxShadow: selected
+          ? "inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 12px -4px rgba(16,185,129,0.25)"
+          : "0 2px 6px -2px rgba(0,0,0,0.06)",
+        color: selected ? "#1B5E20" : "#5D4037",
+        transition:
+          "box-shadow 0.2s ease-out, border-color 0.2s ease-out, color 0.2s ease-out",
+      }}
     >
       <span className="flex h-9 w-9 flex-none items-center justify-center">
         <QuickSimItemIcon kind={item.iconKey} size={22} />
@@ -434,25 +487,32 @@ function ItemSelectCard({
       <p className="font-mono text-[15px] font-bold">
         {formatUSD(item.priceCents / 100)}
       </p>
-      {selected && (
-        <span
-          aria-hidden
-          className="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[#1B5E20] text-white"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={3}
-            strokeLinecap="round"
-            strokeLinejoin="round"
+      <AnimatePresence initial={false}>
+        {selected && (
+          <motion.span
+            key="check"
+            aria-hidden
+            initial={{ scale: 0, rotate: -90 }}
+            animate={{ scale: 1, rotate: 0 }}
+            exit={{ scale: 0, rotate: -90 }}
+            transition={{ type: "spring", stiffness: 500, damping: 25 }}
+            className="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[#1B5E20] text-white"
           >
-            <path d="m5 12.5 5 5 9-10" />
-          </svg>
-        </span>
-      )}
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={3}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m5 12.5 5 5 9-10" />
+            </svg>
+          </motion.span>
+        )}
+      </AnimatePresence>
     </motion.button>
   );
 }
