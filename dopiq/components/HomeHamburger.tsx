@@ -49,7 +49,7 @@ export function HomeHamburger() {
   return (
     <motion.div
       ref={ref}
-      className="fixed right-4 top-4 z-40"
+      className="fixed right-4 top-[calc(env(safe-area-inset-top)+1rem)] z-40"
       animate={{
         opacity: atTop ? 1 : 0,
         pointerEvents: atTop ? "auto" : "none",
