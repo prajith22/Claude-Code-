@@ -62,7 +62,7 @@ export default async function HomePage() {
         }}
       />
 
-      <div className="space-y-8 pb-4 pt-4 md:space-y-10">
+      <div className="space-y-3 pb-4 pt-4">
         {/* Money saved + streak hero */}
         <HomeStreakHero initial={initialSummary} />
 
@@ -76,7 +76,7 @@ export default async function HomePage() {
             Tickets stays on both surfaces — it's parody of the
             event-industry markup, not a gated category. */}
         <div
-          className={`grid gap-3 md:gap-4 ${
+          className={`grid gap-3 ${
             excludeBet ? "grid-cols-3" : "grid-cols-2"
           }`}
         >
