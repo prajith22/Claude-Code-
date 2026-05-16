@@ -204,34 +204,36 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
           {/* All — reset pill. Active when no cuisine is selected.
               Sits first so users can return to the unfiltered list
               with one tap, mirroring the Shop page's pill row. */}
-          <button
+          <motion.button
             type="button"
             onClick={() => setActivePill(null)}
             aria-pressed={activePill === null}
+            whileTap={{ scale: 0.95 }}
             className={`flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-semibold transition ${
               activePill === null
-                ? "pill-glass-active"
-                : "pill-glass text-ink"
+                ? "pill-glass-active scale-[1.02]"
+                : "pill-food text-ink"
             }`}
           >
             All
-          </button>
+          </motion.button>
           {PILLS.map((p) => {
             const selected = activePill === p.key;
             return (
-              <button
+              <motion.button
                 key={p.key}
                 type="button"
                 onClick={() => setActivePill(selected ? null : p.key)}
                 aria-pressed={selected}
+                whileTap={{ scale: 0.95 }}
                 className={`flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-semibold transition ${
                   selected
-                    ? "pill-glass-active"
-                    : "pill-glass text-ink"
+                    ? "pill-glass-active scale-[1.02]"
+                    : "pill-food text-ink"
                 }`}
               >
                 {p.label}
-              </button>
+              </motion.button>
             );
           })}
         </div>

@@ -170,17 +170,20 @@ export function ExploreSection({ products }: { products: Product[] }) {
             {CATEGORIES.map((c) => {
               const active = selectedCategory === c.key;
               return (
-                <button
+                <motion.button
                   key={c.key}
                   type="button"
                   onClick={() => setSelectedCategory(c.key)}
                   aria-pressed={active}
+                  whileTap={{ scale: 0.95 }}
                   className={`flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-semibold transition ${
-                    active ? "pill-glass-active" : "pill-glass text-ink"
+                    active
+                      ? "pill-glass-active scale-[1.02]"
+                      : "pill-shop text-ink"
                   }`}
                 >
                   {c.label}
-                </button>
+                </motion.button>
               );
             })}
           </div>
