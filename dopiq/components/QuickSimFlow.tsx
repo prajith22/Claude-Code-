@@ -60,8 +60,13 @@ function todayDateStr(): string {
 export function QuickSimFlow() {
   const router = useRouter();
   const [stage, setStage] = useState<Stage>({ kind: "location" });
-  const { tryRun, modal } = useSimulationGuard();
+  const { modal, openLimit } = useSimulationGuard();
   const bumpSavings = useSavingsStore((s) => s.bump);
+  // Holds the post-flash → /home redirect so the cap-check
+  // reconciler can cancel it if the user turns out to be over cap.
+  const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const reducedMotion = useReducedMotion();
 
   function selectLocation(location: QuickSimLocation) {
@@ -88,28 +93,56 @@ export function QuickSimFlow() {
     });
   }
 
-  async function commitSimulation(totalCents: number) {
-    const allowed = await tryRun(async () => {
-      // Show the flash the instant the cap check passes — fire the
-      // savings record in the background so the network round-trip
-      // doesn't sit between the user's gesture and the flash. The
-      // home-page chip bumps as soon as the request resolves; on a
-      // flaky network it just reconciles on the next visit.
-      setStage({ kind: "flash", totalCents });
-      window.setTimeout(() => router.push("/home"), 1900);
-      void fetch("/api/savings/record", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          section: "shop",
-          amount: totalCents / 100,
-          todayDateStr: todayDateStr(),
-        }),
+  function commitSimulation(totalCents: number) {
+    // Optimistic confirm: the green flash mounts on this synchronous
+    // tick — nothing is awaited between the swipe release and the
+    // flash. The cap check runs in PARALLEL; in the >99% under-cap
+    // case nothing visible happens. tryRun is intentionally not used
+    // here (it awaits the cap check first); its logic is replicated
+    // inline so other tryRun consumers keep their pessimistic
+    // behavior. Snapshot the checkout stage so a 403 can roll back.
+    const prevStage = stage;
+
+    setStage({ kind: "flash", totalCents });
+
+    redirectTimeoutRef.current = setTimeout(
+      () => router.push("/home"),
+      1900,
+    );
+
+    // Savings record — fire-and-forget, unchanged.
+    void fetch("/api/savings/record", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        section: "shop",
+        amount: totalCents / 100,
+        todayDateStr: todayDateStr(),
+      }),
+    })
+      .then(() => bumpSavings())
+      .catch(() => {});
+
+    // Cap check in parallel. 403 → user is over plan: cancel the
+    // redirect, roll back to the checkout screen, open the upgrade
+    // modal. Any other outcome (200 / network error) → let the
+    // flash continue (fail-open, mirroring tryRun's non-403 path).
+    void fetch("/api/simulations/use", { method: "POST" })
+      .then(async (res) => {
+        if (res.status !== 403) return;
+        const data = (await res.json().catch(() => ({}))) as {
+          plan?: string | null;
+          used?: number;
+          limit?: number;
+        };
+        if (redirectTimeoutRef.current) {
+          clearTimeout(redirectTimeoutRef.current);
+          redirectTimeoutRef.current = null;
+        }
+        setStage(prevStage);
+        openLimit(data);
       })
-        .then(() => bumpSavings())
-        .catch(() => {});
-    });
-    return allowed;
+      .catch(() => {});
   }
 
   function goToCheckout() {
