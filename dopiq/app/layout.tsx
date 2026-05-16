@@ -5,6 +5,7 @@ import {
   JetBrains_Mono,
   Playfair_Display,
   Sniglet,
+  Fraunces,
 } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
@@ -51,6 +52,16 @@ const sniglet = Sniglet({
   weight: ["400", "800"],
 });
 
+// Characterful editorial serif — used only on the Shop/Food
+// category filter pills. Replaces Sniglet there for a more grown-up
+// magazine read without losing personality.
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  display: "swap",
+  weight: ["500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Dopiq — dopamine without the damage",
   description:
@@ -80,7 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} ${sniglet.variable}`}
+      className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} ${sniglet.variable} ${fraunces.variable}`}
     >
       <body className="text-ink antialiased">
         <Providers>{children}</Providers>
