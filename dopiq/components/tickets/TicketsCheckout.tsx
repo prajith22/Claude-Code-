@@ -1,11 +1,18 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { WaitingRoom } from "./WaitingRoom";
-import { FeeBreakdown, computeFees } from "./FeeBreakdown";
+import {
+  FeeBreakdown,
+  computeFees,
+  TOTAL_REVEAL_DELAY_S,
+  TOTAL_COUNT_DURATION_S,
+} from "./FeeBreakdown";
 import { TICKETS_BRAND } from "@/data/tickets";
 import { formatUSD } from "@/lib/utils";
+import { AnimatedAmount } from "@/components/AnimatedAmount";
 import { useSavingsStore } from "@/lib/savings-store";
 
 export type PendingPurchase = {
@@ -71,6 +78,29 @@ export function TicketsCheckout({ pending }: { pending: PendingPurchase }) {
     () => computeFees(pending.subtotal, hashSeed(pending.reason)),
     [pending.subtotal, pending.reason],
   );
+
+  // Sticky-bar total + wellness amount count up in lockstep with
+  // the fee card's stagger. Timers start only once the breakdown
+  // is actually on screen (for concerts/sports the WaitingRoom
+  // shows first, so gate on stage rather than mount).
+  const [revealed, setRevealed] = useState(false);
+  const [landed, setLanded] = useState(false);
+
+  useEffect(() => {
+    if (stage !== "breakdown") return;
+    const t1 = setTimeout(
+      () => setRevealed(true),
+      TOTAL_REVEAL_DELAY_S * 1000,
+    );
+    const t2 = setTimeout(
+      () => setLanded(true),
+      (TOTAL_REVEAL_DELAY_S + TOTAL_COUNT_DURATION_S) * 1000,
+    );
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [stage]);
 
   function onQueueComplete() {
     setStage("breakdown");
@@ -166,30 +196,54 @@ export function TicketsCheckout({ pending }: { pending: PendingPurchase }) {
         className="bottom-nav fixed inset-x-0 z-30 border-t bg-white/95 px-4 py-3 backdrop-blur-sm"
         style={{ borderColor: TICKETS_BRAND.creamDeep }}
       >
-        <div className="mx-auto flex max-w-md items-center gap-3">
-          <div className="flex-1">
-            <div
+        <div className="mx-auto max-w-md">
+          <div className="flex items-baseline justify-between">
+            <span
               className="text-[11px]"
               style={{ color: TICKETS_BRAND.inkSoft }}
             >
               Total
-            </div>
-            <div
-              className="text-[20px] font-extrabold tabular-nums"
-              style={{ color: TICKETS_BRAND.ink }}
+            </span>
+            <motion.span
+              animate={landed ? { scale: [1, 1.05, 1] } : { scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="text-[22px] font-extrabold tabular-nums"
+              style={{ color: TICKETS_BRAND.ink, display: "inline-block" }}
             >
-              {formatUSD(fees.total)}
-            </div>
+              {revealed ? (
+                <AnimatedAmount
+                  amount={fees.total}
+                  duration={TOTAL_COUNT_DURATION_S}
+                />
+              ) : (
+                formatUSD(fees.total)
+              )}
+            </motion.span>
           </div>
           <button
             type="button"
             onClick={onCompletePurchase}
             disabled={stage === "submitting"}
-            className="rounded-xl px-5 py-3 text-[14px] font-bold transition active:scale-[0.98] disabled:opacity-50"
-            style={{ backgroundColor: TICKETS_BRAND.emerald, color: "#fff" }}
+            className="btn-primary mt-3 w-full"
           >
-            {stage === "submitting" ? "Saving…" : "Complete Purchase"}
+            {stage === "submitting"
+              ? "Saving…"
+              : `Save ${formatUSD(fees.total)}`}
           </button>
+          <p
+            className="mt-2 text-center text-xs italic"
+            style={{ color: TICKETS_BRAND.inkSoft }}
+          >
+            {revealed ? (
+              <AnimatedAmount
+                amount={fees.total}
+                duration={TOTAL_COUNT_DURATION_S}
+              />
+            ) : (
+              formatUSD(fees.total)
+            )}{" "}
+            kept · Your wallet survived
+          </p>
         </div>
       </div>
     </div>
