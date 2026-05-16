@@ -256,14 +256,54 @@ function Header({
 // pastel surfaces (Quick Sim items, onboarding cards, sign-in
 // marketing). Each location gets one accent so the four cards
 // read as four distinct moods at a glance.
+// Each location is a "collectible" card: a soft pastel gradient,
+// a 1.5px deeper-tone border, a top inset highlight, and an outer
+// shadow whose second layer carries the card's own hue glow. fg /
+// muted keep the existing per-card text tones. flash = the color
+// briefly tinted full-screen on tap as an anticipation beat.
 const LOCATION_COLORS: Record<
   QuickSimLocation["key"],
-  { bg: string; fg: string; muted: string }
+  {
+    grad: string;
+    border: string;
+    glow: string;
+    flash: string;
+    fg: string;
+    muted: string;
+  }
 > = {
-  gas:         { bg: "#FFF9E6", fg: "#5D4037", muted: "#8D6E63" },
-  convenience: { bg: "#E8F0FF", fg: "#1A237E", muted: "#3F51B5" },
-  grocery:     { bg: "#E8F5E9", fg: "#1B5E20", muted: "#2E7D32" },
-  coffee:      { bg: "#FDE7E9", fg: "#880E4F", muted: "#AD1457" },
+  gas: {
+    grad: "linear-gradient(180deg, #FEF3C7 0%, #FDE68A 100%)",
+    border: "#F3D88C",
+    glow: "rgba(245,158,11,0.15)",
+    flash: "#FDE68A",
+    fg: "#5D4037",
+    muted: "#8D6E63",
+  },
+  convenience: {
+    grad: "linear-gradient(180deg, #E0E7FF 0%, #C7D2FE 100%)",
+    border: "#A5B4FC",
+    glow: "rgba(99,102,241,0.15)",
+    flash: "#C7D2FE",
+    fg: "#1A237E",
+    muted: "#3F51B5",
+  },
+  grocery: {
+    grad: "linear-gradient(180deg, #D1FAE5 0%, #A7F3D0 100%)",
+    border: "#6EE7B7",
+    glow: "rgba(16,185,129,0.15)",
+    flash: "#A7F3D0",
+    fg: "#1B5E20",
+    muted: "#2E7D32",
+  },
+  coffee: {
+    grad: "linear-gradient(180deg, #FCE7F3 0%, #FBCFE8 100%)",
+    border: "#F9A8D4",
+    glow: "rgba(236,72,153,0.15)",
+    flash: "#FBCFE8",
+    fg: "#880E4F",
+    muted: "#AD1457",
+  },
 };
 
 function LocationGrid({
@@ -271,6 +311,25 @@ function LocationGrid({
 }: {
   onPick: (loc: QuickSimLocation) => void;
 }) {
+  // Brief full-screen color tint on tap → confirms the choice and
+  // bridges into the item picker. Guarded so a double-tap can't
+  // schedule onPick twice; timer cleared on unmount (e.g. the user
+  // hits Close during the 350ms).
+  const [flash, setFlash] = useState<string | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  function handlePick(loc: QuickSimLocation, flashColor: string) {
+    if (flash) return;
+    setFlash(flashColor);
+    timerRef.current = setTimeout(() => onPick(loc), 350);
+  }
+
   return (
     <div className="flex flex-1 flex-col px-5 pb-8 pt-2">
       <motion.h1
@@ -297,7 +356,7 @@ function LocationGrid({
             <motion.button
               key={loc.key}
               type="button"
-              onClick={() => onPick(loc)}
+              onClick={() => handlePick(loc, palette.flash)}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
@@ -305,9 +364,14 @@ function LocationGrid({
                 delay: 0.1 + i * 0.04,
                 ease: "easeOut",
               }}
-              whileTap={{ scale: 0.97 }}
-              className="flex flex-col items-start gap-2 rounded-card p-5 text-left shadow-card transition hover:shadow-cardHover"
-              style={{ backgroundColor: palette.bg, color: palette.fg }}
+              whileTap={{ scale: 0.96 }}
+              className="flex flex-col items-start gap-2 rounded-card p-5 text-left"
+              style={{
+                background: palette.grad,
+                border: `1.5px solid ${palette.border}`,
+                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.4), 0 6px 16px -6px rgba(0,0,0,0.08), 0 2px 4px -2px ${palette.glow}`,
+                color: palette.fg,
+              }}
             >
               <span aria-hidden className="text-[40px] leading-none">
                 {loc.emoji}
@@ -325,6 +389,23 @@ function LocationGrid({
           );
         })}
       </div>
+
+      {/* Anticipation tint — the picked card's color washes over
+          the screen at 70% for 350ms, then onPick advances to the
+          item picker. pointer-events-none so it never blocks. */}
+      <AnimatePresence>
+        {flash && (
+          <motion.div
+            key="qs-loc-flash"
+            className="pointer-events-none fixed inset-0 z-50"
+            style={{ backgroundColor: flash }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.7 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35 }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
