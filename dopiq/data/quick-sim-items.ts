@@ -29,25 +29,25 @@ export const QUICK_SIM_LOCATIONS: QuickSimLocation[] = [
     key: "gas",
     emoji: "⛽",
     name: "Gas Station",
-    subtitle: "Snacks, drinks, random grabs",
+    subtitle: "Late-night impulse grabs",
   },
   {
     key: "convenience",
     emoji: "🏪",
     name: "Convenience Store",
-    subtitle: "Quick picks on the go",
+    subtitle: "Tiny purchases. Big damage.",
   },
   {
     key: "grocery",
     emoji: "🛒",
     name: "Grocery Store",
-    subtitle: "Checkout lane temptations",
+    subtitle: "You came for one thing.",
   },
   {
     key: "coffee",
     emoji: "☕",
     name: "Coffee Shop",
-    subtitle: "That overpriced treat",
+    subtitle: "One overpriced little treat.",
   },
 ];
 
