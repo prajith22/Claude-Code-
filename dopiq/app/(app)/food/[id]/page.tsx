@@ -63,7 +63,7 @@ export default function RestaurantPage({
                 style={{ borderColor: "#2A1F18" }}
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-[15px] font-bold text-ink">{m.name}</p>
+                  <p className="font-heading text-[15px] font-bold text-ink">{m.name}</p>
                   <p className="mt-1 line-clamp-2 text-[13px] leading-snug text-ink-muted">
                     {m.description}
                   </p>

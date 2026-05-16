@@ -195,7 +195,13 @@ export function QuickSimFlow() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-[#F5EFE4] safe-top">
+    <div
+      className={`fixed inset-0 z-50 flex flex-col bg-[#F5EFE4] safe-top ${
+        stage.kind === "items" || stage.kind === "checkout"
+          ? "mode-craving"
+          : ""
+      }`}
+    >
       {/* Quick Sim atmosphere — two stacked emerald radial washes
           (top + bottom) behind all content. pointer-events-none +
           z-0 so it never blocks the close/back buttons; the Header,
@@ -282,7 +288,7 @@ function Header({
       ) : (
         <span className="h-10 w-10" />
       )}
-      <p className="font-playful text-[12px] font-bold uppercase tracking-widest text-ink-muted">
+      <p className="font-playful text-[12px] font-bold uppercase tracking-widest text-ink-muted type-flicker">
         Quick Sim
       </p>
       <button
@@ -434,7 +440,7 @@ function LocationGrid({
                 {loc.name}
               </p>
               <p
-                className="font-playful text-[12px] leading-snug"
+                className="font-playful text-[12px] leading-snug type-pulse"
                 style={{ color: palette.muted }}
               >
                 {loc.subtitle}
@@ -497,7 +503,7 @@ function ItemSelectionGrid({
 
       {/* Wellness framing — reminds the user this is a simulation,
           not a store. */}
-      <p className="font-playful mt-2 text-center text-[12px] italic text-ink-muted">
+      <p className="font-playful mt-2 text-center text-[12px] italic text-ink-muted type-pulse">
         Browse like it&rsquo;s real. Walk away like it&rsquo;s not.
       </p>
 
@@ -578,7 +584,7 @@ function ItemSelectionGrid({
             </span>
           </motion.button>
         </motion.div>
-        <p className="font-playful mt-2 text-center text-[12px] italic text-ink-muted">
+        <p className="font-playful mt-2 text-center text-[12px] italic text-ink-muted type-pulse">
           Simulated cart · No real charge
         </p>
       </div>
@@ -754,7 +760,7 @@ function CheckoutSummary({
         <div className="my-3 h-px bg-[#F0EDE8]" />
         <div className="flex items-baseline justify-between">
           <p className="font-heading text-[15px] font-bold text-ink">Total</p>
-          <p className="font-mono text-[24px] font-extrabold text-brand">
+          <p className="type-hero-amount text-[24px] font-extrabold text-brand">
             {formatUSD(totalCents / 100)}
           </p>
         </div>
@@ -853,7 +859,7 @@ function SlideUpToSim({ onComplete }: { onComplete: () => void }) {
           style={{ opacity: promptOpacity }}
           className="relative z-10 flex flex-col items-center gap-1.5"
         >
-          <p className="font-heading text-[16px] font-bold text-[#0A0F1E]">
+          <p className="font-heading text-[16px] font-bold text-[#0A0F1E] type-magnetic type-glow-emerald">
             Slide up to sim
           </p>
           <motion.span

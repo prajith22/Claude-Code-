@@ -96,7 +96,7 @@ export function TopNav({ excludeBet = false }: { excludeBet?: boolean }) {
             />
           </svg>
           <div className="flex flex-col leading-none">
-            <span className="font-heading text-[28px] font-extrabold leading-none text-ink">
+            <span className="type-magnetic font-heading text-[28px] font-extrabold leading-none text-ink">
               dopiq
             </span>
             <span className="font-sans mt-[3px] text-[11px] font-medium text-ink-muted">

@@ -47,10 +47,11 @@ button, a { -webkit-tap-highlight-color: transparent; }
 
 @layer components {
   .btn-primary {
-    /* Layout / typography preserved from the original definition;
-       only the flat bg-brand + shadow-sm + scale/transition utils
-       are swapped for the layered depth treatment below. */
-    @apply inline-flex items-center justify-center rounded-pill px-6 py-3.5 text-[15px] font-semibold text-navy tracking-tight disabled:pointer-events-none;
+    /* Layout preserved; now explicitly font-heading (Sora) instead
+       of inheriting body Inter, plus a magnetic letter-spacing
+       micro-shift on hover. Depth treatment unchanged. */
+    @apply inline-flex items-center justify-center rounded-pill px-6 py-3.5 text-[15px] font-heading font-semibold text-navy tracking-tight disabled:pointer-events-none;
+    letter-spacing: -0.01em;
     background: linear-gradient(180deg, #1FCC97 0%, #10B981 60%, #0FB57E 100%);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.18),
@@ -58,9 +59,11 @@ button, a { -webkit-tap-highlight-color: transparent; }
       0 4px 8px -4px rgba(16, 185, 129, 0.25);
     transition:
       transform 0.15s ease-out,
-      box-shadow 0.15s ease-out;
+      box-shadow 0.15s ease-out,
+      letter-spacing 0.2s ease-out;
   }
   .btn-primary:hover {
+    letter-spacing: 0.005em;
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.22),
       0 10px 24px -8px rgba(16, 185, 129, 0.5),
@@ -266,6 +269,93 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .safe-top { padding-top: env(safe-area-inset-top, 0px); }
   /* JetBrains Mono for all money, prices, odds, balances, and numerical data */
   .money { @apply font-mono font-bold tabular-nums tracking-tight; }
+
+  /* ---- Experience typography (System B) -----------------------
+     Expressive treatments for emotional surfaces. Every animation
+     is disabled under prefers-reduced-motion via the top-level
+     @media block below (unlayered → wins over these layered
+     rules without !important). */
+  .type-hero-amount {
+    @apply font-heading font-extrabold;
+    background: linear-gradient(180deg, #10b981 0%, #0fb57e 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 40px rgba(16, 185, 129, 0.15);
+  }
+  .type-magnetic {
+    letter-spacing: -0.01em;
+    transition: letter-spacing 0.2s ease-out;
+  }
+  .type-magnetic:hover {
+    letter-spacing: 0.005em;
+  }
+  .type-pulse {
+    animation: type-pulse 3s ease-in-out infinite;
+  }
+  @keyframes type-pulse {
+    0%,
+    100% {
+      opacity: 0.85;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  .type-glow-emerald {
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  }
+  .type-flicker {
+    animation: type-flicker 4s ease-in-out infinite;
+  }
+  @keyframes type-flicker {
+    0%,
+    97%,
+    100% {
+      opacity: 1;
+    }
+    98% {
+      opacity: 0.7;
+    }
+    99% {
+      opacity: 1;
+    }
+  }
+  /* Caps-label tracking-out on mount (home SAVED TODAY / STREAK /
+     TODAY / LIFETIME). One-shot, not a loop. */
+  .type-track-in {
+    animation: type-track-in 0.8s ease-out both;
+  }
+  @keyframes type-track-in {
+    from {
+      letter-spacing: 0.05em;
+    }
+    to {
+      letter-spacing: 0.15em;
+    }
+  }
+
+  /* ---- Dopiq Modes (foundation; wired up by JS, not auto-on) --
+     .mode-night: applied to <body> after 21:00 local. Slightly
+     deeper cream + stronger hero glow.
+     .mode-craving: applied to the Quick Sim root during flow
+     stages 1-4. Stronger flicker/pulse + a touch more atmosphere
+     saturation. */
+  .mode-night {
+    background-color: #efe7d6;
+  }
+  .mode-night .type-hero-amount {
+    text-shadow: 0 0 56px rgba(16, 185, 129, 0.32);
+  }
+  .mode-craving .type-flicker {
+    animation-duration: 2.4s;
+  }
+  .mode-craving .type-pulse {
+    animation-duration: 2s;
+  }
+  .mode-craving {
+    filter: saturate(1.06);
+  }
 }
 
 @layer utilities {
@@ -290,4 +380,21 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @keyframes explore-shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+/* Reduced-motion: kill every System-B animation (unlayered, so it
+   wins over the @layer components rules without !important). Users
+   keep the static visual treatment — gradient, glow, tracking —
+   but no pulse / flicker / track-in / count-up motion. */
+@media (prefers-reduced-motion: reduce) {
+  .type-pulse,
+  .type-flicker,
+  .type-track-in,
+  .mode-craving .type-flicker,
+  .mode-craving .type-pulse {
+    animation: none !important;
+  }
+  .type-magnetic {
+    transition: none;
+  }
 }

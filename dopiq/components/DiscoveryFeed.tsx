@@ -142,7 +142,7 @@ function ProductCardImpl({
         </div>
       </Link>
       <Link href={`/shop/${product.id}`} className="block space-y-1.5 p-3">
-        <p className={cn("text-[13px] font-bold leading-snug text-ink", nameClamp)}>
+        <p className={cn("font-heading text-[13px] font-bold leading-snug text-ink", nameClamp)}>
           {product.name}
         </p>
         <div className="flex items-center justify-between">
@@ -192,7 +192,7 @@ function FilterPill({
       onClick={onClick}
       whileTap={{ scale: 0.95 }}
       className={cn(
-        "font-playful flex-none whitespace-nowrap rounded-pill px-4 py-2 text-[13px] font-extrabold transition-all duration-150",
+        "type-magnetic font-playful flex-none whitespace-nowrap rounded-pill px-4 py-2 text-[13px] font-extrabold transition-all duration-150",
         active
           ? "pill-glass-active scale-[1.02]"
           : "pill-shop text-ink",
