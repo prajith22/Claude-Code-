@@ -209,7 +209,7 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
             onClick={() => setActivePill(null)}
             aria-pressed={activePill === null}
             whileTap={{ scale: 0.95 }}
-            className={`flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-semibold transition ${
+            className={`font-playful flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-extrabold transition ${
               activePill === null
                 ? "pill-glass-active scale-[1.02]"
                 : "pill-food text-ink"
@@ -226,7 +226,7 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
                 onClick={() => setActivePill(selected ? null : p.key)}
                 aria-pressed={selected}
                 whileTap={{ scale: 0.95 }}
-                className={`flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-semibold transition ${
+                className={`font-playful flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-extrabold transition ${
                   selected
                     ? "pill-glass-active scale-[1.02]"
                     : "pill-food text-ink"

@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Sora, Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import {
+  Sora,
+  Inter,
+  JetBrains_Mono,
+  Playfair_Display,
+  Sniglet,
+} from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 
@@ -32,6 +38,17 @@ const playfair = Playfair_Display({
   weight: ["400", "500"],
 });
 
+// Playful rounded display face — layered IN on satirical / emotional
+// copy + the Shop/Food category pills. Sora stays the primary
+// editorial voice; this never becomes the body font. Sniglet ships
+// only 400 + 800 on Google Fonts.
+const sniglet = Sniglet({
+  subsets: ["latin"],
+  variable: "--font-sniglet",
+  display: "swap",
+  weight: ["400", "800"],
+});
+
 export const metadata: Metadata = {
   title: "Dopiq — dopamine without the damage",
   description:
@@ -61,7 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable} ${playfair.variable}`}
+      className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} ${sniglet.variable}`}
     >
       <body className="text-ink antialiased">
         <Providers>{children}</Providers>

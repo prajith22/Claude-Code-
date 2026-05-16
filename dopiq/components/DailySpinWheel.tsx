@@ -284,7 +284,7 @@ export function DailySpinWheel() {
                       fontWeight={800}
                       letterSpacing={0.2}
                       fill={w.text}
-                      style={{ fontFamily: "var(--font-sora)" }}
+                      style={{ fontFamily: "var(--font-sniglet)" }}
                     >
                       ${w.amount}
                     </text>
@@ -351,7 +351,7 @@ export function DailySpinWheel() {
           >
             <DotTexture style={{ color: landed.text }} />
             <p
-              className="relative text-[16px] font-bold leading-snug"
+              className="font-playful relative text-[16px] font-bold leading-snug"
               style={{ color: landed.text }}
             >
               Your Dopiq Challenge: don&rsquo;t spend more than $

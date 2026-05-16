@@ -35,6 +35,7 @@ const config: Config = {
         heading: ["var(--font-sora)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
         display: ["var(--font-display)", "Georgia", "serif"],
+        playful: ["var(--font-sniglet)", "sans-serif"],
       },
       borderRadius: {
         card: "16px",
