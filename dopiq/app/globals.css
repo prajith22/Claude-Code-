@@ -296,6 +296,34 @@ button, a { -webkit-tap-highlight-color: transparent; }
     color: transparent;
     text-shadow: 0 0 30px rgba(212, 165, 116, 0.2);
   }
+  /* Section-landing hero headers — same background-clip gradient
+     pattern as the home hero amounts, one per section atmosphere
+     (lavender Shop / amber Food / teal Tickets). text-shadow may
+     not render on transparent text; kept for graceful upgrade. */
+  .type-hero-shop {
+    @apply font-heading font-extrabold;
+    background: linear-gradient(180deg, #c7b8ff 0%, #8b6fe8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 30px rgba(139, 92, 246, 0.2);
+  }
+  .type-hero-food {
+    @apply font-heading font-extrabold;
+    background: linear-gradient(180deg, #f5c77a 0%, #d89b3f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 30px rgba(245, 158, 11, 0.2);
+  }
+  .type-hero-tickets {
+    @apply font-heading font-extrabold;
+    background: linear-gradient(180deg, #7dd3c0 0%, #2db89e 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 30px rgba(45, 184, 158, 0.2);
+  }
   .type-magnetic {
     letter-spacing: -0.01em;
     transition: letter-spacing 0.2s ease-out;

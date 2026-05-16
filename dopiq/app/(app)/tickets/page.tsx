@@ -47,8 +47,8 @@ export default function TicketsLandingPage() {
       style={{ backgroundColor: TICKETS_BRAND.cream }}
     >
       <header className="mx-auto max-w-2xl pt-2">
-        <h1 className="font-heading text-[28px] font-bold leading-tight tracking-tight text-ink">
-          Tickets
+        <h1 className="type-hero-tickets text-[48px] leading-tight tracking-tight md:text-[64px]">
+          Snag the moment
         </h1>
         <p
           className="mt-1 text-[15px]"

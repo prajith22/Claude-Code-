@@ -15,6 +15,10 @@ export default function ShopPage() {
 
   return (
     <div className="space-y-6 pb-4">
+      <h1 className="type-hero-shop pt-2 text-[48px] leading-tight tracking-tight md:text-[64px]">
+        Shop til ya drop
+      </h1>
+
       <ShopExperience products={all} />
 
       <SimDisclaimer text="All products, prices, and reviews are fictional and for simulation purposes only. Dopiq does not sell or own any items. No real purchase is ever made." />
