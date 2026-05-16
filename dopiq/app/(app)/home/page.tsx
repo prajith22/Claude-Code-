@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { getCurrentUser } from "@/lib/session-guards";
 import { isIOSWebView } from "@/lib/is-ios-webview";
 import { DailySpinWheel } from "@/components/DailySpinWheel";
 import { SimCard } from "@/components/SimCard";
 import { HomeStreakHero } from "@/components/HomeStreakHero";
+import { QuickSimHomeCard } from "@/components/QuickSimHomeCard";
 import { PlanUsageCard } from "@/components/PlanUsageCard";
 import { streakStatus } from "@/lib/streaks";
 
@@ -28,6 +28,10 @@ export default async function HomePage() {
   const status = streakStatus(user.lastStreakDate, "");
   const initialSummary = {
     todaySaved: 0,
+    // Placeholder like todaySaved — the client fetch fills the real
+    // lifetime value from /api/savings/me (server doesn't compute it
+    // here to keep the cached getCurrentUser() call cheap).
+    lifetimeSaved: 0,
     currentStreak: status.state === "broken" ? 0 : user.currentStreak,
     longestStreak: user.longestStreak,
     streakStatus: status.state,
@@ -35,6 +39,18 @@ export default async function HomePage() {
 
   return (
     <div className="relative">
+      {/* Home-only grain overlay — fixed, very low opacity, never
+          interactive. Scoped to this page (not the shared (app)
+          layout) so it doesn't bleed onto Shop / Food / etc. */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-0 opacity-[0.035]"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+        }}
+      />
+
       {/* Soft warm radial behind the hero — adds depth without weight.
           Sits behind the page content; pointer-events disabled so it
           never gets in the way of taps. */}
@@ -56,65 +72,9 @@ export default async function HomePage() {
         {/* Money saved + streak hero */}
         <HomeStreakHero initial={initialSummary} />
 
-        {/* Quick Sim — sibling to the Shop / Food / Bet pastel cards.
-            Coral-tinted so it's distinct from the other three but
-            still part of the same family. */}
-        <Link
-          href="/quick-sim"
-          className="group relative flex items-center gap-4 overflow-hidden rounded-card border-[2.5px] border-[#2A1F18] bg-[#FFE4E1] p-5 transition active:scale-[0.99]"
-        >
-          {/* Same dotted texture as the other home sim cards, tinted
-              to the title shade. Static SVG id is fine because there's
-              only one Quick Sim card per page. */}
-          <svg
-            aria-hidden
-            className="pointer-events-none absolute inset-0 h-full w-full text-[#8B2500] opacity-[0.07]"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <pattern
-                id="qs-dots"
-                x="0"
-                y="0"
-                width="14"
-                height="14"
-                patternUnits="userSpaceOnUse"
-              >
-                <circle cx="2" cy="2" r="1.4" fill="currentColor" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#qs-dots)" />
-          </svg>
-
-          <span
-            aria-hidden
-            className="relative flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-white/60 text-[28px] leading-none backdrop-blur-sm"
-          >
-            ⚡
-          </span>
-          <div className="relative min-w-0 flex-1">
-            <p className="font-heading text-[18px] font-extrabold leading-tight text-[#8B2500]">
-              Quick Sim
-            </p>
-            <p className="mt-0.5 text-[12px] text-[#8B2500]/70">
-              Impulse hitting? Sim it in seconds.
-            </p>
-          </div>
-          <span
-            aria-hidden
-            className="relative flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white/60 text-[#8B2500] backdrop-blur-sm transition group-hover:translate-x-0.5"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M9 6l6 6-6 6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
-        </Link>
+        {/* Quick Sim — amplified, breathing entry into the
+            simulator flow (same /quick-sim route). */}
+        <QuickSimHomeCard />
 
         {/* Simulator cards — four on web (2x2), three on iOS (single
             row; Apple disallows gambling features for individual

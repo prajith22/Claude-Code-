@@ -2,7 +2,7 @@
 
 import { memo, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { DotTexture } from "@/components/DotTexture";
 
@@ -24,6 +24,12 @@ function SimCardImpl({
 }) {
   const [entered, setEntered] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const reduce = useReducedMotion();
+  // Breathe = the post-entrance idle pulse. Suppressed entirely
+  // for reduced-motion users. Duration is staggered off the
+  // per-card entrance `delay` (0 / .15 / .3 / .45 → 3.5 / 3.8 /
+  // 4.1 / 4.4s) so the cards don't bob in lockstep.
+  const breathe = entered && !reduce;
 
   return (
     <motion.div
@@ -33,15 +39,15 @@ function SimCardImpl({
       )}
       initial={{ opacity: 0, y: 24 }}
       animate={
-        entered
+        breathe
           ? { opacity: 1, y: 0, scale: [1, 1.02, 1] }
           : { opacity: 1, y: 0 }
       }
       transition={
-        entered
+        breathe
           ? {
               scale: {
-                duration: 2,
+                duration: 3.5 + delay * 2,
                 repeat: Infinity,
                 ease: "easeInOut",
               },
