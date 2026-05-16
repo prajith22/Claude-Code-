@@ -26,6 +26,23 @@ export function useSimulationGuard() {
 
   const close = useCallback(() => setState((s) => ({ ...s, open: false })), []);
 
+  // Imperatively open the upgrade modal with a known plan/usage —
+  // used by callers that run the cap check themselves (e.g. the
+  // optimistic Quick Sim confirm path) instead of going through
+  // tryRun. tryRun is intentionally left untouched so its existing
+  // pessimistic-await consumers are unaffected.
+  const openLimit = useCallback(
+    (data: { plan?: string | null; used?: number; limit?: number }) => {
+      setState({
+        open: true,
+        plan: data.plan ?? null,
+        used: data.used ?? 0,
+        limit: data.limit ?? 0,
+      });
+    },
+    [],
+  );
+
   const tryRun = useCallback(async (handler: () => void | Promise<void>) => {
     const res = await fetch("/api/simulations/use", { method: "POST" });
     if (res.status === 403) {
@@ -61,5 +78,5 @@ export function useSimulationGuard() {
     />
   );
 
-  return { tryRun, modal };
+  return { tryRun, modal, openLimit };
 }
