@@ -14,10 +14,43 @@ const TABS = [
   { href: "/tickets", label: "Tickets", icon: TicketIcon },
 ] as const;
 
+// The floating Quick Sim button is hidden on pages that own a
+// sticky/fixed bottom CTA (or prominent bottom action) it would
+// overlap, and inside the Quick Sim flow itself. The 4 tabs always
+// render. Patterns verified against actual app/(app) routes:
+//   - /food/[id]   restaurant detail — RestaurantCheckoutBar (fixed)
+//   - /food/checkout, /food/tracking — bottom CTAs
+//   - /shop/[id]   product detail — AddToCartControls mobile fixed bar
+//   - /shop/checkout, /shop/buy-now, /shop/confirmed — bottom CTAs
+//   - /tickets/checkout (TicketsCheckout fixed bar), /tickets/confirmed
+//   - /tickets/{concerts,sports,travel}/[id] — booking sticky bar
+//   - /quick-sim(/...)  — already inside Quick Sim
+// The negative lookaheads keep /food/cart and /shop/cart (which
+// should KEEP the button) from matching the single-segment detail
+// patterns.
+const QUICK_SIM_HIDDEN_PATTERNS: RegExp[] = [
+  /^\/food\/checkout$/,
+  /^\/food\/tracking$/,
+  /^\/food\/(?!cart$|checkout$|tracking$)[^/]+$/,
+  /^\/shop\/checkout$/,
+  /^\/shop\/buy-now$/,
+  /^\/shop\/confirmed$/,
+  /^\/shop\/(?!cart$|checkout$|buy-now$|confirmed$)[^/]+$/,
+  /^\/tickets\/checkout$/,
+  /^\/tickets\/confirmed$/,
+  /^\/tickets\/(?:concerts|sports|travel)\/[^/]+$/,
+  /^\/quick-sim(?:\/.*)?$/,
+];
+
+function shouldHideQuickSim(pathname: string): boolean {
+  return QUICK_SIM_HIDDEN_PATTERNS.some((rx) => rx.test(pathname));
+}
+
 export function BottomNav({ excludeBet = false }: { excludeBet?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const reduce = useReducedMotion();
+  const hideQuickSim = shouldHideQuickSim(pathname);
   // iOS users never see the Bet tab — Apple prohibits gambling
   // features for individual developer accounts. Filtering rather
   // than rendering-and-hiding so the remaining tabs distribute
@@ -85,8 +118,12 @@ export function BottomNav({ excludeBet = false }: { excludeBet?: boolean }) {
       {/* Floating Quick Sim action — pops above the nav's top edge,
           dead-center. Routes to the SAME /quick-sim entry the home
           page tile uses (no duplicate flow). Emerald .btn-primary
-          gradient + cream cutout border + charged glow. */}
-      <div className="pointer-events-none absolute -top-7 left-1/2 flex -translate-x-1/2 flex-col items-center">
+          gradient + cream cutout border + charged glow. Hidden on
+          pages with their own sticky bottom CTA (and inside the
+          Quick Sim flow); the 4 tabs + center spacer stay put so
+          there's no layout jump between pages. */}
+      {!hideQuickSim && (
+        <div className="pointer-events-none absolute -top-7 left-1/2 flex -translate-x-1/2 flex-col items-center">
         {/* Continuous slow scale pulse on an outer wrapper so it
             never fights the button's whileTap; a Dopamine Pulse
             glow emanates from behind it on every page. Both
@@ -124,7 +161,8 @@ export function BottomNav({ excludeBet = false }: { excludeBet?: boolean }) {
         <span className="mt-1 text-[10px] font-semibold tracking-wide text-ink-muted">
           Quick Sim
         </span>
-      </div>
+        </div>
+      )}
     </nav>
   );
 }
