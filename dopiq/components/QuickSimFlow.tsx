@@ -380,6 +380,7 @@ function ItemSelectionGrid({
         </div>
         <AnimatedAmount
           amount={subtotalCents / 100}
+          fromCurrent
           className="font-mono text-5xl font-extrabold leading-none text-brand [text-shadow:0_0_24px_rgba(16,185,129,0.3)]"
         />
       </div>
