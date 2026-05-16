@@ -249,7 +249,7 @@ function Header({
       ) : (
         <span className="h-10 w-10" />
       )}
-      <p className="text-[12px] font-bold uppercase tracking-widest text-ink-muted">
+      <p className="font-playful text-[12px] font-bold uppercase tracking-widest text-ink-muted">
         Quick Sim
       </p>
       <button
@@ -401,7 +401,7 @@ function LocationGrid({
                 {loc.name}
               </p>
               <p
-                className="text-[12px] leading-snug"
+                className="font-playful text-[12px] leading-snug"
                 style={{ color: palette.muted }}
               >
                 {loc.subtitle}
@@ -464,7 +464,7 @@ function ItemSelectionGrid({
 
       {/* Wellness framing — reminds the user this is a simulation,
           not a store. */}
-      <p className="mt-2 text-center text-[12px] italic text-ink-muted">
+      <p className="font-playful mt-2 text-center text-[12px] italic text-ink-muted">
         Browse like it&rsquo;s real. Walk away like it&rsquo;s not.
       </p>
 
@@ -473,7 +473,7 @@ function ItemSelectionGrid({
           element. */}
       <div className="mt-3 flex items-center justify-between">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-widest text-ink-muted">
+          <p className="font-playful text-[11px] font-bold uppercase tracking-widest text-ink-muted">
             Cart
           </p>
           <p className="mt-0.5 text-[13px] text-ink">
@@ -545,7 +545,7 @@ function ItemSelectionGrid({
             </span>
           </motion.button>
         </motion.div>
-        <p className="mt-2 text-center text-[12px] italic text-ink-muted">
+        <p className="font-playful mt-2 text-center text-[12px] italic text-ink-muted">
           Simulated cart · No real charge
         </p>
       </div>

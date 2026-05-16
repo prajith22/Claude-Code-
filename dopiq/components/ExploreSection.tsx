@@ -176,7 +176,7 @@ export function ExploreSection({ products }: { products: Product[] }) {
                   onClick={() => setSelectedCategory(c.key)}
                   aria-pressed={active}
                   whileTap={{ scale: 0.95 }}
-                  className={`flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-semibold transition ${
+                  className={`font-playful flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-extrabold transition ${
                     active
                       ? "pill-glass-active scale-[1.02]"
                       : "pill-shop text-ink"

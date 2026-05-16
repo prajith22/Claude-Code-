@@ -196,7 +196,7 @@ function Row({
         </div>
         {hint && (
           <div
-            className="text-[10px] italic"
+            className="font-playful text-[10px] italic"
             style={{ color: TICKETS_BRAND.inkSoft }}
           >
             {hint}
