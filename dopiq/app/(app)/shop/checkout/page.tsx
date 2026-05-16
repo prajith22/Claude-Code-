@@ -166,7 +166,7 @@ export default function ShopCheckoutPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: TOTAL_REVEAL_DELAY_S }}
-        className="font-playful text-center text-xs italic text-ink-muted"
+        className="font-playful type-pulse text-center text-xs italic text-ink-muted"
       >
         {revealed ? (
           <AnimatedAmount amount={subtotal} duration={TOTAL_COUNT_DURATION_S} />

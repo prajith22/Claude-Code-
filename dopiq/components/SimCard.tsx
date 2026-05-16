@@ -112,7 +112,7 @@ function SimCardImpl({
 
         <p
           className={cn(
-            "text-center font-heading text-[22px] font-extrabold leading-tight md:text-[24px]",
+            "type-magnetic text-center font-heading text-[22px] font-extrabold leading-tight md:text-[24px]",
             title,
           )}
         >

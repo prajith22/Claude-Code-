@@ -351,7 +351,7 @@ export function DailySpinWheel() {
           >
             <DotTexture style={{ color: landed.text }} />
             <p
-              className="font-playful relative text-[16px] font-bold leading-snug"
+              className="font-playful type-glow-emerald relative text-[16px] font-bold leading-snug"
               style={{ color: landed.text }}
             >
               Your Dopiq Challenge: don&rsquo;t spend more than $

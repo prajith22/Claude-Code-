@@ -231,7 +231,7 @@ export function TicketsCheckout({ pending }: { pending: PendingPurchase }) {
               : `Save ${formatUSD(fees.total)}`}
           </button>
           <p
-            className="font-playful mt-2 text-center text-xs italic"
+            className="font-playful type-pulse mt-2 text-center text-xs italic"
             style={{ color: TICKETS_BRAND.inkSoft }}
           >
             {revealed ? (

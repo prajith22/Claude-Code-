@@ -209,7 +209,7 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
             onClick={() => setActivePill(null)}
             aria-pressed={activePill === null}
             whileTap={{ scale: 0.95 }}
-            className={`font-playful flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-extrabold transition ${
+            className={`type-magnetic font-playful flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-extrabold transition ${
               activePill === null
                 ? "pill-glass-active scale-[1.02]"
                 : "pill-food text-ink"
@@ -226,7 +226,7 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
                 onClick={() => setActivePill(selected ? null : p.key)}
                 aria-pressed={selected}
                 whileTap={{ scale: 0.95 }}
-                className={`font-playful flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-extrabold transition ${
+                className={`type-magnetic font-playful flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-extrabold transition ${
                   selected
                     ? "pill-glass-active scale-[1.02]"
                     : "pill-food text-ink"
@@ -409,7 +409,7 @@ function CompactCard({
           />
         </div>
         <div className="p-3">
-          <p className="truncate text-[14px] font-bold text-ink">{r.name}</p>
+          <p className="truncate font-heading text-[14px] font-bold text-ink">{r.name}</p>
           <div className="mt-1 flex items-center gap-2 text-[12px]">
             <span className="flex items-center gap-1 font-semibold text-ink">
               <StarFilled size={11} />
@@ -466,7 +466,7 @@ function RestaurantRow({ r }: { r: Restaurant }) {
         <div className="p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-[18px] font-bold leading-tight text-ink">
+              <p className="font-heading text-[18px] font-bold leading-tight text-ink">
                 {r.name}
               </p>
               <p className="mt-0.5 text-[13px] text-ink-muted">{r.cuisine}</p>

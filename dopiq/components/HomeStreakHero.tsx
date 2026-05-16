@@ -149,7 +149,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
             order (texture first → content after) decides paint
             order. Without this the SVG would paint over the text. */}
         <div className="relative flex flex-col items-center">
-          <p className="font-playful text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
+          <p className="type-track-in font-playful text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
             Saved today
           </p>
           <div className="relative mt-3 flex items-center justify-center">
@@ -170,7 +170,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
             >
               <AnimatedSavedAmount
                 value={saved}
-                className="font-heading text-[56px] font-extrabold leading-none text-[#1B5E20] md:text-[72px]"
+                className="type-hero-amount text-[64px] leading-none md:text-[80px]"
               />
             </motion.div>
           </div>
@@ -184,7 +184,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: wellnessCopy ? 1 : 0 }}
               transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
-              className="font-playful relative mt-3 max-w-[16rem] text-[13px] italic text-[#1A1A1A]/70"
+              className="type-pulse font-playful relative mt-3 max-w-[16rem] text-[13px] italic text-[#1A1A1A]/70"
             >
               {wellnessCopy ?? " "}
             </motion.p>
@@ -196,7 +196,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
               out of scope for this frontend pass. */}
           <div className="relative mt-6 flex w-full max-w-[18rem] items-stretch">
             <div className="flex-1 px-2">
-              <p className="font-playful text-[9px] font-bold uppercase tracking-widest text-[#1A1A1A]/45">
+              <p className="type-track-in font-playful text-[9px] font-bold uppercase tracking-widest text-[#1A1A1A]/45">
                 Today
               </p>
               <AnimatedAmount
@@ -206,7 +206,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
             </div>
             <div className="w-px self-stretch bg-[#1A1A1A]/15" />
             <div className="flex-1 px-2">
-              <p className="font-playful text-[9px] font-bold uppercase tracking-widest text-[#1A1A1A]/45">
+              <p className="type-track-in font-playful text-[9px] font-bold uppercase tracking-widest text-[#1A1A1A]/45">
                 Lifetime
               </p>
               <AnimatedAmount
@@ -240,7 +240,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
       >
         <DotTexture className="text-[#7C2D12]" />
         <div className="relative">
-          <p className="font-playful text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
+          <p className="type-track-in font-playful text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
             Streak
           </p>
           <div className="mt-2 flex items-center gap-3">
