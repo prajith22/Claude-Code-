@@ -5,14 +5,18 @@ import {
   motion,
   useAnimationControls,
   useMotionValue,
+  useReducedMotion,
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { DotTexture } from "@/components/DotTexture";
+import { DopaminePulse } from "@/components/DopaminePulse";
+import { AnimatedAmount } from "@/components/AnimatedAmount";
 import { useSavingsStore } from "@/lib/savings-store";
 
 type Summary = {
   todaySaved: number;
+  lifetimeSaved: number;
   currentStreak: number;
   longestStreak: number;
   streakStatus: "active" | "at_risk" | "broken" | "none";
@@ -74,43 +78,97 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
   }, [status, version]);
 
   const saved = summary?.todaySaved ?? 0;
+  const lifetime = summary?.lifetimeSaved ?? 0;
   const streak = summary?.currentStreak ?? 0;
   const longest = summary?.longestStreak ?? 0;
   const atRisk = summary?.streakStatus === "at_risk";
+  const reduce = useReducedMotion();
 
   return (
     <div className="grid gap-3 sm:grid-cols-[1.4fr_1fr] sm:gap-4">
-      {/* Saved today — soft mint tint matches the Tickets SimCard
-          below and lets the existing emerald dollar amount pop.
-          DotTexture inherits currentColor → tinted deep-emerald at
-          7% opacity, reads as darker-mint speckle on the surface. */}
+      {/* Saved today — the amplified hero. Soft mint, dot texture,
+          a Dopamine Pulse breathing behind the big amount, and a
+          TODAY / LIFETIME accumulation strip. All continuous
+          motion is reduced-motion-gated. (No WEEK column — the
+          savings API exposes today + lifetime only; a weekly sum
+          would need a backend change, out of scope here.) */}
       <motion.section
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        className="relative overflow-hidden rounded-card border-[2.5px] border-[#2A1F18] bg-[#D1FAE5] p-6"
+        initial={reduce ? { opacity: 1 } : { opacity: 0 }}
+        animate={
+          reduce ? { opacity: 1, y: 0 } : { opacity: 1, y: [0, -2, 0] }
+        }
+        transition={
+          reduce
+            ? { duration: 0 }
+            : {
+                opacity: { duration: 0.4, ease: "easeOut" },
+                y: { duration: 4.2, repeat: Infinity, ease: "easeInOut" },
+              }
+        }
+        className="relative overflow-hidden rounded-card border-[2.5px] border-[#2A1F18] bg-[#D1FAE5] px-6 py-8 text-center"
       >
         <DotTexture className="text-[#064E3B]" />
         {/* Content wrapper is `relative` so it sits in the same
             stacking context as the absolute DotTexture and DOM
             order (texture first → content after) decides paint
             order. Without this the SVG would paint over the text. */}
-        <div className="relative">
+        <div className="relative flex flex-col items-center">
           <p className="text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
             Saved today
           </p>
-          <div className="mt-2 flex items-baseline gap-2.5">
-            <AnimatedSavedAmount
-              value={saved}
-              className="font-heading text-[44px] font-extrabold leading-none text-[#1B5E20] md:text-[56px]"
+          <div className="relative mt-3 flex items-center justify-center">
+            {/* Dopamine Pulse — radial energy breathing out from
+                behind the hero amount. */}
+            <DopaminePulse
+              color="rgba(16,185,129,0.25)"
+              className="inset-[-35%]"
             />
-            <ArrowUp className="text-[#1B5E20]" />
+            <motion.div
+              className="relative"
+              animate={reduce ? undefined : { scale: [1, 1.015, 1] }}
+              transition={{
+                duration: 4.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <AnimatedSavedAmount
+                value={saved}
+                className="font-heading text-[56px] font-extrabold leading-none text-[#1B5E20] md:text-[72px]"
+              />
+            </motion.div>
           </div>
-          <p className="mt-2 text-[13px] text-[#1A1A1A]/70">
+          <p className="relative mt-3 max-w-[16rem] text-[13px] text-[#1A1A1A]/70">
             {saved === 0
               ? "First simulation of the day starts the count."
-              : "That’s real money you didn’t spend on real impulses."}
+              : "Simulated. Not spent."}
           </p>
+
+          {/* Accumulation strip — TODAY vs LIFETIME (real fields
+              from /api/savings/me). No WEEK column: the API doesn't
+              expose a weekly sum and adding one is a backend change
+              out of scope for this frontend pass. */}
+          <div className="relative mt-6 flex w-full max-w-[18rem] items-stretch">
+            <div className="flex-1 px-2">
+              <p className="text-[9px] font-bold uppercase tracking-widest text-[#1A1A1A]/45">
+                Today
+              </p>
+              <AnimatedAmount
+                amount={saved}
+                className="mt-1 block font-heading text-[20px] font-extrabold text-[#1B5E20]"
+              />
+            </div>
+            <div className="w-px self-stretch bg-[#1A1A1A]/15" />
+            <div className="flex-1 px-2">
+              <p className="text-[9px] font-bold uppercase tracking-widest text-[#1A1A1A]/45">
+                Lifetime
+              </p>
+              <AnimatedAmount
+                amount={lifetime}
+                className="mt-1 block font-heading text-[20px] font-extrabold text-[#1B5E20]"
+              />
+            </div>
+          </div>
         </div>
       </motion.section>
 
@@ -119,9 +177,18 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
           with Quick Sim's coral pink. DotTexture tinted deep warm
           brown at 7% opacity → reads as darker-peach speckle. */}
       <motion.section
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.08, ease: "easeOut" }}
+        initial={reduce ? { opacity: 1 } : { opacity: 0 }}
+        animate={
+          reduce ? { opacity: 1, y: 0 } : { opacity: 1, y: [0, -2, 0] }
+        }
+        transition={
+          reduce
+            ? { duration: 0 }
+            : {
+                opacity: { duration: 0.4, delay: 0.08, ease: "easeOut" },
+                y: { duration: 4.8, repeat: Infinity, ease: "easeInOut" },
+              }
+        }
         className="relative overflow-hidden rounded-card border-[2.5px] border-[#2A1F18] bg-[#FFEDD5] p-6"
       >
         <DotTexture className="text-[#7C2D12]" />
@@ -130,9 +197,26 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
             Streak
           </p>
           <div className="mt-2 flex items-center gap-3">
-            <span aria-hidden className="text-[40px] leading-none md:text-[48px]">
+            <motion.span
+              aria-hidden
+              className="text-[40px] leading-none md:text-[48px]"
+              style={{ display: "inline-block", transformOrigin: "center bottom" }}
+              animate={
+                reduce
+                  ? undefined
+                  : {
+                      scale: [1, 1.05, 1, 1.03, 1],
+                      rotate: [-1, 0, 1, 0, -1],
+                    }
+              }
+              transition={{
+                duration: 1.8,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
               🔥
-            </span>
+            </motion.span>
             <span className="font-mono text-[44px] font-extrabold leading-none text-[#1A1A1A] tabular-nums md:text-[56px]">
               {streak}
             </span>
@@ -143,27 +227,6 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
         </div>
       </motion.section>
     </div>
-  );
-}
-
-function ArrowUp({ className }: { className?: string }) {
-  // Inline SVG to avoid pulling in another icon dep — sized to sit on
-  // the baseline next to the dollar amount.
-  return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className={className}
-    >
-      <path d="M12 19V5M5 12l7-7 7 7" />
-    </svg>
   );
 }
 
