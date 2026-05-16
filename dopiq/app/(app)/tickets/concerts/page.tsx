@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CONCERTS, TICKETS_BRAND } from "@/data/tickets";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
+import AmbientBreath from "@/components/motion/AmbientBreath";
 
 export const dynamic = "force-dynamic";
 
@@ -36,51 +37,56 @@ export default function ConcertsBrowsePage() {
         </p>
       </header>
 
-      <div className="mx-auto mt-6 max-w-3xl space-y-3">
-        {CONCERTS.map((artist) => (
-          <Link
+      <div className="relative z-10 mx-auto mt-6 max-w-3xl space-y-3">
+        {CONCERTS.map((artist, i) => (
+          <AmbientBreath
             key={artist.id}
-            href={`/tickets/concerts/${artist.id}`}
-            className="group flex w-full items-stretch overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
-            style={{
-              borderColor: "#2A1F18",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-            }}
+            duration={3.6 + (i % 5) * 0.2}
+            amplitude={1}
           >
-            {/* Per-entry pastel bgColor lives here — the one place
-                each artist's color identity survives on the browse
-                list. */}
-            <div
-              className="flex w-[120px] flex-none items-center justify-center text-5xl"
-              style={{ backgroundColor: artist.bgColor }}
-              aria-hidden
+            <Link
+              href={`/tickets/concerts/${artist.id}`}
+              className="surface-tickets-fill group flex w-full items-stretch overflow-hidden rounded-2xl border-[2.5px] transition hover:scale-[1.01] active:scale-[0.98]"
+              style={{
+                borderColor: "#2A1F18",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+              }}
             >
-              {artist.emoji}
-            </div>
-            <div className="flex flex-1 flex-col justify-center gap-1.5 py-3 pl-3 pr-3">
-              <span
-                className="inline-flex w-fit rounded-full border-[1.5px] bg-[#F5F0E6] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ink"
-                style={{ borderColor: "#2A1F18" }}
-              >
-                {artist.genre}
-              </span>
-              <div className="font-heading text-[18px] font-bold leading-tight text-ink">
-                {artist.name}
-              </div>
+              {/* Per-entry pastel bgColor lives here — the one place
+                  each artist's color identity survives on the browse
+                  list. */}
               <div
-                className="line-clamp-2 text-sm leading-snug"
-                style={{ color: TICKETS_BRAND.inkSoft }}
+                className="flex w-[120px] flex-none items-center justify-center text-5xl"
+                style={{ backgroundColor: artist.bgColor }}
+                aria-hidden
               >
-                {artist.tagline}
+                {artist.emoji}
               </div>
-              <span
-                className="inline-flex w-fit rounded-full border-[1.5px] bg-[#F5F0E6] px-2.5 py-0.5 text-[12px] font-bold text-ink"
-                style={{ borderColor: "#2A1F18" }}
-              >
-                From ${Math.round(artist.basePrice * 0.65)}
-              </span>
-            </div>
-          </Link>
+              <div className="flex flex-1 flex-col justify-center gap-1.5 py-3 pl-3 pr-3">
+                <span
+                  className="pill-glass inline-flex w-fit rounded-full border-[1.5px] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ink"
+                  style={{ borderColor: "#2A1F18" }}
+                >
+                  {artist.genre}
+                </span>
+                <div className="font-heading text-[18px] font-bold leading-tight text-ink">
+                  {artist.name}
+                </div>
+                <div
+                  className="line-clamp-2 text-sm leading-snug"
+                  style={{ color: TICKETS_BRAND.inkSoft }}
+                >
+                  {artist.tagline}
+                </div>
+                <span
+                  className="pill-glass inline-flex w-fit rounded-full border-[1.5px] px-2.5 py-0.5 text-[12px] font-bold text-ink"
+                  style={{ borderColor: "#2A1F18" }}
+                >
+                  From ${Math.round(artist.basePrice * 0.65)}
+                </span>
+              </div>
+            </Link>
+          </AmbientBreath>
         ))}
       </div>
 

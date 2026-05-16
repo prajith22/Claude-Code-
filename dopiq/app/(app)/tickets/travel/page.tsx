@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { TRAVEL_DESTINATIONS, TICKETS_BRAND } from "@/data/tickets";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
+import AmbientBreath from "@/components/motion/AmbientBreath";
 
 export const dynamic = "force-dynamic";
 
@@ -33,53 +34,58 @@ export default function TravelBrowsePage() {
         </p>
       </header>
 
-      <div className="mx-auto mt-6 max-w-3xl space-y-3">
-        {TRAVEL_DESTINATIONS.map((dest) => {
+      <div className="relative z-10 mx-auto mt-6 max-w-3xl space-y-3">
+        {TRAVEL_DESTINATIONS.map((dest, i) => {
           const cheapest = Math.min(...dest.airlines.map((a) => a.basePrice));
           return (
-            <Link
+            <AmbientBreath
               key={dest.id}
-              href={`/tickets/travel/${dest.id}`}
-              className="group flex w-full items-stretch overflow-hidden rounded-2xl border-[2.5px] bg-white transition active:scale-[0.99]"
-              style={{
-                borderColor: "#2A1F18",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-              }}
+              duration={3.6 + (i % 5) * 0.2}
+              amplitude={1}
             >
-              {/* Per-entry pastel bgColor lives here — the one place
-                  each destination's color identity survives on the
-                  browse list. */}
-              <div
-                className="flex w-[120px] flex-none items-center justify-center text-5xl"
-                style={{ backgroundColor: dest.bgColor }}
-                aria-hidden
+              <Link
+                href={`/tickets/travel/${dest.id}`}
+                className="surface-tickets-fill group flex w-full items-stretch overflow-hidden rounded-2xl border-[2.5px] transition hover:scale-[1.01] active:scale-[0.98]"
+                style={{
+                  borderColor: "#2A1F18",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                }}
               >
-                {dest.emoji}
-              </div>
-              <div className="flex flex-1 flex-col justify-center gap-1.5 py-3 pl-3 pr-3">
-                <div className="font-heading text-[18px] font-bold leading-tight text-ink">
-                  {dest.city}
-                </div>
+                {/* Per-entry pastel bgColor lives here — the one place
+                    each destination's color identity survives on the
+                    browse list. */}
                 <div
-                  className="text-[13px] font-semibold leading-snug"
-                  style={{ color: TICKETS_BRAND.inkSoft }}
+                  className="flex w-[120px] flex-none items-center justify-center text-5xl"
+                  style={{ backgroundColor: dest.bgColor }}
+                  aria-hidden
                 >
-                  {dest.country}
+                  {dest.emoji}
                 </div>
-                <div
-                  className="line-clamp-2 text-[12px] italic leading-snug"
-                  style={{ color: TICKETS_BRAND.inkSoft }}
-                >
-                  {dest.tagline}
+                <div className="flex flex-1 flex-col justify-center gap-1.5 py-3 pl-3 pr-3">
+                  <div className="font-heading text-[18px] font-bold leading-tight text-ink">
+                    {dest.city}
+                  </div>
+                  <div
+                    className="text-[13px] font-semibold leading-snug"
+                    style={{ color: TICKETS_BRAND.inkSoft }}
+                  >
+                    {dest.country}
+                  </div>
+                  <div
+                    className="line-clamp-2 text-[12px] italic leading-snug"
+                    style={{ color: TICKETS_BRAND.inkSoft }}
+                  >
+                    {dest.tagline}
+                  </div>
+                  <span
+                    className="pill-glass inline-flex w-fit rounded-full border-[1.5px] px-2.5 py-0.5 text-[12px] font-bold text-ink"
+                    style={{ borderColor: "#2A1F18" }}
+                  >
+                    From ${cheapest}
+                  </span>
                 </div>
-                <span
-                  className="inline-flex w-fit rounded-full border-[1.5px] bg-[#F5F0E6] px-2.5 py-0.5 text-[12px] font-bold text-ink"
-                  style={{ borderColor: "#2A1F18" }}
-                >
-                  From ${cheapest}
-                </span>
-              </div>
-            </Link>
+              </Link>
+            </AmbientBreath>
           );
         })}
       </div>

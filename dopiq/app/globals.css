@@ -138,6 +138,100 @@ button, a { -webkit-tap-highlight-color: transparent; }
     border: 1.5px solid #e5e0d5;
     box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.06);
   }
+  /* ---- Visual-overhaul surface tokens -------------------------
+     Tinted gradient fills that replace flat bg-white per section.
+     Defined once here, reused by consumers (never inline the
+     gradient per file). border-radius matches rounded-card. */
+  .surface-food {
+    background: linear-gradient(180deg, #fff8f0 0%, #ffe8d6 100%);
+    border: 1.5px solid #f5d6b3;
+    border-radius: 16px;
+    box-shadow:
+      0 6px 16px -6px rgba(0, 0, 0, 0.08),
+      0 2px 4px -2px rgba(245, 158, 11, 0.12);
+  }
+  .surface-shop {
+    background: linear-gradient(180deg, #faf5ff 0%, #ede5ff 100%);
+    border: 1.5px solid #c7b8ff;
+    border-radius: 16px;
+    box-shadow:
+      0 6px 16px -6px rgba(0, 0, 0, 0.08),
+      0 2px 4px -2px rgba(139, 92, 246, 0.12);
+  }
+  .surface-tickets {
+    background: linear-gradient(180deg, #f0fdfa 0%, #ccfbf1 100%);
+    border: 1.5px solid #99f6e4;
+    border-radius: 16px;
+    box-shadow:
+      0 6px 16px -6px rgba(0, 0, 0, 0.08),
+      0 2px 4px -2px rgba(20, 184, 166, 0.12);
+  }
+  .surface-quicksim {
+    background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 1.5px solid #6ee7b7;
+    border-radius: 16px;
+    box-shadow:
+      0 6px 16px -6px rgba(0, 0, 0, 0.08),
+      0 2px 4px -2px rgba(16, 185, 129, 0.18);
+  }
+  .surface-home {
+    background: linear-gradient(180deg, #ffffff 0%, #faf7f0 100%);
+    border: 1.5px solid #e5e0d5;
+    border-radius: 16px;
+    box-shadow:
+      0 6px 16px -6px rgba(0, 0, 0, 0.08),
+      0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  }
+  .surface-neutral {
+    background: linear-gradient(180deg, #ffffff 0%, #faf7f0 100%);
+    border: 1.5px solid #e5e0d5;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.08);
+  }
+  /* Surface-* variants that DROP their own border + radius, for
+     layering the tinted gradient UNDER an existing 2.5px dark
+     editorial border (home hero / tickets browse / swipe card /
+     delivery map) without doubling the frame. */
+  .surface-food-fill {
+    background: linear-gradient(180deg, #fff8f0 0%, #ffe8d6 100%);
+  }
+  .surface-shop-fill {
+    background: linear-gradient(180deg, #faf5ff 0%, #ede5ff 100%);
+  }
+  .surface-tickets-fill {
+    background: linear-gradient(180deg, #f0fdfa 0%, #ccfbf1 100%);
+  }
+  .surface-home-fill {
+    background: linear-gradient(180deg, #ffffff 0%, #faf7f0 100%);
+  }
+  .pill-glass {
+    background: rgba(255, 255, 255, 0.7);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(229, 224, 213, 0.8);
+    box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.06);
+  }
+  .pill-glass-active {
+    background: linear-gradient(180deg, #2a1f18 0%, #1a1410 100%);
+    color: #ffffff;
+    box-shadow:
+      0 4px 12px -4px rgba(42, 31, 24, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  .input-glass {
+    background: rgba(255, 255, 255, 0.7);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(229, 224, 213, 0.8);
+    transition: all 0.2s ease;
+  }
+  .input-glass:focus {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    outline: none;
+  }
+  /* ------------------------------------------------------------- */
   .input {
     @apply w-full rounded-xl border border-surface-border bg-white px-4 py-3 text-[16px] text-ink placeholder:text-ink-faint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 transition-all duration-150;
   }

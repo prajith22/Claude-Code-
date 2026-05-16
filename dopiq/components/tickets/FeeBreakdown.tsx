@@ -115,7 +115,7 @@ export function FeeBreakdown({ values }: { values: FeeBreakdownValues }) {
   return (
     <div
       ref={ref}
-      className="rounded-2xl bg-white p-5"
+      className="surface-tickets p-5"
       style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
     >
       {/* Face value — static base, no animation. */}

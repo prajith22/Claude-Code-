@@ -10,6 +10,7 @@ import { formatUSD, cn } from "@/lib/utils";
 import { cardHover, cardHoverTransition } from "@/lib/card-hover";
 import { Heart, HeartFilled, StarFilled } from "@/components/icons";
 import { MasonryProductGrid } from "@/components/MasonryProductGrid";
+import AmbientBreath from "@/components/motion/AmbientBreath";
 
 const CATEGORIES: ProductCategory[] = [
   "Clothes",
@@ -115,15 +116,17 @@ function ProductCardImpl({
       : product.description;
 
   return (
-    <motion.div
-      whileHover={cardHover}
-      transition={cardHoverTransition}
-      className={cn(
-        "relative overflow-hidden rounded-card border-[2.5px] bg-white shadow-card",
-        className,
-      )}
-      style={{ borderColor: "#2A1F18" }}
-    >
+    <AmbientBreath duration={3.8} amplitude={1}>
+      <motion.div
+        whileHover={cardHover}
+        whileTap={{ scale: 0.98 }}
+        transition={cardHoverTransition}
+        className={cn(
+          "surface-shop-fill relative overflow-hidden rounded-card border-[2.5px] shadow-card",
+          className,
+        )}
+        style={{ borderColor: "#2A1F18" }}
+      >
       <Link href={`/shop/${product.id}`} className="block">
         <div className="relative aspect-square w-full overflow-hidden bg-surface-alt">
           <Image
@@ -132,6 +135,14 @@ function ProductCardImpl({
             fill
             sizes="(max-width: 640px) 50vw, 220px"
             className="object-cover"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, transparent 60%, rgba(139,92,246,0.08) 100%)",
+            }}
           />
         </div>
       </Link>
@@ -178,7 +189,8 @@ function ProductCardImpl({
           {descPreview}
         </p>
       </Link>
-    </motion.div>
+      </motion.div>
+    </AmbientBreath>
   );
 }
 
@@ -201,9 +213,7 @@ function FilterPill({
       onClick={onClick}
       className={cn(
         "flex-none whitespace-nowrap rounded-pill px-4 py-2 text-[13px] font-semibold transition-all duration-150",
-        active
-          ? "bg-navy text-white shadow-navy"
-          : "pill-subtle text-ink-muted hover:bg-surface-alt",
+        active ? "pill-glass-active" : "pill-glass text-ink-muted",
       )}
     >
       {children}

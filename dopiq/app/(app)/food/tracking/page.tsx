@@ -156,7 +156,7 @@ export default function FoodTrackingPage() {
           stage already at the final index. */}
       {mode === "delivery" && (
         <>
-          <div className="card p-5">
+          <div className="surface-food p-5">
           <div className="flex items-center gap-4">
             <motion.div
               key={current.key}
@@ -221,7 +221,7 @@ export default function FoodTrackingPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.4 }}
-          className="card-subtle space-y-4 p-5"
+          className="surface-food space-y-4 p-5"
         >
           <p className="text-[15px] font-semibold">Order summary</p>
           {order && (

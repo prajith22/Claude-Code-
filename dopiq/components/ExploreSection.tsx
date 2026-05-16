@@ -9,6 +9,7 @@ import type { Product, ProductCategory } from "@/types";
 import { cn, formatUSD } from "@/lib/utils";
 import { Bag, StarFilled } from "@/components/icons";
 import { CartButton } from "@/components/CartButton";
+import AmbientBreath from "@/components/motion/AmbientBreath";
 
 type CategoryKey = "all" | ProductCategory;
 
@@ -175,9 +176,7 @@ export function ExploreSection({ products }: { products: Product[] }) {
                   onClick={() => setSelectedCategory(c.key)}
                   aria-pressed={active}
                   className={`flex flex-none items-center rounded-pill px-4 py-2 text-[13px] font-semibold transition ${
-                    active
-                      ? "border border-navy bg-navy text-white shadow-sm"
-                      : "pill-subtle text-ink hover:bg-surface-alt"
+                    active ? "pill-glass-active" : "pill-glass text-ink"
                   }`}
                 >
                   {c.label}
@@ -212,6 +211,7 @@ export function ExploreSection({ products }: { products: Product[] }) {
           {!current ? (
             <EmptyCategoryCard />
           ) : (
+            <AmbientBreath duration={4.2} amplitude={1}>
             <AnimatePresence mode="wait" initial={false} custom={direction}>
               <motion.div
                 key={current.id}
@@ -226,7 +226,7 @@ export function ExploreSection({ products }: { products: Product[] }) {
                 dragElastic={0.2}
                 whileDrag={{ scale: 0.97 }}
                 onDragEnd={handleDragEnd}
-                className="card border-[2.5px] border-[#2A1F18] cursor-grab touch-pan-y overflow-hidden active:cursor-grabbing"
+                className="surface-shop-fill card border-[2.5px] border-[#2A1F18] cursor-grab touch-pan-y overflow-hidden active:cursor-grabbing"
               >
                 <CardImage product={current} priority={index < 3} />
                 <div className="space-y-1.5 p-5">
@@ -261,6 +261,7 @@ export function ExploreSection({ products }: { products: Product[] }) {
                 </div>
               </motion.div>
             </AnimatePresence>
+            </AmbientBreath>
           )}
         </div>
       </div>
@@ -284,7 +285,7 @@ export function ExploreSection({ products }: { products: Product[] }) {
 
 function EmptyCategoryCard() {
   return (
-    <div className="card flex min-h-[420px] flex-col items-center justify-center gap-3 p-10 text-center">
+    <div className="surface-shop flex min-h-[420px] flex-col items-center justify-center gap-3 p-10 text-center">
       <Bag size={36} className="text-ink-faint" />
       <p className="text-[15px] font-semibold text-ink">
         No products in this category yet — check back soon.

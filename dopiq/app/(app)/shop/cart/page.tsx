@@ -18,7 +18,7 @@ export default function ShopCartPage() {
       <h1 className="pt-2 text-[26px] font-bold tracking-tight">Cart</h1>
 
       {lines.length === 0 ? (
-        <div className="card flex flex-col items-center gap-3 px-6 py-14 text-center">
+        <div className="surface-shop flex flex-col items-center gap-3 px-6 py-14 text-center">
           <Bag size={36} className="text-ink-faint" />
           <p className="text-[17px] font-bold">Nothing in your cart. Cool.</p>
           <p className="text-sm text-ink-muted">
@@ -32,7 +32,7 @@ export default function ShopCartPage() {
         <>
           <ul className="space-y-3">
             {lines.map((l) => (
-              <li key={l.id} className="card-subtle flex gap-4 p-4">
+              <li key={l.id} className="surface-shop flex gap-4 p-4">
                 {l.imageUrl && (
                   <div className="relative h-20 w-20 flex-none overflow-hidden rounded-xl bg-surface-alt">
                     <Image
@@ -88,7 +88,7 @@ export default function ShopCartPage() {
             ))}
           </ul>
 
-          <div className="card space-y-3 p-5">
+          <div className="surface-shop space-y-3 p-5">
             <Row label="Subtotal" value={formatUSD(subtotal)} />
             <Row label="Shipping" value="Free" />
             <div className="border-t border-surface-border" />

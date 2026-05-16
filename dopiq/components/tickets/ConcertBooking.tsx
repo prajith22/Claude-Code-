@@ -115,9 +115,8 @@ export function ConcertBooking({ artist }: { artist: ConcertArtist }) {
                   key={td.id}
                   type="button"
                   onClick={() => setSelectedDate(td)}
-                  className="shrink-0 rounded-xl border px-4 py-3 text-left transition"
+                  className={`${active ? "pill-glass-active" : "pill-glass"} shrink-0 rounded-xl border px-4 py-3 text-left transition`}
                   style={{
-                    backgroundColor: active ? TICKETS_BRAND.emerald : "#fff",
                     color: active ? "#fff" : TICKETS_BRAND.ink,
                     borderColor: active
                       ? TICKETS_BRAND.emerald

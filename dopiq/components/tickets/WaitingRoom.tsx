@@ -73,7 +73,7 @@ export function WaitingRoom({ onComplete }: { onComplete: () => void }) {
         </p>
 
         <div
-          className="mt-6 rounded-2xl bg-white p-6"
+          className="surface-tickets mt-6 p-6"
           style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
         >
           <div

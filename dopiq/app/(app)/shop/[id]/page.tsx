@@ -71,7 +71,7 @@ export default function ProductDetailPage({
         </h2>
         <ul className="space-y-3">
           {reviews.map((r) => (
-            <li key={r.author} className="card p-4">
+            <li key={r.author} className="surface-shop p-4">
               <div className="flex items-center justify-between">
                 <span className="text-[14px] font-semibold text-ink">{r.author}</span>
                 <span className="flex items-center gap-1 text-[12px] font-semibold text-ink">

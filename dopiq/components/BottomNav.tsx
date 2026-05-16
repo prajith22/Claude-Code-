@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutGroup, motion } from "framer-motion";
+import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { DopaminePulse } from "@/components/DopaminePulse";
 
 const TABS = [
   { href: "/home",    label: "Home",    icon: HomeIcon },
@@ -16,6 +17,7 @@ const TABS = [
 export function BottomNav({ excludeBet = false }: { excludeBet?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
+  const reduce = useReducedMotion();
   // iOS users never see the Bet tab — Apple prohibits gambling
   // features for individual developer accounts. Filtering rather
   // than rendering-and-hiding so the remaining tabs distribute
@@ -85,26 +87,40 @@ export function BottomNav({ excludeBet = false }: { excludeBet?: boolean }) {
           page tile uses (no duplicate flow). Emerald .btn-primary
           gradient + cream cutout border + charged glow. */}
       <div className="pointer-events-none absolute -top-7 left-1/2 flex -translate-x-1/2 flex-col items-center">
-        <motion.button
-          type="button"
-          onClick={() => router.push("/quick-sim")}
-          aria-label="Quick Sim"
-          whileTap={{ scale: 0.94 }}
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.12 }}
-          className="pointer-events-auto flex h-[60px] w-[60px] items-center justify-center rounded-full border-[3px]"
-          style={{
-            background:
-              "linear-gradient(180deg, #1FCC97 0%, #10B981 60%, #0FB57E 100%)",
-            borderColor: "#F5F0E6",
-            boxShadow:
-              "inset 0 1px 0 rgba(255,255,255,0.25), 0 8px 24px -4px rgba(16,185,129,0.45), 0 4px 8px -2px rgba(16,185,129,0.3)",
-          }}
+        {/* Continuous slow scale pulse on an outer wrapper so it
+            never fights the button's whileTap; a Dopamine Pulse
+            glow emanates from behind it on every page. Both
+            reduced-motion-gated (DopaminePulse self-gates). */}
+        <motion.div
+          className="relative flex items-center justify-center"
+          animate={reduce ? undefined : { scale: [1, 1.02, 1] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         >
-          <span aria-hidden className="text-[24px] leading-none">
-            ⚡
-          </span>
-        </motion.button>
+          <DopaminePulse
+            color="rgba(16,185,129,0.35)"
+            className="inset-[-40%]"
+          />
+          <motion.button
+            type="button"
+            onClick={() => router.push("/quick-sim")}
+            aria-label="Quick Sim"
+            whileTap={{ scale: 0.94 }}
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.12 }}
+            className="pointer-events-auto relative flex h-[60px] w-[60px] items-center justify-center rounded-full border-[3px]"
+            style={{
+              background:
+                "linear-gradient(180deg, #1FCC97 0%, #10B981 60%, #0FB57E 100%)",
+              borderColor: "#F5F0E6",
+              boxShadow:
+                "inset 0 1px 0 rgba(255,255,255,0.25), 0 8px 24px -4px rgba(16,185,129,0.45), 0 4px 8px -2px rgba(16,185,129,0.3)",
+            }}
+          >
+            <span aria-hidden className="text-[24px] leading-none">
+              ⚡
+            </span>
+          </motion.button>
+        </motion.div>
         <span className="mt-1 text-[10px] font-semibold tracking-wide text-ink-muted">
           Quick Sim
         </span>

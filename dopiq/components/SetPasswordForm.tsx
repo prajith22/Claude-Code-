@@ -106,7 +106,7 @@ export function SetPasswordForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="New password"
-            className="input pr-16"
+            className="input input-glass pr-16"
           />
           <button
             type="button"
@@ -124,7 +124,7 @@ export function SetPasswordForm() {
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
           placeholder="Confirm password"
-          className="input"
+          className="input input-glass"
         />
         <motion.button
           whileHover={{ y: -1 }}

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import type { Product, ProductCategory } from "@/types";
+import AmbientBreath from "@/components/motion/AmbientBreath";
 
 type Tile = {
   key: string;
@@ -83,8 +84,9 @@ export function CuratedShopGrid({ products }: { products: Product[] }) {
     >
       <div className="grid grid-cols-2 gap-3 md:gap-4">
         {tiles.map((tile, i) => (
+          <AmbientBreath key={tile.key} duration={4.4} amplitude={1}>
           <motion.div
-            key={tile.key}
+            whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
             initial={{ opacity: 0, y: 16 }}
@@ -125,6 +127,7 @@ export function CuratedShopGrid({ products }: { products: Product[] }) {
               </span>
             </Link>
           </motion.div>
+          </AmbientBreath>
         ))}
       </div>
     </motion.section>
