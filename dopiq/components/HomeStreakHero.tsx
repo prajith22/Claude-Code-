@@ -149,7 +149,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
             order (texture first → content after) decides paint
             order. Without this the SVG would paint over the text. */}
         <div className="relative flex flex-col items-center">
-          <p className="type-track-in font-playful text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
+          <p className="type-track-in font-playful text-[14px] font-bold uppercase tracking-widest text-ink">
             Saved today
           </p>
           <div className="relative mt-3 flex items-center justify-center">
@@ -196,7 +196,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
               out of scope for this frontend pass. */}
           <div className="relative mt-6 flex w-full max-w-[18rem] items-stretch">
             <div className="flex-1 px-2">
-              <p className="type-track-in font-playful text-[9px] font-bold uppercase tracking-widest text-[#1A1A1A]/45">
+              <p className="type-track-in font-playful text-[14px] font-bold uppercase tracking-widest text-ink">
                 Today
               </p>
               <AnimatedAmount
@@ -206,7 +206,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
             </div>
             <div className="w-px self-stretch bg-[#1A1A1A]/15" />
             <div className="flex-1 px-2">
-              <p className="type-track-in font-playful text-[9px] font-bold uppercase tracking-widest text-[#1A1A1A]/45">
+              <p className="type-track-in font-playful text-[14px] font-bold uppercase tracking-widest text-ink">
                 Lifetime
               </p>
               <AnimatedAmount
@@ -240,7 +240,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
       >
         <DotTexture className="text-[#7C2D12]" />
         <div className="relative">
-          <p className="type-track-in font-playful text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A]/60">
+          <p className="type-track-in font-playful text-[14px] font-bold uppercase tracking-widest text-ink">
             Streak
           </p>
           <div className="mt-2 flex items-center gap-3">
@@ -264,7 +264,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
             >
               🔥
             </motion.span>
-            <span className="font-mono text-[44px] font-extrabold leading-none text-[#1A1A1A] tabular-nums md:text-[56px]">
+            <span className="type-hero-amount-tan text-[56px] leading-none tabular-nums">
               {streak}
             </span>
           </div>

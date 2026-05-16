@@ -283,6 +283,19 @@ button, a { -webkit-tap-highlight-color: transparent; }
     color: transparent;
     text-shadow: 0 0 40px rgba(16, 185, 129, 0.15);
   }
+  /* Warm-tan sibling of type-hero-amount — used on the streak
+     number so it reads as a complementary hero, not a peer of the
+     emerald Saved Today amount. Static (no animation); the
+     text-shadow may not render on transparent text but is kept for
+     graceful upgrade. */
+  .type-hero-amount-tan {
+    @apply font-heading font-extrabold;
+    background: linear-gradient(180deg, #d4a574 0%, #b8915f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 30px rgba(212, 165, 116, 0.2);
+  }
   .type-magnetic {
     letter-spacing: -0.01em;
     transition: letter-spacing 0.2s ease-out;
