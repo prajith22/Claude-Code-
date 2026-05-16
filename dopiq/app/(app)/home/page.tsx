@@ -5,6 +5,7 @@ import { SimCard } from "@/components/SimCard";
 import { HomeStreakHero } from "@/components/HomeStreakHero";
 import { QuickSimHomeCard } from "@/components/QuickSimHomeCard";
 import { PlanUsageCard } from "@/components/PlanUsageCard";
+import { HomeHamburger } from "@/components/HomeHamburger";
 import { streakStatus } from "@/lib/streaks";
 
 export default async function HomePage() {
@@ -38,6 +39,8 @@ export default async function HomePage() {
 
   return (
     <div className="relative">
+      <HomeHamburger />
+
       {/* Home-only grain overlay — fixed, very low opacity, never
           interactive. Scoped to this page (not the shared (app)
           layout) so it doesn't bleed onto Shop / Food / etc. */}

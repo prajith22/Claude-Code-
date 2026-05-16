@@ -1,7 +1,6 @@
 import { requireSubscribedUser } from "@/lib/session-guards";
 import { isIOSWebView } from "@/lib/is-ios-webview";
 import { BottomNav } from "@/components/BottomNav";
-import { TopNav } from "@/components/TopNav";
 import { NightModeClass } from "@/components/NightModeClass";
 
 export default async function AppLayout({
@@ -19,7 +18,6 @@ export default async function AppLayout({
   return (
     <div className="min-h-[100dvh]">
       <NightModeClass />
-      <TopNav excludeBet={excludeBet} />
       <main className="pb-nav mx-auto max-w-2xl px-4 pt-4 md:max-w-4xl lg:max-w-6xl">
         {children}
       </main>
