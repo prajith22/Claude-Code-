@@ -5,7 +5,7 @@ import {
   JetBrains_Mono,
   Playfair_Display,
   Sniglet,
-  Fraunces,
+  Space_Grotesk,
 } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
@@ -52,12 +52,11 @@ const sniglet = Sniglet({
   weight: ["400", "800"],
 });
 
-// Characterful editorial serif — used only on the Shop/Food
-// category filter pills. Replaces Sniglet there for a more grown-up
-// magazine read without losing personality.
-const fraunces = Fraunces({
+// Modern geometric sans with quirky character — used only on the
+// Shop/Food category filter pills (design-engineer aesthetic).
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-space-grotesk",
   display: "swap",
   weight: ["500", "600", "700"],
 });
@@ -91,7 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} ${sniglet.variable} ${fraunces.variable}`}
+      className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} ${sniglet.variable} ${spaceGrotesk.variable}`}
     >
       <body className="text-ink antialiased">
         <Providers>{children}</Providers>
