@@ -354,8 +354,7 @@ export function DailySpinWheel() {
               className="font-playful type-glow-emerald relative text-[16px] font-bold leading-snug"
               style={{ color: landed.text }}
             >
-              Your Dopiq Challenge: don&rsquo;t spend more than $
-              {landed.amount} on impulse buys today.
+              Don&rsquo;t spend ${landed.amount} in real life today
             </p>
           </motion.div>
         )}

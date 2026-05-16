@@ -121,9 +121,12 @@ export default async function HomePage() {
             honor system, client-only persistence (localStorage),
             no streak coupling. */}
         <section aria-label="Daily Challenge">
-          <h2 className="mb-4 text-center font-heading text-[18px] font-bold tracking-tight text-ink">
+          <h2 className="mb-2 text-center font-heading text-[18px] font-bold tracking-tight text-ink">
             Daily Challenge
           </h2>
+          <p className="type-track-in font-playful mb-4 text-center text-[14px] font-bold uppercase tracking-widest text-ink">
+            Today&rsquo;s real-world challenge
+          </p>
           <DailySpinWheel />
         </section>
 
