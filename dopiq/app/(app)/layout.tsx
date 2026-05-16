@@ -18,7 +18,7 @@ export default async function AppLayout({
   return (
     <div className="min-h-[100dvh]">
       <NightModeClass />
-      <main className="pb-nav mx-auto max-w-2xl px-4 pt-[calc(env(safe-area-inset-top)+1rem)] md:max-w-4xl lg:max-w-6xl">
+      <main className="pb-nav mx-auto max-w-2xl px-4 pt-[calc(env(safe-area-inset-top)+3rem)] md:max-w-4xl lg:max-w-6xl">
         {children}
       </main>
       <BottomNav excludeBet={excludeBet} />
