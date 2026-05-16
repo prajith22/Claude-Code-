@@ -208,16 +208,19 @@ function FilterPill({
   children: React.ReactNode;
 }) {
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onClick}
+      whileTap={{ scale: 0.95 }}
       className={cn(
         "flex-none whitespace-nowrap rounded-pill px-4 py-2 text-[13px] font-semibold transition-all duration-150",
-        active ? "pill-glass-active" : "pill-glass text-ink-muted",
+        active
+          ? "pill-glass-active scale-[1.02]"
+          : "pill-shop text-ink",
       )}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }
 
