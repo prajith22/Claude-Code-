@@ -1,11 +1,24 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 import { useCartStore, cartSubtotal } from "@/lib/cart-store";
 import { formatUSD } from "@/lib/utils";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
 import { useSavingsStore } from "@/lib/savings-store";
+import { AnimatedAmount } from "@/components/AnimatedAmount";
+
+// Staggered fee-reveal choreography (mirrors the Tickets pattern).
+// Constants duplicated locally per brief — these are tiny surfaces;
+// only Tickets' computed delay couldn't be reused since each screen
+// has a different stagger-row count.
+const STAGGER_START_DELAY_S = 0.4;
+const STAGGER_STEP_S = 0.35;
+const TOTAL_COUNT_DURATION_S = 1.6;
+const STAGGER_ROW_COUNT = 2; // Shipping, Tax
+const TOTAL_REVEAL_DELAY_S =
+  STAGGER_START_DELAY_S + STAGGER_ROW_COUNT * STAGGER_STEP_S + 0.2; // 1.3s
 
 function todayDateStr(): string {
   const d = new Date();
@@ -27,6 +40,46 @@ export default function ShopCheckoutPage() {
   }, [lines.length, placing, router]);
 
   const subtotal = cartSubtotal(lines);
+
+  // Fee-reveal timing — starts once the summary is first seen, runs
+  // once (useInView once:true), never replays on cart re-renders.
+  const summaryRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(summaryRef, { once: true });
+  const [revealed, setRevealed] = useState(false);
+  const [landed, setLanded] = useState(false);
+
+  useEffect(() => {
+    if (!inView) return;
+    const t1 = setTimeout(
+      () => setRevealed(true),
+      TOTAL_REVEAL_DELAY_S * 1000,
+    );
+    const t2 = setTimeout(
+      () => setLanded(true),
+      (TOTAL_REVEAL_DELAY_S + TOTAL_COUNT_DURATION_S) * 1000,
+    );
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [inView]);
+
+  const totalNode = (
+    <motion.span
+      animate={landed ? { scale: [1, 1.05, 1] } : { scale: 1 }}
+      transition={{ duration: 0.3 }}
+      style={{ display: "inline-block" }}
+    >
+      {revealed ? (
+        <AnimatedAmount
+          amount={subtotal}
+          duration={TOTAL_COUNT_DURATION_S}
+        />
+      ) : (
+        formatUSD(subtotal)
+      )}
+    </motion.span>
+  );
 
   async function placeOrder() {
     setPlacing(true);
@@ -70,12 +123,34 @@ export default function ShopCheckoutPage() {
       </Section>
 
       <Section title="Order summary">
-        <div className="space-y-2 text-[15px]">
+        <div ref={summaryRef} className="space-y-2 text-[15px]">
+          {/* Base — appears immediately, no animation. */}
           <Row label={`Items (${lines.reduce((n, l) => n + l.qty, 0)})`} value={formatUSD(subtotal)} />
-          <Row label="Shipping" value="Free" />
-          <Row label="Tax" value="$0.00" />
-          <div className="my-2 border-t border-surface-border" />
-          <Row label="Order total" value={formatUSD(subtotal)} bold />
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: STAGGER_START_DELAY_S }}
+          >
+            <Row label="Shipping" value="Free" />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.3,
+              delay: STAGGER_START_DELAY_S + STAGGER_STEP_S,
+            }}
+          >
+            <Row label="Tax" value="$0.00" />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: TOTAL_REVEAL_DELAY_S }}
+          >
+            <div className="my-2 border-t border-surface-border" />
+            <Row label="Order total" value={totalNode} bold />
+          </motion.div>
         </div>
       </Section>
 
@@ -87,6 +162,19 @@ export default function ShopCheckoutPage() {
       >
         {placing ? "Placing order…" : `Place order · ${formatUSD(subtotal)}`}
       </button>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: TOTAL_REVEAL_DELAY_S }}
+        className="text-center text-xs italic text-ink-muted"
+      >
+        {revealed ? (
+          <AnimatedAmount amount={subtotal} duration={TOTAL_COUNT_DURATION_S} />
+        ) : (
+          formatUSD(subtotal)
+        )}{" "}
+        kept · Your wallet survived
+      </motion.p>
       <p className="pb-2 text-center text-xs text-ink-muted">
         Simulated checkout. No real money will be charged.
       </p>
@@ -156,7 +244,7 @@ function Row({
   bold,
 }: {
   label: string;
-  value: string;
+  value: React.ReactNode;
   bold?: boolean;
 }) {
   return (
