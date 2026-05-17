@@ -2,6 +2,7 @@ import products from "@/data/products.json";
 import type { Product } from "@/types";
 import { ShopExperience } from "@/components/ShopExperience";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
+import { LandingMascot } from "@/components/LandingMascot";
 
 // Auth + subscription gating happen in (app)/layout.tsx; no need
 // to re-check here. Doing so previously doubled the per-nav
@@ -15,9 +16,12 @@ export default function ShopPage() {
 
   return (
     <div className="space-y-6 pb-4">
-      <h1 className="type-hero-shop pt-2 text-[48px] leading-tight tracking-tight md:text-[64px]">
-        Shop til ya drop
-      </h1>
+      <div className="flex items-start justify-between gap-3 pt-2">
+        <h1 className="type-hero-shop min-w-0 flex-1 text-[48px] leading-tight tracking-tight md:text-[64px]">
+          Shop til ya drop
+        </h1>
+        <LandingMascot src="/onboarding/dopiq-dog1.png" />
+      </div>
 
       <ShopExperience products={all} />
 

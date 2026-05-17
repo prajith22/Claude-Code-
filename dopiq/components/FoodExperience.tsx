@@ -11,6 +11,7 @@ import { RestaurantLogo } from "@/components/RestaurantLogo";
 import { cardHover, cardHoverTransition } from "@/lib/card-hover";
 import { Plate, StarFilled } from "@/components/icons";
 import AmbientBreath from "@/components/motion/AmbientBreath";
+import { LandingMascot } from "@/components/LandingMascot";
 
 type Pill = { key: string; label: string };
 
@@ -153,7 +154,10 @@ export function FoodExperience({ prefs }: { prefs: FoodPrefs | null }) {
             </svg>
           </button>
         </div>
-        <CartButton kind="food" />
+        <div className="flex shrink-0 flex-col items-end gap-3">
+          <CartButton kind="food" />
+          <LandingMascot src="/onboarding/dopiq-dog4.png" />
+        </div>
       </header>
 
       {/* Search */}

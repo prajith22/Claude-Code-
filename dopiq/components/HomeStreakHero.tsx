@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { DotTexture } from "@/components/DotTexture";
 import { DopaminePulse } from "@/components/DopaminePulse";
 import { AnimatedAmount } from "@/components/AnimatedAmount";
+import { LandingMascot } from "@/components/LandingMascot";
 import { useSavingsStore } from "@/lib/savings-store";
 
 type Summary = {
@@ -240,6 +241,8 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
       >
         <DotTexture className="text-[#7C2D12]" />
         <div className="relative">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
           <p className="type-track-in font-playful text-[14px] font-bold uppercase tracking-widest text-ink">
             Streak
           </p>
@@ -271,6 +274,9 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
           <p className="mt-2 text-[13px] font-semibold text-[#1A1A1A]/70">
             {streakMessage(streak, atRisk, longest)}
           </p>
+            </div>
+            <LandingMascot src="/onboarding/dopiq-dog.png" />
+          </div>
         </div>
       </motion.section>
     </div>

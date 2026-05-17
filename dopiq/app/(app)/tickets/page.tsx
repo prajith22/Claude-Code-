@@ -2,6 +2,7 @@ import Link from "next/link";
 import { TICKETS_BRAND } from "@/data/tickets";
 import { SimDisclaimer } from "@/components/SimDisclaimer";
 import AmbientBreath from "@/components/motion/AmbientBreath";
+import { LandingMascot } from "@/components/LandingMascot";
 
 export const dynamic = "force-dynamic";
 
@@ -46,16 +47,19 @@ export default function TicketsLandingPage() {
       className="-mx-4 -mt-4 px-4 pt-6 pb-10"
       style={{ backgroundColor: TICKETS_BRAND.cream }}
     >
-      <header className="mx-auto max-w-2xl pt-2">
-        <h1 className="type-hero-tickets text-[48px] leading-tight tracking-tight md:text-[64px]">
-          Snag the moment
-        </h1>
-        <p
-          className="mt-1 text-[15px]"
-          style={{ color: TICKETS_BRAND.inkSoft }}
-        >
-          Pick a fantasy. We&rsquo;ll handle the fees.
-        </p>
+      <header className="mx-auto flex max-w-2xl items-start justify-between gap-3 pt-2">
+        <div className="min-w-0 flex-1">
+          <h1 className="type-hero-tickets text-[48px] leading-tight tracking-tight md:text-[64px]">
+            Snag the moment
+          </h1>
+          <p
+            className="mt-1 text-[15px]"
+            style={{ color: TICKETS_BRAND.inkSoft }}
+          >
+            Pick a fantasy. We&rsquo;ll handle the fees.
+          </p>
+        </div>
+        <LandingMascot src="/onboarding/dopiq-dog2.png" />
       </header>
 
       <div className="relative z-10 mx-auto mt-6 grid max-w-2xl gap-4">
