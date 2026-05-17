@@ -18,7 +18,7 @@ import { ProductCard } from "@/components/DiscoveryFeed";
  */
 export function MasonryProductGrid({ products }: { products: Product[] }) {
   return (
-    <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
       {products.map((p) => (
         <ProductCard key={p.id} product={p} />
       ))}

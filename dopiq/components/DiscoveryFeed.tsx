@@ -91,18 +91,11 @@ function ProductCardImpl({
   product: Product;
   className?: string;
 }) {
-  // Deterministic metadata variation — drives masonry rhythm without
-  // any randomness, so server and client render identical heights.
-  // All knobs key off stable product fields:
-  //
-  //   - nameClamp: 3 buckets by name length (≤20 / 21-40 / >40 chars)
-  //   - topRated:  product.rating >= 4.7
-  //   - popular:   product.reviewCount > 5000  → renders the saved-count line
-  //   - descPreview: always rendered (every product has a description),
-  //                  truncated to 50 chars
-  const nameLength = product.name.length;
-  const nameClamp =
-    nameLength <= 20 ? "" : nameLength <= 40 ? "line-clamp-2" : "line-clamp-4";
+  // Uniform cards — every cell is the same height in a clean 2-up
+  // grid (no masonry rhythm). The name is always clamped to 2 lines
+  // and the text block carries a fixed min-height, so the optional
+  // top-rated / saved-count rows sit in reserved space instead of
+  // making some cards taller than others.
   const topRated = product.rating >= 4.7;
   const popular = product.reviewCount > 5000;
   const descPreview =
@@ -141,8 +134,11 @@ function ProductCardImpl({
           />
         </div>
       </Link>
-      <Link href={`/shop/${product.id}`} className="block space-y-1.5 p-3">
-        <p className={cn("font-heading text-[13px] font-bold leading-snug text-ink", nameClamp)}>
+      <Link
+        href={`/shop/${product.id}`}
+        className="block min-h-[11rem] space-y-1.5 p-3"
+      >
+        <p className="line-clamp-2 min-h-[2.4rem] font-heading text-[13px] font-bold leading-snug text-ink">
           {product.name}
         </p>
         <div className="flex items-center justify-between">
@@ -164,7 +160,7 @@ function ProductCardImpl({
             {product.reviewCount.toLocaleString()}+ saved
           </p>
         )}
-        <p className="text-[12px] leading-snug text-ink-muted">
+        <p className="line-clamp-2 text-[12px] leading-snug text-ink-muted">
           {descPreview}
         </p>
       </Link>
