@@ -341,7 +341,7 @@ function Screen1({
           hidden: {},
           show: { transition: { staggerChildren: 0.15, delayChildren: 0.25 } },
         }}
-        className="mt-3 flex flex-col gap-2"
+        className="mt-3 flex flex-col gap-2 px-1"
       >
         {options.map((opt, i) => {
           const isSelected = selected === i;
@@ -367,7 +367,7 @@ function Screen1({
                 type="button"
                 onClick={() => setSelected(i)}
                 animate={{
-                  scale: isSelected ? (reduce ? 1.02 : [1, 1.04, 1.02]) : 1,
+                  scale: isSelected ? (reduce ? 1.01 : [1, 1.02, 1.01]) : 1,
                   boxShadow: isSelected ? glowShadow : restShadow,
                 }}
                 whileTap={{ scale: 0.99 }}
