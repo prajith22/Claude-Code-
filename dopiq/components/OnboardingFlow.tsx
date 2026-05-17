@@ -44,7 +44,7 @@ export function OnboardingFlow({
   }
 
   return (
-    <main className="relative flex min-h-[100dvh] flex-col bg-[#FAFAF8] safe-top">
+    <main className="relative flex min-h-[100dvh] flex-col bg-[#F5F0E6] pt-[calc(env(safe-area-inset-top)+2rem)]">
       {/* Top bar — progress dots + skip */}
       <header className="flex items-center justify-between px-6 pb-3 pt-4">
         <ProgressDots stage={stage} />
