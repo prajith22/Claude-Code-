@@ -13,6 +13,7 @@ import { DotTexture } from "@/components/DotTexture";
 import { DopaminePulse } from "@/components/DopaminePulse";
 import { AnimatedAmount } from "@/components/AnimatedAmount";
 import { LandingMascot } from "@/components/LandingMascot";
+import { FitText, type FitTextHandle } from "@/components/FitText";
 import { useSavingsStore } from "@/lib/savings-store";
 
 type Summary = {
@@ -169,10 +170,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
                 ease: "easeInOut",
               }}
             >
-              <AnimatedSavedAmount
-                value={saved}
-                className="type-hero-amount text-[64px] leading-none tabular-nums md:text-[80px]"
-              />
+              <AnimatedSavedAmount value={saved} />
             </motion.div>
           </div>
           {saved === 0 ? (
@@ -202,6 +200,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
               </p>
               <AnimatedAmount
                 amount={saved}
+                fit={{ maxPx: 20, minPx: 13 }}
                 className="mt-1 block font-heading text-[20px] font-extrabold text-[#1B5E20]"
               />
             </div>
@@ -212,6 +211,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
               </p>
               <AnimatedAmount
                 amount={lifetime}
+                fit={{ maxPx: 20, minPx: 13 }}
                 className="mt-1 block font-heading text-[20px] font-extrabold text-[#1B5E20]"
               />
             </div>
@@ -301,22 +301,28 @@ const COUNT_OFFSET = 100;
  * - `value === 0` short-circuits to a static "$0.00" — no animation,
  *   no pulse.
  */
-function AnimatedSavedAmount({
-  value,
-  className,
-}: {
-  value: number;
-  className?: string;
-}) {
+function AnimatedSavedAmount({ value }: { value: number }) {
   const ref = useRef<HTMLSpanElement>(null);
+  const fitRef = useRef<FitTextHandle | null>(null);
   const motionValue = useMotionValue(0);
   const controls = useAnimationControls();
+
+  // Each per-frame textContent write bypasses React, so explicitly
+  // ask FitText to re-measure/rescale right after — keeps the
+  // container width stable as the digit count grows.
+  const write = (text: string) => {
+    if (ref.current) ref.current.textContent = text;
+    fitRef.current?.fit();
+  };
 
   // Subscribe once: every motionValue change writes the formatted text
   // straight to the DOM. Cleanup unsubscribes on unmount.
   useEffect(() => {
     return motionValue.on("change", (v) => {
-      if (ref.current) ref.current.textContent = formatAnimatedMoney(v);
+      if (ref.current) {
+        ref.current.textContent = formatAnimatedMoney(v);
+        fitRef.current?.fit();
+      }
     });
   }, [motionValue]);
 
@@ -324,7 +330,7 @@ function AnimatedSavedAmount({
     if (value === 0) {
       motionValue.stop();
       motionValue.set(0);
-      if (ref.current) ref.current.textContent = "$0.00";
+      write("$0.00");
       return;
     }
 
@@ -335,7 +341,7 @@ function AnimatedSavedAmount({
     motionValue.set(start);
     // Write the start frame synchronously so the user doesn't see a
     // flicker of the previous value while RAF spins up.
-    if (ref.current) ref.current.textContent = formatAnimatedMoney(start);
+    write(formatAnimatedMoney(start));
 
     const animation = animate(motionValue, value, {
       duration: COUNT_DURATION_S,
@@ -345,7 +351,7 @@ function AnimatedSavedAmount({
       onComplete: () => {
         // Snap the displayed value to exactly the target so any
         // subpixel rounding from the easing curve disappears.
-        if (ref.current) ref.current.textContent = formatAnimatedMoney(value);
+        write(formatAnimatedMoney(value));
         controls.start({
           scale: [1, 1.05, 1],
           transition: { type: "spring", stiffness: 300, damping: 15 },
@@ -354,16 +360,23 @@ function AnimatedSavedAmount({
     });
 
     return () => animation.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, motionValue, controls]);
 
   return (
-    <motion.span
-      ref={ref}
+    <motion.div
       animate={controls}
-      className={className}
-      style={{ display: "inline-block", transformOrigin: "left center" }}
+      style={{ transformOrigin: "left center" }}
     >
-      $0.00
-    </motion.span>
+      <FitText
+        ref={fitRef}
+        maxFontSizePx={80}
+        minFontSizePx={36}
+        className="w-full"
+        innerClassName="type-hero-amount tabular-nums"
+      >
+        <span ref={ref}>{formatAnimatedMoney(value)}</span>
+      </FitText>
+    </motion.div>
   );
 }
