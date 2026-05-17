@@ -3,7 +3,6 @@
 import { animate, motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { formatUSD } from "@/lib/utils";
-import { FitText } from "@/components/FitText";
 
 /**
  * Hero dollar-amount display: scales + fades in on mount, then
@@ -29,20 +28,11 @@ export function AnimatedAmount({
   className,
   duration = 0.8,
   fromCurrent = false,
-  fit,
 }: {
   amount: number;
   className?: string;
   duration?: number;
   fromCurrent?: boolean;
-  /**
-   * Opt-in width-stabilization. When set, the amount auto-scales its
-   * font size to fit its container (so the card it lives in keeps a
-   * constant footprint as the digit count grows during the count-up).
-   * Omitted everywhere except the Home TODAY / LIFETIME row, so every
-   * other caller keeps its exact existing inline rendering.
-   */
-  fit?: { maxPx: number; minPx: number };
 }) {
   const [display, setDisplay] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -70,22 +60,6 @@ export function AnimatedAmount({
     });
     return () => controls.stop();
   }, [inView, amount, duration, fromCurrent]);
-
-  // Opt-in: auto-scaling, width-stable variant. AnimatedAmount
-  // re-renders per frame (setDisplay), so FitText's dependency-free
-  // useLayoutEffect re-fits every frame — no imperative call needed.
-  if (fit) {
-    return (
-      <FitText
-        maxFontSizePx={fit.maxPx}
-        minFontSizePx={fit.minPx}
-        className={className}
-        innerClassName="tabular-nums"
-      >
-        <span ref={ref}>{formatUSD(display)}</span>
-      </FitText>
-    );
-  }
 
   return (
     <motion.span
