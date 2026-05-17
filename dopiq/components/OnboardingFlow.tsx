@@ -345,7 +345,11 @@ function Screen1({
       >
         {options.map((opt, i) => {
           const isSelected = selected === i;
-          const restShadow = "0 2px 12px rgba(0,0,0,0.08)";
+          // Definitive card depth — a tight dark drop shadow so each
+          // card reads as separated even where the border is subtle
+          // against its own pastel fill.
+          const restShadow =
+            "0 1px 3px rgba(42,31,24,0.15), 0 1px 2px rgba(42,31,24,0.10)";
           // Glow matches the option's own colour identity (lavender
           // card → lavender glow, amber → amber, etc.) via the fg
           // hue at low alpha.
@@ -374,7 +378,8 @@ function Screen1({
                 style={{
                   backgroundColor: opt.bg,
                   color: opt.fg,
-                  borderColor: isSelected ? "#0A0F1E" : `${opt.fg}66`,
+                  borderWidth: isSelected ? "2px" : "1.5px",
+                  borderColor: isSelected ? "#0A0F1E" : "#2A1F18",
                 }}
               >
                 <p className="font-sans text-[15px] font-bold leading-snug md:text-[16px]">
