@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     title: "Dopiq",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.png",
     apple: "/icons/icon-192.png",
   },
 };

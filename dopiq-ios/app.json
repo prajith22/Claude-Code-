@@ -18,6 +18,7 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.dopiq.app",
       "buildNumber": "14",
+      "icon": "./assets/icon-ios.png",
       "associatedDomains": [
         "applinks:dopiqapp.com",
         "applinks:www.dopiqapp.com"
