@@ -67,7 +67,7 @@ export function AnimatedAmount({
       initial={{ scale: 0.92, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className={className}
+      className={`tabular-nums${className ? ` ${className}` : ""}`}
       style={{ display: "inline-block" }}
     >
       {formatUSD(display)}

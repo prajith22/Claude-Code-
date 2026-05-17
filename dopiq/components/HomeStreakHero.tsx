@@ -109,7 +109,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
   }, []);
 
   return (
-    <div className="grid gap-3 sm:grid-cols-[1.4fr_1fr] sm:gap-4">
+    <div className="grid gap-3 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] sm:gap-4">
       {/* Saved today — the amplified hero. Soft mint, dot texture,
           a Dopamine Pulse breathing behind the big amount, and a
           TODAY / LIFETIME accumulation strip. All continuous
@@ -171,7 +171,7 @@ export function HomeStreakHero({ initial }: { initial: Summary | null }) {
             >
               <AnimatedSavedAmount
                 value={saved}
-                className="type-hero-amount text-[64px] leading-none md:text-[80px]"
+                className="type-hero-amount text-[64px] leading-none tabular-nums md:text-[80px]"
               />
             </motion.div>
           </div>
