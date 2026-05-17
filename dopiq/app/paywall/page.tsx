@@ -8,6 +8,7 @@ import { isIOSWebView } from "@/lib/is-ios-webview";
 import { PLANS, type Plan } from "@/lib/stripe";
 import { IOSPaywallFallback } from "@/components/IOSPaywallFallback";
 import { PaywallPlanCard } from "@/components/PaywallPlanCard";
+import { PaywallCloseButton } from "@/components/PaywallCloseButton";
 import { UpdatePaymentButton } from "@/components/UpdatePaymentButton";
 
 // /paywall renders the Stripe-backed plan grid for web users. iOS
@@ -76,7 +77,8 @@ export default async function PaywallPage({
   const order: Plan[] = [PLANS.lite, PLANS.plus, PLANS.pro];
 
   return (
-    <main className="mx-auto flex min-h-[100dvh] max-w-5xl flex-col px-6 pt-10 pb-12 safe-top">
+    <main className="relative mx-auto flex min-h-[100dvh] max-w-5xl flex-col px-6 pt-10 pb-12 safe-top">
+      <PaywallCloseButton />
       <header className="text-center">
         <Link href="/home" className="inline-flex items-center gap-3">
           <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden>
