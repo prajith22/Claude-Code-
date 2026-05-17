@@ -28,7 +28,7 @@ export default function SignInPage() {
         }}
       />
       <SignInMarketing excludeBet={ios} />
-      <section className="flex min-h-[100dvh] items-center justify-center px-6 py-10 md:py-12">
+      <section className="flex flex-col items-center px-6 pb-10 pt-2 md:min-h-[100dvh] md:justify-center md:py-12">
         <Suspense fallback={null}>
           <SignInForm excludeGoogle={ios} />
         </Suspense>

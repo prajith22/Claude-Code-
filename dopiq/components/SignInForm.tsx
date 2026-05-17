@@ -174,7 +174,7 @@ export function SignInForm({
       )}
 
       {/* Trial callout — a brand badge, not a CTA. Soft emerald
-          tint + thin border + Sniglet caps so it never reads as a
+          tint + thin border + Sora caps so it never reads as a
           tappable button. */}
       <motion.div
         variants={fadeUp}
@@ -182,7 +182,7 @@ export function SignInForm({
         className="mt-6 flex justify-center"
       >
         <span
-          className="font-playful inline-flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-widest"
+          className="font-heading inline-flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-widest"
           style={{
             background: "linear-gradient(180deg, #ECFDF5 0%, #D1FAE5 100%)",
             border: "1px solid rgba(16, 185, 129, 0.3)",

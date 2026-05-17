@@ -46,7 +46,7 @@ export function SignInMarketing({
   const sims = excludeBet ? SIMS.filter((s) => s.label !== "Bet") : SIMS;
   const reduce = useReducedMotion();
   return (
-    <aside className="relative flex flex-col justify-between overflow-hidden bg-[#FAFAF8] px-6 py-10 text-[#0A0F1E] md:min-h-[100dvh] md:px-10 md:py-12 lg:px-14">
+    <aside className="relative flex flex-col justify-between overflow-hidden bg-[#FAFAF8] px-6 pb-6 pt-10 text-[#0A0F1E] md:min-h-[100dvh] md:px-10 md:py-12 lg:px-14">
       <div className="relative">
         {/* Logo */}
         <motion.div

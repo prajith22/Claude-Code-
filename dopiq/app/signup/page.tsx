@@ -15,7 +15,7 @@ export default function SignUpPage() {
   return (
     <main className="min-h-[100dvh] bg-white md:grid md:grid-cols-2">
       <SignInMarketing excludeBet={ios} />
-      <section className="flex min-h-[100dvh] items-center justify-center px-6 py-10 md:py-12">
+      <section className="flex flex-col items-center px-6 pb-10 pt-2 md:min-h-[100dvh] md:justify-center md:py-12">
         <Suspense fallback={null}>
           <SignUpForm excludeGoogle={ios} />
         </Suspense>
