@@ -684,7 +684,9 @@ function CheckoutSummary({
   // clipping the top of the receipt list with the previous flex
   // layout — this approach has zero ambiguous height inheritance.
   return (
-    <div className="absolute inset-0 overflow-y-auto px-5 pt-2 safe-bottom">
+    <>
+      {/* pb accounts for the pinned slide-up-to-sim bar (~140px + safe area) */}
+      <div className="absolute inset-0 overflow-y-auto px-5 pt-2 pb-[calc(140px+env(safe-area-inset-bottom))]">
       {/* Store header — same card as the item selection screen so
           the user sees continuity through the flow. */}
       <section className="surface-quicksim p-4">
@@ -766,18 +768,31 @@ function CheckoutSummary({
         </div>
       </section>
 
-      {/* Slide-up-to-sim gesture — lives only on the checkout page
-          now. Same lift-to-fire logic; empty cart still triggers
-          the $0.00 flash. No mt-auto here on purpose: combined
-          with overflow-y-auto + min-h-0 above it, iOS Safari
-          mis-computes the column height and clips items off the
-          top of the receipt block. Letting the slide-up sit at
-          the natural end of content with explicit padding keeps
-          every row visible and the page scrollable to reach it. */}
-      <div className="flex justify-center pb-6 pt-8">
+      </div>
+
+      {/* Slide-up-to-sim gesture — checkout only. Pinned to the
+          bottom of the relative <main> (= viewport bottom, since
+          QuickSimFlow is a fixed inset-0 overlay) so it stays
+          visible no matter how tall the receipt grows; the receipt
+          scrolls under it. Drag math is element-local and the green
+          wash is fixed inset-0, so absolute positioning here does
+          not affect the gesture. The scroll container above carries
+          matching bottom padding so the totals row clears this bar.
+          Cream-gradient bar mirrors the Tickets booking sticky bar
+          (visual only — NOT its .bottom-nav offset; this overlay
+          covers the app BottomNav). */}
+      <div
+        className="absolute inset-x-0 bottom-0 z-20 flex justify-center px-4 pt-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]"
+        style={{
+          background: "linear-gradient(180deg, #FDFAF3 0%, #F9F4E8 100%)",
+          borderTop: "1.5px solid #E5E0D5",
+          boxShadow:
+            "0 -1px 2px rgba(42,31,24,0.04), 0 -2px 8px rgba(42,31,24,0.06)",
+        }}
+      >
         <SlideUpToSim onComplete={onConfirm} />
       </div>
-    </div>
+    </>
   );
 }
 
