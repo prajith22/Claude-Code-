@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Bag, Bowl, Slot, StarFilled, Ticket } from "@/components/icons";
 import type { ComponentType, SVGProps } from "react";
@@ -56,21 +57,14 @@ export function SignInMarketing({
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="flex items-center gap-3"
         >
-          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden>
-            <rect width="44" height="44" rx="10" fill="#00C853" />
-            <path
-              d="M10 10 L10 34 L18 34 Q30 34 30 22 Q30 10 18 10 Z"
-              fill="white"
-            />
-            <line
-              x1="10"
-              y1="22"
-              x2="27"
-              y2="22"
-              stroke="#00C853"
-              strokeWidth="2.5"
-            />
-          </svg>
+          <Image
+            src="/onboarding/dopiq-mascot.png"
+            alt="Dopiq mascot"
+            width={56}
+            height={56}
+            priority
+            className="h-14 w-14 flex-shrink-0 md:h-16 md:w-16"
+          />
           <div className="flex flex-col leading-none">
             <span className="font-heading text-[28px] font-extrabold leading-none text-[#0A0F1E]">
               dopiq
