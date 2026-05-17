@@ -374,7 +374,7 @@ function Screen1({
                 style={{
                   backgroundColor: opt.bg,
                   color: opt.fg,
-                  borderColor: isSelected ? "#0A0F1E" : "transparent",
+                  borderColor: isSelected ? "#0A0F1E" : `${opt.fg}66`,
                 }}
               >
                 <p className="font-sans text-[15px] font-bold leading-snug md:text-[16px]">
