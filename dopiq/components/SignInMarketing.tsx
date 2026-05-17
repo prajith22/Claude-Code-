@@ -149,7 +149,11 @@ export function SignInMarketing({
           transition={{ duration: 0.5, delay: 0.45, ease: "easeOut" }}
           className="font-playful mt-4 text-center text-[14px] italic text-ink-muted"
         >
-          Simulate the rush. Skip the damage.
+          Early users averaged{" "}
+          <span className="font-bold" style={{ color: "#10B981" }}>
+            36%
+          </span>{" "}
+          less spending in their first month.
         </motion.p>
 
         {/* Before / after comparison — desktop only. Two pastel
