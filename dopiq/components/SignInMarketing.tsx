@@ -58,7 +58,7 @@ export function SignInMarketing({
           className="flex items-center gap-3"
         >
           <Image
-            src="/onboarding/dopiq-mascot.png"
+            src="/onboarding/dopiq-dog.png"
             alt="Dopiq mascot"
             width={56}
             height={56}

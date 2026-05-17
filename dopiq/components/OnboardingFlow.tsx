@@ -719,7 +719,7 @@ function Screen4({
           }
         >
           <Image
-            src="/onboarding/dopiq-mascot.png"
+            src="/onboarding/dopiq-dog.png"
             alt="Dopiq mascot"
             width={200}
             height={200}
