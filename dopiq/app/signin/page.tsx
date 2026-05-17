@@ -14,7 +14,7 @@ export default function SignInPage() {
   // check, two consumers.
   const ios = isIOSWebView();
   return (
-    <main className="relative min-h-[100dvh] bg-[#FAFAF8] pt-[calc(env(safe-area-inset-top)+1rem)] md:grid md:grid-cols-2">
+    <main className="relative min-h-[100dvh] bg-[#FAFAF8] pt-[env(safe-area-inset-top)] md:grid md:grid-cols-2">
       {/* Ambient brand wash — faint emerald bloom from the top
           center fading to cream. Behind the form column (which has
           no own background); the marketing column's opaque fill

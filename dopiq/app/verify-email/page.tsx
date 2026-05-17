@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function VerifyEmailPage() {
   return (
-    <main className="min-h-[100dvh] bg-[#FAFAF8] pt-[calc(env(safe-area-inset-top)+1rem)]">
+    <main className="min-h-[100dvh] bg-[#FAFAF8] pt-[env(safe-area-inset-top)]">
       <Suspense fallback={null}>
         <VerifyEmailScreen />
       </Suspense>

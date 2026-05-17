@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export default function SetPasswordPage() {
   return (
-    <main className="flex min-h-[100dvh] items-center justify-center bg-[#FAFAF8] px-6 pb-10 pt-[calc(env(safe-area-inset-top)+1rem)] md:pb-12">
+    <main className="flex min-h-[100dvh] items-center justify-center bg-[#FAFAF8] px-6 pb-10 pt-[env(safe-area-inset-top)] md:pb-12">
       <Suspense fallback={null}>
         <SetPasswordForm />
       </Suspense>
