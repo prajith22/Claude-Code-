@@ -139,13 +139,18 @@ export function SportsBooking({ game }: { game: SportsGame }) {
       </div>
 
       <div
-        className="bottom-nav fixed inset-x-0 z-30 border-t bg-white/95 px-4 py-3 backdrop-blur-sm"
-        style={{ borderColor: TICKETS_BRAND.creamDeep }}
+        className="bottom-nav fixed inset-x-0 z-30 px-4 py-3"
+        style={{
+          background: "linear-gradient(180deg, #FDFAF3 0%, #F9F4E8 100%)",
+          borderTop: "1.5px solid #E5E0D5",
+          boxShadow:
+            "0 -1px 2px rgba(42, 31, 24, 0.04), 0 -2px 8px rgba(42, 31, 24, 0.06)",
+        }}
       >
         <div className="mx-auto flex max-w-3xl items-center gap-3">
           <div className="flex-1">
             <div
-              className="text-[11px]"
+              className="text-[11px] font-bold uppercase tracking-wider"
               style={{ color: TICKETS_BRAND.inkSoft }}
             >
               {seats.length === 0
@@ -153,7 +158,7 @@ export function SportsBooking({ game }: { game: SportsGame }) {
                 : `${seats.length} seat${seats.length === 1 ? "" : "s"} · face value`}
             </div>
             <div
-              className="text-[20px] font-extrabold tabular-nums"
+              className="font-mono text-[20px] font-extrabold tabular-nums"
               style={{ color: TICKETS_BRAND.ink }}
             >
               {formatUSD(total)}
