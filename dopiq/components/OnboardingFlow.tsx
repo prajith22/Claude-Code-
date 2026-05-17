@@ -313,15 +313,15 @@ function Screen1({
   return (
     <div className="flex h-full flex-col overflow-hidden px-5 pb-3 pt-1">
       <div className="flex-shrink-0">
-        <OnboardingDog src="/onboarding/dopiq-dog4.png" size="sm" />
+        <OnboardingDog src="/onboarding/dopiq-dog4.png" size="xs" />
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto scrollbar-hide">
-        <div className="flex min-h-full flex-col justify-center py-2">
+        <div className="flex min-h-full flex-col justify-center py-1">
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="font-heading text-center text-[28px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[32px]"
+        className="font-heading text-center text-[24px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[28px]"
       >
         Which of these sounds like you?
       </motion.h1>
@@ -329,7 +329,7 @@ function Screen1({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12, duration: 0.4 }}
-        className="mt-2 text-center text-[15px] text-ink-muted md:text-[16px]"
+        className="mt-1 text-center text-[14px] text-ink-muted md:text-[15px]"
       >
         Be honest. No judgment here.
       </motion.p>
@@ -341,7 +341,7 @@ function Screen1({
           hidden: {},
           show: { transition: { staggerChildren: 0.15, delayChildren: 0.25 } },
         }}
-        className="mt-6 flex flex-col gap-3"
+        className="mt-3 flex flex-col gap-2"
       >
         {options.map((opt, i) => {
           const isSelected = selected === i;
@@ -370,7 +370,7 @@ function Screen1({
                 transition={
                   reduce ? { duration: 0 } : { duration: 0.25, ease: "easeOut" }
                 }
-                className="w-full rounded-card border-2 px-5 py-4 text-left transition-colors duration-200"
+                className="w-full rounded-card border-2 px-4 py-2.5 text-left transition-colors duration-200"
                 style={{
                   backgroundColor: opt.bg,
                   color: opt.fg,
@@ -394,7 +394,7 @@ function Screen1({
             animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: reduce ? 0 : 0.2 }}
-            className="font-playful mt-5 text-center text-[14px] italic text-ink-muted"
+            className="font-playful mt-3 text-center text-[13px] italic text-ink-muted"
           >
             Yeah, we see you.
           </motion.p>
@@ -409,7 +409,7 @@ function Screen1({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.35 }}
-            className="mt-5 text-center text-[14px] italic leading-relaxed text-ink-muted md:text-[15px]"
+            className="mt-3 text-center text-[13px] italic leading-relaxed text-ink-muted md:text-[14px]"
           >
             {response}
           </motion.p>
@@ -477,15 +477,15 @@ function Screen2({
   return (
     <div className="flex h-full flex-col overflow-hidden px-5 pb-3 pt-1">
       <div className="flex-shrink-0">
-        <OnboardingDog src="/onboarding/dopiq-dog2.png" size="sm" />
+        <OnboardingDog src="/onboarding/dopiq-dog2.png" size="xs" />
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto scrollbar-hide">
-        <div className="flex min-h-full flex-col justify-center py-2">
+        <div className="flex min-h-full flex-col justify-center py-1">
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="font-heading text-[26px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[30px]"
+        className="font-heading text-[22px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[26px]"
       >
         Meet Dopiq. Your impulse control companion.
       </motion.h1>
@@ -493,7 +493,7 @@ function Screen2({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12, duration: 0.4 }}
-        className="mt-2 text-[15px] leading-relaxed text-ink-muted md:text-[16px]"
+        className="mt-1 text-[13px] leading-relaxed text-ink-muted md:text-[14px]"
       >
         Your brain wants the hit. Dopiq gives it somewhere safe to go.
       </motion.p>
@@ -505,7 +505,7 @@ function Screen2({
           hidden: {},
           show: { transition: { staggerChildren: 0.2, delayChildren: 0.45 } },
         }}
-        className="mt-4 flex flex-col gap-2"
+        className="mt-3 flex flex-col gap-1.5"
       >
         {features.map((f, i) => (
           <motion.li
@@ -515,7 +515,7 @@ function Screen2({
               show: { opacity: 1, y: 0 },
             }}
             transition={{ type: "spring", stiffness: 220, damping: 24 }}
-            className="rounded-card px-5 py-3 shadow-card"
+            className="rounded-card px-4 py-2 shadow-card"
             style={{ backgroundColor: f.bg }}
           >
             <p className="font-heading text-[16px] font-bold text-[#0A0F1E]">
@@ -532,7 +532,7 @@ function Screen2({
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.45, duration: 0.45 }}
-        className="mt-3 text-center text-[14px] italic text-ink-muted"
+        className="mt-2 text-center text-[13px] italic text-ink-muted"
       >
         The urge is real. The charge isn&rsquo;t.
       </motion.p>
@@ -579,15 +579,15 @@ function Screen3({ onAdvance }: { onAdvance: () => void }) {
   return (
     <div className="flex h-full flex-col overflow-hidden px-5 pb-3 pt-1">
       <div className="flex-shrink-0">
-        <OnboardingDog src="/onboarding/dopiq-dog3.png" size="sm" />
+        <OnboardingDog src="/onboarding/dopiq-dog3.png" size="xs" />
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto scrollbar-hide">
-        <div className="flex min-h-full flex-col justify-center py-2">
+        <div className="flex min-h-full flex-col justify-center py-1">
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="font-heading text-center text-[28px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[32px]"
+        className="font-heading text-center text-[24px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[28px]"
       >
         You are not alone in this.
       </motion.h1>
@@ -595,12 +595,12 @@ function Screen3({ onAdvance }: { onAdvance: () => void }) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12, duration: 0.4 }}
-        className="mt-2 text-center text-[15px] text-ink-muted md:text-[16px]"
+        className="mt-1 text-center text-[14px] text-ink-muted md:text-[15px]"
       >
         The numbers tell the real story.
       </motion.p>
 
-      <ul className="mt-4 flex flex-col gap-2">
+      <ul className="mt-3 flex flex-col gap-1.5">
         {SCREEN_3_STATS.map((s, i) => (
           <StatCard
             key={i}
@@ -619,7 +619,7 @@ function Screen3({ onAdvance }: { onAdvance: () => void }) {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.4, duration: 0.5 }}
-        className="mt-3 text-center font-heading text-[20px] font-bold leading-snug text-[#0A0F1E] md:text-[22px]"
+        className="mt-2 text-center font-heading text-[16px] font-bold leading-snug text-[#0A0F1E] md:text-[18px]"
       >
         Dopiq gives the urge somewhere safe to go.
       </motion.p>
@@ -654,7 +654,7 @@ function StatCard({
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, type: "spring", stiffness: 220, damping: 24 }}
-      className="rounded-card px-5 py-3.5 shadow-card"
+      className="rounded-card px-4 py-2.5 shadow-card"
       style={{ backgroundColor: bg }}
     >
       <CountUpNumber
@@ -664,10 +664,10 @@ function StatCard({
         durationMs={1000}
         startDelayMs={Math.round(delay * 1000)}
       />
-      <p className="mt-2 text-[15px] leading-snug text-[#0A0F1E] md:text-[16px]">
+      <p className="mt-1 text-[13px] leading-snug text-[#0A0F1E] md:text-[14px]">
         {description}
       </p>
-      <p className="mt-2 text-[11px] italic text-ink-muted">{source}</p>
+      <p className="mt-1 text-[11px] italic text-ink-muted">{source}</p>
     </motion.li>
   );
 }
@@ -724,7 +724,7 @@ function CountUpNumber({
   return (
     <p
       ref={ref}
-      className={`${heroClass} text-[56px] leading-none tracking-tight md:text-[64px]`}
+      className={`${heroClass} text-[40px] leading-none tracking-tight md:text-[48px]`}
     >
       {format(0)}
     </p>
@@ -742,19 +742,21 @@ function OnboardingDog({
   size = "md",
 }: {
   src: string;
-  size?: "sm" | "md";
+  size?: "xs" | "sm" | "md";
 }) {
   const reduce = useReducedMotion();
   const dim =
-    size === "sm"
-      ? "h-[120px] w-[120px] md:h-[160px] md:w-[160px]"
-      : "h-[160px] w-[160px] md:h-[200px] md:w-[200px]";
+    size === "xs"
+      ? "h-[80px] w-[80px] md:h-[100px] md:w-[100px]"
+      : size === "sm"
+        ? "h-[120px] w-[120px] md:h-[160px] md:w-[160px]"
+        : "h-[160px] w-[160px] md:h-[200px] md:w-[200px]";
   return (
     <motion.div
       initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
       animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1 }}
       transition={{ duration: 0.45, ease: "easeOut" }}
-      className="mx-auto mb-4"
+      className="mx-auto mb-2"
     >
       <motion.div
         animate={reduce ? undefined : { scale: [1, 1.03, 1] }}
@@ -835,19 +837,19 @@ function SpendPickerScreen({
   return (
     <div className="flex h-full flex-col overflow-hidden px-5 pb-3 pt-1">
       <div className="flex-shrink-0">
-        <OnboardingDog src="/onboarding/dopiq-dog.png" size="sm" />
+        <OnboardingDog src="/onboarding/dopiq-dog.png" size="xs" />
       </div>
       <div className="flex min-h-0 flex-1 flex-col justify-center">
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="font-heading text-center text-[28px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[36px]"
+        className="font-heading text-center text-[24px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[30px]"
       >
         How much do you spend on impulse buys each month?
       </motion.h1>
 
-      <div className="relative mx-auto mt-4 h-[200px] w-[280px]">
+      <div className="relative mx-auto mt-2 h-[200px] w-[280px]">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 z-10 h-[70px]"
@@ -973,15 +975,15 @@ function SavingsRevealScreen({
   return (
     <div className="flex h-full flex-col overflow-hidden px-5 pb-3 pt-1">
       <div className="flex-shrink-0">
-        <OnboardingDog src="/onboarding/dopiq-dog3.png" size="sm" />
+        <OnboardingDog src="/onboarding/dopiq-dog3.png" size="xs" />
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto scrollbar-hide">
-        <div className="flex min-h-full flex-col justify-center py-2">
+        <div className="flex min-h-full flex-col justify-center py-1">
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="font-heading text-center text-[28px] font-extrabold leading-tight tracking-tight text-[#0A0F1E] md:text-[36px]"
+        className="font-heading text-center text-[24px] font-extrabold leading-tight tracking-tight text-[#0A0F1E] md:text-[30px]"
       >
         That&rsquo;s{" "}
         <span className="type-hero-amount text-[48px] md:text-[64px]">
@@ -993,7 +995,7 @@ function SavingsRevealScreen({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.4 }}
-        className="mt-4 text-center font-heading text-[18px] text-ink-muted md:text-[22px]"
+        className="mt-2 text-center font-heading text-[18px] text-ink-muted md:text-[22px]"
       >
         That&rsquo;s{" "}
         <span className="font-bold text-ink">
@@ -1052,15 +1054,15 @@ function Screen4({
   return (
     <div className="flex h-full flex-col overflow-hidden px-5 pb-3 pt-1">
       <div className="flex-shrink-0">
-        <OnboardingDog src="/onboarding/dopiq-dog1.png" size="sm" />
+        <OnboardingDog src="/onboarding/dopiq-dog1.png" size="xs" />
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto scrollbar-hide">
-        <div className="flex min-h-full flex-col justify-center py-2">
+        <div className="flex min-h-full flex-col justify-center py-1">
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="font-heading text-center text-[32px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[36px]"
+        className="font-heading text-center text-[26px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[30px]"
       >
         Ready to feel the rush — without the damage?
       </motion.h1>
@@ -1068,7 +1070,7 @@ function Screen4({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15, duration: 0.4 }}
-        className="mt-2 text-center text-[17px] text-ink-muted md:text-[18px]"
+        className="mt-1 text-center text-[15px] text-ink-muted md:text-[16px]"
       >
         Welcome to Dopiq.
       </motion.p>
@@ -1077,7 +1079,7 @@ function Screen4({
         initial={{ opacity: 0, scaleX: 0.6 }}
         animate={{ opacity: 1, scaleX: 1 }}
         transition={{ delay: 0.28, duration: 0.4 }}
-        className="mx-auto mt-3 h-px w-24 bg-[#E5E7EB]"
+        className="mx-auto mt-2 h-px w-24 bg-[#E5E7EB]"
       />
 
       <motion.div
@@ -1087,7 +1089,7 @@ function Screen4({
           hidden: {},
           show: { transition: { staggerChildren: 0.15, delayChildren: 0.4 } },
         }}
-        className="mt-4 flex flex-col gap-2"
+        className="mt-3 flex flex-col gap-1.5"
       >
         {PREVIEW_CARDS.map((c, i) => (
           <motion.div
@@ -1099,7 +1101,7 @@ function Screen4({
             transition={{ duration: 0.35 }}
           >
             <AmbientBreath duration={3.4 + i * 0.5} amplitude={1.5}>
-              <div className={`${c.surface} px-5 py-3`}>
+              <div className={`${c.surface} px-4 py-2`}>
                 <p className="font-heading text-[16px] font-bold text-[#0A0F1E]">
                   {c.title}
                 </p>
@@ -1126,7 +1128,7 @@ function Screen4({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.15, duration: 0.4 }}
-        className="mt-3 text-center text-[12px] text-ink-muted"
+        className="mt-2 text-center text-[11px] text-ink-muted"
       >
         By continuing you agree to our{" "}
         <Link
