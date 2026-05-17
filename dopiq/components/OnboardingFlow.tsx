@@ -274,6 +274,30 @@ function Screen1({
 
   return (
     <div className="flex flex-1 flex-col px-5 pb-8 pt-2">
+      <motion.div
+        initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
+        animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        className="mx-auto mb-7"
+      >
+        <motion.div
+          animate={reduce ? undefined : { scale: [1, 1.03, 1] }}
+          transition={
+            reduce
+              ? undefined
+              : { duration: 3, repeat: Infinity, ease: "easeInOut" }
+          }
+        >
+          <Image
+            src="/onboarding/dopiq-dog4.png"
+            alt="Dopiq mascot"
+            width={200}
+            height={200}
+            priority
+            className="h-[160px] w-[160px] md:h-[200px] md:w-[200px]"
+          />
+        </motion.div>
+      </motion.div>
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -429,8 +453,33 @@ function Screen2({
   const features = excludeBet
     ? SCREEN_2_FEATURES.filter((f) => f.category !== "bet")
     : SCREEN_2_FEATURES;
+  const reduce = useReducedMotion();
   return (
     <div className="flex flex-1 flex-col px-5 pb-8 pt-2">
+      <motion.div
+        initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
+        animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        className="mx-auto mb-7"
+      >
+        <motion.div
+          animate={reduce ? undefined : { scale: [1, 1.03, 1] }}
+          transition={
+            reduce
+              ? undefined
+              : { duration: 3, repeat: Infinity, ease: "easeInOut" }
+          }
+        >
+          <Image
+            src="/onboarding/dopiq-dog2.png"
+            alt="Dopiq mascot"
+            width={200}
+            height={200}
+            priority
+            className="h-[160px] w-[160px] md:h-[200px] md:w-[200px]"
+          />
+        </motion.div>
+      </motion.div>
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -525,8 +574,33 @@ const SCREEN_3_STATS = [
 ];
 
 function Screen3({ onAdvance }: { onAdvance: () => void }) {
+  const reduce = useReducedMotion();
   return (
     <div className="flex flex-1 flex-col px-5 pb-8 pt-2">
+      <motion.div
+        initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
+        animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        className="mx-auto mb-7"
+      >
+        <motion.div
+          animate={reduce ? undefined : { scale: [1, 1.03, 1] }}
+          transition={
+            reduce
+              ? undefined
+              : { duration: 3, repeat: Infinity, ease: "easeInOut" }
+          }
+        >
+          <Image
+            src="/onboarding/dopiq-dog3.png"
+            alt="Dopiq mascot"
+            width={200}
+            height={200}
+            priority
+            className="h-[160px] w-[160px] md:h-[200px] md:w-[200px]"
+          />
+        </motion.div>
+      </motion.div>
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -719,7 +793,7 @@ function Screen4({
           }
         >
           <Image
-            src="/onboarding/dopiq-dog.png"
+            src="/onboarding/dopiq-dog1.png"
             alt="Dopiq mascot"
             width={200}
             height={200}
