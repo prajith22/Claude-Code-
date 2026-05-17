@@ -155,13 +155,6 @@ export function SignInForm({
       >
         Sign in to Dopiq
       </motion.h1>
-      <motion.p
-        variants={fadeUp}
-        transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
-        className="mt-3 text-center font-heading text-[16px] text-ink-muted"
-      >
-        Use Google or your email — whichever you signed up with.
-      </motion.p>
 
       {deletedNotice && (
         <motion.div

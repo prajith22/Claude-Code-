@@ -288,7 +288,7 @@ function Header({
       ) : (
         <span className="h-10 w-10" />
       )}
-      <p className="font-playful text-[12px] font-bold uppercase tracking-widest text-ink-muted type-flicker">
+      <p className="font-heading text-[12px] font-bold uppercase tracking-widest text-ink-muted type-flicker">
         Quick Sim
       </p>
       <button
@@ -512,7 +512,7 @@ function ItemSelectionGrid({
           element. */}
       <div className="mt-3 flex items-center justify-between">
         <div>
-          <p className="font-playful text-[11px] font-bold uppercase tracking-widest text-ink-muted">
+          <p className="font-heading text-[11px] font-bold uppercase tracking-widest text-ink-muted">
             Cart
           </p>
           <p className="mt-0.5 text-[13px] text-ink">
