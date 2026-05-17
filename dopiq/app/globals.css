@@ -297,6 +297,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
   }
   .safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem); }
   .safe-top { padding-top: env(safe-area-inset-top, 0px); }
+  /* Hide the scrollbar on scroll-snap wheels (onboarding spend
+     picker) while keeping the element scrollable. */
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
   /* JetBrains Mono for all money, prices, odds, balances, and numerical data */
   .money { @apply font-mono font-bold tabular-nums tracking-tight; }
 

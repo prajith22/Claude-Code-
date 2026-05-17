@@ -12,7 +12,7 @@ import {
 } from "framer-motion";
 import AmbientBreath from "@/components/motion/AmbientBreath";
 
-type Stage = 1 | 2 | 3 | 4;
+type Stage = 1 | 2 | 3 | 4 | 5 | 6;
 
 const screenVariants: Variants = {
   enter: { x: 320, opacity: 0 },
@@ -30,6 +30,11 @@ export function OnboardingFlow({
   const router = useRouter();
   const [stage, setStage] = useState<Stage>(1);
   const [submitting, setSubmitting] = useState(false);
+  // Session-only — the picked monthly-spend estimate lives here just
+  // long enough to drive the personalized savings reveal, then is
+  // discarded when onboarding finishes. Never persisted (no DB, no
+  // localStorage, no profile field).
+  const [monthlySpend, setMonthlySpend] = useState<number>(300);
 
   async function complete() {
     if (submitting) return;
@@ -115,6 +120,39 @@ export function OnboardingFlow({
               transition={screenTransition}
               className="flex flex-1 flex-col"
             >
+              <SpendPickerScreen
+                value={monthlySpend}
+                onChange={setMonthlySpend}
+                onAdvance={() => setStage(5)}
+              />
+            </motion.div>
+          )}
+          {stage === 5 && (
+            <motion.div
+              key="s5"
+              variants={screenVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={screenTransition}
+              className="flex flex-1 flex-col"
+            >
+              <SavingsRevealScreen
+                monthlySpend={monthlySpend}
+                onAdvance={() => setStage(6)}
+              />
+            </motion.div>
+          )}
+          {stage === 6 && (
+            <motion.div
+              key="s6"
+              variants={screenVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={screenTransition}
+              className="flex flex-1 flex-col"
+            >
               <Screen4 onComplete={complete} submitting={submitting} />
             </motion.div>
           )}
@@ -128,8 +166,8 @@ export function OnboardingFlow({
 
 function ProgressDots({ stage }: { stage: Stage }) {
   return (
-    <div className="flex items-center gap-2" aria-label={`Step ${stage} of 4`}>
-      {[1, 2, 3, 4].map((n) => (
+    <div className="flex items-center gap-2" aria-label={`Step ${stage} of 6`}>
+      {[1, 2, 3, 4, 5, 6].map((n) => (
         <span
           key={n}
           className={`h-2 rounded-full transition-all duration-300 ${
@@ -748,7 +786,274 @@ function CountUpNumber({
   );
 }
 
-// ---------- Screen 4: Closer ----------
+// ---------- Shared: onboarding dog mascot ----------
+
+// The same render treatment every onboarding screen uses (200px,
+// gentle scale-in, continuous breathing, reduced-motion-gated).
+// Extracted so the two new screens don't re-duplicate the block;
+// the existing screens keep their inline copies untouched.
+function OnboardingDog({ src }: { src: string }) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
+      animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+      className="mx-auto mb-7"
+    >
+      <motion.div
+        animate={reduce ? undefined : { scale: [1, 1.03, 1] }}
+        transition={
+          reduce
+            ? undefined
+            : { duration: 3, repeat: Infinity, ease: "easeInOut" }
+        }
+      >
+        <Image
+          src={src}
+          alt="Dopiq mascot"
+          width={200}
+          height={200}
+          priority
+          className="h-[160px] w-[160px] md:h-[200px] md:w-[200px]"
+        />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ---------- Screen 4 (NEW): Spend amount picker ----------
+
+// $50–$500 in $50 steps, then $600–$2,000 in $100 steps. The top
+// value renders as "$2,000+". ~25 selectable values; default $300.
+const SPEND_VALUES: number[] = [
+  ...Array.from({ length: 10 }, (_, i) => 50 + i * 50),
+  ...Array.from({ length: 15 }, (_, i) => 600 + i * 100),
+];
+const SPEND_DEFAULT = 300;
+const WHEEL_ITEM_H = 60;
+const WHEEL_PAD = 70; // (200px wheel − 60px item) / 2 — lets ends center
+
+const fmtUSD = (n: number) => `$${Math.round(n).toLocaleString()}`;
+
+function formatSpend(v: number): string {
+  return v >= 2000 ? "$2,000+" : `$${v.toLocaleString()}`;
+}
+
+function SpendPickerScreen({
+  value,
+  onChange,
+  onAdvance,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+  onAdvance: () => void;
+}) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [interacted, setInteracted] = useState(false);
+  const activeIdx = Math.max(0, SPEND_VALUES.indexOf(value));
+
+  // Center the default on mount. Programmatic scroll fires onScroll
+  // but never flips `interacted` (that's gated on real input events),
+  // so the Next button stays disabled until the user engages.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const idx = Math.max(0, SPEND_VALUES.indexOf(SPEND_DEFAULT));
+    el.scrollTop = idx * WHEEL_ITEM_H;
+  }, []);
+
+  function handleScroll() {
+    const el = scrollRef.current;
+    if (!el) return;
+    const idx = Math.min(
+      SPEND_VALUES.length - 1,
+      Math.max(0, Math.round(el.scrollTop / WHEEL_ITEM_H)),
+    );
+    const next = SPEND_VALUES[idx];
+    if (next !== value) {
+      onChange(next);
+      navigator.vibrate?.(5);
+    }
+  }
+
+  return (
+    <div className="flex flex-1 flex-col px-5 pb-8 pt-2">
+      <OnboardingDog src="/onboarding/dopiq-dog.png" />
+      <motion.h1
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        className="font-heading text-center text-[28px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[36px]"
+      >
+        How much do you spend on impulse buys each month?
+      </motion.h1>
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.12, duration: 0.4 }}
+        className="mt-2 text-center text-[15px] text-ink-muted md:text-[16px]"
+      >
+        Just an estimate — we&rsquo;ll show you something interesting.
+      </motion.p>
+
+      <div className="relative mx-auto mt-8 h-[200px] w-[280px]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-[70px]"
+          style={{
+            background:
+              "linear-gradient(180deg, #F5F0E6 0%, rgba(245,240,230,0) 100%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[70px]"
+          style={{
+            background:
+              "linear-gradient(0deg, #F5F0E6 0%, rgba(245,240,230,0) 100%)",
+          }}
+        />
+        <div
+          ref={scrollRef}
+          onScroll={handleScroll}
+          onPointerDown={() => setInteracted(true)}
+          onWheel={() => setInteracted(true)}
+          onTouchStart={() => setInteracted(true)}
+          className="scrollbar-hide h-full snap-y snap-mandatory overflow-y-auto"
+          role="listbox"
+          aria-label="Monthly impulse spend"
+        >
+          <div style={{ height: WHEEL_PAD }} aria-hidden />
+          {SPEND_VALUES.map((v, i) => {
+            const dist = Math.abs(i - activeIdx);
+            const isActive = dist === 0;
+            return (
+              <div
+                key={v}
+                className="flex snap-center items-center justify-center"
+                style={{ height: WHEEL_ITEM_H }}
+              >
+                <span
+                  className={
+                    isActive
+                      ? "font-heading text-[48px] font-extrabold text-[#0A0F1E]"
+                      : "font-heading text-[24px] text-ink-muted"
+                  }
+                  style={{
+                    opacity: isActive ? 1 : dist === 1 ? 0.5 : 0.2,
+                    textShadow: isActive
+                      ? "0 0 18px rgba(16,185,129,0.45)"
+                      : undefined,
+                  }}
+                >
+                  {formatSpend(v)}
+                </span>
+              </div>
+            );
+          })}
+          <div style={{ height: WHEEL_PAD }} aria-hidden />
+        </div>
+      </div>
+
+      <div className="mt-auto pt-6">
+        <NextButton onClick={onAdvance} disabled={!interacted} />
+      </div>
+    </div>
+  );
+}
+
+// ---------- Screen 5 (NEW): Personalized savings reveal ----------
+
+// Counts up from 0 to the target over durationMs (ease-out cubic),
+// after delayMs. Reduced-motion paints the final value immediately.
+// textContent is written via ref so React stays out of the frame
+// loop (same approach as CountUpNumber).
+function RevealAmount({
+  target,
+  durationMs,
+  delayMs,
+}: {
+  target: number;
+  durationMs: number;
+  delayMs: number;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const reduce = useReducedMotion();
+
+  useEffect(() => {
+    if (reduce) {
+      if (ref.current) ref.current.textContent = fmtUSD(target);
+      return;
+    }
+    if (ref.current) ref.current.textContent = fmtUSD(0);
+    let raf = 0;
+    const startTimer = window.setTimeout(() => {
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / durationMs);
+        const eased = 1 - Math.pow(1 - t, 3);
+        if (ref.current) {
+          ref.current.textContent = fmtUSD(t === 1 ? target : target * eased);
+        }
+        if (t < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    }, delayMs);
+    return () => {
+      window.clearTimeout(startTimer);
+      cancelAnimationFrame(raf);
+    };
+  }, [target, durationMs, delayMs, reduce]);
+
+  return <span ref={ref}>{fmtUSD(reduce ? target : 0)}</span>;
+}
+
+function SavingsRevealScreen({
+  monthlySpend,
+  onAdvance,
+}: {
+  monthlySpend: number;
+  onAdvance: () => void;
+}) {
+  const monthly = Math.round(monthlySpend * 0.36);
+  const annual = Math.round(monthlySpend * 0.36 * 12);
+  return (
+    <div className="flex flex-1 flex-col px-5 pb-8 pt-2">
+      <OnboardingDog src="/onboarding/dopiq-dog3.png" />
+      <motion.h1
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="font-heading text-center text-[28px] font-extrabold leading-tight tracking-tight text-[#0A0F1E] md:text-[36px]"
+      >
+        That&rsquo;s{" "}
+        <span className="type-hero-amount text-[48px] md:text-[64px]">
+          <RevealAmount target={monthly} durationMs={1200} delayMs={0} />
+        </span>{" "}
+        back in your pocket — every month.
+      </motion.h1>
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.4 }}
+        className="mt-4 text-center font-heading text-[18px] text-ink-muted md:text-[22px]"
+      >
+        That&rsquo;s{" "}
+        <span className="font-bold text-ink">
+          <RevealAmount target={annual} durationMs={1200} delayMs={400} />
+        </span>{" "}
+        a year.
+      </motion.p>
+
+      <div className="mt-auto pt-6">
+        <NextButton onClick={onAdvance} delay={0.6} />
+      </div>
+    </div>
+  );
+}
+
+// ---------- Screen 6: Closer ----------
 
 const PREVIEW_CARDS = [
   {
