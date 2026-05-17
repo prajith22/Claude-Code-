@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Bag, Bowl, Slot, StarFilled, Ticket } from "@/components/icons";
 import type { ComponentType, SVGProps } from "react";
 
@@ -44,6 +44,7 @@ export function SignInMarketing({
   // the static SIMS list rather than rendering and hiding so the
   // grid stays balanced with two columns.
   const sims = excludeBet ? SIMS.filter((s) => s.label !== "Bet") : SIMS;
+  const reduce = useReducedMotion();
   return (
     <aside className="relative flex flex-col justify-between overflow-hidden bg-[#FAFAF8] px-6 py-10 text-[#0A0F1E] md:min-h-[100dvh] md:px-10 md:py-12 lg:px-14">
       <div className="relative">
@@ -86,7 +87,7 @@ export function SignInMarketing({
           animate="show"
           variants={fadeUp}
           transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-          className="font-heading mt-10 text-[34px] font-extrabold leading-[1.05] tracking-tight text-[#0A0F1E] md:mt-14 md:text-[44px] lg:text-[48px]"
+          className="type-hero-amount mt-10 text-[48px] leading-[1.05] tracking-tight md:mt-14 md:text-[64px]"
         >
           The urge is real.
           <br />
@@ -104,7 +105,7 @@ export function SignInMarketing({
           // below comfortable tap targets on mobile breakpoints).
           // 3 cards on iOS (Bet filtered out) → single row of 3.
           // 2 cards (hypothetical future filter) → tight row of 2.
-          className={`mt-8 grid gap-3 ${
+          className={`mt-8 grid gap-4 ${
             sims.length === 3 ? "grid-cols-3" : "grid-cols-2"
           }`}
         >
@@ -113,18 +114,35 @@ export function SignInMarketing({
             return (
               <motion.div
                 key={s.label}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.4,
-                  delay: 0.25 + i * 0.07,
-                  ease: "easeOut",
-                }}
-                className="flex flex-col items-center gap-3 rounded-2xl px-3 py-5 text-center"
-                style={{ backgroundColor: s.bg, color: s.fg }}
+                animate={reduce ? undefined : { scale: [1, 1.03, 1] }}
+                transition={
+                  reduce
+                    ? undefined
+                    : {
+                        duration: 3.2 + i * 0.4,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }
+                }
               >
-                <Icon size={26} />
-                <span className="text-[13px] font-bold">{s.label}</span>
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.25 + i * 0.07,
+                    ease: "easeOut",
+                  }}
+                  className="flex flex-col items-center gap-3 rounded-2xl border-[2.5px] px-3 py-5 text-center"
+                  style={{
+                    backgroundColor: s.bg,
+                    color: s.fg,
+                    borderColor: "#2A1F18",
+                  }}
+                >
+                  <Icon size={26} />
+                  <span className="text-[13px] font-bold">{s.label}</span>
+                </motion.div>
               </motion.div>
             );
           })}
@@ -135,7 +153,7 @@ export function SignInMarketing({
           animate="show"
           variants={fadeUp}
           transition={{ duration: 0.5, delay: 0.45, ease: "easeOut" }}
-          className="mt-4 text-[14px] text-ink-muted"
+          className="font-playful mt-4 text-center text-[14px] italic text-ink-muted"
         >
           Simulate the rush. Skip the damage.
         </motion.p>

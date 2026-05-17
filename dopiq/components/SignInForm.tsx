@@ -151,14 +151,14 @@ export function SignInForm({
       <motion.h1
         variants={fadeUp}
         transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
-        className="font-heading text-[28px] font-bold tracking-tight text-ink"
+        className="type-hero-amount text-center text-[48px] leading-[1.05] tracking-tight md:text-[64px]"
       >
         Sign in to Dopiq
       </motion.h1>
       <motion.p
         variants={fadeUp}
         transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
-        className="mt-2 text-[15px] text-ink-muted"
+        className="mt-3 text-center font-heading text-[16px] text-ink-muted"
       >
         Use Google or your email — whichever you signed up with.
       </motion.p>
@@ -173,13 +173,27 @@ export function SignInForm({
         </motion.div>
       )}
 
-      {/* Trial banner */}
+      {/* Trial callout — a brand badge, not a CTA. Soft emerald
+          tint + thin border + Sniglet caps so it never reads as a
+          tappable button. */}
       <motion.div
         variants={fadeUp}
         transition={{ duration: 0.4, delay: 0.22, ease: "easeOut" }}
-        className="mt-7 rounded-pill bg-brand px-4 py-2.5 text-center text-[13px] font-bold text-white shadow-[0_2px_12px_rgba(0,200,83,0.3)]"
+        className="mt-6 flex justify-center"
       >
-        7 days free — no charge until your trial ends
+        <span
+          className="font-playful inline-flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-widest"
+          style={{
+            background: "linear-gradient(180deg, #ECFDF5 0%, #D1FAE5 100%)",
+            border: "1px solid rgba(16, 185, 129, 0.3)",
+            color: "#047857",
+            padding: "8px 14px",
+            borderRadius: "999px",
+          }}
+        >
+          <Bolt size={14} />
+          7 days free — no charge until your trial ends
+        </span>
       </motion.div>
 
       {/* Apple button — sits above Google per Apple's HIG, since
@@ -263,7 +277,7 @@ export function SignInForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="input input-glass"
+          className="input-depth"
         />
         <input
           type="password"
@@ -272,14 +286,14 @@ export function SignInForm({
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="input input-glass"
+          className="input-depth"
         />
         <motion.button
           whileHover={{ y: -1 }}
           whileTap={{ y: 0, scale: 0.99 }}
           type="submit"
           disabled={credSubmitting}
-          className="btn-navy mt-1 h-12 w-full"
+          className="btn-primary type-magnetic mt-1 w-full"
         >
           {credSubmitting ? "Signing in…" : "Sign in"}
         </motion.button>
@@ -322,20 +336,20 @@ export function SignInForm({
       <motion.div
         variants={fadeUp}
         transition={{ duration: 0.4, delay: 0.52, ease: "easeOut" }}
-        className="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[12px] text-ink-muted"
+        className="font-playful mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[14px] text-ink-muted"
       >
         <span className="inline-flex items-center gap-1.5">
-          <Lock size={12} />
+          <Lock size={14} />
           No spam ever
         </span>
         <span aria-hidden className="text-ink-faint">·</span>
         <span className="inline-flex items-center gap-1.5">
-          <Card size={12} />
+          <Card size={14} />
           Cancel anytime
         </span>
         <span aria-hidden className="text-ink-faint">·</span>
         <span className="inline-flex items-center gap-1.5">
-          <Bolt size={12} />
+          <Bolt size={14} />
           Free for 7 days
         </span>
       </motion.div>

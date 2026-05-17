@@ -14,7 +14,19 @@ export default function SignInPage() {
   // check, two consumers.
   const ios = isIOSWebView();
   return (
-    <main className="min-h-[100dvh] bg-[#FAFAF8] md:grid md:grid-cols-2">
+    <main className="relative min-h-[100dvh] bg-[#FAFAF8] md:grid md:grid-cols-2">
+      {/* Ambient brand wash — faint emerald bloom from the top
+          center fading to cream. Behind the form column (which has
+          no own background); the marketing column's opaque fill
+          sits over it. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 50% at 50% 0%, rgba(16,185,129,0.10) 0%, rgba(16,185,129,0) 65%)",
+        }}
+      />
       <SignInMarketing excludeBet={ios} />
       <section className="flex min-h-[100dvh] items-center justify-center px-6 py-10 md:py-12">
         <Suspense fallback={null}>
