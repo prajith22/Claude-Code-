@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCartStore, cartSubtotal } from "@/lib/cart-store";
 import { formatUSD } from "@/lib/utils";
+import { EmptyCart } from "@/components/EmptyCart";
 
 const DELIVERY_FEE = 1.99;
 const SERVICE_FEE = 2.49;
@@ -19,13 +20,13 @@ export default function FoodCartPage() {
       <h1 className="pt-2 text-[24px] font-semibold tracking-tight">Your order</h1>
 
       {lines.length === 0 ? (
-        <div className="surface-food flex flex-col items-center gap-3 px-6 py-12 text-center">
-          <p className="text-[17px] font-semibold">Order&apos;s empty.</p>
-          <p className="text-sm text-ink-muted">Pick a spot and add something.</p>
-          <Link href="/food" className="btn-primary mt-2">
-            Browse restaurants
-          </Link>
-        </div>
+        <EmptyCart
+          mascotSrc="/onboarding/dopiq-dog2.png"
+          heading="Order's empty."
+          subhead="Pick a spot and add something."
+          ctaHref="/food"
+          ctaLabel="Browse restaurants"
+        />
       ) : (
         <>
           <ul className="space-y-3">

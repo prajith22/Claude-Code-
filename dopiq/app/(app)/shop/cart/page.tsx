@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCartStore, cartSubtotal } from "@/lib/cart-store";
 import { formatUSD } from "@/lib/utils";
-import { Bag } from "@/components/icons";
+import { EmptyCart } from "@/components/EmptyCart";
 
 export default function ShopCartPage() {
   const lines = useCartStore((s) => s.shop);
@@ -18,16 +18,13 @@ export default function ShopCartPage() {
       <h1 className="pt-2 text-[26px] font-bold tracking-tight">Cart</h1>
 
       {lines.length === 0 ? (
-        <div className="surface-shop flex flex-col items-center gap-3 px-6 py-14 text-center">
-          <Bag size={36} className="text-ink-faint" />
-          <p className="text-[17px] font-bold">Nothing in your cart. Cool.</p>
-          <p className="text-sm text-ink-muted">
-            That&rsquo;s the whole idea.
-          </p>
-          <Link href="/shop" className="btn-primary mt-2">
-            Keep window-shopping
-          </Link>
-        </div>
+        <EmptyCart
+          mascotSrc="/onboarding/dopiq-dog1.png"
+          heading="Nothing in your cart. Cool."
+          subhead="That's the whole idea."
+          ctaHref="/shop"
+          ctaLabel="Keep window-shopping"
+        />
       ) : (
         <>
           <ul className="space-y-3">

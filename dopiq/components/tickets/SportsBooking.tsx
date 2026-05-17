@@ -14,6 +14,7 @@ import {
 } from "@/components/tickets/SeatMap";
 import { formatUSD } from "@/lib/utils";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
+import { EmptySeatsMascot } from "@/components/tickets/EmptySeatsMascot";
 import type { PendingPurchase } from "@/components/tickets/TicketsCheckout";
 
 // Per-sport surface label so the seat map says FIELD for football,
@@ -116,6 +117,8 @@ export function SportsBooking({ game }: { game: SportsGame }) {
             </div>
           </div>
         </header>
+
+        {seats.length === 0 && <EmptySeatsMascot />}
 
         <section className="mt-5">
           <h2

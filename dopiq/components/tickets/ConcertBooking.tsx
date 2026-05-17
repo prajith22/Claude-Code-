@@ -10,6 +10,7 @@ import {
 import { SeatMap, type Seat } from "@/components/tickets/SeatMap";
 import { formatUSD } from "@/lib/utils";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
+import { EmptySeatsMascot } from "@/components/tickets/EmptySeatsMascot";
 import type { PendingPurchase } from "@/components/tickets/TicketsCheckout";
 
 export function ConcertBooking({ artist }: { artist: ConcertArtist }) {
@@ -141,6 +142,8 @@ export function ConcertBooking({ artist }: { artist: ConcertArtist }) {
             })}
           </div>
         </section>
+
+        {seats.length === 0 && <EmptySeatsMascot />}
 
         {/* Seat map */}
         <section className="mt-5">
