@@ -5,6 +5,10 @@ export type ProductCategory =
   | "Beauty"
   | "Sports";
 
+export type Size = "XS" | "S" | "M" | "L" | "XL";
+
+export const SIZES: readonly Size[] = ["XS", "S", "M", "L", "XL"] as const;
+
 export type Product = {
   id: string;
   name: string;

@@ -46,6 +46,11 @@ export default function ShopCartPage() {
                     <p className="line-clamp-2 text-[15px] font-bold leading-snug text-ink">
                       {l.name}
                     </p>
+                    {l.selectedSize && (
+                      <span className="pill-shop type-magnetic font-geometric mt-1 inline-flex items-center rounded-pill px-2.5 py-0.5 text-[11px] font-semibold">
+                        Size {l.selectedSize}
+                      </span>
+                    )}
                     <p className="mt-1 text-[16px] font-bold text-navy money">
                       {formatUSD(l.price)}
                     </p>
@@ -54,7 +59,9 @@ export default function ShopCartPage() {
                     <div className="flex items-center rounded-full border border-surface-border bg-surface-alt">
                       <button
                         type="button"
-                        onClick={() => setQty("shop", l.id, l.qty - 1)}
+                        onClick={() =>
+                          setQty("shop", l.id, l.qty - 1, l.selectedSize)
+                        }
                         className="flex h-9 w-9 items-center justify-center text-lg text-ink"
                         aria-label="Decrease"
                       >
@@ -65,7 +72,9 @@ export default function ShopCartPage() {
                       </span>
                       <button
                         type="button"
-                        onClick={() => setQty("shop", l.id, l.qty + 1)}
+                        onClick={() =>
+                          setQty("shop", l.id, l.qty + 1, l.selectedSize)
+                        }
                         className="flex h-9 w-9 items-center justify-center text-lg text-ink"
                         aria-label="Increase"
                       >
@@ -74,7 +83,7 @@ export default function ShopCartPage() {
                     </div>
                     <button
                       type="button"
-                      onClick={() => remove("shop", l.id)}
+                      onClick={() => remove("shop", l.id, l.selectedSize)}
                       className="text-[13px] font-medium text-ink-muted hover:text-ink"
                     >
                       Remove

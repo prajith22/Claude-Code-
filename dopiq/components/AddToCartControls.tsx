@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { useCartStore } from "@/lib/cart-store";
 import type { Product } from "@/types";
+import { SIZES, type Size } from "@/types";
 import { cn } from "@/lib/utils";
 
 export function AddToCartControls({ product }: { product: Product }) {
@@ -12,6 +14,8 @@ export function AddToCartControls({ product }: { product: Product }) {
   const [qty, setQty] = useState(1);
   const [bounce, setBounce] = useState(false);
   const [added, setAdded] = useState(false);
+  const isClothing = product.category === "Clothes";
+  const [selectedSize, setSelectedSize] = useState<Size>("M");
 
   function handleAdd() {
     add("shop", {
@@ -20,6 +24,7 @@ export function AddToCartControls({ product }: { product: Product }) {
       price: product.price,
       imageUrl: product.imageUrl,
       qty,
+      ...(isClothing && { selectedSize }),
     });
     setBounce(true);
     setAdded(true);
@@ -51,6 +56,34 @@ export function AddToCartControls({ product }: { product: Product }) {
 
   return (
     <>
+      {isClothing && (
+        <div className="mb-4">
+          <p className="mb-2 text-[13px] font-semibold text-ink">Size</p>
+          <div className="flex flex-wrap gap-2">
+            {SIZES.map((size) => {
+              const active = selectedSize === size;
+              return (
+                <motion.button
+                  key={size}
+                  type="button"
+                  onClick={() => setSelectedSize(size)}
+                  aria-pressed={active}
+                  whileTap={{ scale: 0.95 }}
+                  className={cn(
+                    "type-magnetic font-geometric flex-none whitespace-nowrap rounded-pill px-4 py-2 text-[13px] font-semibold transition-all duration-150",
+                    active
+                      ? "pill-glass-active scale-[1.02]"
+                      : "pill-shop text-ink",
+                  )}
+                >
+                  {size}
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Mobile: fixed bar sits just above the bottom tab bar (which
           itself respects the iPhone home-indicator safe area). */}
       <div className="bottom-nav fixed inset-x-0 z-30 flex items-center gap-3 border-t border-surface-border bg-white/95 px-4 py-3 backdrop-blur-sm md:hidden">
