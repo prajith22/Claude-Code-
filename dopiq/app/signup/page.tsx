@@ -13,7 +13,7 @@ export default function SignUpPage() {
   // check covers both. Apple Sign-In and email + password remain.
   const ios = isIOSWebView();
   return (
-    <main className="min-h-[100dvh] bg-white pt-[calc(env(safe-area-inset-top)+3rem)] md:grid md:grid-cols-2">
+    <main className="min-h-[100dvh] bg-white pt-[calc(env(safe-area-inset-top)+1rem)] md:grid md:grid-cols-2">
       <SignInMarketing excludeBet={ios} />
       <section className="flex flex-col items-center px-6 pb-10 pt-2 md:min-h-[100dvh] md:justify-center md:py-12">
         <Suspense fallback={null}>
