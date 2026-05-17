@@ -888,14 +888,6 @@ function SpendPickerScreen({
       >
         How much do you spend on impulse buys each month?
       </motion.h1>
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.12, duration: 0.4 }}
-        className="mt-2 text-center text-[15px] text-ink-muted md:text-[16px]"
-      >
-        Just an estimate — we&rsquo;ll show you something interesting.
-      </motion.p>
 
       <div className="relative mx-auto mt-8 h-[200px] w-[280px]">
         <div
@@ -1018,6 +1010,7 @@ function SavingsRevealScreen({
 }) {
   const monthly = Math.round(monthlySpend * 0.36);
   const annual = Math.round(monthlySpend * 0.36 * 12);
+  const reduce = useReducedMotion();
   return (
     <div className="flex flex-1 flex-col px-5 pb-8 pt-2">
       <OnboardingDog src="/onboarding/dopiq-dog3.png" />
@@ -1044,6 +1037,18 @@ function SavingsRevealScreen({
           <RevealAmount target={annual} durationMs={1200} delayMs={400} />
         </span>{" "}
         a year.
+      </motion.p>
+      <motion.p
+        initial={reduce ? { opacity: 0 } : { opacity: 0, y: 10 }}
+        animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+        transition={{ delay: reduce ? 0 : 1.6, duration: reduce ? 0 : 0.4 }}
+        className="mt-3 text-center font-heading text-[16px] text-ink-muted md:text-[18px]"
+      >
+        Early users of Dopiq saved up to{" "}
+        <span className="type-hero-amount text-[28px] font-extrabold md:text-[36px]">
+          36%
+        </span>{" "}
+        in their first month.
       </motion.p>
 
       <div className="mt-auto pt-6">
