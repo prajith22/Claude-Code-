@@ -23,6 +23,7 @@ import { useSavingsStore } from "@/lib/savings-store";
 import { playDing } from "@/lib/sounds";
 import { formatUSD } from "@/lib/utils";
 import { AnimatedAmount } from "@/components/AnimatedAmount";
+import { LandingMascot } from "@/components/LandingMascot";
 
 const STORE_ADDRESSES: Record<QuickSimLocation["key"], string> = {
   gas: "2847 Highway Blvd, Austin TX 78701",
@@ -392,22 +393,27 @@ function LocationGrid({
 
   return (
     <div className="flex flex-1 flex-col px-5 pb-8 pt-2">
-      <motion.h1
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="type-hero-quicksim text-[48px] leading-tight tracking-tight md:text-[64px]"
-      >
-        Where are you?
-      </motion.h1>
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.05 }}
-        className="mt-2 text-[15px] text-ink-muted"
-      >
-        Pick the place. We’ll handle the urge.
-      </motion.p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="type-hero-quicksim text-[48px] leading-tight tracking-tight md:text-[64px]"
+          >
+            Where are you?
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.05 }}
+            className="mt-2 text-[15px] text-ink-muted"
+          >
+            Pick the place. We’ll handle the urge.
+          </motion.p>
+        </div>
+        <LandingMascot src="/onboarding/dopiq-dog4.png" />
+      </div>
 
       <div className="mt-6 grid flex-1 grid-cols-2 gap-3 content-start sm:gap-4">
         {QUICK_SIM_LOCATIONS.map((loc, i) => {
