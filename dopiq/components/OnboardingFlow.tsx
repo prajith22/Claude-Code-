@@ -12,7 +12,7 @@ import {
 } from "framer-motion";
 import AmbientBreath from "@/components/motion/AmbientBreath";
 
-type Stage = 1 | 2 | 3 | 4 | 5 | 6;
+type Stage = 1 | 2 | 3 | 4 | 5;
 
 const screenVariants: Variants = {
   enter: { x: 320, opacity: 0 },
@@ -75,7 +75,7 @@ export function OnboardingFlow({
               transition={screenTransition}
               className="flex flex-1 flex-col"
             >
-              <Screen1
+              <Screen2
                 onAdvance={() => setStage(2)}
                 excludeBet={excludeBet}
               />
@@ -91,10 +91,7 @@ export function OnboardingFlow({
               transition={screenTransition}
               className="flex flex-1 flex-col"
             >
-              <Screen2
-                onAdvance={() => setStage(3)}
-                excludeBet={excludeBet}
-              />
+              <Screen3 onAdvance={() => setStage(3)} />
             </motion.div>
           )}
           {stage === 3 && (
@@ -107,7 +104,11 @@ export function OnboardingFlow({
               transition={screenTransition}
               className="flex flex-1 flex-col"
             >
-              <Screen3 onAdvance={() => setStage(4)} />
+              <SpendPickerScreen
+                value={monthlySpend}
+                onChange={setMonthlySpend}
+                onAdvance={() => setStage(4)}
+              />
             </motion.div>
           )}
           {stage === 4 && (
@@ -120,9 +121,8 @@ export function OnboardingFlow({
               transition={screenTransition}
               className="flex flex-1 flex-col"
             >
-              <SpendPickerScreen
-                value={monthlySpend}
-                onChange={setMonthlySpend}
+              <SavingsRevealScreen
+                monthlySpend={monthlySpend}
                 onAdvance={() => setStage(5)}
               />
             </motion.div>
@@ -130,22 +130,6 @@ export function OnboardingFlow({
           {stage === 5 && (
             <motion.div
               key="s5"
-              variants={screenVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={screenTransition}
-              className="flex flex-1 flex-col"
-            >
-              <SavingsRevealScreen
-                monthlySpend={monthlySpend}
-                onAdvance={() => setStage(6)}
-              />
-            </motion.div>
-          )}
-          {stage === 6 && (
-            <motion.div
-              key="s6"
               variants={screenVariants}
               initial="enter"
               animate="center"
@@ -166,8 +150,8 @@ export function OnboardingFlow({
 
 function ProgressDots({ stage }: { stage: Stage }) {
   return (
-    <div className="flex items-center gap-2" aria-label={`Step ${stage} of 6`}>
-      {[1, 2, 3, 4, 5, 6].map((n) => (
+    <div className="flex items-center gap-2" aria-label={`Step ${stage} of 5`}>
+      {[1, 2, 3, 4, 5].map((n) => (
         <span
           key={n}
           className={`h-2 rounded-full transition-all duration-300 ${
@@ -235,203 +219,6 @@ function NextButton({
   );
 }
 
-// ---------- Screen 1: Who are you? ----------
-
-// Each option is tagged with a `category` so the iOS path can
-// drop the betting prompt — Apple disallows gambling features for
-// individual developer accounts, so even asking the user to
-// self-identify as a bettor doesn't fit the iOS surface.
-const SCREEN_1_OPTIONS = [
-  {
-    category: "shop" as const,
-    bg: "#F3E8FF",
-    fg: "#4A148C",
-    label: "My cart is always full of things I don't need.",
-    response: "Your cart deserves a safe place to live. We built it.",
-  },
-  {
-    category: "food" as const,
-    bg: "#FFF9E6",
-    fg: "#5D4037",
-    label: "I order food delivery way more than I should.",
-    response: "Those cravings are real. So is our food simulator.",
-  },
-  {
-    category: "tickets" as const,
-    bg: "#FFE4D6",
-    fg: "#7C2D12",
-    label: "I doom-scroll Ticketmaster and StubHub for fun.",
-    response: "The hunt is real. The fees aren't. Now sim it.",
-  },
-  {
-    category: "bet" as const,
-    bg: "#E8F0FF",
-    fg: "#1A237E",
-    label: "I bet for the thrill more than the money.",
-    response: "The thrill is real. Now you can keep your money too.",
-  },
-  {
-    category: "all" as const,
-    bg: "#E8F5E9",
-    fg: "#1B5E20",
-    label: "I do all of these and I want to stop.",
-    response:
-      "You came to exactly the right place. Dopiq was built for you.",
-  },
-];
-
-function Screen1({
-  onAdvance,
-  excludeBet,
-}: {
-  onAdvance: () => void;
-  excludeBet: boolean;
-}) {
-  // Drop the betting trigger when this is rendering inside the iOS
-  // shell — Apple disallows gambling features for individual
-  // developer accounts.
-  const options = excludeBet
-    ? SCREEN_1_OPTIONS.filter((o) => o.category !== "bet")
-    : SCREEN_1_OPTIONS;
-  const [selected, setSelected] = useState<number | null>(null);
-  const [nextVisible, setNextVisible] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const reduce = useReducedMotion();
-
-  useEffect(() => {
-    if (selected === null) return;
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => setNextVisible(true), 1500);
-    return () => {
-      if (timer.current) clearTimeout(timer.current);
-    };
-  }, [selected]);
-
-  const response =
-    selected !== null ? options[selected].response : null;
-
-  return (
-    <div className="flex h-full flex-col overflow-hidden px-5 pb-3 pt-1">
-      <div className="flex-shrink-0">
-        <OnboardingDog src="/onboarding/dopiq-dog4.png" size="xs" />
-      </div>
-      <div className="min-h-0 flex-1 overflow-y-auto scrollbar-hide">
-        <div className="flex min-h-full flex-col justify-center py-1">
-      <motion.h1
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: "easeOut" }}
-        className="font-heading text-center text-[24px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[28px]"
-      >
-        Which of these sounds like you?
-      </motion.h1>
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.12, duration: 0.4 }}
-        className="mt-1 text-center text-[14px] text-ink-muted md:text-[15px]"
-      >
-        Be honest. No judgment here.
-      </motion.p>
-
-      <motion.ul
-        initial="hidden"
-        animate="show"
-        variants={{
-          hidden: {},
-          show: { transition: { staggerChildren: 0.15, delayChildren: 0.25 } },
-        }}
-        className="mt-3 flex flex-col gap-2 px-1"
-      >
-        {options.map((opt, i) => {
-          const isSelected = selected === i;
-          // Definitive card depth — a tight dark drop shadow so each
-          // card reads as separated even where the border is subtle
-          // against its own pastel fill.
-          const restShadow =
-            "0 1px 3px rgba(42,31,24,0.15), 0 1px 2px rgba(42,31,24,0.10)";
-          // Glow matches the option's own colour identity (lavender
-          // card → lavender glow, amber → amber, etc.) via the fg
-          // hue at low alpha.
-          const glowShadow = `${restShadow}, 0 0 0 1px ${opt.fg}33, 0 12px 30px -8px ${opt.fg}66`;
-          return (
-            <motion.li
-              key={i}
-              variants={{
-                hidden: { opacity: 0, y: 18 },
-                show: { opacity: 1, y: 0 },
-              }}
-              transition={{ type: "spring", stiffness: 220, damping: 24 }}
-            >
-              <motion.button
-                type="button"
-                onClick={() => setSelected(i)}
-                animate={{
-                  scale: isSelected ? (reduce ? 1.01 : [1, 1.02, 1.01]) : 1,
-                  boxShadow: isSelected ? glowShadow : restShadow,
-                }}
-                whileTap={{ scale: 0.99 }}
-                transition={
-                  reduce ? { duration: 0 } : { duration: 0.25, ease: "easeOut" }
-                }
-                className="w-full rounded-card border-2 px-4 py-2.5 text-left transition-colors duration-200"
-                style={{
-                  backgroundColor: opt.bg,
-                  color: opt.fg,
-                  borderWidth: isSelected ? "2px" : "1.5px",
-                  borderColor: isSelected ? "#0A0F1E" : "#2A1F18",
-                }}
-              >
-                <p className="font-sans text-[15px] font-bold leading-snug md:text-[16px]">
-                  {opt.label}
-                </p>
-              </motion.button>
-            </motion.li>
-          );
-        })}
-      </motion.ul>
-
-      <AnimatePresence>
-        {selected !== null && (
-          <motion.p
-            key="seeyou"
-            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
-            animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reduce ? 0 : 0.2 }}
-            className="font-playful mt-3 text-center text-[13px] italic text-ink-muted"
-          >
-            Yeah, we see you.
-          </motion.p>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {response && (
-          <motion.p
-            key="response"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.35 }}
-            className="mt-3 text-center text-[13px] italic leading-relaxed text-ink-muted md:text-[14px]"
-          >
-            {response}
-          </motion.p>
-        )}
-      </AnimatePresence>
-
-        </div>
-      </div>
-      <div className="flex-shrink-0 pt-3">
-        <AnimatePresence>
-          {nextVisible && <NextButton onClick={onAdvance} />}
-        </AnimatePresence>
-      </div>
-    </div>
-  );
-}
-
 // ---------- Screen 2: Meet Dopiq ----------
 
 const SCREEN_2_FEATURES = [
@@ -474,8 +261,8 @@ function Screen2({
   onAdvance: () => void;
   excludeBet: boolean;
 }) {
-  // Drop the Betting Simulator card on iOS for the same reason
-  // Screen1 drops the betting trigger.
+  // Drop the Betting Simulator card on iOS — Apple disallows
+  // gambling features for individual developer accounts.
   const features = excludeBet
     ? SCREEN_2_FEATURES.filter((f) => f.category !== "bet")
     : SCREEN_2_FEATURES;
