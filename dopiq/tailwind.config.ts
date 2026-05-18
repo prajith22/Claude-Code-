@@ -24,6 +24,9 @@ const config: Config = {
           muted: "#6B7280",
           faint: "#9CA3AF",
         },
+        emerald: {
+          DEFAULT: "#10B981",
+        },
         surface: {
           DEFAULT: "#FFFFFF",
           alt: "#F7F8FA",

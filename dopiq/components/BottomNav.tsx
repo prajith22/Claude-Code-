@@ -4,15 +4,22 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
+import {
+  House,
+  ShoppingBag,
+  ForkKnife,
+  ChartBar,
+  Ticket,
+} from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { DopaminePulse } from "@/components/DopaminePulse";
 
 const TABS = [
-  { href: "/home",    label: "Home",    icon: HomeIcon },
-  { href: "/shop",    label: "Shop",    icon: BagIcon },
-  { href: "/food",    label: "Food",    icon: ForkIcon },
-  { href: "/bet",     label: "Bet",     icon: ChartIcon },
-  { href: "/tickets", label: "Tickets", icon: TicketIcon },
+  { href: "/home",    label: "Home",    icon: House },
+  { href: "/shop",    label: "Shop",    icon: ShoppingBag },
+  { href: "/food",    label: "Food",    icon: ForkKnife },
+  { href: "/bet",     label: "Bet",     icon: ChartBar },
+  { href: "/tickets", label: "Tickets", icon: Ticket },
 ] as const;
 
 // The floating Quick Sim button is hidden on pages that own a
@@ -116,18 +123,34 @@ export function BottomNav({ excludeBet = false }: { excludeBet?: boolean }) {
                   )}
                   <Link
                     href={t.href}
-                    className={cn(
-                      "relative z-10 flex h-14 flex-col items-center justify-center gap-0.5 text-[10px] font-semibold tracking-wide transition-colors duration-150",
-                      active ? "text-navy" : "text-ink-muted",
-                    )}
+                    className="relative z-10 flex h-14 flex-col items-center justify-center gap-0.5 text-[10px] font-semibold tracking-wide"
                   >
                     <motion.span
                       className="flex flex-col items-center gap-0.5"
                       whileTap={{ scale: 0.92 }}
                       transition={{ duration: 0.1 }}
                     >
-                      <Icon active={active} />
-                      <span className="mt-0.5">{t.label}</span>
+                      <Icon
+                        size={20}
+                        weight={active ? "fill" : "regular"}
+                        className={cn(
+                          "transition-colors",
+                          active
+                            ? "text-emerald"
+                            : "text-ink-muted opacity-70",
+                        )}
+                        aria-hidden="true"
+                      />
+                      <span
+                        className={cn(
+                          "mt-0.5 transition-colors",
+                          active
+                            ? "text-emerald"
+                            : "text-ink-muted opacity-60",
+                        )}
+                      >
+                        {t.label}
+                      </span>
                     </motion.span>
                   </Link>
                 </li>
@@ -214,49 +237,5 @@ function FragmentWithSpacer({
       {showSpacerBefore && <li aria-hidden className="w-16 flex-none" />}
       {children}
     </>
-  );
-}
-
-type IconProps = { active: boolean };
-
-function HomeIcon({ active }: IconProps) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5Z"
-        stroke="currentColor" strokeWidth={active ? 2.5 : 1.8} strokeLinejoin="round" fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.12 : 0} />
-    </svg>
-  );
-}
-function BagIcon({ active }: IconProps) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M5 8h14l-1 12H6L5 8Z" stroke="currentColor" strokeWidth={active ? 2.5 : 1.8} strokeLinejoin="round" fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.12 : 0} />
-      <path d="M9 8a3 3 0 1 1 6 0" stroke="currentColor" strokeWidth={active ? 2.5 : 1.8} strokeLinecap="round" />
-    </svg>
-  );
-}
-function ForkIcon({ active }: IconProps) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M8 3v7a3 3 0 0 0 3 3v8M14 3c2 0 3 2 3 5s-1 5-3 5v7"
-        stroke="currentColor" strokeWidth={active ? 2.5 : 1.8} strokeLinecap="round" />
-    </svg>
-  );
-}
-function TicketIcon({ active }: IconProps) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8Z"
-        stroke="currentColor" strokeWidth={active ? 2.5 : 1.8} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.12 : 0} />
-      <path d="M14 6v12" stroke="currentColor" strokeWidth={active ? 2.5 : 1.8} strokeDasharray="2 2" strokeLinecap="round" />
-    </svg>
-  );
-}
-function ChartIcon({ active }: IconProps) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M4 20V10M10 20V4M16 20v-7M22 20H2"
-        stroke="currentColor" strokeWidth={active ? 2.5 : 1.8} strokeLinecap="round" />
-    </svg>
   );
 }
