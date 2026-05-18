@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import type { Product, ProductCategory } from "@/types";
 import { cn, formatUSD } from "@/lib/utils";
+import { fisherYates } from "@/lib/shuffle";
 import { Bag, StarFilled } from "@/components/icons";
 import { CartButton } from "@/components/CartButton";
 import AmbientBreath from "@/components/motion/AmbientBreath";
@@ -43,15 +44,6 @@ function preloadImage(src: string) {
   // Stash the element immediately so a second preload call for the
   // same URL is a no-op even if onload hasn't fired yet.
   imageCache.set(src, img);
-}
-
-function fisherYates<T>(input: T[]): T[] {
-  const a = input.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
 }
 
 const variants = {

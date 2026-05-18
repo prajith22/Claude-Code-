@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Product, ProductCategory } from "@/types";
+import { fisherYates } from "@/lib/shuffle";
 import { ExploreSection } from "@/components/ExploreSection";
 import { CuratedShopGrid } from "@/components/CuratedShopGrid";
 import { BrowseSection } from "@/components/DiscoveryFeed";
@@ -23,20 +24,38 @@ export function ShopExperience({ products }: { products: Product[] }) {
   );
   const [search, setSearch] = useState("");
 
+  // State initializes to the prop's natural order so the first client
+  // render matches the server-rendered HTML (no hydration mismatch).
+  // The effect runs on mount (every Shop entry, since ShopExperience
+  // remounts when the Shop subtree remounts on navigation) and shuffles
+  // the full catalog once. Filter pills / search slice this stable
+  // shuffled array, so the random order is preserved across filtering.
+  const [shuffledProducts, setShuffledProducts] =
+    useState<Product[]>(products);
+
+  useEffect(() => {
+    setShuffledProducts(fisherYates(products));
+  }, [products]);
+
   function selectCategory(cat: ProductCategory | null) {
     setActiveCategory(cat);
   }
 
   const { browseList, browseSubtitle } = useMemo(() => {
     if (activeCategory) {
-      const list = products.filter((p) => p.category === activeCategory);
+      const list = shuffledProducts.filter(
+        (p) => p.category === activeCategory,
+      );
       return {
         browseList: list,
         browseSubtitle: `${list.length} in ${activeCategory}`,
       };
     }
-    return { browseList: products, browseSubtitle: null as string | null };
-  }, [activeCategory, products]);
+    return {
+      browseList: shuffledProducts,
+      browseSubtitle: null as string | null,
+    };
+  }, [activeCategory, shuffledProducts]);
 
   // Search overrides the curated experience entirely — when the user
   // types we hide Explore + Curated and surface a flat grid of
@@ -45,12 +64,12 @@ export function ShopExperience({ products }: { products: Product[] }) {
   const searchResults = useMemo(() => {
     const q = searchTerm.toLowerCase();
     if (!q) return null;
-    return products.filter(
+    return shuffledProducts.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q),
     );
-  }, [searchTerm, products]);
+  }, [searchTerm, shuffledProducts]);
 
   return (
     <div className="space-y-10">
