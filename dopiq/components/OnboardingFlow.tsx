@@ -12,6 +12,7 @@ import {
 } from "framer-motion";
 import AmbientBreath from "@/components/motion/AmbientBreath";
 import { QuickSimFlow } from "@/components/QuickSimFlow";
+import { DotTexture } from "@/components/DotTexture";
 
 type Stage = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -266,9 +267,23 @@ function TrialSimGate({
   onSkip: () => void;
 }) {
   return (
-    <div className="flex h-full flex-col overflow-hidden px-5 pb-3 pt-1">
+    <div className="relative flex h-full flex-col overflow-hidden px-5 pb-3 pt-1">
+      {/* Emerald atmosphere — this is the only onboarding screen with
+          a tinted wash, so the trial reads as the "payoff" beat.
+          Soft radial from the top + a faint emerald speckle, both
+          behind content and pointer-transparent. */}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(ellipse at top, rgba(16,185,129,0.14) 0%, rgba(16,185,129,0.04) 45%, transparent 70%)",
+        }}
+      />
+      <DotTexture className="-z-10 text-emerald opacity-[0.05]" />
+
       <div className="flex-shrink-0">
-        <OnboardingDog src="/onboarding/dopiq-dog4.png" size="xs" />
+        <OnboardingDog src="/onboarding/dopiq-dog4.png" size="lg" />
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto scrollbar-hide">
         <div className="flex min-h-full flex-col justify-center py-1 text-center">
@@ -284,14 +299,37 @@ function TrialSimGate({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, duration: 0.4 }}
-            className="mt-3 text-[15px] leading-relaxed text-ink-muted md:text-[16px]"
+            className="mt-2 text-[15px] leading-relaxed text-ink-muted md:text-[16px]"
           >
             Real cravings. Fake checkout. Nothing moves but the relief.
           </motion.p>
+
+          {/* Decorative echo of the home "Saved today" hero — same
+              mint surface, warm-dark border, deep-emerald speckle.
+              Static teaser, not a real count-up. */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.5, ease: "easeOut" }}
+            className="relative mx-auto mt-5 w-full max-w-[260px] overflow-hidden rounded-card border-[2.5px] border-[#2A1F18] bg-[#D1FAE5] px-6 py-5"
+          >
+            <DotTexture className="text-[#064E3B]" />
+            <div className="relative">
+              <p className="font-playful text-[11px] font-bold uppercase tracking-wide text-[#0F5132]">
+                Saved
+              </p>
+              <p className="type-hero-amount mt-1 text-[40px] leading-none tabular-nums text-emerald">
+                $14.83
+              </p>
+              <p className="mt-1 text-[12px] italic text-[#0F5132]">
+                Still yours.
+              </p>
+            </div>
+          </motion.div>
         </div>
       </div>
       <div className="flex-shrink-0 space-y-2 pt-3">
-        <NextButton label="Try it" onClick={onTry} delay={0.3} pulse />
+        <NextButton label="Try it" onClick={onTry} delay={0.55} pulse />
         <button
           type="button"
           onClick={onSkip}
@@ -631,7 +669,7 @@ function OnboardingDog({
   size = "md",
 }: {
   src: string;
-  size?: "xs" | "sm" | "md";
+  size?: "xs" | "sm" | "md" | "lg";
 }) {
   const reduce = useReducedMotion();
   const dim =
@@ -639,7 +677,9 @@ function OnboardingDog({
       ? "h-[80px] w-[80px] md:h-[100px] md:w-[100px]"
       : size === "sm"
         ? "h-[120px] w-[120px] md:h-[160px] md:w-[160px]"
-        : "h-[160px] w-[160px] md:h-[200px] md:w-[200px]";
+        : size === "lg"
+          ? "h-[180px] w-[180px] md:h-[200px] md:w-[200px]"
+          : "h-[160px] w-[160px] md:h-[200px] md:w-[200px]";
   return (
     <motion.div
       initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
