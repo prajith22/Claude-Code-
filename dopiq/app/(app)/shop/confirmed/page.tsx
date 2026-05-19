@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
-import { playDing } from "@/lib/sounds";
+import { playAchievementBell } from "@/lib/sounds";
 import { AnimatedAmount } from "@/components/AnimatedAmount";
 
 type LastOrder = { orderNumber: string; total: number; count: number };
@@ -20,7 +20,7 @@ export default function ShopConfirmedPage() {
       } catch {}
     }
 
-    playDing();
+    playAchievementBell();
 
     const duration = 1600;
     const end = Date.now() + duration;
