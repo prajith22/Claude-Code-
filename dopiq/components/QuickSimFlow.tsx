@@ -21,7 +21,7 @@ import { QuickSimItemIcon } from "@/components/QuickSimItemIcons";
 import { Card, Pin } from "@/components/icons";
 import { useSimulationGuard } from "@/lib/use-simulation-guard";
 import { useSavingsStore } from "@/lib/savings-store";
-import { playDing } from "@/lib/sounds";
+import { playAchievementBell } from "@/lib/sounds";
 import { formatUSD } from "@/lib/utils";
 import { AnimatedAmount } from "@/components/AnimatedAmount";
 import { LandingMascot } from "@/components/LandingMascot";
@@ -1008,7 +1008,7 @@ function GreenFlash({ totalCents }: { totalCents: number }) {
   // over 300ms, plus a spring-bouncy checkmark + savings amount that
   // settle in as the wash fades.
   useEffect(() => {
-    playDing();
+    playAchievementBell();
   }, []);
 
   return (
