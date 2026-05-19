@@ -11,8 +11,10 @@ import {
   type Variants,
 } from "framer-motion";
 import AmbientBreath from "@/components/motion/AmbientBreath";
+import { QuickSimFlow } from "@/components/QuickSimFlow";
+import { QUICK_SIM_LOCATIONS } from "@/data/quick-sim-items";
 
-type Stage = 1 | 2 | 3 | 4 | 5;
+type Stage = 1 | 2 | 3 | 4 | 5 | 6;
 
 const screenVariants: Variants = {
   enter: { x: 320, opacity: 0 },
@@ -35,6 +37,18 @@ export function OnboardingFlow({
   // discarded when onboarding finishes. Never persisted (no DB, no
   // localStorage, no profile field).
   const [monthlySpend, setMonthlySpend] = useState<number>(300);
+  // Embedded trial Quick Sim (stage 5 → "Try it"). Rendered as a
+  // sibling overlay so OnboardingFlow never unmounts and `stage`
+  // survives underneath; on complete/dismiss we advance to the
+  // closer. Location is picked once on mount and locked for the
+  // session so the trial feels intentional, not re-rolled.
+  const [trialSimOpen, setTrialSimOpen] = useState(false);
+  const [trialLocation] = useState(
+    () =>
+      QUICK_SIM_LOCATIONS[
+        Math.floor(Math.random() * QUICK_SIM_LOCATIONS.length)
+      ],
+  );
 
   async function complete() {
     if (submitting) return;
@@ -137,11 +151,42 @@ export function OnboardingFlow({
               transition={screenTransition}
               className="flex flex-1 flex-col"
             >
+              <TrialSimGate
+                onTry={() => setTrialSimOpen(true)}
+                onSkip={() => setStage(6)}
+              />
+            </motion.div>
+          )}
+          {stage === 6 && (
+            <motion.div
+              key="s6"
+              variants={screenVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={screenTransition}
+              className="flex flex-1 flex-col"
+            >
               <Screen4 onComplete={complete} submitting={submitting} />
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+
+      {trialSimOpen && (
+        <QuickSimFlow
+          initialLocation={trialLocation}
+          ephemeral
+          onComplete={() => {
+            setTrialSimOpen(false);
+            setStage(6);
+          }}
+          onDismiss={() => {
+            setTrialSimOpen(false);
+            setStage(6);
+          }}
+        />
+      )}
     </main>
   );
 }
@@ -150,8 +195,8 @@ export function OnboardingFlow({
 
 function ProgressDots({ stage }: { stage: Stage }) {
   return (
-    <div className="flex items-center gap-2" aria-label={`Step ${stage} of 5`}>
-      {[1, 2, 3, 4, 5].map((n) => (
+    <div className="flex items-center gap-2" aria-label={`Step ${stage} of 6`}>
+      {[1, 2, 3, 4, 5, 6].map((n) => (
         <span
           key={n}
           className={`h-2 rounded-full transition-all duration-300 ${
@@ -216,6 +261,54 @@ function NextButton({
     >
       {label}
     </motion.button>
+  );
+}
+
+// ---------- Stage 5: trial Quick Sim gate ----------
+
+function TrialSimGate({
+  onTry,
+  onSkip,
+}: {
+  onTry: () => void;
+  onSkip: () => void;
+}) {
+  return (
+    <div className="flex h-full flex-col overflow-hidden px-5 pb-3 pt-1">
+      <div className="flex-shrink-0">
+        <OnboardingDog src="/onboarding/dopiq-dog4.png" size="xs" />
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto scrollbar-hide">
+        <div className="flex min-h-full flex-col justify-center py-1 text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="font-heading text-[26px] font-bold leading-tight tracking-tight text-[#0A0F1E] md:text-[30px]"
+          >
+            Try a quick sim. On us.
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15, duration: 0.4 }}
+            className="mt-3 text-[15px] leading-relaxed text-ink-muted md:text-[16px]"
+          >
+            Real cravings. Fake checkout. Nothing moves but the relief.
+          </motion.p>
+        </div>
+      </div>
+      <div className="flex-shrink-0 space-y-2 pt-3">
+        <NextButton label="Try it" onClick={onTry} delay={0.3} pulse />
+        <button
+          type="button"
+          onClick={onSkip}
+          className="block w-full text-center text-[13px] font-semibold text-ink-muted underline-offset-4 hover:text-ink hover:underline"
+        >
+          Skip
+        </button>
+      </div>
+    </div>
   );
 }
 

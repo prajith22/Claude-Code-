@@ -58,9 +58,35 @@ function todayDateStr(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-export function QuickSimFlow() {
+export type QuickSimFlowProps = {
+  /** If set, start at the items stage with this location preselected, skipping the location grid. */
+  initialLocation?: QuickSimLocation;
+  /** If true, skip all persistence (no savings record, no cap consumption, no usage tracking). For onboarding trial. */
+  ephemeral?: boolean;
+  /** Called after the green flash completes (instead of router.push("/home")). For embedded scenarios. */
+  onComplete?: () => void;
+  /** Called when the user dismisses via X / Back (instead of router.push("/home")). For embedded scenarios. */
+  onDismiss?: () => void;
+};
+
+export function QuickSimFlow({
+  initialLocation,
+  ephemeral = false,
+  onComplete,
+  onDismiss,
+}: QuickSimFlowProps = {}) {
   const router = useRouter();
-  const [stage, setStage] = useState<Stage>({ kind: "location" });
+  const [stage, setStage] = useState<Stage>(() => {
+    if (initialLocation) {
+      return {
+        kind: "items",
+        location: initialLocation,
+        queue: pickQuickSimItems(initialLocation.key),
+        selected: [],
+      };
+    }
+    return { kind: "location" };
+  });
   const { modal, openLimit } = useSimulationGuard();
   const bumpSavings = useSavingsStore((s) => s.bump);
   // Holds the post-flash → /home redirect so the cap-check
@@ -106,10 +132,22 @@ export function QuickSimFlow() {
 
     setStage({ kind: "flash", totalCents });
 
-    redirectTimeoutRef.current = setTimeout(
-      () => router.push("/home"),
-      1900,
-    );
+    // Ephemeral (onboarding trial): play the flash, then hand control
+    // back via onComplete. Skip ALL persistence atomically — no
+    // /api/savings/record, no bumpSavings(), no /api/simulations/use,
+    // no 403 rollback. Nothing is written, so nothing is consumed.
+    if (ephemeral) {
+      redirectTimeoutRef.current = setTimeout(() => {
+        if (onComplete) onComplete();
+        else router.push("/home");
+      }, 1900);
+      return;
+    }
+
+    redirectTimeoutRef.current = setTimeout(() => {
+      if (onComplete) onComplete();
+      else router.push("/home");
+    }, 1900);
 
     // Savings record — fire-and-forget, unchanged.
     void fetch("/api/savings/record", {
@@ -160,12 +198,18 @@ export function QuickSimFlow() {
   }
 
   function confirmSim(selected: QuickSimItem[]) {
+    // Onboarding trial requires at least one item — an empty confirm
+    // is a no-op so the user can't skip past the demo with nothing.
+    if (ephemeral && selected.length === 0) return;
     const subtotalCents = selected.reduce((n, i) => n + i.priceCents, 0);
     if (subtotalCents === 0) {
       // Empty cart — flash $0.00 so the user still gets the
       // satisfying completion. No savings credit, no cap consumed.
       setStage({ kind: "flash", totalCents: 0 });
-      window.setTimeout(() => router.push("/home"), 1500);
+      window.setTimeout(() => {
+        if (onComplete) onComplete();
+        else router.push("/home");
+      }, 1500);
       return;
     }
     // Grand total — same 8.25% tax surfaced on the checkout summary
@@ -177,7 +221,8 @@ export function QuickSimFlow() {
   }
 
   function close() {
-    router.push("/home");
+    if (onDismiss) onDismiss();
+    else router.push("/home");
   }
 
   function back() {
@@ -223,7 +268,10 @@ export function QuickSimFlow() {
       {stage.kind !== "flash" && (
         <div className="relative z-10">
           <Header
-            showBack={stage.kind !== "location"}
+            showBack={
+              stage.kind === "checkout" ||
+              (stage.kind === "items" && !initialLocation)
+            }
             onBack={back}
             onClose={close}
           />
@@ -231,6 +279,13 @@ export function QuickSimFlow() {
       )}
 
       <main className="relative z-10 flex flex-1 flex-col overflow-hidden">
+        {ephemeral && stage.kind !== "flash" && (
+          <div className="flex shrink-0 justify-center px-5 pt-1 pb-1">
+            <span className="inline-flex items-center gap-1.5 rounded-pill bg-emerald/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-emerald">
+              ✨ On Us
+            </span>
+          </div>
+        )}
         {stage.kind === "location" && (
           <LocationGrid onPick={selectLocation} />
         )}
@@ -245,6 +300,7 @@ export function QuickSimFlow() {
           <CheckoutSummary
             stage={stage}
             onConfirm={() => confirmSim(stage.selected)}
+            ephemeral={ephemeral}
           />
         )}
       </main>
@@ -670,10 +726,16 @@ function ItemSelectCard({
 function CheckoutSummary({
   stage,
   onConfirm,
+  ephemeral = false,
 }: {
   stage: Extract<Stage, { kind: "checkout" }>;
   onConfirm: () => void;
+  ephemeral?: boolean;
 }) {
+  // Onboarding trial: an empty cart can't be confirmed (confirmSim
+  // no-ops). Swap the slide gesture for a clear hint so the bar
+  // isn't a silent dead-end.
+  const trialEmpty = ephemeral && stage.selected.length === 0;
   const subtotalCents = stage.selected.reduce(
     (n, i) => n + i.priceCents,
     0,
@@ -796,7 +858,13 @@ function CheckoutSummary({
             "0 -1px 2px rgba(42,31,24,0.04), 0 -2px 8px rgba(42,31,24,0.06)",
         }}
       >
-        <SlideUpToSim onComplete={onConfirm} />
+        {trialEmpty ? (
+          <p className="py-3 text-center font-sans text-[13px] font-semibold text-ink-muted">
+            Add at least one item to continue
+          </p>
+        ) : (
+          <SlideUpToSim onComplete={onConfirm} />
+        )}
       </div>
     </>
   );
