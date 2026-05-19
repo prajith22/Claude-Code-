@@ -736,12 +736,11 @@ function SpendPickerScreen({
   onAdvance: () => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [interacted, setInteracted] = useState(false);
   const activeIdx = Math.max(0, SPEND_VALUES.indexOf(value));
 
-  // Center the default on mount. Programmatic scroll fires onScroll
-  // but never flips `interacted` (that's gated on real input events),
-  // so the Next button stays disabled until the user engages.
+  // Center the default on mount. The default ($300) is itself a
+  // valid answer, so Next is enabled immediately — the user doesn't
+  // have to scroll the wheel to prove intent before advancing.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -798,9 +797,6 @@ function SpendPickerScreen({
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          onPointerDown={() => setInteracted(true)}
-          onWheel={() => setInteracted(true)}
-          onTouchStart={() => setInteracted(true)}
           className="scrollbar-hide h-full snap-y snap-mandatory overflow-y-auto"
           role="listbox"
           aria-label="Monthly impulse spend"
@@ -839,7 +835,7 @@ function SpendPickerScreen({
 
       </div>
       <div className="flex-shrink-0 pt-3">
-        <NextButton onClick={onAdvance} disabled={!interacted} />
+        <NextButton onClick={onAdvance} />
       </div>
     </div>
   );
