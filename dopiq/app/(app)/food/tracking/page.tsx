@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { cn } from "@/lib/utils";
-import { playDing } from "@/lib/sounds";
+import { playAchievementBell } from "@/lib/sounds";
 import DeliveryMap from "@/components/food/DeliveryMap";
 import { AnimatedAmount } from "@/components/AnimatedAmount";
 
@@ -109,7 +109,7 @@ export default function FoodTrackingPage() {
   useEffect(() => {
     if (stage !== STAGES.length - 1 || celebrated.current) return;
     celebrated.current = true;
-    playDing();
+    playAchievementBell();
     const colors = ["#00A650", "#1A1A1A", "#ffffff"];
     const duration = 1400;
     const end = Date.now() + duration;

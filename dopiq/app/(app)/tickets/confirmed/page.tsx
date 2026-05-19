@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { formatUSD } from "@/lib/utils";
 import { TICKETS_BRAND } from "@/data/tickets";
-import { playDing } from "@/lib/sounds";
+import { playAchievementBell } from "@/lib/sounds";
 
 type LastTicketsPurchase = {
   kind: "concert" | "sports" | "travel";
@@ -57,7 +57,7 @@ export default function TicketsConfirmedPage() {
       } catch {}
     }
 
-    playDing();
+    playAchievementBell();
 
     const duration = 1600;
     const end = Date.now() + duration;
