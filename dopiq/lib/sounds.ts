@@ -87,27 +87,23 @@ export function playDing(): void {
   }, 10);
 }
 
-// Quick Sim green-flash payoff — the Mixkit "Achievement Bell" sample
-// instead of the synthesized chime. Scoped to Quick Sim only; every
-// other confirmation surface still calls playDing(). One lazily-
-// constructed, reused HTMLAudioElement so repeated sims don't leak
-// elements; currentTime reset so back-to-back plays re-trigger from
-// the top. iOS Safari may block the very first play() before a user
-// gesture — the swipe that reaches the flash is itself a gesture, so
-// in practice it's unlocked, but the rejection is swallowed either
-// way. SSR / no-audio environments no-op.
-let achievementBellAudio: HTMLAudioElement | null = null;
+// Sim-confirm payoff — the Mixkit "Achievement Bell" sample, used by
+// Quick Sim's green flash and the bet/food/shop/tickets confirm
+// screens. A fresh Audio element per call: reusing one singleton
+// dropped sounds on iOS Safari/WebView (a .play() while the previous
+// playback was still in flight rejects silently, and the gesture
+// unlock breaks when play() fires from a post-gesture useEffect).
+// The browser caches the stable .wav URL so new elements don't
+// re-download; overlapping bells on rapid sims are acceptable (reads
+// as a layered reward, à la Apple Pay). SSR / no-audio: no-op.
+const ACHIEVEMENT_BELL_URL = "/audio/achievement-bell.wav";
 
 export function playAchievementBell(): void {
   if (typeof window === "undefined") return;
   try {
-    if (!achievementBellAudio) {
-      achievementBellAudio = new Audio("/audio/achievement-bell.wav");
-      achievementBellAudio.preload = "auto";
-      achievementBellAudio.volume = 0.7;
-    }
-    achievementBellAudio.currentTime = 0;
-    achievementBellAudio.play().catch(() => {
+    const audio = new Audio(ACHIEVEMENT_BELL_URL);
+    audio.volume = 0.7;
+    audio.play().catch(() => {
       // Autoplay blocked / load failure — silently ignore.
     });
   } catch {
