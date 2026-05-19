@@ -12,7 +12,6 @@ import {
 } from "framer-motion";
 import AmbientBreath from "@/components/motion/AmbientBreath";
 import { QuickSimFlow } from "@/components/QuickSimFlow";
-import { QUICK_SIM_LOCATIONS } from "@/data/quick-sim-items";
 
 type Stage = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -40,15 +39,9 @@ export function OnboardingFlow({
   // Embedded trial Quick Sim (stage 5 → "Try it"). Rendered as a
   // sibling overlay so OnboardingFlow never unmounts and `stage`
   // survives underneath; on complete/dismiss we advance to the
-  // closer. Location is picked once on mount and locked for the
-  // session so the trial feels intentional, not re-rolled.
+  // closer. The user picks the location themselves — the full Quick
+  // Sim flow (location → items → checkout → confirm) runs ephemerally.
   const [trialSimOpen, setTrialSimOpen] = useState(false);
-  const [trialLocation] = useState(
-    () =>
-      QUICK_SIM_LOCATIONS[
-        Math.floor(Math.random() * QUICK_SIM_LOCATIONS.length)
-      ],
-  );
 
   async function complete() {
     if (submitting) return;
@@ -175,7 +168,6 @@ export function OnboardingFlow({
 
       {trialSimOpen && (
         <QuickSimFlow
-          initialLocation={trialLocation}
           ephemeral
           onComplete={() => {
             setTrialSimOpen(false);
