@@ -359,6 +359,18 @@ function Screen2({
   const features = excludeBet
     ? SCREEN_2_FEATURES.filter((f) => f.category !== "bet")
     : SCREEN_2_FEATURES;
+  // The stage <AnimatePresence> uses `initial={false}`, which (via
+  // PresenceContext) suppresses the mount animation of EVERY nested
+  // motion element on the very first onboarding render. Meet Dopiq is
+  // always the first screen on cold load, so its card list snapped in
+  // all at once with no stagger. Driving the cascade off a post-mount
+  // state flip makes hidden→show a regular (non-mount) animation that
+  // the presence context no longer suppresses, so staggerChildren
+  // orchestrates normally. Rhythm is unchanged.
+  const [cascade, setCascade] = useState(false);
+  useEffect(() => {
+    setCascade(true);
+  }, []);
   return (
     <div className="flex h-full flex-col overflow-hidden px-5 pb-3 pt-1">
       <div className="flex-shrink-0">
@@ -385,7 +397,7 @@ function Screen2({
 
       <motion.ul
         initial="hidden"
-        animate="show"
+        animate={cascade ? "show" : "hidden"}
         variants={{
           hidden: {},
           show: { transition: { staggerChildren: 0.2, delayChildren: 0.45 } },
