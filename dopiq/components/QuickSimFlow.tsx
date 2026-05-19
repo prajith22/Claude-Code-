@@ -8,6 +8,7 @@ import {
   useMotionValue,
   useReducedMotion,
   useTransform,
+  type MotionValue,
 } from "framer-motion";
 import {
   QUICK_SIM_LOCATIONS,
@@ -95,6 +96,17 @@ export function QuickSimFlow({
     null,
   );
   const reducedMotion = useReducedMotion();
+  // Slide-up tint lives at the ROOT (sibling of Header + main) so the
+  // whole screen — header included — greens out together. Previously
+  // the wash rendered inside <main> (via SlideUpToSim); the Header is
+  // a sibling of <main> and `.mode-craving`'s root `filter` made the
+  // fixed wash a root-contained layer painted under the header strip,
+  // leaving a hard cream/green cutoff. The draggable still owns the
+  // gesture; only this visual value is shared up.
+  const slideY = useMotionValue(0);
+  const slideTintOpacity = useTransform(slideY, (v) =>
+    Math.min(1, Math.max(0, -v / SLIDE_FULL_TINT_PX)),
+  );
 
   function selectLocation(location: QuickSimLocation) {
     // Pick a fresh random 5 from the location's full 10 every time
@@ -301,9 +313,24 @@ export function QuickSimFlow({
             stage={stage}
             onConfirm={() => confirmSim(stage.selected)}
             ephemeral={ephemeral}
+            slideY={slideY}
           />
         )}
       </main>
+
+      {/* Slide-up green wash — rendered at the root, above Header and
+          main (z-40), below the location-tint (z-50) and green flash
+          (z-[60]). Covers the entire screen including the header so
+          the dopamine moment is one unbroken surface. Opacity is the
+          shared drag progress; pointer-events-none keeps the gesture
+          flowing. */}
+      {stage.kind === "checkout" && (
+        <motion.div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 z-40 bg-[#00C853]"
+          style={{ opacity: slideTintOpacity }}
+        />
+      )}
 
       <AnimatePresence>
         {stage.kind === "flash" && <GreenFlash totalCents={stage.totalCents} />}
@@ -727,10 +754,12 @@ function CheckoutSummary({
   stage,
   onConfirm,
   ephemeral = false,
+  slideY,
 }: {
   stage: Extract<Stage, { kind: "checkout" }>;
   onConfirm: () => void;
   ephemeral?: boolean;
+  slideY: MotionValue<number>;
 }) {
   // Onboarding trial: an empty cart can't be confirmed (confirmSim
   // no-ops). Swap the slide gesture for a clear hint so the bar
@@ -863,7 +892,7 @@ function CheckoutSummary({
             Add at least one item to continue
           </p>
         ) : (
-          <SlideUpToSim onComplete={onConfirm} />
+          <SlideUpToSim onComplete={onConfirm} y={slideY} />
         )}
       </div>
     </>
@@ -878,17 +907,18 @@ function CheckoutSummary({
 // frame-perfectly on iOS Safari.
 const SLIDE_FULL_TINT_PX = 200;
 
-function SlideUpToSim({ onComplete }: { onComplete: () => void }) {
-  const y = useMotionValue(0);
+function SlideUpToSim({
+  onComplete,
+  y,
+}: {
+  onComplete: () => void;
+  y: MotionValue<number>;
+}) {
   const [completing, setCompleting] = useState(false);
 
   const progress = useTransform(y, (v) =>
     Math.min(1, Math.max(0, -v / SLIDE_FULL_TINT_PX)),
   );
-  // Green overlay opacity = drag progress. 0 at rest, 1 at 200px up.
-  // Animating opacity (not background-color) keeps the wash on the
-  // GPU compositor, so there's no repaint / no Safari jank.
-  const tintOpacity = progress;
   // Arrow + label fade out by ~40% drag — the wash takes over.
   const promptOpacity = useTransform(progress, [0, 0.4], [1, 0]);
   // Pill grows upward via scaleY (transform-only, GPU-accelerated).
@@ -909,15 +939,6 @@ function SlideUpToSim({ onComplete }: { onComplete: () => void }) {
 
   return (
     <>
-      {/* Full-screen green wash — opacity-only animation so iOS
-          Safari composites it on the GPU. pointer-events-none keeps
-          the gesture flowing through. */}
-      <motion.div
-        aria-hidden
-        className="pointer-events-none fixed inset-0 z-[5] bg-[#00C853]"
-        style={{ opacity: tintOpacity }}
-      />
-
       {/* Draggable indicator — vertical-only drag, hard stop at the
           200px tint range. No elastic, no momentum: position tracks
           the finger 1:1. */}
