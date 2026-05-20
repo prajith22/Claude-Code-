@@ -9,6 +9,8 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -103,6 +105,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }`,
           }}
         />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
